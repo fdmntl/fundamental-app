@@ -20,20 +20,20 @@ import '@ethersproject/shims';
 export default function Home() {
   const { isReady, user } = usePrivy();
 
-  useEffect(() => {
-    if (isReady && !user) {
-      router.navigate('/login'); // TODO: disable login page back gesture
-    }
-  }, [isReady, user, router]);
+  // useEffect(() => {
+  //   if (isReady && !user) {
+  //     router.navigate('/login'); // TODO: disable login page back gesture
+  //   }
+  // }, [isReady, user, router]);
 
-  if (!isReady) {
-    return <Loading />;
-  }
+  // if (!isReady) {
+  //   return <Loading />;
+  // }
 
-  //* Fail safe
-  if (!user) {
-    return null;
-  }
+  // //* Fail safe
+  // if (!user) {
+  //   return null;
+  // }
 
   return (
     <Frame>
