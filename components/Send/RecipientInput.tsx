@@ -57,7 +57,7 @@ const RecipientInput = () => {
         )}
       </View>
       <TextInput
-        className={`mb-4 w-full rounded-md bg-background p-3 text-white ${isValidAddress ? 'text-success' : 'text-error'}`}
+        className={`mb-4 w-full rounded-md bg-background p-3 ${isValidAddress ? 'text-success' : 'text-error'}`}
         placeholder="0x1234...abcd"
         placeholderTextColor="#888"
         value={recipientAddress}
