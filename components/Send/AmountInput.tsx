@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useImperativeHandle, forwardRef } from 'react';
 import { View, TextInput, Alert } from 'react-native';
 import FText from '~/components/Text/FText';
 import { Button } from '~/components/Button';
 import { publicClient } from '~/utils/client';
 import { formatEther, parseEther } from 'viem';
 
-const AmountInput = () => {
+const AmountInput = forwardRef((props, ref) => {
   const [amount, setAmount] = useState('');
   const [isValidAmount, setIsValidAmount] = useState(true);
+
+  useImperativeHandle(ref, () => ({
+    value: amount,
+  }));
 
   const handleSendFunds = () => {
     if (isValidAmount && amount) {
@@ -61,13 +65,12 @@ const AmountInput = () => {
         placeholder="Enter amount"
         value={amount}
         onChangeText={handleAmountChange}
-        style={{ color: isValidAmount ? '#text-success' : '#text-error' }}
+        style={{ color: isValidAmount ? 'text-success' : 'text-error' }}
         placeholderTextColor="#888"
       />
       <Button title="Check funds" onPress={checkFunds} disabled={!isValidAmount} />
-      <Button title="Send Funds" onPress={handleSendFunds} disabled={!isValidAmount || !amount} />
     </View>
   );
-};
+});
 
 export default AmountInput;

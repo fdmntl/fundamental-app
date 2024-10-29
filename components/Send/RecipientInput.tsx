@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useImperativeHandle, forwardRef } from 'react';
 import { View, TextInput, Alert, Image } from 'react-native';
 import FText from '~/components/Text/FText';
 import { Button } from '~/components/Button';
-
 import { http, createPublicClient } from 'viem';
 import { mainnet } from 'viem/chains';
 import { normalize } from 'viem/ens';
@@ -13,10 +12,14 @@ const client = createPublicClient({
   transport: http(),
 });
 
-const RecipientInput = () => {
+const RecipientInput = forwardRef((props, ref) => {
   const [recipientAddress, setRecipientAddress] = useState('');
   const [ensAvatar, setEnsAvatar] = useState<string | null>(null);
   const [ensName, setEnsName] = useState<string | null>(null);
+
+  useImperativeHandle(ref, () => ({
+    value: recipientAddress,
+  }));
 
   const handleSendFunds = () => {
     if (isAddress(recipientAddress)) {
@@ -68,6 +71,6 @@ const RecipientInput = () => {
       <Button title="Get ENS name and avatar" onPress={getEnsNameAndAvatar} />
     </View>
   );
-};
+});
 
 export default RecipientInput;
