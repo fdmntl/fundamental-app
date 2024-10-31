@@ -23,3 +23,5 @@ type Privy = {
     wallet?: EmbeddedWalletState;
     provider?: PrivyEmbeddedWalletProvider;
 }
+
+export type { data, User, Wallet, Privy };
