@@ -2,7 +2,7 @@ import '../global.css';
 
 import { PrivyProvider } from '@privy-io/expo';
 import { Stack } from 'expo-router';
-import { ConfigProvider } from '~/components/configContext';
+import { ConfigProvider } from '~/components/Wrappers/UserContext';
 import { ThemeWrapper } from '~/components/Wrappers/ThemeWrapper';
 
 const Layout = () => {
