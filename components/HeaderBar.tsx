@@ -26,31 +26,38 @@ const PillMessageBox = ({ children }: { children: React.ReactNode }): JSX.Elemen
 interface HeaderBarProps {
   title: string;
   pillContent?: () => React.ReactNode;
+  pillMethod?: () => void;
 }
 
-//* This typedoc comment is not right
 /**
  * The HeaderBar component, displayed on top of every main page of the app.
  *
  * This component contains a menu button on the left side, a page title in the center,
  * and an interactive "fundy" button on the right side that can toggle additional content.
- * When the "fundy" button is pressed, it displays the provided content (if any) via the `pillContent` function.
+ * When the "fundy" button is pressed, it triggers the optional `pillMethod` function
+ * and displays the content provided by `pillContent`, if any.
  *
  * @param {string} title - The page title, displayed in the center of the header bar.
  * @param {() => React.ReactNode} [pillContent] - A function that returns the content to be displayed when the user interacts with the "fundy" button.
+ * @param {() => void} [pillMethod] - An optional callback function triggered when the "fundy" button is pressed.
  *
  * @returns {JSX.Element} The HeaderBar component.
  *
  * @example
  * ```tsx
- * <HeaderBar title="Dashboard" pillContent={() => <CustomComponent />} />
+ * <HeaderBar
+ *   title="Dashboard"
+ *   pillContent={() => <CustomComponent />}
+ *   pillMethod={() => alert("Pill toggled")}
+ * />
  * ```
  *
  * @remarks
  * - The component utilizes `useNavigation` to handle opening the drawer with the menu button.
  * - `pillContent` is optional and is displayed only when the "fundy" button is clicked.
+ * - `pillMethod`, if provided, is called each time the "fundy" button is clicked.
  */
-const HeaderBar = ({ title, pillContent }: HeaderBarProps): JSX.Element => {
+const HeaderBar = ({ title, pillContent, pillMethod }: HeaderBarProps): JSX.Element => {
   const navigation = useNavigation();
 
   const openDrawer = () => {
@@ -59,7 +66,10 @@ const HeaderBar = ({ title, pillContent }: HeaderBarProps): JSX.Element => {
 
   const [isPillOpened, setIsPillOpened] = useState(false);
 
-  const togglePill = () => setIsPillOpened(!isPillOpened);
+  const togglePill = () => {
+    pillMethod && pillMethod();
+    pillContent && setIsPillOpened(!isPillOpened);
+  };
 
   return (
     <View className="flex flex-col">
