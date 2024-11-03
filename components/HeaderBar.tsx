@@ -1,8 +1,8 @@
 import { Feather } from '@expo/vector-icons';
 import { DrawerActions } from '@react-navigation/native';
 import { useNavigation } from 'expo-router';
-import { useState } from 'react';
-import { View, Image, TouchableOpacity } from 'react-native';
+import { useState, useRef } from 'react';
+import { View, Image, TouchableOpacity, Animated } from 'react-native';
 
 import Title from './Text/FTitle';
 
@@ -59,16 +59,26 @@ interface HeaderBarProps {
  */
 const HeaderBar = ({ title, pillContent, pillMethod }: HeaderBarProps): JSX.Element => {
   const navigation = useNavigation();
+  const [isPillOpened, setIsPillOpened] = useState(false);
 
   const openDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer());
   };
 
-  const [isPillOpened, setIsPillOpened] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const togglePill = () => {
     pillMethod && pillMethod();
-    pillContent && setIsPillOpened(!isPillOpened);
+
+    if (pillContent) {
+      setIsPillOpened(!isPillOpened);
+
+      Animated.timing(fadeAnim, {
+        toValue: isPillOpened ? 0 : 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
   };
 
   return (
@@ -83,11 +93,50 @@ const HeaderBar = ({ title, pillContent, pillMethod }: HeaderBarProps): JSX.Elem
         </TouchableOpacity>
       </View>
       <View />
-      {isPillOpened && pillContent && (
-        <View className="relative mb-5">{pillContent && pillContent()}</View>
+      {pillContent && (
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            marginBottom: 20,
+            position: 'relative',
+          }}>
+          {isPillOpened && pillContent()}
+        </Animated.View>
       )}
     </View>
   );
 };
+// const HeaderBar = ({ title, pillContent, pillMethod }: HeaderBarProps): JSX.Element => {
+//   const navigation = useNavigation();
+
+//   const openDrawer = () => {
+//     navigation.dispatch(DrawerActions.openDrawer());
+//   };
+
+//   const [isPillOpened, setIsPillOpened] = useState(false);
+
+//   const togglePill = () => {
+//     pillMethod && pillMethod();
+//     pillContent && setIsPillOpened(!isPillOpened);
+//   };
+
+//   return (
+//     <View className="flex flex-col">
+//       <View className="h-50 z-10 flex-row items-center gap-2 py-4">
+//         <TouchableOpacity onPress={openDrawer}>
+//           <Feather name="menu" size={36} className="text-text" />
+//         </TouchableOpacity>
+//         <Title className="mt-2 text-4xl text-text">{title}</Title>
+//         <TouchableOpacity onPress={togglePill} className="ml-auto">
+//           <Image source={fundy} style={{ height: 64, width: 96 }} resizeMode="contain" />
+//         </TouchableOpacity>
+//       </View>
+//       <View />
+//       {isPillOpened && pillContent && (
+//         <View className="relative mb-5">{pillContent && pillContent()}</View>
+//       )}
+//     </View>
+//   );
+// };
 
 export { HeaderBar, PillMessageBox };
