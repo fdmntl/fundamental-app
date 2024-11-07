@@ -29,7 +29,7 @@ export default function Login() {
   }, [emailFlow.state.status, oauth.state.status]);
 
   if (user) {
-    router.navigate('(tabs)');
+    router.navigate('/(tabs)');
   }
 
   return (

@@ -1,0 +1,12 @@
+{
+    "entryPoints": ["index.ts"], 
+    "out": "docs",
+    "exclude": [
+      "**/__tests__/**/*",
+      "**/*.spec.ts",
+      "**/*.test.ts"
+    ],
+    "tsconfig": "tsconfig.json",
+    "includeVersion": true
+  }
+  

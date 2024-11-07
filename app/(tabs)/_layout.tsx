@@ -105,6 +105,24 @@ export default function Layout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="send"
+        options={{
+          title: 'Send',
+          tabBarIcon: ({ focused }) => (
+            <View className="items-center">
+              <Feather
+                size={28}
+                name="send"
+                className={`${focused ? 'text-primary' : 'text-text'}`}
+              />
+              <FText bold className={`${focused ? '!text-primary' : '!text-text'}`}>
+                Send
+              </FText>
+            </View>
+          ),
+        }}
+      />
     </Tabs>
   );
 }

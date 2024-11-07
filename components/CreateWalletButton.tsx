@@ -14,7 +14,7 @@ const CreateWalletButton = () => {
     try {
       await wallet.create({ recoveryMethod: 'privy' });
       Alert.alert('Success', 'Wallet created successfully!');
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert('Error', 'Failed to create wallet: ' + error.message);
     }
   };

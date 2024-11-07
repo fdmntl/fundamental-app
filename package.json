@@ -9,7 +9,8 @@
     "prebuild": "expo prebuild",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "generate-docs": "typedoc"
   },
   "dependencies": {
     "@coinbase/wallet-mobile-sdk": "^1.0.13",
@@ -20,6 +21,7 @@
     "@privy-io/expo": "^0.27.0",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/netinfo": "11.3.1",
+    "@react-navigation/drawer": "^6.7.2",
     "@react-navigation/native": "^6.1.7",
     "@tabler/icons-react-native": "^3.7.0",
     "@thirdweb-dev/react-native-adapter": "^1.2.0",
@@ -65,6 +67,7 @@
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^3.4.0",
+    "typedoc": "^0.26.8",
     "typescript": "~5.3.3"
   },
   "eslintConfig": {
