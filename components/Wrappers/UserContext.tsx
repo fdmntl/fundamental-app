@@ -1,6 +1,7 @@
 // UserContext.tsx
-import React, { createContext, useContext, useState } from 'react';
 import * as _privy_io_public_api from '@privy-io/public-api';
+import React, { createContext, useContext, useState } from 'react';
+
 import { User, Wallet, Privy } from '~/types/userData';
 
 interface ConfigType {
@@ -17,7 +18,7 @@ interface ConfigType {
 
 const ConfigContext = createContext<ConfigType | undefined>(undefined);
 
-export const ConfigProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
+export const ConfigProvider: React.FC<React.PropsWithChildren<object>> = ({ children }) => {
   const [user, setUser] = useState<User>({});
   const [wallet, setWallet] = useState<Wallet>({});
   const [privy, setPrivy] = useState<Privy>({});
@@ -49,8 +50,7 @@ export const ConfigProvider: React.FC<React.PropsWithChildren<{}>> = ({ children
         privy,
         setPrivy,
         updatePrivy,
-      }}
-    >
+      }}>
       {children}
     </ConfigContext.Provider>
   );
