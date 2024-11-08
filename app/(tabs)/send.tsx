@@ -1,7 +1,7 @@
 import { View, Alert } from 'react-native';
 import React, { useRef } from 'react';
 
-import HeaderBar from '~/components/HeaderBar';
+import { HeaderBar } from '~/components/HeaderBar';
 import { Frame } from '~/components/Wrappers/Frame';
 
 import RecipientInput from '~/components/Send/RecipientInput';

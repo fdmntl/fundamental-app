@@ -1,8 +1,8 @@
 import { useEmbeddedWallet, isNotCreated, usePrivy } from '@privy-io/expo';
 import React from 'react';
 import { View } from 'react-native';
-import alchemy from '~/services/alchemyService';
-import viem from '~/services/viemService';
+import alchemy from '~/Services/alchemyService';
+import viem from '~/Services/viemService';
 
 import { Button } from './Button';
 import Container from './Container';
@@ -26,10 +26,24 @@ const TestModule = () => {
     <View>
       <Container className="" title="Test Module">
         <FText className="text-lg">Your address is {wallet.account?.address}</FText>
-        <Button onPress={() => alchemy.getEthBalance(wallet.account?.address ?? "")} className="bg-primary" title="Get ETH Balance" />
+        <Button
+          onPress={() => alchemy.getEthBalance(wallet.account?.address ?? '')}
+          className="bg-primary"
+          title="Get ETH Balance"
+        />
         <FText className="text-lg">Privy DID is {user.user?.id}</FText>
-        <Button onPress={() => viem.signMessage(wallet.provider, 'hello world')} className="bg-primary" title="Test Sign Message" />
-        <Button onPress={() => viem.sendETH(wallet.provider, '0x4DcBa6746997427dAC9341C2A007f10d673Ad878', 21n)} className="bg-primary" title="Send ETH" />
+        <Button
+          onPress={() => viem.signMessage(wallet.provider, 'hello world')}
+          className="bg-primary"
+          title="Test Sign Message"
+        />
+        <Button
+          onPress={() =>
+            viem.sendETH(wallet.provider, '0x4DcBa6746997427dAC9341C2A007f10d673Ad878', 21n)
+          }
+          className="bg-primary"
+          title="Send ETH"
+        />
       </Container>
     </View>
   );
