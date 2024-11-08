@@ -56,19 +56,28 @@ const AmountInput = forwardRef((props, ref) => {
   };
 
   return (
-    <View className="items-center rounded-lg bg-primary p-4">
-      <View className="mb-4 flex-row items-center">
-        <FText className="text-white">Amount</FText>
+    <View className="mb-4 h-40 rounded-xl bg-content p-4">
+      <View className="flex-row items-center">
+        <FText className="font-bold text-text">Amount</FText>
       </View>
-      <TextInput
-        className="mb-4 w-full rounded-md bg-background p-3"
-        placeholder="Enter amount"
-        value={amount}
-        onChangeText={handleAmountChange}
-        style={{ color: isValidAmount ? 'text-success' : 'text-error' }}
-        placeholderTextColor="#888"
-      />
-      <Button title="Check funds" onPress={checkFunds} disabled={!isValidAmount} />
+      <View className="mt-4 flex-row items-center">
+        <TextInput
+          className={`flex-1 rounded-md bg-content p-3 ${
+            amount === ''
+              ? 'border border-background text-text'
+              : isValidAmount
+                ? 'border border-success text-success'
+                : 'border border-error text-error'
+          }`}
+          keyboardType="numeric"
+          placeholder="Enter amount"
+          value={amount}
+          onChangeText={handleAmountChange}
+          placeholderTextColor="#888"
+        />
+        {/* This is for debugging */}
+        {/* <Button title="Check funds" onPress={checkFunds} disabled={!isValidAmount} /> */}
+      </View>
     </View>
   );
 });

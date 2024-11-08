@@ -46,29 +46,32 @@ const RecipientInput = forwardRef((props, ref) => {
   };
 
   return (
-    <View className="items-center rounded-lg bg-primary p-4">
-      <View className="mb-4 flex-row items-center">
-        <FText className="text-white">Recipient</FText>
-        {ensName && <FText className="ml-auto text-white"> : {ensName}</FText>}
+    <View className="mb-4 h-40 w-full rounded-xl bg-content p-4">
+      <View className="flex-row items-center">
+        <FText className="font-bold text-text">Recipient</FText>
+      </View>
+      <View className="mt-4 flex-row items-center">
+        <TextInput
+          className={`flex-1 rounded-md bg-content p-3 ${recipientAddress === '' ? 'border border-background text-text' : isValidAddress ? 'border border-success text-success' : 'border border-error text-error'}`}
+          placeholder="0x1234...abcd"
+          placeholderTextColor="#888"
+          value={recipientAddress}
+          onChangeText={(text) => {
+            setRecipientAddress(text);
+          }}
+        />
         {ensAvatar && (
-          <Image
-            source={{
-              uri: ensAvatar,
-            }}
-            className="ml-4 h-16 w-16 rounded-full"
-          />
+          <View className="ml-4 items-center">
+            <Image
+              source={{
+                uri: ensAvatar,
+              }}
+              className="h-16 w-16 rounded-full"
+            />
+            {ensName && <FText className="font-semibold text-text">{ensName}</FText>}
+          </View>
         )}
       </View>
-      <TextInput
-        className={`mb-4 w-full rounded-md bg-background p-3 ${isValidAddress ? 'text-success' : 'text-error'}`}
-        placeholder="0x1234...abcd"
-        placeholderTextColor="#888"
-        value={recipientAddress}
-        onChangeText={(text) => {
-          setRecipientAddress(text);
-        }}
-      />
-      <Button title="Get ENS name and avatar" onPress={getEnsNameAndAvatar} />
     </View>
   );
 });
