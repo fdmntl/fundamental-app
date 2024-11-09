@@ -1,11 +1,11 @@
 import React, { useState, useImperativeHandle, forwardRef } from 'react';
 import { View, TextInput, Alert, Image } from 'react-native';
-import FText from '~/components/Text/FText';
-import { Button } from '~/components/Button';
-import { http, createPublicClient } from 'viem';
+import { http, createPublicClient, isAddress } from 'viem';
 import { mainnet } from 'viem/chains';
 import { normalize } from 'viem/ens';
-import { isAddress } from 'viem';
+
+import { Button } from '~/components/Button';
+import FText from '~/components/Text/FText';
 
 const client = createPublicClient({
   chain: mainnet,
@@ -48,11 +48,20 @@ const RecipientInput = forwardRef((props, ref) => {
   return (
     <View className="mb-4 h-40 w-full rounded-xl bg-content p-4">
       <View className="flex-row items-center">
-        <FText className="font-bold text-text">Recipient</FText>
+        <FText className="!text-2xl" bold>
+          Recipient
+        </FText>
       </View>
       <View className="mt-4 flex-row items-center">
         <TextInput
-          className={`flex-1 rounded-md bg-content p-3 ${recipientAddress === '' ? 'border border-background text-text' : isValidAddress ? 'border border-success text-success' : 'border border-error text-error'}`}
+          className={`flex-1 rounded-md bg-content p-3
+            ${
+              recipientAddress === ''
+                ? 'border-2 border-background text-text'
+                : isValidAddress
+                  ? 'border-2 border-success text-success'
+                  : 'border-2 border-error text-error'
+            }`}
           placeholder="0x1234...abcd"
           placeholderTextColor="#888"
           value={recipientAddress}
