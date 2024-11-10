@@ -1,9 +1,8 @@
 [build]
-  publish = "dist"  # Change this to your publish directory
-  command = "npm run build"  # Change this to your build command
+  functions = "netlify/functions"  # Make sure this matches your setup
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/alchemy/*"
+  to = "/.netlify/functions/alchemy"  # The function path
   status = 200
-  force = true
+
