@@ -1,8 +1,0 @@
-[build]
-  functions = "netlify/functions"  # Make sure this matches your setup
-
-[[redirects]]
-  from = "/alchemy/*"
-  to = "/.netlify/functions/alchemy"  # The function path
-  status = 200
-
