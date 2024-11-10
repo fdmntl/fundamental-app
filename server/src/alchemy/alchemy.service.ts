@@ -35,7 +35,7 @@ export class AlchemyService {
             const ethBalance = parseFloat(weiBalance) / 1e18;
             Logger.log(`Balance for address ${address}: ${weiBalance} WEI`);
             Logger.log(`Balance for address ${address}: ${ethBalance} ETH`);
-            return ethBalance;
+            return ethBalance.toString();
         } catch (error) {
 
             Logger.log(error);
