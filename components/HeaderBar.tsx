@@ -97,7 +97,7 @@ const HeaderBar = ({ title, pillContent, pillMethod }: HeaderBarProps): JSX.Elem
         <Animated.View
           style={{
             opacity: fadeAnim,
-            marginBottom: 20,
+            marginBottom: isPillOpened ? 20 : 0,
             position: 'relative',
           }}>
           {isPillOpened && pillContent()}

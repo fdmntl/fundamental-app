@@ -7,6 +7,7 @@ import { Button } from '~/components/Button';
 import Container from '~/components/Container';
 import CreateWalletButton from '~/components/CreateWalletButton';
 import { HeaderBar, PillMessageBox } from '~/components/HeaderBar';
+import BalanceDisplay from '~/components/Home/BalanceDisplay';
 import Loading from '~/components/Loading';
 import TestModule from '~/components/TestModule';
 import FText from '~/components/Text/FText';
@@ -41,6 +42,7 @@ export default function Home() {
         <FText className="!text-2xl" bold>
           Good Morning!
         </FText>
+        <FText className="!text-2xl">Welcome to Fundamental.</FText>
       </PillMessageBox>
     );
   };
@@ -49,7 +51,19 @@ export default function Home() {
     <Frame>
       <HeaderBar title="Home" pillContent={homePillContent} />
       <ScrollView>
-        <FTitle className="text-4xl">Welcome to Fundamental!</FTitle>
+        <BalanceDisplay />
+        <Container title="Your last transactions" className="mt-6">
+          <View>
+            <FText>Last Transactions</FText>
+          </View>
+        </Container>
+      </ScrollView>
+    </Frame>
+  );
+}
+
+{
+  /* <FTitle className="text-4xl">Welcome to Fundamental!</FTitle>
         <FText className="text-lg">This is Fundamental</FText>
         <View className="mt-4">
           <CreateWalletButton />
@@ -71,11 +85,8 @@ export default function Home() {
         </Container>
         <Link
           className="mt-4 bg-primary"
-          href={{ pathname: '/details', params: { name: 'Dan' } }}
+          href={{ pathname: '/details', params: { name: 'Ben' } }}
           asChild>
           <Button title="Show Details" />
-        </Link>
-      </ScrollView>
-    </Frame>
-  );
+        </Link> */
 }
