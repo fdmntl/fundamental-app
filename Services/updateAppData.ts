@@ -1,4 +1,3 @@
-import { useUserData} from "~/components/Wrappers/UserData";
 import {
   useEmbeddedWallet,
   isNotCreated,
@@ -6,15 +5,17 @@ import {
   getUserEmbeddedWallet,
   PrivyEmbeddedWalletProvider,
 } from '@privy-io/expo';
-import { addressResolverAbi } from "viem/_types/constants/abis";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { addressResolverAbi } from 'viem/_types/constants/abis';
+
+import { useAppData } from '~/components/Wrappers/AppData';
 
 export const UpdatePrivyData = () => {
   const wallet = useEmbeddedWallet();
   const { user } = usePrivy();
-  const { updateUser, updateWallet, updatePrivy } = useUserData();
+  const { updateUser, updateWallet, updatePrivy } = useAppData();
 
-  React.useEffect(() => {
+  useEffect(() => {
     updateUser({ address: wallet.account?.address, privyID: user?.id });
     updateWallet({ account: wallet.account, status: wallet.status });
     updatePrivy({ user, wallet });

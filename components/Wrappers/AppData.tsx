@@ -1,8 +1,7 @@
 // UserContext.tsx
-import * as _privy_io_public_api from '@privy-io/public-api';
 import React, { createContext, useContext, useState } from 'react';
 
-import { User, Wallet, Privy } from '~/types/userData';
+import { User, Wallet, Privy } from '~/types/appData';
 
 interface ConfigType {
   user: User;
@@ -16,9 +15,9 @@ interface ConfigType {
   updatePrivy: (updates: Partial<Privy>) => void;
 }
 
-const ConfigContext = createContext<ConfigType | undefined>(undefined);
+const AppContext = createContext<ConfigType | undefined>(undefined);
 
-export const ConfigProvider: React.FC<React.PropsWithChildren<object>> = ({ children }) => {
+export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ children }) => {
   const [user, setUser] = useState<User>({});
   const [wallet, setWallet] = useState<Wallet>({});
   const [privy, setPrivy] = useState<Privy>({});
@@ -39,7 +38,7 @@ export const ConfigProvider: React.FC<React.PropsWithChildren<object>> = ({ chil
   };
 
   return (
-    <ConfigContext.Provider
+    <AppContext.Provider
       value={{
         user,
         setUser,
@@ -52,14 +51,14 @@ export const ConfigProvider: React.FC<React.PropsWithChildren<object>> = ({ chil
         updatePrivy,
       }}>
       {children}
-    </ConfigContext.Provider>
+    </AppContext.Provider>
   );
 };
 
-export const useUserData = () => {
-  const context = useContext(ConfigContext);
+export const useAppData = () => {
+  const context = useContext(AppContext);
   if (!context) {
-    throw new Error('useConfig must be used within a ConfigProvider');
+    throw new Error('useConfig must be used within a AppDataProvider');
   }
   return context;
 };

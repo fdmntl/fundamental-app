@@ -13,21 +13,21 @@ import Container from './Container';
 import FText from './Text/FText';
 import alchemy from '../services/alchemyService';
 
-import { useUserData } from '~/components/Wrappers/UserData';
-import { updatePrivyData } from '~/services/updateUserData';
+import { useAppData } from '~/components/Wrappers/AppData';
 import signMessage from '~/services/privyService';
+import { UpdatePrivyData } from '~/services/updateAppData';
 import viem from '~/services/viemService';
 
 const TestModule = () => {
   const Puser = usePrivy();
   const wallet = useEmbeddedWallet();
-  const { user, updateUser } = useUserData();
+  const { user, updateUser } = useAppData();
 
   if (isNotCreated(wallet)) {
     return <FText className="text-lg">Wallet not created</FText>;
   }
 
-  if (wallet.status != 'connected') {
+  if (wallet.status !== 'connected') {
     return <FText className="text-lg">Wallet not connected</FText>;
   }
 
@@ -37,11 +37,6 @@ const TestModule = () => {
     <View>
       <Container className="" title="Test Module">
         <FText className="text-lg">Your address is {user.address}</FText>
-        <Button
-          onPress={() =>  updatePrivyData()}
-          className="bg-primary"
-          title="Update User Data"
-        />
         <Button
           onPress={() => alchemy.getEthBalance(wallet.account?.address ?? '')}
           className="bg-primary"
