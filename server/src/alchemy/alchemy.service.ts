@@ -12,6 +12,31 @@ export class AlchemyService {
       ) {        
         this.apiKey = this.configService.get<string>('ALCHEMY_API_KEY');
       }
+    
+
+    public async getTokenBalances(address: string): Promise<string> {
+        
+        const network = "base"
+        const Url = `https://${network}-mainnet.g.alchemy.com/v2/${this.apiKey}`;
+    
+        const data = {
+            jsonrpc: '2.0',
+            method: 'alchemy_getTokenBalances',
+            params: [address],
+            id: 1
+        };
+    
+        try {
+            const response = await axios.post(Url, data);
+            const balances = response.data.result;
+        
+            return balances;
+        } catch (error) {
+            console.error('Error fetching token balances:', error);
+            throw error;
+        }
+        
+    }
 
     public async getEthBalance(address: string): Promise<string> {
         const network = "base"
