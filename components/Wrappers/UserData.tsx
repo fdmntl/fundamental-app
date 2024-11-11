@@ -56,7 +56,7 @@ export const ConfigProvider: React.FC<React.PropsWithChildren<object>> = ({ chil
   );
 };
 
-export const useConfig = () => {
+export const useUserData = () => {
   const context = useContext(ConfigContext);
   if (!context) {
     throw new Error('useConfig must be used within a ConfigProvider');

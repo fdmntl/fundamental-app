@@ -6,13 +6,15 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import CustomDrawerContent from '~/components/CustomDrawerContent';
 import { ThemeWrapper } from '~/components/Wrappers/ThemeWrapper';
-import { ConfigProvider } from '~/components/Wrappers/UserContext';
+import { ConfigProvider } from '~/components/Wrappers/UserData';
+import { UpdatePrivyData } from '~/services/updateUserData';
 
 const Layout = () => {
   return (
     <PrivyProvider appId="clxd5oc5m007jrpv8y8clt6z7">
       <ThemeWrapper>
         <ConfigProvider>
+          <UpdatePrivyData />
           <GestureHandlerRootView className="flex-1">
             <Drawer
               drawerContent={CustomDrawerContent}

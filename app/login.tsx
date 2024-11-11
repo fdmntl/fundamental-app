@@ -9,6 +9,7 @@ import Container from '~/components/Container';
 import FText from '~/components/Text/FText';
 import FTitle from '~/components/Text/FTitle';
 import { Frame } from '~/components/Wrappers/Frame';
+import { useUserData, updateUser, updateWallet, updatePrivy } from '~/components/Wrappers/UserData';
 
 export default function Login() {
   const [email, setEmail] = useState(Constants.expoConfig?.extra?.email || '');

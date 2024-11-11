@@ -7,9 +7,7 @@ type User = {
 }
 
 type Wallet = {
-    account?: string;
-    status?: string;
-    provider?: string;
+    account?: _privy_io_public_api.PrivyEthereumEmbeddedWalletAccount;
 }
 
 type Privy = {
