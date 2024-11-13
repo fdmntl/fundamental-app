@@ -1,11 +1,4 @@
-import {
-  useEmbeddedWallet,
-  isNotCreated,
-  usePrivy,
-  getUserEmbeddedWallet,
-  PrivyEmbeddedWalletProvider,
-} from '@privy-io/expo';
-import React, { useState } from 'react';
+import React from 'react';
 import { View } from 'react-native';
 
 import { Button } from './Button';
@@ -14,16 +7,13 @@ import FText from './Text/FText';
 import alchemy from '../services/alchemyService';
 
 import { useAppData } from '~/components/Wrappers/AppData';
-import signMessage from '~/services/privyService';
-import { UpdatePrivyData } from '~/services/updateAppData';
 import viem from '~/services/viemService';
 
 const TestModule = () => {
-  const Puser = usePrivy();
-  const wallet = useEmbeddedWallet();
-  const { user, updateUser } = useAppData();
+  const { user, privy } = useAppData();
+  const wallet = privy.wallet;
 
-  if (isNotCreated(wallet)) {
+  if (!wallet) {
     return <FText className="text-lg">Wallet not created</FText>;
   }
 
@@ -38,11 +28,11 @@ const TestModule = () => {
       <Container className="" title="Test Module">
         <FText className="text-lg">Your address is {user.address}</FText>
         <Button
-          onPress={() => alchemy.getEthBalance(wallet.account?.address ?? '')}
+          onPress={() => console.log(alchemy.getEthBalance(wallet.account?.address ?? ''))}
           className="bg-primary"
           title="Get ETH Balance"
         />
-        <FText className="text-lg">Privy DID is {Puser.user?.id}</FText>
+        <FText className="text-lg">Privy DID is {user.privyID}</FText>
         <Button
           onPress={() => viem.signMessage(wallet.provider, 'hello world')}
           className="bg-primary"
