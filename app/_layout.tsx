@@ -5,14 +5,16 @@ import { Drawer } from 'expo-router/drawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import CustomDrawerContent from '~/components/CustomDrawerContent';
+import { AppDataProvider } from '~/components/Wrappers/AppData';
 import { ThemeWrapper } from '~/components/Wrappers/ThemeWrapper';
-import { ConfigProvider } from '~/components/configContext';
+import { UpdatePrivyData } from '~/services/updateAppData';
 
 const Layout = () => {
   return (
     <PrivyProvider appId="clxd5oc5m007jrpv8y8clt6z7">
       <ThemeWrapper>
-        <ConfigProvider>
+        <AppDataProvider>
+          <UpdatePrivyData />
           <GestureHandlerRootView className="flex-1">
             <Drawer
               drawerContent={CustomDrawerContent}
@@ -55,7 +57,7 @@ const Layout = () => {
               />
             </Drawer>
           </GestureHandlerRootView>
-        </ConfigProvider>
+        </AppDataProvider>
       </ThemeWrapper>
     </PrivyProvider>
   );
@@ -68,13 +70,13 @@ export default Layout;
 // return (
 //   <PrivyProvider appId="clxd5oc5m007jrpv8y8clt6z7">
 //     <ThemeWrapper>
-//       <ConfigProvider>
+//       <AppDataProvider>
 //         <Stack>
 //           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 //           <Stack.Screen name="+not-found" options={{ headerShown: true }} />
 //           <Stack.Screen name="login" options={{ headerShown: false }} />
 //         </Stack>
-//       </ConfigProvider>
+//       </AppDataProvider>
 //     </ThemeWrapper>
 //   </PrivyProvider>
 // );
