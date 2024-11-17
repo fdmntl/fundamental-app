@@ -1,39 +1,42 @@
+import React, { useState, useEffect } from 'react';
 import { View, Alert } from 'react-native';
-import React, { useRef } from 'react';
+import { isAddress } from 'viem';
 
+import { Button } from '~/components/Button';
 import { HeaderBar } from '~/components/HeaderBar';
+import AmountInput from '~/components/Send/AmountInput';
+import RecipientInput from '~/components/Send/RecipientInput';
 import { Frame } from '~/components/Wrappers/Frame';
 
-import RecipientInput from '~/components/Send/RecipientInput';
-import AmountInput from '~/components/Send/AmountInput';
-import { Button } from '~/components/Button';
-
 export default function Send() {
-  const recipientRef = useRef<{ value: string } | null>(null);
-  const amountRef = useRef<{ value: string } | null>(null);
+  const [recipient, setRecipient] = useState('');
+  const [amount, setAmount] = useState('');
+
+  const isRecipientValid = isAddress(recipient);
+  const isAmountValid = parseFloat(amount) > 0;
+
+  const isInputValid = isRecipientValid && isAmountValid;
 
   const handleSendPress = () => {
-    const recipientAddress = recipientRef.current?.value;
-    const amount = amountRef.current?.value;
-
-    if (recipientAddress && amount) {
-      Alert.alert('Sending', `Sending ${amount} to ${recipientAddress}`);
-    } else {
-      Alert.alert('Error', 'Please ensure both recipient address and amount are filled.');
-    }
+    Alert.alert('Sending', `Sending ${amount} to ${recipient}`);
   };
 
   return (
     <Frame>
       <HeaderBar title="Send" />
       <View>
-        <RecipientInput ref={recipientRef} />
+        <RecipientInput value={recipient} onChange={(value) => setRecipient(value)} />
       </View>
       <View>
-        <AmountInput ref={amountRef} />
+        <AmountInput value={amount} onChange={(value) => setAmount(value)} />
       </View>
-      <View className="mt-4">
-        <Button title="Send Funds" onPress={handleSendPress} />
+      <View className="mt-4 flex w-full items-center justify-center">
+        <Button
+          title="Send Funds"
+          onPress={handleSendPress}
+          className={`bg-primary px-12 ${isInputValid ? '' : 'opacity-50'}`}
+          disabled={!isInputValid}
+        />
       </View>
     </Frame>
   );
