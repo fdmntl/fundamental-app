@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Image, Animated } from 'react-native';
 
-import FTitle from './Text/FTitle';
+import { FTitle } from './Text/FTitle';
 
 const fundy = require('../assets/fundy.png');
 

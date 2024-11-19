@@ -1,8 +1,8 @@
 import { Link } from 'expo-router';
 import { View } from 'react-native';
 
-import FText from '~/components/Text/FText';
-import FTitle from '~/components/Text/FTitle';
+import { FText } from '~/components/Text/FText';
+import { FTitle } from '~/components/Text/FTitle';
 
 const Profile = () => {
   return (
