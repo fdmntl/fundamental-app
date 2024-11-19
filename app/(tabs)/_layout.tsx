@@ -1,8 +1,11 @@
 import { Feather } from '@expo/vector-icons';
-import { Tabs } from 'expo-router';
+import { usePrivy } from '@privy-io/expo';
+import { Tabs, router } from 'expo-router';
 import { cssInterop } from 'nativewind';
+import { useEffect } from 'react';
 import { View } from 'react-native';
 
+import Loading from '~/components/Loading';
 import FText from '~/components/Text/FText';
 import { useTheme } from '~/components/Wrappers/ThemeWrapper';
 
@@ -15,6 +18,23 @@ cssInterop(Feather, {
 
 export default function Layout() {
   const { theme } = useTheme();
+
+  const { isReady, user } = usePrivy();
+
+  useEffect(() => {
+    if (isReady && !user) {
+      router.navigate('/login'); // TODO: disable login page back gesture
+    }
+  }, [isReady, user, router]);
+
+  if (!isReady) {
+    return <Loading />;
+  }
+
+  //* Fail safe
+  if (!user) {
+    return null;
+  }
 
   return (
     <Tabs

@@ -1,8 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Image, Animated } from 'react-native';
 
-import FTitle from './Text/FTitle';
-
 const fundy = require('../assets/fundy.png');
 
 const useCrescendoAnimation = (delay: number) => {
@@ -88,7 +86,6 @@ const Loading = () => {
     <View className="flex flex-1 bg-primary">
       <View className="m-auto">
         <Image source={fundy} style={{ height: 64, width: 96 }} resizeMode="contain" />
-        <FTitle className="FTitle mb-2 text-3xl">Loading</FTitle>
         <LoadingDots />
       </View>
     </View>
