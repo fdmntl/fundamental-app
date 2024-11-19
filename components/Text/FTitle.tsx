@@ -6,7 +6,7 @@ interface TitleProps {
   italic?: boolean;
 }
 
-const FTitle = ({ children, className, italic, ...props }: TitleProps) => {
+export const FTitle = ({ children, className, italic, ...props }: TitleProps) => {
   const font = italic ? 'DMSerifText_400Regular_Italic' : 'DMSerifText_400Regular';
 
   return (
@@ -15,5 +15,3 @@ const FTitle = ({ children, className, italic, ...props }: TitleProps) => {
     </Text>
   );
 };
-
-export default FTitle;

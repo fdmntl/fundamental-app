@@ -4,7 +4,7 @@ import { Alert, View } from 'react-native';
 
 import { Button } from './Button';
 import Container from './Container';
-import FText from './Text/FText';
+import { FText } from './Text/FText';
 
 const CreateWalletButton = () => {
   const user = usePrivy();

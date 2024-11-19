@@ -7,7 +7,7 @@
 import { forwardRef } from 'react';
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
-import FText from './Text/FText';
+import { FText } from './Text/FText';
 
 /**
  * Props for the Button component.

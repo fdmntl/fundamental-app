@@ -3,7 +3,7 @@ import { Tabs } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { View } from 'react-native';
 
-import FText from '~/components/Text/FText';
+import { FText } from '~/components/Text/FText';
 import { useTheme } from '~/components/Wrappers/ThemeWrapper';
 
 cssInterop(Feather, {
