@@ -15,6 +15,7 @@ cssInterop(Feather, {
 
 export default function Layout() {
   const { theme } = useTheme();
+
   return (
     <Tabs
       screenOptions={{

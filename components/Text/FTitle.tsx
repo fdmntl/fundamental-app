@@ -1,8 +1,3 @@
-import {
-  useFonts,
-  DMSerifText_400Regular,
-  DMSerifText_400Regular_Italic,
-} from '@expo-google-fonts/dm-serif-text';
 import { Text } from 'react-native';
 
 interface TitleProps {
@@ -12,15 +7,6 @@ interface TitleProps {
 }
 
 const FTitle = ({ children, className, italic, ...props }: TitleProps) => {
-  const [fontsLoaded] = useFonts({
-    DMSerifText_400Regular,
-    DMSerifText_400Regular_Italic,
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
   const font = italic ? 'DMSerifText_400Regular_Italic' : 'DMSerifText_400Regular';
 
   return (
