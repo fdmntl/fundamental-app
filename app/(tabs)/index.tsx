@@ -6,7 +6,7 @@ import { View, ScrollView } from 'react-native';
 import { Button } from '~/components/Button';
 import Container from '~/components/Container';
 import CreateWalletButton from '~/components/CreateWalletButton';
-import HeaderBar from '~/components/HeaderBar';
+import { HeaderBar, PillMessageBox } from '~/components/HeaderBar';
 import Loading from '~/components/Loading';
 import TestModule from '~/components/TestModule';
 import FText from '~/components/Text/FText';
@@ -35,9 +35,19 @@ export default function Home() {
     return null;
   }
 
+  const homePillContent = () => {
+    return (
+      <PillMessageBox>
+        <FText className="!text-2xl" bold>
+          Good Morning!
+        </FText>
+      </PillMessageBox>
+    );
+  };
+
   return (
     <Frame>
-      <HeaderBar title="Home" />
+      <HeaderBar title="Home" pillContent={homePillContent} />
       <ScrollView>
         <FTitle className="text-4xl">Welcome to Fundamental!</FTitle>
         <FText className="text-lg">This is Fundamental</FText>
