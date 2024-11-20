@@ -1,12 +1,5 @@
-import {
-  useEmbeddedWallet,
-  isNotCreated,
-  usePrivy,
-  getUserEmbeddedWallet,
-  PrivyEmbeddedWalletProvider,
-} from '@privy-io/expo';
-import React, { useState, useEffect } from 'react';
-import { addressResolverAbi } from 'viem/_types/constants/abis';
+import { useEmbeddedWallet, usePrivy } from '@privy-io/expo';
+import { useEffect } from 'react';
 
 import { useAppData } from '~/components/Wrappers/AppData';
 
@@ -17,14 +10,12 @@ export const UpdatePrivyData = () => {
 
   useEffect(() => {
     updateUser({ address: wallet.account?.address, privyID: user?.id });
-    updateWallet({ account: wallet.account, status: wallet.status });
-    updatePrivy({ user, wallet });
+    updateWallet({ account: wallet.account ?? undefined, status: wallet.status });
+    updatePrivy({ user: user ?? undefined, wallet });
 
     if (wallet.status === 'connected') {
       updateWallet({ provider: wallet.provider });
     }
-
-    // console.log('User Data Updated:', user, wallet);
   }, [wallet, user]);
 
   return null;

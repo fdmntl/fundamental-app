@@ -28,7 +28,7 @@
     "app/**/*.{ts,tsx}",
     "components/**/*.{ts,tsx}",
     "utils/*.{ts,tsx}",
-    "Services/*.{ts,tsx}"
+    "services/*.{ts,tsx}"
   ],
     "out": "docs"
   }

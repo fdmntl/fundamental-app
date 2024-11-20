@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 import { Button } from './Button';
 import Container from './Container';
-import FText from './Text/FText';
+import { FText } from './Text/FText';
 import alchemy from '../services/alchemyService';
 
 import { useAppData } from '~/components/Wrappers/AppData';
