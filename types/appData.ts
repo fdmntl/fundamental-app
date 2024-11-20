@@ -8,6 +8,8 @@ type User = {
 
 type Wallet = {
   account?: _privy_io_public_api.PrivyEthereumEmbeddedWalletAccount;
+  provider?: PrivyEmbeddedWalletProvider;
+  status?: string;
 };
 
 type Privy = {
