@@ -1,4 +1,4 @@
-import { usePrivy, useLoginWithEmail, useOAuthFlow } from '@privy-io/expo';
+import { usePrivy, useLoginWithEmail, useOAuthFlow, useLogin} from '@privy-io/expo';
 import Constants from 'expo-constants';
 import { router, Stack } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -9,6 +9,7 @@ import Container from '~/components/Container';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { Frame } from '~/components/Wrappers/Frame';
+import { DebugButton } from '~/components/DebugButton';
 
 export default function Login() {
   const [email, setEmail] = useState(Constants.expoConfig?.extra?.email || '');
@@ -18,9 +19,13 @@ export default function Login() {
   const emailFlow = useLoginWithEmail();
   const oauth = useOAuthFlow();
 
-  // Side effects which react to login state changes
   useEffect(() => {
-    // Report error
+    if (user) {
+      router.navigate('/(tabs)');
+    }
+  }, [user, router]);
+
+  useEffect(() => {
     if (emailFlow.state.status === 'error') {
       console.error(emailFlow.state.error);
     } else if (oauth.state.status === 'error') {
@@ -28,9 +33,9 @@ export default function Login() {
     }
   }, [emailFlow.state.status, oauth.state.status]);
 
-  if (user) {
-    router.navigate('/(tabs)');
-  }
+
+  // login with google
+  const { login } = useLogin();
 
   return (
     <>
@@ -67,19 +72,13 @@ export default function Login() {
           <Button
             title="Login"
             className="m-auto w-2/3 bg-primary"
-            onPress={() => emailFlow.loginWithCode({ code })}
+            onPress={() => emailFlow.loginWithCode({ code: code, email: email })}
           />
-
-          {/* <View style={{display: "flex", flexDirection: "row", gap: 5, margin: 10}}>
-        {(["github", "google", "discord", "apple"] as const).map((provider) => (
-          <View key={provider}>
-            <Button
-              title={`Login with ${provider}`}
-              onPress={() => oauth.start({provider})}
-            />
-          </View>
-        ))}
-      </View> */}
+          <Button
+            title="New UI Login"
+            className="m-auto w-2/3 bg-primary"
+            onPress={() => login({ loginMethods: ['email', 'sms']})}
+          />
           <FText className="m-auto mt-4 text-text">
             (OTP state:{' '}
             <FText className="!text-primary" bold>
@@ -88,6 +87,7 @@ export default function Login() {
             )
           </FText>
         </Container>
+        <DebugButton />
       </Frame>
     </>
   );

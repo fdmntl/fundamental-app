@@ -7,10 +7,12 @@ import { Button } from './Button';
 export const DebugButton = () => {
     const { user } = useAppData();
     const { user : privyUser } = usePrivy();
-
+    const { getAccessToken } = usePrivy();
     const debug = async () => {
         console.log('User:', user);
         console.log('Privy User:', privyUser);
+        const accessToken = await getAccessToken();
+        console.log('Access Token:', accessToken);
     };
 
     return (

@@ -1,6 +1,8 @@
 import { Link } from 'expo-router';
 import { View, ScrollView } from 'react-native';
 
+import { DebugButton } from '~/components/DebugButton';
+import { LogoutButton } from '~/components/LogoutButton';
 import { Button } from '~/components/Button';
 import Container from '~/components/Container';
 import CreateWalletButton from '~/components/CreateWalletButton';
@@ -33,6 +35,8 @@ export default function Home() {
         <FText className="text-lg">This is Fundamental</FText>
         <View className="mt-4">
           <CreateWalletButton />
+          <DebugButton />
+          <LogoutButton />
         </View>
         <View className="mt-4">
           <TestModule />
