@@ -6,8 +6,8 @@ import { TextInput, View } from 'react-native';
 
 import { Button } from '~/components/Button';
 import Container from '~/components/Container';
-import FText from '~/components/Text/FText';
-import FTitle from '~/components/Text/FTitle';
+import { FText } from '~/components/Text/FText';
+import { FTitle } from '~/components/Text/FTitle';
 import { Frame } from '~/components/Wrappers/Frame';
 
 export default function Login() {

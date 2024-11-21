@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { View } from 'react-native';
 
 import Loading from '~/components/Loading';
-import FText from '~/components/Text/FText';
+import { FText } from '~/components/Text/FText';
 import { useTheme } from '~/components/Wrappers/ThemeWrapper';
 
 cssInterop(Feather, {

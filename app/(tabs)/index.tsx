@@ -6,8 +6,8 @@ import Container from '~/components/Container';
 import CreateWalletButton from '~/components/CreateWalletButton';
 import { HeaderBar, PillMessageBox } from '~/components/HeaderBar';
 import TestModule from '~/components/TestModule';
-import FText from '~/components/Text/FText';
-import FTitle from '~/components/Text/FTitle';
+import { FText } from '~/components/Text/FText';
+import { FTitle } from '~/components/Text/FTitle';
 import { Frame } from '~/components/Wrappers/Frame';
 
 import 'fast-text-encoding';

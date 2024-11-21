@@ -8,7 +8,7 @@ interface TitleProps {
   bold?: boolean;
 }
 
-const FText = ({ children, className, italic, medium, bold, ...props }: TitleProps) => {
+export const FText = ({ children, className, italic, medium, bold, ...props }: TitleProps) => {
   let font = 'DMSans_400Regular';
   if (medium) font = 'DMSans_500Medium';
   if (bold) font = 'DMSans_700Bold';
@@ -20,5 +20,3 @@ const FText = ({ children, className, italic, medium, bold, ...props }: TitlePro
     </Text>
   );
 };
-
-export default FText;
