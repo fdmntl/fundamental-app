@@ -19,7 +19,7 @@
     "@expo-google-fonts/dm-serif-text": "^0.2.3",
     "@expo-google-fonts/inter": "^0.2.3",
     "@expo/vector-icons": "^14.0.0",
-    "@privy-io/expo": "^0.27.0",
+    "@privy-io/expo": "^0.33.2",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/netinfo": "11.3.1",
     "@react-navigation/drawer": "^6.7.2",
