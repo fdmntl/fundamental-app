@@ -20,13 +20,10 @@
     "@expo-google-fonts/inter": "^0.2.3",
     "@expo/vector-icons": "^14.0.0",
     "@privy-io/expo": "^0.33.2",
-    "@react-native-async-storage/async-storage": "1.23.1",
-    "@react-native-community/netinfo": "11.3.1",
     "@react-navigation/drawer": "^6.7.2",
     "@react-navigation/native": "^6.1.7",
     "@tabler/icons-react-native": "^3.7.0",
     "@thirdweb-dev/react-native-adapter": "^1.2.0",
-    "amazon-cognito-identity-js": "^6.3.13",
     "axios": "^1.7.7",
     "expo": "^51.0.17",
     "expo-app-loading": "^2.1.1",
@@ -76,9 +73,7 @@
   },
   "expo": {
     "install": {
-      "exclude": [
-        "react-native-safe-area-context"
-      ]
+      "exclude": []
     }
   },
   "private": true
