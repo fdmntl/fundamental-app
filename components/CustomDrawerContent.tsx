@@ -1,7 +1,7 @@
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { View } from 'react-native';
 
-import FTitle from './Text/FTitle';
+import { FTitle } from './Text/FTitle';
 import ThemeToggle from './ThemeToggle';
 
 export default function CustomDrawerContent(props: any) {

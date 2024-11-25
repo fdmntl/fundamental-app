@@ -1,12 +1,3 @@
-import {
-  useFonts,
-  DMSans_400Regular,
-  DMSans_400Regular_Italic,
-  DMSans_500Medium,
-  DMSans_500Medium_Italic,
-  DMSans_700Bold,
-  DMSans_700Bold_Italic,
-} from '@expo-google-fonts/dm-sans';
 import { Text } from 'react-native';
 
 interface TitleProps {
@@ -17,20 +8,7 @@ interface TitleProps {
   bold?: boolean;
 }
 
-const FText = ({ children, className, italic, medium, bold, ...props }: TitleProps) => {
-  const [fontsLoaded] = useFonts({
-    DMSans_400Regular,
-    DMSans_400Regular_Italic,
-    DMSans_500Medium,
-    DMSans_500Medium_Italic,
-    DMSans_700Bold,
-    DMSans_700Bold_Italic,
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
+export const FText = ({ children, className, italic, medium, bold, ...props }: TitleProps) => {
   let font = 'DMSans_400Regular';
   if (medium) font = 'DMSans_500Medium';
   if (bold) font = 'DMSans_700Bold';
@@ -42,5 +20,3 @@ const FText = ({ children, className, italic, medium, bold, ...props }: TitlePro
     </Text>
   );
 };
-
-export default FText;

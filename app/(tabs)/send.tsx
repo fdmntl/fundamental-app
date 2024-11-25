@@ -6,6 +6,7 @@ import { Button } from '~/components/Button';
 import { HeaderBar } from '~/components/HeaderBar';
 import AmountInput from '~/components/Send/AmountInput';
 import RecipientInput from '~/components/Send/RecipientInput';
+import { FText } from '~/components/Text/FText';
 import { Frame } from '~/components/Wrappers/Frame';
 
 export default function Send() {

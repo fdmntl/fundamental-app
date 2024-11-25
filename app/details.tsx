@@ -2,7 +2,7 @@ import { Stack, useLocalSearchParams, Link } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
 
-import FText from '~/components/Text/FText';
+import { FText } from '~/components/Text/FText';
 import { Frame } from '~/components/Wrappers/Frame';
 
 export default function Details() {

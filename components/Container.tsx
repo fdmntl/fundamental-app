@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 
-import FText from './Text/FText';
+import { FText } from './Text/FText';
 
 interface ContainerProps {
   title: string;

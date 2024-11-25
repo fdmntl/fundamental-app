@@ -4,7 +4,7 @@ import { useNavigation } from 'expo-router';
 import { useState, useRef } from 'react';
 import { View, Image, TouchableOpacity, Animated } from 'react-native';
 
-import Title from './Text/FTitle';
+import { FTitle } from './Text/FTitle';
 
 const fundy = require('../assets/fundy.png');
 
@@ -87,7 +87,7 @@ const HeaderBar = ({ title, pillContent, pillMethod }: HeaderBarProps): JSX.Elem
         <TouchableOpacity onPress={openDrawer}>
           <Feather name="menu" size={36} className="text-text" />
         </TouchableOpacity>
-        <Title className="mt-2 text-4xl text-text">{title}</Title>
+        <FTitle className="mt-2 text-4xl text-text">{title}</FTitle>
         <TouchableOpacity onPress={togglePill} className="ml-auto">
           <Image source={fundy} style={{ height: 64, width: 96 }} resizeMode="contain" />
         </TouchableOpacity>
