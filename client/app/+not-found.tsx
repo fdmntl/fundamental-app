@@ -1,7 +1,8 @@
 import { Link, Stack } from 'expo-router';
+import React from 'react';
 import { Image, View } from 'react-native';
 
-import FText from '~/components/Text/FText';
+import { FText } from '~/components/Text/FText';
 
 const fundyGoofy = require('../assets/fundyGoofy.png');
 
