@@ -26,3 +26,6 @@ android
 # Documentation
 docs/
 .env
+
+# Local Netlify folder
+.netlify
