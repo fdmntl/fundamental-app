@@ -2,7 +2,7 @@ import React from 'react';
 import { View, TextInput } from 'react-native';
 import { isAddress } from 'viem';
 
-import FText from '~/components/Text/FText';
+import { FText } from '~/components/Text/FText';
 
 interface RecipientInputProps {
   value: string;

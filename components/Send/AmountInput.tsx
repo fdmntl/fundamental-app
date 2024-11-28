@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput } from 'react-native';
 
-import FText from '~/components/Text/FText';
+import { FText } from '~/components/Text/FText';
 
 interface AmountInputProps {
   onChange: (value: string) => void;
