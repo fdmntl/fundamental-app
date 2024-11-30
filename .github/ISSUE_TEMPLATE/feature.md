@@ -7,13 +7,13 @@ assignees: ''
 
 ---
 
-**Describe the feature**
+**🗒️ Describe the feature**
 A clear and concise description of what the feature is.
 
-**Definition of Done**
+**✅ Definition of Done**
 What needs to be done for this feature to be considered complete.
 
-**Associated Tasks**
+**🔗 Associated Tasks**
 - [ ] Task 1
 - [ ] Task 2
 - [ ] Task 3
