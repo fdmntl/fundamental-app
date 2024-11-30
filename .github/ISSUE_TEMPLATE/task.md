@@ -7,8 +7,8 @@ assignees: ''
 
 ---
 
-**Describe the task**
+**🗒️ Describe the task**
 A clear and concise description of what the task is.
 
-**Definition of Done**
+**✅ Definition of Done**
 What needs to be done for this task to be considered complete.
