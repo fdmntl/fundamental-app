@@ -21,15 +21,5 @@
     "node_modules",
     "**/*.test.ts",
     "**/*.spec.ts"
-  ],
-  "typedocOptions": {
-  "entryPoints": [
-    "index.ts",
-    "app/**/*.{ts,tsx}",
-    "components/**/*.{ts,tsx}",
-    "utils/*.{ts,tsx}",
-    "services/*.{ts,tsx}"
-  ],
-    "out": "docs"
-  }
+  ]
 }
