@@ -9,8 +9,7 @@
     "prebuild": "expo prebuild",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
-    "web": "expo start --web",
-    "generate-docs": "typedoc"
+    "web": "expo start --web"
   },
   "dependencies": {
     "@coinbase/wallet-mobile-sdk": "^1.0.13",
@@ -64,7 +63,6 @@
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^3.4.0",
-    "typedoc": "^0.26.8",
     "typescript": "~5.3.3"
   },
   "eslintConfig": {
