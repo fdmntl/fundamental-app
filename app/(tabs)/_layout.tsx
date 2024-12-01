@@ -7,6 +7,7 @@ import { View } from 'react-native';
 
 import Loading from '~/components/Loading';
 import { FText } from '~/components/Text/FText';
+import { useAppData } from '~/components/Wrappers/AppData';
 import { useTheme } from '~/components/Wrappers/ThemeWrapper';
 
 cssInterop(Feather, {
@@ -19,10 +20,11 @@ cssInterop(Feather, {
 export default function Layout() {
   const { theme } = useTheme();
 
-  const { isReady, user } = usePrivy();
+  const { isReady } = usePrivy();
+  const { user } = useAppData();
 
   useEffect(() => {
-    if (isReady && !user) {
+    if (isReady && !user.privyID) {
       router.navigate('/login'); // TODO: disable login page back gesture
     }
   }, [isReady, user, router]);

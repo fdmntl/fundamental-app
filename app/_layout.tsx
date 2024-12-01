@@ -1,7 +1,6 @@
 import '../global.css';
 
 import {
-  useFonts,
   DMSans_400Regular,
   DMSans_400Regular_Italic,
   DMSans_500Medium,
@@ -9,19 +8,23 @@ import {
   DMSans_700Bold,
   DMSans_700Bold_Italic,
 } from '@expo-google-fonts/dm-sans';
+
 import {
   DMSerifText_400Regular,
   DMSerifText_400Regular_Italic,
 } from '@expo-google-fonts/dm-serif-text';
-import { PrivyProvider } from '@privy-io/expo';
+
+import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter';
+
+import { PrivyProvider, PrivyElements } from '@privy-io/expo';
 import { Drawer } from 'expo-router/drawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useFonts } from 'expo-font';
 
 import CustomDrawerContent from '~/components/CustomDrawerContent';
 import { AppDataProvider } from '~/components/Wrappers/AppData';
 import { ThemeWrapper } from '~/components/Wrappers/ThemeWrapper';
 import { UpdatePrivyData } from '~/services/updateAppData';
-
 const Layout = () => {
   const [fontsLoaded] = useFonts({
     DMSerifText_400Regular,
@@ -32,6 +35,9 @@ const Layout = () => {
     DMSans_500Medium_Italic,
     DMSans_700Bold,
     DMSans_700Bold_Italic,
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
   });
 
   if (!fontsLoaded) {
@@ -87,6 +93,7 @@ const Layout = () => {
           </GestureHandlerRootView>
         </AppDataProvider>
       </ThemeWrapper>
+      <PrivyElements />
     </PrivyProvider>
   );
 };
