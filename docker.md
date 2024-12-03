@@ -52,5 +52,5 @@ docker build -t test:latest .
 ## Running the Docker image
 
 ```sh
-docker run -it --network="host" -p 8081:8081 -p 5037:5037 test:latest
+docker run -it --rm --network="host" -p 8081:8081 -p 5037:5037 test:latest
 ```
