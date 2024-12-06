@@ -40,7 +40,7 @@ const TestModule = () => {
         />
         <Button
           onPress={() =>
-            viem.sendETH(wallet.provider, '0x4DcBa6746997427dAC9341C2A007f10d673Ad878', 21n)
+            viem.sendETH(wallet.provider, '0x4DcBa6746997427dAC9341C2A007f10d673Ad878', 210000n)
           }
           className="bg-primary"
           title="Send ETH"
