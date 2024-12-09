@@ -1,7 +1,7 @@
-// UserContext.tsx
 import React, { createContext, useContext, useState } from 'react';
 
 import { User, Wallet, Privy } from '~/types/appData';
+import { Token } from '~/types/token';
 
 interface ConfigType {
   user: User;
@@ -13,6 +13,10 @@ interface ConfigType {
   privy: Privy;
   setPrivy: (privy: Privy) => void;
   updatePrivy: (updates: Partial<Privy>) => void;
+  tokens: Token[];
+  addToken: (token: Token) => void;
+  updateToken: (contractAddress: string, updates: Partial<Token>) => void;
+  getTokenByAddress: (contractAddress: string) => Token | undefined;
 }
 
 const AppContext = createContext<ConfigType | undefined>(undefined);
@@ -21,20 +25,34 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
   const [user, setUser] = useState<User>({});
   const [wallet, setWallet] = useState<Wallet>({});
   const [privy, setPrivy] = useState<Privy>({});
+  const [tokens, setTokens] = useState<Token[]>([]);
 
-  // Function to update specific fields of the user object
   const updateUser = (updates: Partial<User>) => {
     setUser((prevUser) => ({ ...prevUser, ...updates }));
   };
 
-  // Function to update specific fields of the wallet object
   const updateWallet = (updates: Partial<Wallet>) => {
     setWallet((prevWallet) => ({ ...prevWallet, ...updates }));
   };
 
-  // Function to update specific fields of the privy object
   const updatePrivy = (updates: Partial<Privy>) => {
     setPrivy((prevPrivy) => ({ ...prevPrivy, ...updates }));
+  };
+
+  const addToken = (token: Token) => {
+    setTokens((prevTokens) => [...prevTokens, token]);
+  };
+
+  const updateToken = (contractAddress: string, updates: Partial<Token>) => {
+    setTokens((prevTokens) =>
+      prevTokens.map((token) =>
+        token.contractAddress === contractAddress ? { ...token, ...updates } : token
+      )
+    );
+  };
+
+  const getTokenByAddress = (contractAddress: string): Token | undefined => {
+    return tokens.find((token) => token.contractAddress === contractAddress);
   };
 
   return (
@@ -49,6 +67,10 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
         privy,
         setPrivy,
         updatePrivy,
+        tokens,
+        addToken,
+        updateToken,
+        getTokenByAddress,
       }}>
       {children}
     </AppContext.Provider>
