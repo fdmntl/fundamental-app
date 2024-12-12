@@ -17,11 +17,13 @@ interface WalletGraphProps {
     end: string;
   };
   hideYAxisText?: boolean;
+  hideXAxisText?: boolean;
   yAxisThickness?: number;
   xAxisThickness?: number;
   hideDataPoints?: boolean;
   dataPointsRadius?: number;
   title?: string;
+  selectedRange?: string; // at the moment '1day', '1week', '1month', '1year'
 }
 
 const WalletGraph = ({
@@ -29,52 +31,42 @@ const WalletGraph = ({
   width = 300,
   height = 200,
   gradientColors = {
-    start: 'rgba(100, 149, 237, 0.4)', // Coinbase Blue with 40% opacity
+    start: 'rgba(100, 149, 237, 0.4)', // Coinbase Blue colour with 40% opacity
     end: 'rgba(100, 149, 237, 0)', // Transparent
   },
   title,
-  hideYAxisText = true,
+  hideYAxisText,
+  hideXAxisText,
   yAxisThickness = 0,
   xAxisThickness = 0,
   hideDataPoints = true,
   dataPointsRadius = 4,
+  selectedRange = '1day',
 }: WalletGraphProps) => {
-  const [currentValue, setCurrentValue] = useState<number>(
-    data[data.length - 1]?.value || 0 // Default to the last data point
-  );
-  const [pointerActive, setPointerActive] = useState(false);
+  const [currentValue, setCurrentValue] = useState<number>(data[data.length - 1]?.value || 0); // Default to the last value
+  const [currentDate, setCurrentDate] = useState<string>(data[data.length - 1]?.label || ''); // Default to the last date
 
   const handlePointer = ({ pointerIndex }: { pointerIndex: number }) => {
-    if (!pointerActive) return; // Ignore pointer updates when not active
-
     if (pointerIndex >= 0 && pointerIndex < data.length) {
-      // Update the current value to the data point at the pointer index
-      //   console.log(`Pointer index: ${pointerIndex}, Value: ${data[pointerIndex]?.value}`);
-      setCurrentValue(data[pointerIndex]?.value || 0);
+      setCurrentValue(data[pointerIndex]?.value || 0); // Update current value
+      setCurrentDate(data[pointerIndex]?.label || ''); // Update current date
     }
   };
 
-  const resetToLastValue = () => {
-    // console.log('Resetting to last value:', data[data.length - 1]?.value);
-    setCurrentValue(data[data.length - 1]?.value || 0);
-    setPointerActive(false); // Disable further pointer updates
-  };
-
   return (
-    <View
-      className="rounded-xl bg-content p-4 shadow-md"
-      onTouchStart={() => {
-        // console.log('Touch started');
-        setPointerActive(true); // Enable pointer updates
-      }}
-      onTouchEnd={resetToLastValue} // Reset value when touch ends
-    >
+    <View className="rounded-xl bg-content p-4 shadow-md">
       {title && (
         <FText className="!text-2xl" bold>
           {title}
         </FText>
       )}
-      <FText className="mb-4 text-xl text-text">${currentValue.toFixed(2)}</FText>
+      {/* Current Price */}
+      <FText className="mb-1 text-xl text-text">${currentValue.toFixed(2)}</FText>
+      {/* Date and Time */}
+      {['1week', '1month', '1year'].includes(selectedRange) && currentDate && (
+        <FText className="mb-4 text-sm text-gray-500">{currentDate}</FText>
+      )}
+
       <LineChart
         areaChart
         data={data}
@@ -82,10 +74,12 @@ const WalletGraph = ({
         width={width}
         adjustToWidth
         initialSpacing={0}
+        endSpacing={0}
         hideYAxisText={hideYAxisText}
+        xAxisLabelTextStyle={hideXAxisText ? { opacity: 0 } : undefined} // Hide or show X-axis labels
         yAxisThickness={yAxisThickness}
         xAxisThickness={xAxisThickness}
-        color="rgba(100, 149, 237, 1)" // Cornflower Blue
+        color="rgba(100, 149, 237, 1)"
         startFillColor={gradientColors.start}
         endFillColor={gradientColors.end}
         startOpacity={0.4}
@@ -105,7 +99,7 @@ const WalletGraph = ({
           autoAdjustPointerLabelPosition: true,
           pointerLabelComponent: () => null, // Hide the label component
         }}
-        getPointerProps={handlePointer} // Update current value
+        getPointerProps={handlePointer} // Update current value and date
       />
     </View>
   );
