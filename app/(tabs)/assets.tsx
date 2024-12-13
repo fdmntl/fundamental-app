@@ -4,14 +4,14 @@ import { View } from 'react-native';
 import { HeaderBar } from '~/components/HeaderBar';
 import { FText } from '~/components/Text/FText';
 import { Frame } from '~/components/Wrappers/Frame';
+import TestModule from '~/components/TestModule';
 
 export default function Assets() {
   return (
     <Frame>
       <HeaderBar title="Assets" />
       <View className="mx-auto mt-60 items-center">
-        <Feather name="package" size={64} className="text-text" />
-        <FText className="text-2xl">Under construction</FText>
+        <TestModule/>
       </View>
     </Frame>
   );

@@ -16,7 +16,7 @@ interface ConfigType {
   tokens: Token[];
   addToken: (token: Token) => void;
   updateToken: (contractAddress: string, updates: Partial<Token>) => void;
-  getTokenByAddress: (contractAddress: string) => Token | undefined;
+  getToken: (contractAddress: string) => Token | undefined;
 }
 
 const AppContext = createContext<ConfigType | undefined>(undefined);
@@ -51,7 +51,7 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
     );
   };
 
-  const getTokenByAddress = (contractAddress: string): Token | undefined => {
+  const getToken = (contractAddress: string): Token | undefined => {
     return tokens.find((token) => token.contractAddress === contractAddress);
   };
 
@@ -70,7 +70,7 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
         tokens,
         addToken,
         updateToken,
-        getTokenByAddress,
+        getToken,
       }}>
       {children}
     </AppContext.Provider>
