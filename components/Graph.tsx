@@ -2,23 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 import { FText } from '~/components/Text/FText';
+import { DataPoint } from '~/types/data';
 
-interface DataPoint {
-  value: number;
-  label: string;
+interface GraphProps {
+  allData: DataPoint[];
 }
 
-const Graph = () => {
-  // Generate mock data only once
-  // const [allData] = useState<DataPoint[]>(
-  //   Array.from({ length: 365 }, (_, i) => ({
-  //     value: Math.floor(Math.random() * (2763 - 1000 + 1)) + 1000, // Random price
-  //     label: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(), // ISO date
-  //   }))
-  // );
-
-  const [allData] = useState<DataPoint[]>([]);
-
+const Graph = ({ allData }: GraphProps) => {
   const [selectedRange, setSelectedRange] = useState<string>('1month');
   const [filteredData, setFilteredData] = useState<DataPoint[]>([]);
   const [currentValue, setCurrentValue] = useState<number>(0);
@@ -83,16 +73,12 @@ const Graph = () => {
         const { width } = event.nativeEvent.layout;
         setContainerWidth(width - 16); // Account for padding inside the frame
       }}>
-      <FText className="mb-2 !text-2xl" bold>
-        Price History
-      </FText>
-
       {/* Current Price */}
-      <FText className="mb-1 text-xl text-text">${currentValue.toFixed(2)}</FText>
+      <FText className="text-3xl font-bold text-text">${currentValue.toFixed(2)}</FText>
 
       {/* Date */}
       {['1week', '1month', '1year'].includes(selectedRange) && currentDate && (
-        <FText className="mb-4 text-sm text-text">{currentDate}</FText>
+        <FText className="mb-2 text-sm text-text">{currentDate}</FText>
       )}
 
       {/* Ensure graph only renders when filteredData is ready */}
