@@ -6,8 +6,11 @@ import { Button } from '~/components/Button';
 import { HeaderBar } from '~/components/HeaderBar';
 import AmountInput from '~/components/Send/AmountInput';
 import RecipientInput from '~/components/Send/RecipientInput';
-import { FText } from '~/components/Text/FText';
 import { Frame } from '~/components/Wrappers/Frame';
+
+import { useAppData } from '~/components/Wrappers/AppData';
+import viem from '~/services/viemService';
+import { parseEther } from 'viem';
 
 export default function Send() {
   const [recipient, setRecipient] = useState('');
@@ -18,8 +21,15 @@ export default function Send() {
 
   const isInputValid = isRecipientValid && isAmountValid;
 
+  const { wallet } = useAppData();
+
   const handleSendPress = () => {
     Alert.alert('Sending', `Sending ${amount} to ${recipient}`);
+    if (wallet.provider) {
+      viem.sendETH(wallet.provider, recipient, parseEther(amount));
+    } else {
+      Alert.alert('Error', 'Wallet provider is not available');
+    }
   };
 
   return (
