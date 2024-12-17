@@ -5,17 +5,19 @@ import { FText } from '~/components/Text/FText';
 
 interface DataPoint {
   value: number;
-  label?: string;
+  label: string;
 }
 
 const WalletGraph = () => {
   // Generate mock data only once
-  const [allData] = useState<DataPoint[]>(
-    Array.from({ length: 365 }, (_, i) => ({
-      value: Math.floor(Math.random() * (2763 - 1000 + 1)) + 1000, // Random price
-      label: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(), // ISO date
-    }))
-  );
+  // const [allData] = useState<DataPoint[]>(
+  //   Array.from({ length: 365 }, (_, i) => ({
+  //     value: Math.floor(Math.random() * (2763 - 1000 + 1)) + 1000, // Random price
+  //     label: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(), // ISO date
+  //   }))
+  // );
+
+  const [allData] = useState<DataPoint[]>([]);
 
   const [selectedRange, setSelectedRange] = useState<string>('1month');
   const [filteredData, setFilteredData] = useState<DataPoint[]>([]);
@@ -90,21 +92,8 @@ const WalletGraph = () => {
 
       {/* Date */}
       {['1week', '1month', '1year'].includes(selectedRange) && currentDate && (
-        <FText className="mb-4 text-sm text-gray-500">{currentDate}</FText>
+        <FText className="mb-4 text-sm text-text">{currentDate}</FText>
       )}
-
-      {/* Time Range Selector */}
-      <View className="mb-4 flex-row justify-around">
-        {['1day', '1week', '1month', '1year'].map((range) => (
-          <TouchableOpacity key={range} onPress={() => setSelectedRange(range)}>
-            <FText
-              className={`text-sm ${selectedRange === range ? 'text-primary' : 'text-text'}`}
-              bold={selectedRange === range}>
-              {range.toUpperCase()}
-            </FText>
-          </TouchableOpacity>
-        ))}
-      </View>
 
       {/* Ensure graph only renders when filteredData is ready */}
       {filteredData.length > 0 ? (
@@ -112,7 +101,7 @@ const WalletGraph = () => {
           areaChart
           data={filteredData}
           height={200}
-          width={containerWidth - 30} // Dynamically set width with padding adjustment
+          width={containerWidth - 30} // Dynamically set width with padding adjustment, still testing this
           adjustToWidth={true}
           initialSpacing={0}
           endSpacing={0}
@@ -135,13 +124,32 @@ const WalletGraph = () => {
             pointerColor: 'lightgrey',
             radius: 4,
             autoAdjustPointerLabelPosition: true,
-            pointerLabelComponent: () => null,
+            pointerLabelComponent: () => null, // Hide pointer label
           }}
           getPointerProps={handlePointer}
         />
       ) : (
-        <FText className="text-center text-gray-500">Loading data...</FText>
+        <>
+          {allData.length === 0 ? (
+            <FText className="text-center text-text">No data available</FText>
+          ) : (
+            <FText className="text-center text-text">Loading data...</FText>
+          )}
+        </>
       )}
+
+      {/* Time Range Selection */}
+      <View className="mb-4 flex-row justify-around">
+        {['1day', '1week', '1month', '1year'].map((range) => (
+          <TouchableOpacity key={range} onPress={() => setSelectedRange(range)}>
+            <FText
+              className={selectedRange === range ? 'text-sm text-primary' : 'text-sm text-text'}
+              bold={selectedRange === range}>
+              {range.toUpperCase()}
+            </FText>
+          </TouchableOpacity>
+        ))}
+      </View>
     </View>
   );
 };
