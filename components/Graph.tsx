@@ -136,13 +136,13 @@ const Graph = () => {
           getPointerProps={handlePointer}
         />
       ) : (
-        <>
+        <View className="p-5">
           {allData.length === 0 ? (
             <FText className="text-center text-text">No data available</FText>
           ) : (
             <FText className="text-center text-text">Loading data...</FText>
           )}
-        </>
+        </View>
       )}
 
       {/* Time Range Selection */}
