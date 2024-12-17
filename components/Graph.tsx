@@ -8,7 +8,7 @@ interface DataPoint {
   label: string;
 }
 
-const WalletGraph = () => {
+const Graph = () => {
   // Generate mock data only once
   // const [allData] = useState<DataPoint[]>(
   //   Array.from({ length: 365 }, (_, i) => ({
@@ -154,4 +154,4 @@ const WalletGraph = () => {
   );
 };
 
-export default WalletGraph;
+export default Graph;
