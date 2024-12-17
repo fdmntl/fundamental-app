@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
+
 import { FText } from '~/components/Text/FText';
 import { DataPoint } from '~/types/data';
 
@@ -52,8 +53,14 @@ const Graph = ({ allData }: GraphProps) => {
     }
   }, [filteredData]);
 
-  const handlePointer = ({ pointerIndex }: { pointerIndex: number }) => {
-    if (pointerIndex === -1) {
+  const handlePointer = ({
+    pointerIndex,
+    pointerX,
+  }: {
+    pointerIndex: number;
+    pointerX: number;
+  }) => {
+    if (pointerX === 0) {
       // Reset to the last data point when pointer is released
       const lastData = filteredData[filteredData.length - 1];
       setCurrentValue(lastData?.value || 0);
@@ -88,12 +95,12 @@ const Graph = ({ allData }: GraphProps) => {
           data={filteredData}
           height={200}
           width={containerWidth - 30} // Dynamically set width with padding adjustment, still testing this
-          adjustToWidth={true}
+          adjustToWidth
           initialSpacing={0}
           endSpacing={0}
-          hideYAxisText={true}
+          hideYAxisText
           xAxisLabelTextStyle={{ opacity: 0 }}
-          hideDataPoints={true}
+          hideDataPoints
           yAxisThickness={0}
           xAxisThickness={0}
           color="rgba(100, 149, 237, 1)"
@@ -127,10 +134,11 @@ const Graph = ({ allData }: GraphProps) => {
       {/* Time Range Selection */}
       <View className="mb-4 flex-row justify-around">
         {['1day', '1week', '1month', '1year'].map((range) => (
-          <TouchableOpacity key={range} onPress={() => setSelectedRange(range)}>
-            <FText
-              className={selectedRange === range ? 'text-sm text-primary' : 'text-sm text-text'}
-              bold={selectedRange === range}>
+          <TouchableOpacity
+            key={range}
+            onPress={() => setSelectedRange(range)}
+            className={`rounded-xl px-3 py-1 ${selectedRange === range ? 'bg-primary' : ''}`}>
+            <FText className={`${selectedRange === range ? 'text-white' : 'text-text'}`} bold>
               {range.toUpperCase()}
             </FText>
           </TouchableOpacity>
