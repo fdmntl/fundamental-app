@@ -38,9 +38,6 @@ export default function Home() {
           <DebugButton />
           <LogoutButton />
         </View>
-        <View className="mt-4">
-          <TestModule />
-        </View>
         <Container title="Hello World" className="mt-4">
           <View>
             <FText>
