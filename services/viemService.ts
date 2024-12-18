@@ -9,6 +9,7 @@ import {
 import { PrivyEmbeddedWalletProvider } from '@privy-io/expo';
 import { base } from 'viem/chains';
 
+// Creates a wallet client using the Privy Embedded Wallet provider
 const getWalletClient = async (provider: PrivyEmbeddedWalletProvider) => {
   await provider.request({
     method: 'wallet_switchEthereumChain',
@@ -23,6 +24,7 @@ const getWalletClient = async (provider: PrivyEmbeddedWalletProvider) => {
   return walletClient;
 };
 
+// Signs any message using the wallet client
 const signMessage = async (provider: PrivyEmbeddedWalletProvider, message: string) => {
   const client = await getWalletClient(provider);
   const [account] = await client.getAddresses();
@@ -37,10 +39,11 @@ const signMessage = async (provider: PrivyEmbeddedWalletProvider, message: strin
   }
 };
 
+// Sends ETH to a destination address
 const sendETH = async (
   provider: PrivyEmbeddedWalletProvider,
   destination: string,
-  amount: bigint
+  amount: bigint // Amount in wei
 ) => {
   const client = await getWalletClient(provider);
   const [account] = await client.getAddresses();
@@ -63,11 +66,12 @@ const sendETH = async (
   }
 };
 
+// Calls the `transfer` function of an ERC-20 token contract to send tokens to a destination address
 const sendERC20 = async (
   provider: PrivyEmbeddedWalletProvider,
-  tokenAddress: `0x${string}`, // ERC-20 contract address
-  destination: `0x${string}`, // Recipient's address
-  amount: bigint // Amount to send in the token's smallest unit
+  tokenAddress: `0x${string}`,
+  destination: `0x${string}`,
+  amount: bigint
 ) => {
   const client = await getWalletClient(provider);
   const [account] = await client.getAddresses();
@@ -92,18 +96,16 @@ const sendERC20 = async (
       },
     ];
 
-    // Prepare the transaction data
     const data = encodeFunctionData({
       abi: erc20ABI,
       functionName: 'transfer',
       args: [destination, amount],
     });
 
-    // Send the transaction
     const txHash = await client.sendTransaction({
       account: account,
-      to: tokenAddress, // ERC-20 contract address
-      data: data, // Encoded `transfer` function data
+      to: tokenAddress,
+      data: data,
       value: 0n, // No ETH is sent with the call
     });
 
