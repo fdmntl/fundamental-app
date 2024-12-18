@@ -113,4 +113,4 @@ const sendERC20 = async (
   }
 };
 
-export default { getWalletClient, signMessage, sendETH };
+export default { getWalletClient, signMessage, sendETH, sendERC20 };
