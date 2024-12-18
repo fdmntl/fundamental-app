@@ -4,7 +4,6 @@ about: Create a new task, linked to a feature
 title: ''
 labels: task
 assignees: ''
-
 ---
 
 **🗒️ Describe the task**
