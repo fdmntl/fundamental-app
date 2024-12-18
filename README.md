@@ -14,14 +14,14 @@ Getting started with Fundamental is effortless. Thanks to [Privy](https://www.pr
 - **Login with Google**
 
 No private key management or complicated setups required!
-
+<br><br>
 ### Onchain Usernames
 
 Forget long wallet addresses. Fundamental introduces **onchain usernames**, allowing users to:
 
 - Easily receive payments in stablecoins or supported tokens.
 - Send tokens effortlessly to friends or businesses using their username.
-
+<br><br>
 ### Intuitive Portfolio Tracking
 
 Track your assets with ease:
@@ -29,7 +29,7 @@ Track your assets with ease:
 - Real-time portfolio value updates.
 - Support for stablecoins and popular tokens.
 - Detailed insights into balances and transaction history.
-
+<br><br>
 ## Why Choose Fundamental?
 
 - **User-Friendly**: Designed for both new and experienced users.
@@ -38,7 +38,9 @@ Track your assets with ease:
 
 ## 🚧 Development Status
 
-We’re constantly improving and expanding Fundamental, building openly for maximum transparency. Note: Fundamental is currently in development and not yet publicly available.
+We’re constantly improving and expanding Fundamental, building openly for maximum transparency.
+> [!NOTE]  
+> Fundamental is currently in development and not yet publicly available.
 
 ---
 
