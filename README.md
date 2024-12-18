@@ -1,17 +1,17 @@
 # Fundamental
 
-Welcome to **Fundamental**! Our mission is to make Web3 accessible to everyone through a simple, intuitive mobile wallet designed for seamless onchain experiences.
+Welcome to **Fundamental**! Our mission is to make DeFi accessible to everyone through a simple, intuitive mobile wallet designed for seamless onchain experiences.
 
 ## 🚀 Features
 
 ### Intuitive Wallet Creation
 
-Getting started with Fundamental is effortless. Users can create wallets using:
+Getting started with Fundamental is effortless. Thanks to [Privy](https://www.privy.io/)'s technology, Users can create wallets in one tap using:
 
 - **Email**
 - **SMS**
-- **Apple Account**
-- **Google Account**
+- **Login with Apple**
+- **Login with Google**
 
 No private key management or complicated setups required!
 
@@ -38,9 +38,10 @@ Track your assets with ease:
 
 ## 🚧 Development Status
 
-We’re constantly improving and expanding Fundamental. Check out our public repo to contribute or suggest features. Note: Fundamental is currently in development and not yet publicly released.
+We’re constantly improving and expanding Fundamental, building openly for maximum transparency. Note: Fundamental is currently in development and not yet publicly available.
 
 ---
 
 Start your onchain journey with **Fundamental** today!
 
+<img src="assets/fundy.png" alt="Fundamental Logo" width="200" />
