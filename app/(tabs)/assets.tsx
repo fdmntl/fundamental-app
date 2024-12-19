@@ -11,12 +11,20 @@ import { fetchData } from '~/services/Supabase/fetchData';
 export default function Assets() {
   const [data, setData] = useState<any[]>([]);
   // call fetchData
+  const fetchDataAsync = async () => {
+    try {
+      const result = await fetchData();
+      setData(result);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   useEffect(() => {
-    fetchData().then((data) => {
-      setData(data);
-    });
-    console.log('---> data: ', data);
+    fetchDataAsync();
   }, []);
+
+  console.log('four: ', data);
 
   return (
     <Frame>
