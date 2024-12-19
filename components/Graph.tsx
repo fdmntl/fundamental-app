@@ -1,24 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
-import { FText } from '~/components/Text/FText';
 
-interface DataPoint {
-  value: number;
-  label: string;
+import { FText } from '~/components/Text/FText';
+import { DataPoint } from '~/types/data';
+
+interface GraphProps {
+  allData: DataPoint[];
 }
 
-const Graph = () => {
-  // Generate mock data only once
-  // const [allData] = useState<DataPoint[]>(
-  //   Array.from({ length: 365 }, (_, i) => ({
-  //     value: Math.floor(Math.random() * (2763 - 1000 + 1)) + 1000, // Random price
-  //     label: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(), // ISO date
-  //   }))
-  // );
-
-  const [allData] = useState<DataPoint[]>([]);
-
+const Graph = ({ allData }: GraphProps) => {
   const [selectedRange, setSelectedRange] = useState<string>('1month');
   const [filteredData, setFilteredData] = useState<DataPoint[]>([]);
   const [currentValue, setCurrentValue] = useState<number>(0);
@@ -62,8 +53,14 @@ const Graph = () => {
     }
   }, [filteredData]);
 
-  const handlePointer = ({ pointerIndex }: { pointerIndex: number }) => {
-    if (pointerIndex === -1) {
+  const handlePointer = ({
+    pointerIndex,
+    pointerX,
+  }: {
+    pointerIndex: number;
+    pointerX: number;
+  }) => {
+    if (pointerX === 0) {
       // Reset to the last data point when pointer is released
       const lastData = filteredData[filteredData.length - 1];
       setCurrentValue(lastData?.value || 0);
@@ -83,16 +80,12 @@ const Graph = () => {
         const { width } = event.nativeEvent.layout;
         setContainerWidth(width - 16); // Account for padding inside the frame
       }}>
-      <FText className="mb-2 !text-2xl" bold>
-        Price History
-      </FText>
-
       {/* Current Price */}
-      <FText className="mb-1 text-xl text-text">${currentValue.toFixed(2)}</FText>
+      <FText className="text-3xl font-bold text-text">${currentValue.toFixed(2)}</FText>
 
       {/* Date */}
       {['1week', '1month', '1year'].includes(selectedRange) && currentDate && (
-        <FText className="mb-4 text-sm text-text">{currentDate}</FText>
+        <FText className="mb-2 text-sm text-text">{currentDate}</FText>
       )}
 
       {/* Ensure graph only renders when filteredData is ready */}
@@ -102,12 +95,12 @@ const Graph = () => {
           data={filteredData}
           height={200}
           width={containerWidth - 30} // Dynamically set width with padding adjustment, still testing this
-          adjustToWidth={true}
+          adjustToWidth
           initialSpacing={0}
           endSpacing={0}
-          hideYAxisText={true}
+          hideYAxisText
           xAxisLabelTextStyle={{ opacity: 0 }}
-          hideDataPoints={true}
+          hideDataPoints
           yAxisThickness={0}
           xAxisThickness={0}
           color="rgba(100, 149, 237, 1)"
@@ -129,22 +122,23 @@ const Graph = () => {
           getPointerProps={handlePointer}
         />
       ) : (
-        <>
+        <View className="p-5">
           {allData.length === 0 ? (
             <FText className="text-center text-text">No data available</FText>
           ) : (
             <FText className="text-center text-text">Loading data...</FText>
           )}
-        </>
+        </View>
       )}
 
       {/* Time Range Selection */}
       <View className="mb-4 flex-row justify-around">
         {['1day', '1week', '1month', '1year'].map((range) => (
-          <TouchableOpacity key={range} onPress={() => setSelectedRange(range)}>
-            <FText
-              className={selectedRange === range ? 'text-sm text-primary' : 'text-sm text-text'}
-              bold={selectedRange === range}>
+          <TouchableOpacity
+            key={range}
+            onPress={() => setSelectedRange(range)}
+            className={`rounded-xl px-3 py-1 ${selectedRange === range ? 'bg-primary' : ''}`}>
+            <FText className={`${selectedRange === range ? 'text-white' : 'text-text'}`} bold>
               {range.toUpperCase()}
             </FText>
           </TouchableOpacity>
