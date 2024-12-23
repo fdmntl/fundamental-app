@@ -50,7 +50,7 @@ const TestModule = () => {
           className="bg-primary"
           title="Send ETH"
         /> */}
-        <Button
+        {/* <Button
           onPress={() =>
             viem.sendERC20(
               wallet.provider,
@@ -82,7 +82,18 @@ const TestModule = () => {
         <Button
           onPress={() => console.log(getToken('0x123'))}
           className="bg-primary"
-          title="Get Token"></Button>
+          title="Get Token"></Button> */}
+        {/* <Button
+          onPress={() =>
+            viem.registerName(
+              wallet.provider,
+              'skibidi',
+              '0x4DcBa6746997427dAC9341C2A007f10d673Ad878'
+            )
+          }
+          className="bg-primary"
+          title="Register Name"
+        /> */}
       </Container>
     </View>
   );
