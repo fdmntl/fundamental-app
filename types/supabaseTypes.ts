@@ -9,3 +9,9 @@ export type Token = {
 };
 
 export type TokenList = Token[];
+
+export type SubscriptionData = {
+  new: any;
+  old: any;
+  eventType: string;
+};
