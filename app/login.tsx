@@ -1,4 +1,4 @@
-import { usePrivy, useLoginWithEmail, useOAuthFlow, useLogin} from '@privy-io/expo';
+import { usePrivy, useLoginWithEmail, useOAuthFlow, useLogin } from '@privy-io/expo';
 import Constants from 'expo-constants';
 import { router, Stack } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -32,7 +32,6 @@ export default function Login() {
       console.error(oauth.state.error);
     }
   }, [emailFlow.state.status, oauth.state.status]);
-
 
   // login with google
   const { login } = useLogin();
@@ -77,7 +76,7 @@ export default function Login() {
           <Button
             title="New UI Login"
             className="m-auto w-2/3 bg-primary"
-            onPress={() => login({ loginMethods: ['email', 'sms']})}
+            onPress={() => login({ loginMethods: ['email', 'sms'] })}
           />
           <FText className="m-auto mt-4 text-text">
             (OTP state:{' '}
