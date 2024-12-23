@@ -24,6 +24,21 @@ const getWalletClient = async (provider: PrivyEmbeddedWalletProvider) => {
   return walletClient;
 };
 
+// Creates a public client using the Privy Embedded Wallet provider
+const getPublicClient = async (provider: PrivyEmbeddedWalletProvider) => {
+  await provider.request({
+    method: 'wallet_switchEthereumChain',
+    params: [{ chainId: '0x2105' }],
+  });
+
+  const publicClient = createPublicClient({
+    chain: base,
+    transport: custom(provider),
+  });
+
+  return publicClient;
+};
+
 // Signs any message using the wallet client
 const signMessage = async (provider: PrivyEmbeddedWalletProvider, message: string) => {
   const client = await getWalletClient(provider);
@@ -115,4 +130,4 @@ const sendERC20 = async (
   }
 };
 
-export default { getWalletClient, signMessage, sendETH, sendERC20 };
+export default { getWalletClient, getPublicClient, signMessage, sendETH, sendERC20 };
