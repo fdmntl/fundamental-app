@@ -1,10 +1,8 @@
 import { Feather } from '@expo/vector-icons';
-import { router } from 'expo-router';
 import { useState } from 'react';
 import { View, ScrollView } from 'react-native';
 
 import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
-import { Button } from '~/components/Button';
 import { Container } from '~/components/Container';
 import Graph from '~/components/Graph';
 import { HeaderBar } from '~/components/HeaderBar';
@@ -25,12 +23,6 @@ export default function Assets() {
   return (
     <Frame>
       <HeaderBar title="Assets" />
-      <Button
-        title="Bitcoin Asset"
-        onPress={() => {
-          router.push('/assets/bitcoin');
-        }}
-      />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className="flex gap-y-5">
           <Graph allData={allData} />
