@@ -1,10 +1,15 @@
+type Value = {
+  value: string;
+  timestamp: string;
+};
+
 export type Token = {
   address: string;
   name: string;
   symbol: string;
   digits: number;
   description: string;
-  //   value: number;
+  value: Value[];
   is_stablecoin: boolean;
 };
 

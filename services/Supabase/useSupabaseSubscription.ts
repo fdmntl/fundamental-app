@@ -15,12 +15,11 @@ export const useSupabaseSubscription = ({ table, callback }: SupabaseSubscriptio
     const fetchDataAndSubscribe = async () => {
       try {
         // Fetch initial data
-        const { data: initialData, error } = await supabase.from(table).select('*'); // Adjust the query if needed
+        const { data: initialData, error } = await supabase.from(table).select('*');
         if (error) {
           console.error('Error fetching initial data:', error);
           return;
         }
-        console.log('initialData: ', initialData);
 
         setData(initialData || []);
 
