@@ -1,7 +1,9 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { User, Wallet, Privy } from '~/types/appData';
-import { Token } from '~/types/token';
+import { Token } from '~/types/supabaseTypes';
+
+import { useSupabaseSubscription } from '~/services/Supabase/useSupabaseSubscription';
 
 interface ConfigType {
   user: User;
@@ -15,8 +17,8 @@ interface ConfigType {
   updatePrivy: (updates: Partial<Privy>) => void;
   tokens: Token[];
   addToken: (token: Token) => void;
-  updateToken: (contractAddress: string, updates: Partial<Token>) => void;
-  getToken: (contractAddress: string) => Token | undefined;
+  updateToken: (address: string, updates: Partial<Token>) => void;
+  getToken: (address: string) => Token | undefined;
 }
 
 const AppContext = createContext<ConfigType | undefined>(undefined);
@@ -26,6 +28,14 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
   const [wallet, setWallet] = useState<Wallet>({});
   const [privy, setPrivy] = useState<Privy>({});
   const [tokens, setTokens] = useState<Token[]>([]);
+
+  // Subscribe to the Supabase `token_list` table
+  const tokenData: Token[] = useSupabaseSubscription({ table: 'token_list' });
+
+  useEffect(() => {
+    // Sync the subscription data with the `tokens` state
+    setTokens(tokenData);
+  }, [tokenData]);
 
   const updateUser = (updates: Partial<User>) => {
     setUser((prevUser) => ({ ...prevUser, ...updates }));
@@ -43,16 +53,14 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
     setTokens((prevTokens) => [...prevTokens, token]);
   };
 
-  const updateToken = (contractAddress: string, updates: Partial<Token>) => {
+  const updateToken = (address: string, updates: Partial<Token>) => {
     setTokens((prevTokens) =>
-      prevTokens.map((token) =>
-        token.contractAddress === contractAddress ? { ...token, ...updates } : token
-      )
+      prevTokens.map((token) => (token.address === address ? { ...token, ...updates } : token))
     );
   };
 
-  const getToken = (contractAddress: string): Token | undefined => {
-    return tokens.find((token) => token.contractAddress === contractAddress);
+  const getToken = (address: string): Token | undefined => {
+    return tokens.find((token) => token.address === address);
   };
 
   return (
