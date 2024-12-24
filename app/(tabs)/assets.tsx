@@ -11,10 +11,14 @@ import { FTitle } from '~/components/Text/FTitle';
 import { Frame } from '~/components/Wrappers/Frame';
 import { useSupabaseSubscription } from '~/services/Supabase/useSupabaseSubscription';
 import { DataPoint } from '~/types/data';
+import { TokenList } from '~/types/supabaseTypes';
 
 export default function Assets() {
   const [allData] = useState<DataPoint[]>([]);
-  const data = useSupabaseSubscription({ table: 'token_list' });
+  const data: TokenList = useSupabaseSubscription({ table: 'token_list' });
+
+  const stableCoins = data.filter((item) => item.is_stablecoin);
+  const cryptos = data.filter((item) => !item.is_stablecoin);
 
   return (
     <Frame>
@@ -24,13 +28,15 @@ export default function Assets() {
           <Graph allData={allData} />
           <Container title="Money">
             <View className="flex gap-y-3">
-              {data.map((item) => {
+              {stableCoins.map((item) => {
                 return <AssetListDisplay key={item.address} token={item} />;
               })}
             </View>
           </Container>
           <Container title="Crypto">
-            <FText>Hello there!</FText>
+            {cryptos.map((item) => {
+              return <AssetListDisplay key={item.address} token={item} />;
+            })}
           </Container>
           <View>
             <FText>Number of assets: {data.length}</FText>

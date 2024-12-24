@@ -23,7 +23,9 @@ export const AssetListDisplay = ({ token }: AssetListDisplayProps) => {
           </FText>
         </View>
       </View>
-      <FText bold>$ {actualValue}</FText>
+      <FText bold className="!text-2xl">
+        $ {actualValue}
+      </FText>
     </View>
   );
 };
