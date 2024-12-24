@@ -1,16 +1,60 @@
-import React, { useState } from 'react';
-import { Frame } from '~/components/Wrappers/Frame';
-import { HeaderBar } from '~/components/HeaderBar';
+import { Feather } from '@expo/vector-icons';
+import { useState } from 'react';
+import { View, ScrollView } from 'react-native';
+
+import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
+import { Container } from '~/components/Container';
 import Graph from '~/components/Graph';
+import { HeaderBar } from '~/components/HeaderBar';
+import { FText } from '~/components/Text/FText';
+import { FTitle } from '~/components/Text/FTitle';
+import { Frame } from '~/components/Wrappers/Frame';
+import { useSupabaseSubscription } from '~/services/Supabase/useSupabaseSubscription';
 import { DataPoint } from '~/types/data';
+import { TokenList } from '~/types/supabaseTypes';
 
 export default function Assets() {
   const [allData] = useState<DataPoint[]>([]);
+  const data: TokenList = useSupabaseSubscription({ table: 'token_list' });
+
+  const stableCoins = data.filter((item) => item.is_stablecoin);
+  const cryptos = data.filter((item) => !item.is_stablecoin);
 
   return (
     <Frame>
       <HeaderBar title="Assets" />
-      <Graph allData={allData} />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View className="flex gap-y-5">
+          <Graph allData={allData} />
+          <Container title="Money">
+            <View className="flex gap-y-3">
+              {stableCoins.map((item) => {
+                return <AssetListDisplay key={item.address} token={item} />;
+              })}
+            </View>
+          </Container>
+          <Container title="Crypto">
+            {cryptos.map((item) => {
+              return <AssetListDisplay key={item.address} token={item} />;
+            })}
+          </Container>
+          <View>
+            <FText>Number of assets: {data.length}</FText>
+          </View>
+          <View className="">
+            {data.map((item) => {
+              return (
+                <View key={item.address} className="flex items-center">
+                  <Feather name="cpu" size={24} className="text-text" />
+                  <FTitle>{item.name}</FTitle>
+                  <FText>{item.symbol}</FText>
+                  <FText>{item.description}</FText>
+                </View>
+              );
+            })}
+          </View>
+        </View>
+      </ScrollView>
     </Frame>
   );
 }
