@@ -1,13 +1,12 @@
 import { Link } from 'expo-router';
 import { View, ScrollView } from 'react-native';
 
-import { DebugButton } from '~/components/DebugButton';
-import { LogoutButton } from '~/components/LogoutButton';
 import { Button } from '~/components/Button';
-import Container from '~/components/Container';
+import { Container } from '~/components/Container';
 import CreateWalletButton from '~/components/CreateWalletButton';
+import { DebugButton } from '~/components/DebugButton';
 import { HeaderBar, PillMessageBox } from '~/components/HeaderBar';
-import TestModule from '~/components/TestModule';
+import { LogoutButton } from '~/components/LogoutButton';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { Frame } from '~/components/Wrappers/Frame';

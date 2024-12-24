@@ -8,7 +8,8 @@ interface ContainerProps {
   className?: string;
   children: React.ReactNode;
 }
-const Container = ({ title, className, children }: ContainerProps) => {
+
+export const Container = ({ title, className, children }: ContainerProps) => {
   const [isOpen, setIsOpen] = useState(true);
   const toggleOpen = () => {
     setIsOpen(!isOpen);
@@ -26,5 +27,3 @@ const Container = ({ title, className, children }: ContainerProps) => {
     </View>
   );
 };
-
-export default Container;
