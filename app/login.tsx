@@ -5,11 +5,11 @@ import React, { useEffect, useState } from 'react';
 import { TextInput, View } from 'react-native';
 
 import { Button } from '~/components/Button';
-import Container from '~/components/Container';
+import { Container } from '~/components/Container';
+import { DebugButton } from '~/components/DebugButton';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { Frame } from '~/components/Wrappers/Frame';
-import { DebugButton } from '~/components/DebugButton';
 
 export default function Login() {
   const [email, setEmail] = useState(Constants.expoConfig?.extra?.email || '');
@@ -71,7 +71,7 @@ export default function Login() {
           <Button
             title="Login"
             className="m-auto w-2/3 bg-primary"
-            onPress={() => emailFlow.loginWithCode({ code: code, email: email })}
+            onPress={() => emailFlow.loginWithCode({ code, email })}
           />
           <Button
             title="New UI Login"

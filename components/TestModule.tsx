@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 
 import { Button } from './Button';
-import Container from './Container';
+import { Container } from './Container';
 import { FText } from './Text/FText';
 import alchemy from '../services/alchemyService';
 
@@ -74,15 +74,18 @@ const TestModule = () => {
             })
           }
           className="bg-primary"
-          title="Add Token"></Button>
+          title="Add Token"
+        />
         <Button
           onPress={() => updateToken('0x123', { name: 'NewTokenName' })}
           className="bg-primary"
-          title="Update Token"></Button>
+          title="Update Token"
+        />
         <Button
           onPress={() => console.log(getToken('0x123'))}
           className="bg-primary"
-          title="Get Token"></Button>
+          title="Get Token"
+        />
       </Container>
     </View>
   );

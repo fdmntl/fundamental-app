@@ -1,7 +1,8 @@
 import { Feather } from '@expo/vector-icons';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { View, ScrollView } from 'react-native';
 
+import { Container } from '~/components/Container';
 import Graph from '~/components/Graph';
 import { HeaderBar } from '~/components/HeaderBar';
 import { FText } from '~/components/Text/FText';
@@ -17,22 +18,32 @@ export default function Assets() {
   return (
     <Frame>
       <HeaderBar title="Assets" />
-      <View>
-        <FText>Number of assets: {data.length}</FText>
-      </View>
-      <View className="">
-        {data.map((item) => {
-          return (
-            <View key={item.address} className="flex items-center">
-              <Feather name="cpu" size={24} color="black" />
-              <FTitle>{item.name}</FTitle>
-              <FText>{item.symbol}</FText>
-              <FText>{item.description}</FText>
-            </View>
-          );
-        })}
-      </View>
-      <Graph allData={allData} />
+      <ScrollView>
+        <View className="flex gap-y-5">
+          <Graph allData={allData} />
+          <Container title="Money">
+            <FText>Hello there!</FText>
+          </Container>
+          <Container title="Crypto">
+            <FText>Hello there!</FText>
+          </Container>
+          <View>
+            <FText>Number of assets: {data.length}</FText>
+          </View>
+          <View className="">
+            {data.map((item) => {
+              return (
+                <View key={item.address} className="flex items-center">
+                  <Feather name="cpu" size={24} color="black" />
+                  <FTitle>{item.name}</FTitle>
+                  <FText>{item.symbol}</FText>
+                  <FText>{item.description}</FText>
+                </View>
+              );
+            })}
+          </View>
+        </View>
+      </ScrollView>
     </Frame>
   );
 }
