@@ -2,6 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { useState } from 'react';
 import { View, ScrollView } from 'react-native';
 
+import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
 import { Container } from '~/components/Container';
 import Graph from '~/components/Graph';
 import { HeaderBar } from '~/components/HeaderBar';
@@ -18,11 +19,15 @@ export default function Assets() {
   return (
     <Frame>
       <HeaderBar title="Assets" />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View className="flex gap-y-5">
           <Graph allData={allData} />
           <Container title="Money">
-            <FText>Hello there!</FText>
+            <View className="flex gap-y-3">
+              {data.map((item) => {
+                return <AssetListDisplay key={item.address} token={item} />;
+              })}
+            </View>
           </Container>
           <Container title="Crypto">
             <FText>Hello there!</FText>
@@ -34,7 +39,7 @@ export default function Assets() {
             {data.map((item) => {
               return (
                 <View key={item.address} className="flex items-center">
-                  <Feather name="cpu" size={24} color="black" />
+                  <Feather name="cpu" size={24} className="text-text" />
                   <FTitle>{item.name}</FTitle>
                   <FText>{item.symbol}</FText>
                   <FText>{item.description}</FText>
