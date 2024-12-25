@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { User, Wallet, Privy } from '~/types/appData';
-import { Token } from '~/types/supabaseTypes';
+import { Token, UserData } from '~/types/supabaseTypes';
 
 import { useSupabaseSubscription } from '~/services/Supabase/useSupabaseSubscription';
 
@@ -19,6 +19,8 @@ interface ConfigType {
   addToken: (token: Token) => void;
   updateToken: (address: string, updates: Partial<Token>) => void;
   getToken: (address: string) => Token | undefined;
+  userData: UserData[];
+  getUserData: (id: string) => UserData | undefined;
 }
 
 const AppContext = createContext<ConfigType | undefined>(undefined);
@@ -28,14 +30,18 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
   const [wallet, setWallet] = useState<Wallet>({});
   const [privy, setPrivy] = useState<Privy>({});
   const [tokens, setTokens] = useState<Token[]>([]);
+  const [userData, setUserData] = useState<UserData[]>([]);
 
-  // Subscribe to the Supabase `token_list` table
   const tokenData: Token[] = useSupabaseSubscription({ table: 'token_list' });
+  const usersData: UserData[] = useSupabaseSubscription({ table: 'users' });
 
   useEffect(() => {
-    // Sync the subscription data with the `tokens` state
     setTokens(tokenData);
   }, [tokenData]);
+
+  useEffect(() => {
+    setUserData(usersData);
+  }, [usersData]);
 
   const updateUser = (updates: Partial<User>) => {
     setUser((prevUser) => ({ ...prevUser, ...updates }));
@@ -63,6 +69,10 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
     return tokens.find((token) => token.address === address);
   };
 
+  const getUserData = (id: string): UserData | undefined => {
+    return userData.find((user) => user.id === id);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -79,6 +89,8 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
         addToken,
         updateToken,
         getToken,
+        userData,
+        getUserData,
       }}>
       {children}
     </AppContext.Provider>
