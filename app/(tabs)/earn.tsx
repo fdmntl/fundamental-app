@@ -4,15 +4,18 @@ import { View } from 'react-native';
 import { HeaderBar } from '~/components/HeaderBar';
 import { FText } from '~/components/Text/FText';
 import { Frame } from '~/components/Wrappers/Frame';
+import UserInfo from '~/components/UserInfo';
+
+import TestModule from '~/components/TestModule';
 
 export default function Earn() {
   return (
     <Frame>
       <HeaderBar title="Earn" />
-      <View className="mx-auto mt-60 items-center">
-        <Feather name="package" size={64} className="text-text" />
-        <FText className="text-2xl">Under construction</FText>
+      <View className="mx-auto items-center">
+        <TestModule />
       </View>
+      <UserInfo />
     </Frame>
   );
 }
