@@ -1,39 +1,33 @@
 import React, { useState } from 'react';
-import { View, TextInput } from 'react-native';
-
+import { View, TextInput, TouchableOpacity, Text, Modal, FlatList, Image } from 'react-native';
 import { FText } from '~/components/Text/FText';
+
+interface Token {
+  symbol: string;
+  name: string;
+  icon: string;
+}
 
 interface AmountInputProps {
   onChange: (value: string) => void;
   value: string;
+  tokens: Token[];
+  defaultToken?: Token;
+  onTokenChange?: (token: Token) => void;
 }
 
-export const AmountInput = ({ onChange, value }: AmountInputProps) => {
+export const AmountInput = ({
+  onChange,
+  value,
+  tokens,
+  defaultToken,
+  onTokenChange,
+}: AmountInputProps) => {
   const [isValidAmount, setIsValidAmount] = useState(true);
-
-  // const checkFunds = async () => {
-  //   try {
-  //     const balance = await publicClient.getBalance({
-  //       address: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045', // Replace with user address
-  //     });
-  //     const formattedBalance = formatEther(balance);
-  //     console.log('Balance:', formattedBalance);
-
-  //     if (parseFloat(amount) > parseFloat(formattedBalance)) {
-  //       Alert.alert(
-  //         'Insufficient Funds',
-  //         `You have ${formattedBalance} ETH, which is not enough to send ${amount} ETH.`
-  //       );
-  //     } else {
-  //       Alert.alert(
-  //         'Sufficient Funds',
-  //         `You have enough balance (${formattedBalance} ETH) to send ${amount} ETH.`
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error('Error:', error);
-  //   }
-  // };
+  const [selectedToken, setSelectedToken] = useState<Token | undefined>(
+    defaultToken || (tokens.length > 0 ? tokens[0] : undefined)
+  );
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
 
   const handleInputChange = (value: string) => {
     const numericValue = value.replace(/[^0-9.]/g, '');
@@ -45,31 +39,74 @@ export const AmountInput = ({ onChange, value }: AmountInputProps) => {
     }
   };
 
+  const handleTokenSelect = (token: Token) => {
+    setSelectedToken(token);
+    setIsPickerOpen(false);
+    onTokenChange && onTokenChange(token);
+  };
+
   return (
-    <View className="mb-4 h-40 rounded-xl bg-content p-4">
-      <View className="flex-row items-center">
+    <View className="mb-4 rounded-xl bg-content p-4">
+      <View className="mb-4 flex-row items-center justify-between">
         <FText className="!text-2xl text-text" bold>
           Amount
         </FText>
+        <TouchableOpacity
+          className="flex-row items-center space-x-2 rounded-lg px-4 py-2"
+          onPress={() => setIsPickerOpen(true)}>
+          {selectedToken?.icon && (
+            <Image source={{ uri: selectedToken.icon }} className="h-6 w-6 rounded-full" />
+          )}
+          <FText className=" text-text" bold>
+            {selectedToken?.symbol || 'Select Token'}
+          </FText>
+        </TouchableOpacity>
       </View>
-      <View className="mt-4 flex-row items-center">
+      <View className="flex-row items-center">
         <TextInput
-          keyboardType="numeric"
-          className={`flex-1 rounded-md bg-content p-3 ${
+          className={`flex-1 rounded-lg bg-content p-3 text-lg ${
             value === ''
-              ? 'border-[3px] border-background text-text'
+              ? 'border-2 border-background text-text'
               : isValidAmount
-                ? 'border-[3px] border-success text-success'
-                : 'border-[3px] border-error text-error'
+                ? 'border-2 border-green-500 text-green-600'
+                : 'border-2 border-red-500 text-red-600'
           }`}
+          keyboardType="numeric"
           placeholder="Enter amount"
-          value={value.toString()}
+          value={value}
           onChangeText={handleInputChange}
           placeholderTextColor="#888"
         />
-        {/* This is for debugging */}
-        {/* <Button title="Check funds" onPress={checkFunds} disabled={!isValidAmount} /> */}
       </View>
+      <Modal visible={isPickerOpen} transparent animationType="fade">
+        <View className="flex-1 items-center justify-center">
+          <View className="absolute h-full w-full bg-background opacity-50" />
+          <View className="w-11/12 max-w-md rounded-lg bg-content p-6">
+            <FText className="text-text" bold>
+              Select a token
+            </FText>
+            <FlatList
+              data={tokens}
+              keyExtractor={(item) => item.symbol}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  className="flex-row items-center rounded-lg p-3"
+                  onPress={() => handleTokenSelect(item)}>
+                  {item.icon && (
+                    <Image source={{ uri: item.icon }} className="mr-4 h-6 w-6 rounded-full" />
+                  )}
+                  <Text className="text-lg text-text">{item.symbol}</Text>
+                </TouchableOpacity>
+              )}
+            />
+            <TouchableOpacity
+              className="mt-4 w-full items-center rounded-lg bg-content py-2"
+              onPress={() => setIsPickerOpen(false)}>
+              <Text className="text-lg text-text">Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
