@@ -3,11 +3,11 @@ import { View, TextInput } from 'react-native';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { FText } from '~/components/Text/FText';
 
+// Allows searching printing user info by wallet address
 const UserInfo: React.FC = () => {
   const { userData } = useAppData();
-  const [walletAddress, setWalletAddress] = useState<string>(''); // State for wallet address input
+  const [walletAddress, setWalletAddress] = useState<string>('');
 
-  // Function to find user by wallet address
   const findUserByAddress = (address: string) => {
     return userData.find((user) => user.wallet_address === address);
   };
