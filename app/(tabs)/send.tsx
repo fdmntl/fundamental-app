@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, Alert } from 'react-native';
 import { isAddress } from 'viem';
 
@@ -11,12 +11,7 @@ import { Frame } from '~/components/Wrappers/Frame';
 import { useAppData } from '~/components/Wrappers/AppData';
 import viem from '~/services/viemService';
 import { parseEther } from 'viem';
-
-interface Token {
-  symbol: string;
-  name: string;
-  icon: string; // Add logic to display icons if necessary
-}
+import { Token } from '~/types/supabaseTypes'; // Updated to use the new Token type
 
 export default function Send() {
   const [recipient, setRecipient] = useState('');
@@ -30,25 +25,46 @@ export default function Send() {
 
   const { wallet } = useAppData();
 
-  const supportedTokens = [
-    { symbol: 'ETH', name: 'Ethereum', icon: 'eth-icon-url', tokenAdress: 'eth-token-address' },
-    { symbol: 'BTC', name: 'Bitcoin', icon: 'btc-icon-url', tokenAdress: 'btc-token-address' },
-    { symbol: 'USDT', name: 'Tether', icon: 'usdt-icon-url', tokenAdress: 'usdt-token-address' },
-    { symbol: 'DAI', name: 'Dai', icon: 'dai-icon-url', tokenAdress: 'dai-token-address' },
+  const supportedTokens: Token[] = [
+    {
+      address: 'eth-token-address',
+      name: 'Ethereum',
+      logo: null,
+      symbol: 'ETH',
+      digits: 18,
+      description: 'Ethereum Mainnet Token',
+      value: [],
+      is_stablecoin: false,
+    },
+    {
+      address: 'btc-token-address',
+      name: 'Bitcoin',
+      logo: null,
+      symbol: 'BTC',
+      digits: 8,
+      description: 'Bitcoin Token',
+      value: [],
+      is_stablecoin: false,
+    },
+    {
+      address: 'usdt-token-address',
+      name: 'Tether',
+      logo: null,
+      symbol: 'USDT',
+      digits: 6,
+      description: 'Tether Stablecoin',
+      value: [],
+      is_stablecoin: true,
+    },
   ];
 
   const handleSendPress = () => {
     Alert.alert('Sending', `Sending ${amount} ${selectedToken?.symbol} to ${recipient}`);
     if (wallet.provider && selectedToken) {
       // Replace with actual token transfer logic
-      // viem.sendERC20(wallet.provider, recipient, parseEther(amount), selectedToken.symbol);
+      // Example: viem.sendERC20(wallet.provider, recipient, parseEther(amount), selectedToken.address);
       alert(
-        'Sending funds to recipient: ' +
-          recipient +
-          ' with amount: ' +
-          amount +
-          'of' +
-          selectedToken.symbol
+        `Sending ${amount} ${selectedToken.symbol} to ${recipient} using token contract at ${selectedToken.address}`
       );
     } else {
       Alert.alert('Error', 'Wallet provider or token is not available');

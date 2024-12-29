@@ -1,12 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Modal, FlatList, Image } from 'react-native';
+import { Feather } from '@expo/vector-icons'; // Import Feather icons
 import { FText } from '~/components/Text/FText';
-
-interface Token {
-  symbol: string;
-  name: string;
-  icon: string;
-}
+import { Token } from '~/types/supabaseTypes';
 
 interface AmountInputProps {
   onChange: (value: string) => void;
@@ -54,9 +50,6 @@ export const AmountInput = ({
         <TouchableOpacity
           className="flex-row items-center space-x-2 rounded-lg px-4 py-2"
           onPress={() => setIsPickerOpen(true)}>
-          {selectedToken?.icon && (
-            <Image source={{ uri: selectedToken.icon }} className="h-6 w-6 rounded-full" />
-          )}
           <FText className=" text-text" bold>
             {selectedToken?.symbol || 'Select Token'}
           </FText>
@@ -87,13 +80,15 @@ export const AmountInput = ({
             </FText>
             <FlatList
               data={tokens}
-              keyExtractor={(item) => item.symbol}
+              keyExtractor={(item) => item.address} // Using address as the unique key
               renderItem={({ item }) => (
                 <TouchableOpacity
                   className="flex-row items-center rounded-lg p-3"
                   onPress={() => handleTokenSelect(item)}>
-                  {item.icon && (
-                    <Image source={{ uri: item.icon }} className="mr-4 h-6 w-6 rounded-full" />
+                  {item.logo ? (
+                    <Image source={{ uri: item.logo }} className="mr-2 h-6 w-6" />
+                  ) : (
+                    <Feather name="cpu" size={24} className="mr-2 text-text" />
                   )}
                   <Text className="text-lg text-text">{item.symbol}</Text>
                 </TouchableOpacity>
