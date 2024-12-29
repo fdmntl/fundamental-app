@@ -6,6 +6,7 @@ type Value = {
 export type Token = {
   address: string;
   name: string;
+  logo: string | null;
   symbol: string;
   digits: number;
   description: string;
