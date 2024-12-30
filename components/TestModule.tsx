@@ -10,7 +10,7 @@ import { useAppData } from '~/components/Wrappers/AppData';
 import viem from '~/services/viemService';
 
 const TestModule = () => {
-  const { user, privy, tokens, addToken, updateToken, getToken } = useAppData();
+  const { user, privy, tokens, userData } = useAppData();
   const wallet = privy.wallet;
 
   if (!wallet) {
@@ -25,11 +25,6 @@ const TestModule = () => {
 
   return (
     <View>
-      <Container className="" title="Assets">
-        <FText className="text-lg">
-          {tokens.map((token) => token.name || token.contractAddress).join(', ')}
-        </FText>
-      </Container>
       <Container className="" title="Test Module">
         <FText className="text-lg">Your address is {user.address}</FText>
         <Button
@@ -62,29 +57,13 @@ const TestModule = () => {
           className="bg-primary"
           title="Send USDC"
         />
-        <Button onPress={() => console.log(tokens)} className="bg-primary" title="Print Tokens" />
         <Button
-          onPress={() =>
-            addToken({
-              contractAddress: '0x123',
-              name: 'TokenName',
-              symbol: 'TN',
-              decimals: 18,
-              logo: 'https://example.com/logo.png',
-            })
-          }
+          onPress={() => {
+            console.log('Tokens:', tokens);
+            console.log('UserData:', userData);
+          }}
           className="bg-primary"
-          title="Add Token"
-        />
-        <Button
-          onPress={() => updateToken('0x123', { name: 'NewTokenName' })}
-          className="bg-primary"
-          title="Update Token"
-        />
-        <Button
-          onPress={() => console.log(getToken('0x123'))}
-          className="bg-primary"
-          title="Get Token"
+          title="Print appData"
         />
       </Container>
     </View>
