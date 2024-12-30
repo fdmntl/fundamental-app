@@ -38,21 +38,6 @@ export default function Assets() {
               return <AssetListDisplay key={item.address} token={item} />;
             })}
           </Container>
-          <View>
-            <FText>Number of assets: {data.length}</FText>
-          </View>
-          <View className="">
-            {data.map((item) => {
-              return (
-                <View key={item.address} className="flex items-center">
-                  <Feather name="cpu" size={24} className="text-text" />
-                  <FTitle>{item.name}</FTitle>
-                  <FText>{item.symbol}</FText>
-                  <FText>{item.description}</FText>
-                </View>
-              );
-            })}
-          </View>
         </View>
       </ScrollView>
     </Frame>
