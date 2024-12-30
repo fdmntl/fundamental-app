@@ -69,3 +69,5 @@ const TestModule = () => {
     </View>
   );
 };
+
+export default TestModule;
