@@ -4,6 +4,7 @@ import { User, Wallet, Privy } from '~/types/appData';
 import { Token, UserData } from '~/types/supabaseTypes';
 
 import { useSupabaseSubscription } from '~/services/Supabase/useSupabaseSubscription';
+import { useSupabaseUser } from '~/services/Supabase/useSupabaseUser';
 
 interface ConfigType {
   user: User;
@@ -19,7 +20,7 @@ interface ConfigType {
   addToken: (token: Token) => void;
   updateToken: (address: string, updates: Partial<Token>) => void;
   getToken: (address: string) => Token | undefined;
-  userData: UserData[];
+  userData: UserData;
   getUserData: (id: string) => UserData | undefined;
 }
 
@@ -30,18 +31,21 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
   const [wallet, setWallet] = useState<Wallet>({});
   const [privy, setPrivy] = useState<Privy>({});
   const [tokens, setTokens] = useState<Token[]>([]);
-  const [userData, setUserData] = useState<UserData[]>([]);
+  const [userData, setUserData] = useState<UserData | null>(null); // Change to single item
 
   const tokenData: Token[] = useSupabaseSubscription({ table: 'token_list' });
-  const usersData: UserData[] = useSupabaseSubscription({ table: 'users' });
+
+  const singleUserData: UserData | null = useSupabaseUser({
+    address: user.address || '',
+  });
 
   useEffect(() => {
     setTokens(tokenData);
   }, [tokenData]);
 
   useEffect(() => {
-    setUserData(usersData);
-  }, [usersData]);
+    setUserData(singleUserData); // Update state with single user
+  }, [singleUserData]);
 
   const updateUser = (updates: Partial<User>) => {
     setUser((prevUser) => ({ ...prevUser, ...updates }));
@@ -69,10 +73,6 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
     return tokens.find((token) => token.address === address);
   };
 
-  const getUserData = (id: string): UserData | undefined => {
-    return userData.find((user) => user.id === id);
-  };
-
   return (
     <AppContext.Provider
       value={{
@@ -89,8 +89,7 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
         addToken,
         updateToken,
         getToken,
-        userData,
-        getUserData,
+        userData, // Expose single user
       }}>
       {children}
     </AppContext.Provider>
