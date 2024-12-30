@@ -6,6 +6,8 @@ import { FText } from '~/components/Text/FText';
 import { Frame } from '~/components/Wrappers/Frame';
 import { capitalise } from '~/utils/helpers/strings/capitalise';
 
+// TODO: Match user asset to token list entry and display graph + bio
+
 export default function Assets() {
   const { asset } = useLocalSearchParams();
   const title = `${capitalise(asset as string)}`;

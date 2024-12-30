@@ -13,6 +13,8 @@ import { useSupabaseSubscription } from '~/services/Supabase/useSupabaseSubscrip
 import { DataPoint } from '~/types/data';
 import { TokenList } from '~/types/supabaseTypes';
 
+// TOOD: use user balance instead of token list
+
 export default function Assets() {
   const [allData] = useState<DataPoint[]>([]);
   const data: TokenList = useSupabaseSubscription({ table: 'token_list' });

@@ -11,13 +11,13 @@ interface AssetListDisplayProps {
 }
 
 export const AssetListDisplay = ({ token }: AssetListDisplayProps) => {
-  // const actualValue = token.value[-1].value;
+  const actualValue = token.value[token.value.length - 1].value;
 
   // TODO: Replace token name in router.push with token.address once we have the token data in appData global state
 
   const icon = tokenIcons[token.symbol];
 
-  const actualValue = 1234.56;
+  // const actualValue = 1234.56;
   return (
     <TouchableOpacity onPress={() => router.push(`/assets/${token.name}`)}>
       <View className="flex flex-row items-center justify-between">
