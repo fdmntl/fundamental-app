@@ -2,8 +2,8 @@ import { Feather } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { View, ScrollView } from 'react-native';
 
+import { AssetDetailsCTAs } from '~/components/Assets/AssetDetailsCTAs';
 import { DetailsHeader } from '~/components/Assets/DetailsHeader';
-import { Button } from '~/components/Button';
 import Graph from '~/components/Graph';
 import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
@@ -56,9 +56,7 @@ export default function Assets() {
               </View>
             </View>
           </ScrollView>
-          <View className="absolute bottom-0 w-full items-center">
-            <Button title="Transfer" className="w-1/2" />
-          </View>
+          <AssetDetailsCTAs />
         </View>
       </Frame>
     </>
