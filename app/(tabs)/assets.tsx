@@ -1,4 +1,3 @@
-import { Feather } from '@expo/vector-icons';
 import { useState } from 'react';
 import { View, ScrollView } from 'react-native';
 
@@ -6,11 +5,11 @@ import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
 import { Container } from '~/components/Container';
 import Graph from '~/components/Graph';
 import { HeaderBar } from '~/components/HeaderBar';
-import { FText } from '~/components/Text/FText';
-import { FTitle } from '~/components/Text/FTitle';
+import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { DataPoint } from '~/types/data';
-import { useAppData } from '~/components/Wrappers/AppData';
+
+// TODO: use user balance instead of token list
 
 export default function Assets() {
   const [allData] = useState<DataPoint[]>([]);
@@ -37,19 +36,6 @@ export default function Assets() {
               <AssetListDisplay key={item.address} token={item} />
             ))}
           </Container>
-          <View>
-            <FText>Number of assets: {tokens.length}</FText>
-          </View>
-          <View className="">
-            {tokens.map((item) => (
-              <View key={item.address} className="flex items-center">
-                <Feather name="cpu" size={24} className="text-text" />
-                <FTitle>{item.name}</FTitle>
-                <FText>{item.symbol}</FText>
-                <FText>{item.description}</FText>
-              </View>
-            ))}
-          </View>
         </View>
       </ScrollView>
     </Frame>

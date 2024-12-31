@@ -14,7 +14,9 @@ export const Button = forwardRef<TouchableOpacity, ButtonProps>(
         ref={ref}
         {...touchableProps}
         className={`items-center rounded-[28px] bg-primary p-4 shadow-md ${touchableProps.className}`}>
-        <FText className="text-center text-lg font-bold text-white">{title}</FText>
+        <FText className="text-center text-lg font-bold text-white" bold>
+          {title}
+        </FText>
       </TouchableOpacity>
     );
   }

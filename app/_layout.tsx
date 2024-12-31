@@ -8,18 +8,15 @@ import {
   DMSans_700Bold,
   DMSans_700Bold_Italic,
 } from '@expo-google-fonts/dm-sans';
-
 import {
   DMSerifText_400Regular,
   DMSerifText_400Regular_Italic,
 } from '@expo-google-fonts/dm-serif-text';
-
 import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter';
-
 import { PrivyProvider, PrivyElements } from '@privy-io/expo';
+import { useFonts } from 'expo-font';
 import { Drawer } from 'expo-router/drawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useFonts } from 'expo-font';
 
 import CustomDrawerContent from '~/components/CustomDrawerContent';
 import { AppDataProvider } from '~/components/Wrappers/AppData';
@@ -84,6 +81,13 @@ const Layout = () => {
               />
               <Drawer.Screen
                 name="details"
+                options={{
+                  headerShown: false,
+                  drawerItemStyle: { display: 'none' },
+                }}
+              />
+              <Drawer.Screen
+                name="assets/[asset]"
                 options={{
                   headerShown: false,
                   drawerItemStyle: { display: 'none' },
