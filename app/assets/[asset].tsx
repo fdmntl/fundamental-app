@@ -1,8 +1,9 @@
 import { Feather } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { View } from 'react-native';
+import { View, ScrollView } from 'react-native';
 
 import { DetailsHeader } from '~/components/Assets/DetailsHeader';
+import { Button } from '~/components/Button';
 import Graph from '~/components/Graph';
 import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
@@ -38,20 +39,25 @@ export default function Assets() {
     <>
       <Stack.Screen options={{ title, headerShown: false }} />
       <Frame>
-        <DetailsHeader title={title} icon={icon} />
-        <View className="gap-y-5">
-          <View className="flex flex-row items-center justify-center gap-x-2">
-            <FText className="!text-4xl" bold>
-              {tempHolding}
-            </FText>
-            <Feather name="trending-up" size={30} className="text-success" />
-          </View>
-          <Graph allData={[]} />
-          <View className="">
-            <FText className="" bold>
-              About {title}
-            </FText>
-            <FText>{token.description}</FText>
+        <View className="flex-1">
+          <DetailsHeader title={title} icon={icon} />
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View className="gap-y-5">
+              <View className="flex flex-row items-center justify-center gap-x-2">
+                <FText className="!text-4xl" bold>
+                  ${tempHolding}
+                </FText>
+                <Feather name="trending-up" size={30} className="text-success" />
+              </View>
+              <Graph allData={[]} />
+              <View>
+                <FText bold>About {title}</FText>
+                <FText>{token.description}</FText>
+              </View>
+            </View>
+          </ScrollView>
+          <View className="absolute bottom-0 w-full items-center">
+            <Button title="Transfer" className="w-1/2" />
           </View>
         </View>
       </Frame>

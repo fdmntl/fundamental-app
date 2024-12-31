@@ -1,23 +1,18 @@
-import { forwardRef } from 'react';
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 import { FText } from './Text/FText';
 
 type ButtonProps = {
   title: string;
+  className?: string;
 } & TouchableOpacityProps;
 
-export const Button = forwardRef<TouchableOpacity, ButtonProps>(
-  ({ title, ...touchableProps }, ref) => {
-    return (
-      <TouchableOpacity
-        ref={ref}
-        {...touchableProps}
-        className={`items-center rounded-[28px] bg-primary p-4 shadow-md ${touchableProps.className}`}>
-        <FText className="text-center text-lg font-bold text-white" bold>
-          {title}
-        </FText>
-      </TouchableOpacity>
-    );
-  }
-);
+export const Button = ({ title, className }: ButtonProps) => {
+  return (
+    <TouchableOpacity className={`${className} items-center rounded-[28px] bg-primary p-3`}>
+      <FText className="text-lg text-white" bold>
+        {title}
+      </FText>
+    </TouchableOpacity>
+  );
+};
