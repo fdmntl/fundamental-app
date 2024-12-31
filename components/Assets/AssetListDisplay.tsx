@@ -13,13 +13,12 @@ interface AssetListDisplayProps {
 export const AssetListDisplay = ({ token }: AssetListDisplayProps) => {
   const actualValue = token.value[token.value.length - 1].value;
 
-  // TODO: Replace token name in router.push with token.address once we have the token data in appData global state
+  const roundedValue = parseFloat(actualValue).toFixed(2);
 
   const icon = tokenIcons[token.symbol];
 
-  // const actualValue = 1234.56;
   return (
-    <TouchableOpacity onPress={() => router.push(`/assets/${token.name}`)}>
+    <TouchableOpacity onPress={() => router.push(`/assets/${token.address}`)}>
       <View className="flex flex-row items-center justify-between">
         <View className="flex flex-row items-center gap-x-3">
           <Image source={icon} style={{ height: 40, width: 40 }} />
@@ -31,7 +30,7 @@ export const AssetListDisplay = ({ token }: AssetListDisplayProps) => {
           </View>
         </View>
         <FText bold className="!text-2xl">
-          $ {actualValue}
+          $ {roundedValue}
         </FText>
       </View>
     </TouchableOpacity>

@@ -1,24 +1,58 @@
+import { Feather } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 
 import { DetailsHeader } from '~/components/Assets/DetailsHeader';
+import Graph from '~/components/Graph';
 import { FText } from '~/components/Text/FText';
+import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
 import { capitalise } from '~/utils/helpers/strings/capitalise';
-
-// TODO: Match user asset to token list entry and display graph + bio
 
 export default function Assets() {
   const { asset } = useLocalSearchParams();
-  const title = `${capitalise(asset as string)}`;
+
+  const { getToken } = useAppData();
+  const token = getToken(asset as string);
+
+  if (!token) {
+    return (
+      <Frame>
+        <DetailsHeader title="Token not found" />
+        <View className="flex h-64 items-center justify-center">
+          <FText>This token is not supported</FText>
+        </View>
+      </Frame>
+    );
+  }
+
+  const title = `${capitalise(token.name)}`;
+
+  const icon = tokenIcons[token.symbol];
+
+  // TODO: replace this once the values are available
+  const tempHolding = 1234.56;
 
   return (
     <>
       <Stack.Screen options={{ title, headerShown: false }} />
       <Frame>
-        <DetailsHeader title={title} />
-        <View className="mx-auto mt-60 items-center">
-          <FText className="text-2xl">Asset: {asset}</FText>
+        <DetailsHeader title={title} icon={icon} />
+        <View className="gap-y-5">
+          <View className="flex flex-row items-center justify-center gap-x-2">
+            <FText className="!text-4xl" bold>
+              {tempHolding}
+            </FText>
+            <Feather name="trending-up" size={30} className="text-success" />
+          </View>
+          <Graph allData={[]} />
+          <View className="">
+            <FText className="" bold>
+              About {title}
+            </FText>
+            <FText>{token.description}</FText>
+          </View>
         </View>
       </Frame>
     </>
