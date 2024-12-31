@@ -1,7 +1,10 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { User, Wallet, Privy } from '~/types/appData';
-import { Token } from '~/types/token';
+import { Token, UserData } from '~/types/supabaseTypes';
+
+import { useSupabaseSubscription } from '~/services/Supabase/useSupabaseSubscription';
+import { useSupabaseUser } from '~/services/Supabase/useSupabaseUser';
 
 interface ConfigType {
   user: User;
@@ -15,8 +18,10 @@ interface ConfigType {
   updatePrivy: (updates: Partial<Privy>) => void;
   tokens: Token[];
   addToken: (token: Token) => void;
-  updateToken: (contractAddress: string, updates: Partial<Token>) => void;
-  getToken: (contractAddress: string) => Token | undefined;
+  updateToken: (address: string, updates: Partial<Token>) => void;
+  getToken: (address: string) => Token | undefined;
+  userData: UserData;
+  getUserData: (id: string) => UserData | undefined;
 }
 
 const AppContext = createContext<ConfigType | undefined>(undefined);
@@ -26,6 +31,21 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
   const [wallet, setWallet] = useState<Wallet>({});
   const [privy, setPrivy] = useState<Privy>({});
   const [tokens, setTokens] = useState<Token[]>([]);
+  const [userData, setUserData] = useState<UserData | null>(null); // Change to single item
+
+  const tokenData: Token[] = useSupabaseSubscription({ table: 'token_list' });
+
+  const singleUserData: UserData | null = useSupabaseUser({
+    address: user.address || '',
+  });
+
+  useEffect(() => {
+    setTokens(tokenData);
+  }, [tokenData]);
+
+  useEffect(() => {
+    setUserData(singleUserData); // Update state with single user
+  }, [singleUserData]);
 
   const updateUser = (updates: Partial<User>) => {
     setUser((prevUser) => ({ ...prevUser, ...updates }));
@@ -43,16 +63,14 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
     setTokens((prevTokens) => [...prevTokens, token]);
   };
 
-  const updateToken = (contractAddress: string, updates: Partial<Token>) => {
+  const updateToken = (address: string, updates: Partial<Token>) => {
     setTokens((prevTokens) =>
-      prevTokens.map((token) =>
-        token.contractAddress === contractAddress ? { ...token, ...updates } : token
-      )
+      prevTokens.map((token) => (token.address === address ? { ...token, ...updates } : token))
     );
   };
 
-  const getToken = (contractAddress: string): Token | undefined => {
-    return tokens.find((token) => token.contractAddress === contractAddress);
+  const getToken = (address: string): Token | undefined => {
+    return tokens.find((token) => token.address === address);
   };
 
   return (
@@ -71,6 +89,7 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
         addToken,
         updateToken,
         getToken,
+        userData, // Expose single user
       }}>
       {children}
     </AppContext.Provider>

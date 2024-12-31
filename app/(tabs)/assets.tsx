@@ -8,19 +8,18 @@ import Graph from '~/components/Graph';
 import { HeaderBar } from '~/components/HeaderBar';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
+import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
-import { useSupabaseSubscription } from '~/services/Supabase/useSupabaseSubscription';
 import { DataPoint } from '~/types/data';
-import { TokenList } from '~/types/supabaseTypes';
 
 // TOOD: use user balance instead of token list
 
 export default function Assets() {
   const [allData] = useState<DataPoint[]>([]);
-  const data: TokenList = useSupabaseSubscription({ table: 'token_list' });
+  const { tokens } = useAppData();
 
-  const stableCoins = data.filter((item) => item.is_stablecoin);
-  const cryptos = data.filter((item) => !item.is_stablecoin);
+  const stableCoins = tokens.filter((item) => item.is_stablecoin);
+  const cryptos = tokens.filter((item) => !item.is_stablecoin);
 
   return (
     <Frame>
@@ -30,15 +29,15 @@ export default function Assets() {
           <Graph allData={allData} />
           <Container title="Money">
             <View className="flex gap-y-3">
-              {stableCoins.map((item) => {
-                return <AssetListDisplay key={item.address} token={item} />;
-              })}
+              {stableCoins.map((item) => (
+                <AssetListDisplay key={item.address} token={item} />
+              ))}
             </View>
           </Container>
           <Container title="Crypto">
-            {cryptos.map((item) => {
-              return <AssetListDisplay key={item.address} token={item} />;
-            })}
+            {cryptos.map((item) => (
+              <AssetListDisplay key={item.address} token={item} />
+            ))}
           </Container>
         </View>
       </ScrollView>
