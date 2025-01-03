@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Modal, FlatList, Image } from 'react-native';
-import { Feather } from '@expo/vector-icons'; // Import Feather icons
+import { Feather } from '@expo/vector-icons';
 import { FText } from '~/components/Text/FText';
 import { Token } from '~/types/supabaseTypes';
+import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons'; // Import token icons mapping
 
 interface AmountInputProps {
   onChange: (value: string) => void;
   value: string;
   tokens: Token[];
   defaultToken?: Token;
+  selectedTokenBalance: number;
   onTokenChange?: (token: Token) => void;
 }
 
@@ -17,28 +19,25 @@ export const AmountInput = ({
   value,
   tokens,
   defaultToken,
+  selectedTokenBalance,
   onTokenChange,
 }: AmountInputProps) => {
-  const [isValidAmount, setIsValidAmount] = useState(true);
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState<Token | undefined>(
     defaultToken || (tokens.length > 0 ? tokens[0] : undefined)
   );
-  const [isPickerOpen, setIsPickerOpen] = useState(false);
 
   const handleInputChange = (value: string) => {
-    const numericValue = value.replace(/[^0-9.]/g, '');
-    if (numericValue.match(/^\d*\.?\d*$/)) {
-      setIsValidAmount(true);
-      onChange(numericValue);
-    } else {
-      setIsValidAmount(false);
-    }
+    onChange(value.replace(/[^0-9.]/g, ''));
   };
+
+  const isValidAmount =
+    value !== '' && !isNaN(Number(value)) && Number(value) <= selectedTokenBalance;
 
   const handleTokenSelect = (token: Token) => {
     setSelectedToken(token);
     setIsPickerOpen(false);
-    onTokenChange && onTokenChange(token);
+    if (onTokenChange) onTokenChange(token);
   };
 
   return (
@@ -65,7 +64,7 @@ export const AmountInput = ({
                 : 'border-2 border-red-500 text-red-600'
           }`}
           keyboardType="numeric"
-          placeholder="Enter amount"
+          placeholder={`Enter amount (Max: ${selectedTokenBalance})`}
           value={value}
           onChangeText={handleInputChange}
           placeholderTextColor="#888"
@@ -80,19 +79,22 @@ export const AmountInput = ({
             </FText>
             <FlatList
               data={tokens}
-              keyExtractor={(item) => item.address} // Using address as the unique key
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  className="flex-row items-center rounded-lg p-3"
-                  onPress={() => handleTokenSelect(item)}>
-                  {item.logo ? (
-                    <Image source={{ uri: item.logo }} className="mr-2 h-6 w-6" />
-                  ) : (
-                    <Feather name="cpu" size={24} className="mr-2 text-text" />
-                  )}
-                  <Text className="text-lg text-text">{item.symbol}</Text>
-                </TouchableOpacity>
-              )}
+              keyExtractor={(item) => item.address}
+              renderItem={({ item }) => {
+                const icon = tokenIcons[item.symbol] || null; // Get token icon or null
+                return (
+                  <TouchableOpacity
+                    className="flex-row items-center rounded-lg p-3"
+                    onPress={() => handleTokenSelect(item)}>
+                    {icon ? (
+                      <Image source={icon} className="mr-2 h-6 w-6" />
+                    ) : (
+                      <Feather name="cpu" size={24} className="mr-2 text-text" />
+                    )}
+                    <Text className="text-lg text-text">{item.symbol}</Text>
+                  </TouchableOpacity>
+                );
+              }}
             />
             <TouchableOpacity
               className="mt-4 w-full items-center rounded-lg bg-content py-2"
