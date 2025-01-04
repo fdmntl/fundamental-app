@@ -1,7 +1,8 @@
 import { Feather } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { View } from 'react-native';
+import { View, ScrollView } from 'react-native';
 
+import { AssetDetailsCTAs } from '~/components/Assets/AssetDetailsCTAs';
 import { DetailsHeader } from '~/components/Assets/DetailsHeader';
 import Graph from '~/components/Graph';
 import { FText } from '~/components/Text/FText';
@@ -38,21 +39,24 @@ export default function Assets() {
     <>
       <Stack.Screen options={{ title, headerShown: false }} />
       <Frame>
-        <DetailsHeader title={title} icon={icon} />
-        <View className="gap-y-5">
-          <View className="flex flex-row items-center justify-center gap-x-2">
-            <FText className="!text-4xl" bold>
-              {tempHolding}
-            </FText>
-            <Feather name="trending-up" size={30} className="text-success" />
-          </View>
-          <Graph allData={[]} />
-          <View className="">
-            <FText className="" bold>
-              About {title}
-            </FText>
-            <FText>{token.description}</FText>
-          </View>
+        <View className="flex-1">
+          <DetailsHeader title={title} icon={icon} />
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View className="gap-y-5">
+              <View className="flex flex-row items-center justify-center gap-x-2">
+                <FText className="!text-4xl" bold>
+                  ${tempHolding}
+                </FText>
+                <Feather name="trending-up" size={30} className="text-success" />
+              </View>
+              <Graph allData={[]} />
+              <View>
+                <FText bold>About {title}</FText>
+                <FText>{token.description}</FText>
+              </View>
+            </View>
+          </ScrollView>
+          <AssetDetailsCTAs />
         </View>
       </Frame>
     </>

@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Alert } from 'react-native';
-import { isAddress } from 'viem';
+import { isAddress, parseEther } from 'viem';
 
 import { Button } from '~/components/Button';
 import { HeaderBar } from '~/components/HeaderBar';
 import AmountInput from '~/components/Send/AmountInput';
 import RecipientInput from '~/components/Send/RecipientInput';
-import { Frame } from '~/components/Wrappers/Frame';
-
 import { useAppData } from '~/components/Wrappers/AppData';
+import { Frame } from '~/components/Wrappers/Frame';
 import viem from '~/services/viemService';
-import { parseEther } from 'viem';
 
 export default function Send() {
   const [recipient, setRecipient] = useState('');
