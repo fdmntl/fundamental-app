@@ -47,7 +47,7 @@ export const AmountInput = ({
           Amount
         </FText>
         <TouchableOpacity
-          className="flex-row items-center space-x-2 rounded-lg px-4 py-2"
+          className="flex-row items-center space-x-2 rounded-xl bg-primary px-4 py-1"
           onPress={() => setIsPickerOpen(true)}>
           {selectedToken && tokenIcons[selectedToken.symbol] ? (
             <Image source={tokenIcons[selectedToken.symbol]} className="mr-2 h-6 w-6" />
