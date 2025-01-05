@@ -62,16 +62,18 @@ export default function Send() {
   */
 
   // Map balances to a lookup object for quick access
-  const balanceMap = (userData?.balances ?? []).reduce(
-    (
-      acc: Record<string, number>,
-      { token_address, balance }: { token_address: string; balance: number }
-    ): Record<string, number> => {
-      acc[token_address] = balance;
-      return acc;
-    },
-    {} as Record<string, number> // Ensure the initial value is typed correctly
-  );
+  const balanceMap = Array.isArray(userData?.balances)
+    ? userData.balances.reduce<Record<string, number>>(
+        (
+          acc: Record<string, number>,
+          { token_address, balance }: { token_address: string; balance: number }
+        ) => {
+          acc[token_address] = balance;
+          return acc;
+        },
+        {}
+      )
+    : {};
 
   // Filter tokens based on user balances
   const userTokens = balanceMap

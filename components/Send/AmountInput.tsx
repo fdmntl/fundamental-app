@@ -3,7 +3,7 @@ import { View, TextInput, TouchableOpacity, Text, Modal, FlatList, Image } from 
 import { Feather } from '@expo/vector-icons';
 import { FText } from '~/components/Text/FText';
 import { Token } from '~/types/supabaseTypes';
-import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons'; // Import token icons mapping
+import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
 
 interface AmountInputProps {
   onChange: (value: string) => void;
@@ -49,7 +49,12 @@ export const AmountInput = ({
         <TouchableOpacity
           className="flex-row items-center space-x-2 rounded-lg px-4 py-2"
           onPress={() => setIsPickerOpen(true)}>
-          <FText className=" text-text" bold>
+          {selectedToken && tokenIcons[selectedToken.symbol] ? (
+            <Image source={tokenIcons[selectedToken.symbol]} className="mr-2 h-6 w-6" />
+          ) : (
+            <Feather name="cpu" size={24} className="mr-2 text-text" />
+          )}
+          <FText className="text-text" bold>
             {selectedToken?.symbol || 'Select Token'}
           </FText>
         </TouchableOpacity>
@@ -79,9 +84,9 @@ export const AmountInput = ({
             </FText>
             <FlatList
               data={tokens}
-              keyExtractor={(item) => item.address}
+              keyExtractor={(item) => item.address + item.symbol}
               renderItem={({ item }) => {
-                const icon = tokenIcons[item.symbol] || null; // Get token icon or null
+                const icon = tokenIcons[item.symbol] || null;
                 return (
                   <TouchableOpacity
                     className="flex-row items-center rounded-lg p-3"
