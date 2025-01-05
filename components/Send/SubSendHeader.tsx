@@ -20,7 +20,7 @@ export const SubSendHeader = ({ title, address, icon }: SubSendHeaderProps) => {
       </TouchableOpacity>
       <FTitle className="mt-2 text-4xl text-text">Send {title}</FTitle>
       {icon && (
-        <View className="ml-auto mr-2">
+        <View className="ml-auto">
           <Image source={icon} style={{ height: 50, width: 50 }} resizeMode="contain" />
         </View>
       )}

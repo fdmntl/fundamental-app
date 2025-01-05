@@ -57,7 +57,7 @@ export default function SendToken() {
       <Stack.Screen options={{ title: selectedToken?.name || 'Send Token', headerShown: false }} />
       <Frame>
         <View className="flex-1">
-          <SubSendHeader title={selectedToken.name} address={address as string} icon={icon} />
+          <SubSendHeader title={selectedToken.symbol} address={address as string} icon={icon} />
           <RecipientInput value={recipient} onChange={setRecipient} />
           <AmountInput
             value={amount}
