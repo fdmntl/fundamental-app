@@ -7,7 +7,6 @@ import { Button } from '../Button';
 import { FText } from '../Text/FText';
 
 export const AssetDetailsCTAs = ({ tokenAddress }: { tokenAddress: string }) => {
-  console.log('Received tokenAddress:', tokenAddress); // Debug log
   const [isTransferModalVisible, setisTransferModalVisible] = useState(false);
   const toggleModal = () => setisTransferModalVisible(!isTransferModalVisible);
   const router = useRouter();
@@ -28,7 +27,7 @@ export const AssetDetailsCTAs = ({ tokenAddress }: { tokenAddress: string }) => 
                   className="flex-row items-center gap-x-2"
                   onPress={() => {
                     if (tokenAddress) {
-                      console.log('Navigating to:', `/send/${tokenAddress}`);
+                      // console.log('Navigating to:', `/send/${tokenAddress}`);
                       router.push(`/send/${tokenAddress}`); // Navigate to dynamic route
                     } else {
                       console.error('Token address is undefined');

@@ -9,6 +9,7 @@ import { Frame } from '~/components/Wrappers/Frame';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Token } from '~/types/supabaseTypes';
 import { SubSendHeader } from '~/components/Send/SubSendHeader';
+import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
 
 import { FText } from '~/components/Text/FText';
 
@@ -36,6 +37,7 @@ export default function SendToken() {
 
   const handleSendPress = () => {
     console.log(`Sending ${amount} ${selectedToken?.symbol} to ${recipient}`);
+    // TODO: Implement send logic
   };
 
   if (!selectedToken) {
@@ -48,12 +50,14 @@ export default function SendToken() {
     );
   }
 
+  const icon = tokenIcons[selectedToken.symbol];
+
   return (
     <>
       <Stack.Screen options={{ title: selectedToken?.name || 'Send Token', headerShown: false }} />
       <Frame>
         <View className="flex-1">
-          <SubSendHeader title={`${selectedToken.name} ${address}`} address={address as string} />
+          <SubSendHeader title={selectedToken.name} address={address as string} icon={icon} />
           <RecipientInput value={recipient} onChange={setRecipient} />
           <AmountInput
             value={amount}

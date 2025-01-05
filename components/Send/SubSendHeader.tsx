@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
-import { View } from 'react-native';
+import { View, Image, ImageSourcePropType } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { FTitle } from '../Text/FTitle';
@@ -9,16 +9,21 @@ import { FTitle } from '../Text/FTitle';
 interface SubSendHeaderProps {
   title: string;
   address: string;
+  icon?: ImageSourcePropType;
 }
 
-export const SubSendHeader = ({ title, address }: SubSendHeaderProps) => {
+export const SubSendHeader = ({ title, address, icon }: SubSendHeaderProps) => {
   return (
     <View className="h-50 z-10 flex-row items-center gap-2 py-4">
       <TouchableOpacity onPress={() => router.push(`/assets/${address}`)}>
-        {/* Navigate back */}
         <Feather name="chevron-left" size={42} className="-ml-2 text-text" />
       </TouchableOpacity>
-      <FTitle className="mt-2 text-4xl text-text">{title}</FTitle>
+      <FTitle className="mt-2 text-4xl text-text">Send {title}</FTitle>
+      {icon && (
+        <View className="ml-auto mr-2">
+          <Image source={icon} style={{ height: 50, width: 50 }} resizeMode="contain" />
+        </View>
+      )}
     </View>
   );
 };
