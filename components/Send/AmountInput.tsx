@@ -54,7 +54,7 @@ export const AmountInput = ({
           ) : (
             <Feather name="cpu" size={24} className="mr-2 text-text" />
           )}
-          <FText className="text-text" bold>
+          <FText className="text-white" bold>
             {selectedToken?.symbol || 'Select Token'}
           </FText>
         </TouchableOpacity>
