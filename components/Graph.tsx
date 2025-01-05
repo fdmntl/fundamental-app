@@ -81,7 +81,9 @@ const Graph = ({ allData }: GraphProps) => {
         setContainerWidth(width - 16); // Account for padding inside the frame
       }}>
       {/* Current Price */}
-      <FText className="text-3xl font-bold text-text">${currentValue.toFixed(2)}</FText>
+      <FText className="text-3xl text-text" bold>
+        ${currentValue.toFixed(2)}
+      </FText>
 
       {/* Date */}
       {['1week', '1month', '1year'].includes(selectedRange) && currentDate && (

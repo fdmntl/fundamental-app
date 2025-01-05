@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View, Alert } from 'react-native';
-import { isAddress } from 'viem';
+import { isAddress, parseEther } from 'viem';
 
 import { Button } from '~/components/Button';
 import { HeaderBar } from '~/components/HeaderBar';
