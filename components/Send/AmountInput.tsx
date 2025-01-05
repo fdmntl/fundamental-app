@@ -52,7 +52,7 @@ export const AmountInput = ({
           {selectedToken && tokenIcons[selectedToken.symbol] ? (
             <Image source={tokenIcons[selectedToken.symbol]} className="mr-2 h-6 w-6" />
           ) : (
-            <Feather name="cpu" size={24} className="mr-2 text-text" />
+            <Feather name="cpu" size={24} className="mr-2 text-white" />
           )}
           <FText className="text-white" bold>
             {selectedToken?.symbol || 'Select Token'}
