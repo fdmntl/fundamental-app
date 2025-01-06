@@ -24,6 +24,21 @@ const getWalletClient = async (provider: PrivyEmbeddedWalletProvider) => {
   return walletClient;
 };
 
+// Creates a public client using the Privy Embedded Wallet provider
+const getPublicClient = async (provider: PrivyEmbeddedWalletProvider) => {
+  await provider.request({
+    method: 'wallet_switchEthereumChain',
+    params: [{ chainId: '0x2105' }],
+  });
+
+  const publicClient = createPublicClient({
+    chain: base,
+    transport: custom(provider),
+  });
+
+  return publicClient;
+};
+
 // Signs any message using the wallet client
 const signMessage = async (provider: PrivyEmbeddedWalletProvider, message: string) => {
   const client = await getWalletClient(provider);
@@ -115,4 +130,55 @@ const sendERC20 = async (
   }
 };
 
-export default { getWalletClient, signMessage, sendETH, sendERC20 };
+// Calls the `register` method of the contract at 0x2441914218D4f50F27189C73cD3A1ADdedAB07B0
+const registerName = async (
+  provider: PrivyEmbeddedWalletProvider,
+  label: string,
+  owner: `0x${string}`
+) => {
+  const contractAddress = '0x2441914218D4f50F27189C73cD3A1ADdedAB07B0';
+  const client = await getWalletClient(provider);
+  const [account] = await client.getAddresses();
+
+  if (!owner.startsWith('0x') || owner.length !== 42) {
+    console.error('Invalid owner address:', owner);
+    return;
+  }
+
+  try {
+    // ABI for `register` method
+    const contractABI = [
+      {
+        name: 'register',
+        type: 'function',
+        stateMutability: 'nonpayable',
+        inputs: [
+          { name: 'label', type: 'string' },
+          { name: 'owner', type: 'address' },
+        ],
+        outputs: [],
+      },
+    ];
+
+    // Prepare data for the register method
+    const data = encodeFunctionData({
+      abi: contractABI,
+      functionName: 'register',
+      args: [label, owner],
+    });
+
+    // Send transaction
+    const txHash = await client.sendTransaction({
+      account: account,
+      to: contractAddress,
+      data: data,
+      value: 0n, // No ETH is sent with the call
+    });
+
+    console.log(`Transaction sent: ${txHash}`);
+  } catch (error) {
+    console.error('Error calling register method:', error);
+  }
+};
+
+export default { getWalletClient, getPublicClient, signMessage, sendETH, sendERC20, registerName };
