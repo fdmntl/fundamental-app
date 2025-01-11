@@ -1,7 +1,6 @@
-import { useAppData } from '~/components/Wrappers/AppData';
+import { Token, User } from '~/types/supabaseTypes';
 
-export const getUserTokenAmount = (address: string): number => {
-  const { tokens, user } = useAppData();
+export const getUserTokenAmount = (address: string, tokens: Token[], user: User): number => {
   const balanceObj = user.balances.find((b) => b.token_address === address);
   const digits = tokens.find((token) => token.address === address)?.digits;
 

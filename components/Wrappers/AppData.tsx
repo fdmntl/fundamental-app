@@ -26,7 +26,7 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
     id: '',
     created_at: '',
     wallet_address: '',
-    balances: {},
+    balances: [],
   });
   const [privy, setPrivy] = useState<Privy>({});
   const [tokens, setTokens] = useState<Token[]>([]);
@@ -74,7 +74,7 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
       id: '',
       created_at: '',
       wallet_address: '',
-      balances: {},
+      balances: [],
     });
     setPrivy({});
     setTokens([]);

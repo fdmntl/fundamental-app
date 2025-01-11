@@ -3,6 +3,7 @@ import { TouchableOpacity, View, Image } from 'react-native';
 import { Token } from 'types/supabaseTypes';
 
 import { FText } from '../Text/FText';
+import { useAppData } from '../Wrappers/AppData';
 
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
 import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
@@ -12,7 +13,8 @@ interface AssetListDisplayProps {
 }
 
 export const AssetListDisplay = ({ token }: AssetListDisplayProps) => {
-  const userTokenValue = getUserTokenValue(token.address).toFixed(2);
+  const { tokens, user } = useAppData();
+  const userTokenValue = getUserTokenValue(token.address, tokens, user).toFixed(2);
 
   const icon = tokenIcons[token.symbol];
 

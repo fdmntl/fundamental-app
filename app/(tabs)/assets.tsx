@@ -25,16 +25,18 @@ export default function Assets() {
         <View className="flex gap-y-5">
           <Graph allData={allData} />
           <Container title="Money">
-            <View className="flex gap-y-3">
+            <View className="flex gap-y-4">
               {stableCoins.map((item) => (
                 <AssetListDisplay key={item.address} token={item} />
               ))}
             </View>
           </Container>
           <Container title="Crypto">
-            {cryptos.map((item) => (
-              <AssetListDisplay key={item.address} token={item} />
-            ))}
+            <View className="flex gap-y-4">
+              {cryptos.map((item) => (
+                <AssetListDisplay key={item.address} token={item} />
+              ))}
+            </View>
           </Container>
         </View>
       </ScrollView>
