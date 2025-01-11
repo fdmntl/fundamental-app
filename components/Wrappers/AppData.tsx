@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { useSupabaseSubscription } from '~/services/Supabase/useSupabaseSubscription';
 import { useSupabaseUser } from '~/services/Supabase/useSupabaseUser';
-import { Privy } from '~/types/appData';
+import { Privy } from '~/types/privy';
 import { Token, User } from '~/types/supabaseTypes';
 
 interface ConfigType {

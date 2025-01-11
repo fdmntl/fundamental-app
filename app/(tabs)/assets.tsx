@@ -7,7 +7,7 @@ import Graph from '~/components/Graph';
 import { HeaderBar } from '~/components/HeaderBar';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
-import { DataPoint } from '~/types/data';
+import { DataPoint } from '~/types/graph';
 
 // TODO: use user balance instead of token list
 

@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 
 import { FText } from '~/components/Text/FText';
-import { DataPoint } from '~/types/data';
+import { DataPoint } from '~/types/graph';
 
 interface GraphProps {
   allData: DataPoint[];
