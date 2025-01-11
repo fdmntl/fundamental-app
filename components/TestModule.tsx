@@ -22,11 +22,10 @@ const TestModule = () => {
   }
 
   const walletClient = viem.getWalletClient(wallet.provider);
-
   return (
     <View>
       <Container className="" title="Test Module">
-        <FText className="text-lg">Your address is {user.address}</FText>
+        <FText className="text-lg">Your address is {user.wallet_address}</FText>
         <Button
           onPress={() => console.log(alchemy.getEthBalance(wallet.account?.address ?? ''))}
           className="bg-primary"
@@ -65,6 +64,8 @@ const TestModule = () => {
           className="bg-primary"
           title="Print appData"
         /> */}
+        <FText className="text-lg">Your token balances: </FText>
+        <FText className="text-lg"> {JSON.stringify(user.balances)}</FText>
       </Container>
     </View>
   );
