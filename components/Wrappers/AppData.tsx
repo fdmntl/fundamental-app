@@ -16,6 +16,7 @@ interface ConfigType {
   addToken: (token: Token) => void;
   updateToken: (address: string, updates: Partial<Token>) => void;
   getToken: (address: string) => Token | undefined;
+  resetAppData: () => void;
 }
 
 const AppContext = createContext<ConfigType | undefined>(undefined);
@@ -68,6 +69,17 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
     return tokens.find((token) => token.address === address);
   };
 
+  const resetAppData = () => {
+    setUser({
+      id: '',
+      created_at: '',
+      wallet_address: '',
+      balances: {},
+    });
+    setPrivy({});
+    setTokens([]);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -81,6 +93,7 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
         addToken,
         updateToken,
         getToken,
+        resetAppData,
       }}>
       {children}
     </AppContext.Provider>
