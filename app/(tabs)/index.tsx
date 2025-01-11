@@ -32,7 +32,7 @@ export default function Home() {
       <ScrollView>
         <FTitle className="text-4xl">Welcome to Fundamental!</FTitle>
         <FText className="text-lg">This is Fundamental</FText>
-        <View className="mt-4">
+        <View className="mt-4 gap-4">
           <CreateWalletButton />
           <DebugButton />
           <LogoutButton />

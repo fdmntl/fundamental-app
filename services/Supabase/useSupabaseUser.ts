@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import { supabase } from '~/supabaseConfig';
 
 interface SupabaseUserProps {

@@ -75,7 +75,7 @@ export default function Login() {
           />
           <Button
             title="New UI Login"
-            className="m-auto w-2/3 bg-primary"
+            className="mx-auto my-4 w-2/3 bg-primary"
             onPress={() => login({ loginMethods: ['email', 'sms'] })}
           />
           <FText className="m-auto mt-4 text-text">

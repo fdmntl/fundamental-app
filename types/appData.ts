@@ -2,8 +2,8 @@ import { PrivyEmbeddedWalletProvider, EmbeddedWalletState } from '@privy-io/expo
 import * as _privy_io_public_api from '@privy-io/public-api';
 
 type User = {
-  address?: string;
-  privyID?: string;
+  address: string;
+  privyID: string;
 };
 
 type Wallet = {

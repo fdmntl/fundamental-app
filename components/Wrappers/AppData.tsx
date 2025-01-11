@@ -1,10 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-import { User, Wallet, Privy } from '~/types/appData';
-import { Token, UserData } from '~/types/supabaseTypes';
-
 import { useSupabaseSubscription } from '~/services/Supabase/useSupabaseSubscription';
 import { useSupabaseUser } from '~/services/Supabase/useSupabaseUser';
+import { User, Wallet, Privy } from '~/types/appData';
+import { Token, UserData } from '~/types/supabaseTypes';
 
 interface ConfigType {
   user: User;
@@ -27,7 +26,7 @@ interface ConfigType {
 const AppContext = createContext<ConfigType | undefined>(undefined);
 
 export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ children }) => {
-  const [user, setUser] = useState<User>({});
+  const [user, setUser] = useState<User>({ address: '', privyID: '' });
   const [wallet, setWallet] = useState<Wallet>({});
   const [privy, setPrivy] = useState<Privy>({});
   const [tokens, setTokens] = useState<Token[]>([]);
@@ -36,7 +35,7 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
   const tokenData: Token[] = useSupabaseSubscription({ table: 'token_list' });
 
   const singleUserData: UserData | null = useSupabaseUser({
-    address: user.address || '',
+    address: user.address,
   });
 
   useEffect(() => {
@@ -44,6 +43,7 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
   }, [tokenData]);
 
   useEffect(() => {
+    if (!singleUserData) return;
     setUserData(singleUserData); // Update state with single user
   }, [singleUserData]);
 
