@@ -5,15 +5,14 @@ import { Token } from 'types/supabaseTypes';
 import { FText } from '../Text/FText';
 
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
+import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 
 interface AssetListDisplayProps {
   token: Token;
 }
 
 export const AssetListDisplay = ({ token }: AssetListDisplayProps) => {
-  const actualValue = token.value[token.value.length - 1].value;
-
-  const roundedValue = parseFloat(actualValue).toFixed(2);
+  const userTokenValue = getUserTokenValue(token.address).toFixed(2);
 
   const icon = tokenIcons[token.symbol];
 
@@ -30,7 +29,7 @@ export const AssetListDisplay = ({ token }: AssetListDisplayProps) => {
           </View>
         </View>
         <FText bold className="!text-2xl">
-          $ {roundedValue}
+          $ {userTokenValue}
         </FText>
       </View>
     </TouchableOpacity>
