@@ -15,7 +15,7 @@ export type Token = {
 
 export type TokenList = Token[];
 
-export type UserData = {
+export type User = {
   id: string;
   created_at: string;
   wallet_address: string;
