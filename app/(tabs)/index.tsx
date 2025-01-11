@@ -3,12 +3,12 @@ import { View, ScrollView } from 'react-native';
 
 import { Button } from '~/components/Button';
 import { Container } from '~/components/Container';
-import CreateWalletButton from '~/components/CreateWalletButton';
 import { DebugButton } from '~/components/DebugButton';
 import { HeaderBar, PillMessageBox } from '~/components/HeaderBar';
 import { LogoutButton } from '~/components/LogoutButton';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
+import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 
 import 'fast-text-encoding';
@@ -16,6 +16,7 @@ import 'react-native-get-random-values';
 import '@ethersproject/shims';
 
 export default function Home() {
+  const { privy } = useAppData();
   const homePillContent = () => {
     return (
       <PillMessageBox>
@@ -33,7 +34,11 @@ export default function Home() {
         <FTitle className="text-4xl">Welcome to Fundamental!</FTitle>
         <FText className="text-lg">This is Fundamental</FText>
         <View className="mt-4 gap-4">
-          <CreateWalletButton />
+          <Container className="" title="Wallet Data">
+            <FText className="text-lg">Your wallet has been created!</FText>
+            <FText className="text-lg">Your wallet status is {privy.wallet?.status}</FText>
+            <FText className="text-lg">Your address is {privy.wallet?.account?.address}</FText>
+          </Container>
           <DebugButton />
           <LogoutButton />
         </View>

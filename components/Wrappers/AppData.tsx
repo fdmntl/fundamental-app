@@ -2,16 +2,13 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { useSupabaseSubscription } from '~/services/Supabase/useSupabaseSubscription';
 import { useSupabaseUser } from '~/services/Supabase/useSupabaseUser';
-import { User, Wallet, Privy } from '~/types/appData';
+import { User, Privy } from '~/types/appData';
 import { Token, UserData } from '~/types/supabaseTypes';
 
 interface ConfigType {
   user: User;
   setUser: (user: User) => void;
   updateUser: (updates: Partial<User>) => void;
-  wallet: Wallet;
-  setWallet: (wallet: Wallet) => void;
-  updateWallet: (updates: Partial<Wallet>) => void;
   privy: Privy;
   setPrivy: (privy: Privy) => void;
   updatePrivy: (updates: Partial<Privy>) => void;
@@ -27,7 +24,6 @@ const AppContext = createContext<ConfigType | undefined>(undefined);
 
 export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ children }) => {
   const [user, setUser] = useState<User>({ address: '', privyID: '' });
-  const [wallet, setWallet] = useState<Wallet>({});
   const [privy, setPrivy] = useState<Privy>({});
   const [tokens, setTokens] = useState<Token[]>([]);
   const [userData, setUserData] = useState<UserData | null>(null); // Change to single item
@@ -51,12 +47,11 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
     setUser((prevUser) => ({ ...prevUser, ...updates }));
   };
 
-  const updateWallet = (updates: Partial<Wallet>) => {
-    setWallet((prevWallet) => ({ ...prevWallet, ...updates }));
-  };
-
   const updatePrivy = (updates: Partial<Privy>) => {
-    setPrivy((prevPrivy) => ({ ...prevPrivy, ...updates }));
+    setPrivy((prevPrivy) => {
+      if (!prevPrivy) return { ...updates } as Privy;
+      return { ...prevPrivy, ...updates };
+    });
   };
 
   const addToken = (token: Token) => {
@@ -79,9 +74,6 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
         user,
         setUser,
         updateUser,
-        wallet,
-        setWallet,
-        updateWallet,
         privy,
         setPrivy,
         updatePrivy,
