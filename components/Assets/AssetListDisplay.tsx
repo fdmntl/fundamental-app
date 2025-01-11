@@ -11,7 +11,10 @@ interface AssetListDisplayProps {
 }
 
 export const AssetListDisplay = ({ token }: AssetListDisplayProps) => {
-  const actualValue = token.value[token.value.length - 1].value;
+  const actualValue =
+    Array.isArray(token?.value) && token.value.length > 0
+      ? token.value[token.value.length - 1]?.value
+      : '0';
 
   const roundedValue = parseFloat(actualValue).toFixed(2);
 

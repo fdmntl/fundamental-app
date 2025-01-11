@@ -35,7 +35,6 @@ export default function Home() {
         <FText className="text-lg">This is Fundamental</FText>
         <View className="mt-4 gap-4">
           <Container className="" title="User info">
-            <FText className="text-lg">Your wallet has been created!</FText>
             <FText className="text-lg">Your wallet status is {privy.wallet?.status}</FText>
             <FText className="text-lg">Your address is {privy.wallet?.account?.address}</FText>
             <FText className="text-lg">Your userId is {user.id}</FText>
