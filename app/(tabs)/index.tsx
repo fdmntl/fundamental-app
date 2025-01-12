@@ -3,12 +3,12 @@ import { View, ScrollView } from 'react-native';
 
 import { Button } from '~/components/Button';
 import { Container } from '~/components/Container';
-import CreateWalletButton from '~/components/CreateWalletButton';
 import { DebugButton } from '~/components/DebugButton';
 import { HeaderBar, PillMessageBox } from '~/components/HeaderBar';
 import { LogoutButton } from '~/components/LogoutButton';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
+import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 
 import 'fast-text-encoding';
@@ -16,6 +16,7 @@ import 'react-native-get-random-values';
 import '@ethersproject/shims';
 
 export default function Home() {
+  const { privy, user } = useAppData();
   const homePillContent = () => {
     return (
       <PillMessageBox>
@@ -32,8 +33,14 @@ export default function Home() {
       <ScrollView>
         <FTitle className="text-4xl">Welcome to Fundamental!</FTitle>
         <FText className="text-lg">This is Fundamental</FText>
-        <View className="mt-4">
-          <CreateWalletButton />
+        <View className="mt-4 gap-4">
+          <Container className="" title="User info">
+            <FText className="text-lg">Your wallet status is {privy.wallet?.status}</FText>
+            <FText className="text-lg">Your address is {privy.wallet?.account?.address}</FText>
+            <FText className="text-lg">Your userId is {user.id}</FText>
+            <FText className="text-lg">Your created your account at {user.created_at}</FText>
+            <FText className="text-lg">Your ens is {user.ens}</FText>
+          </Container>
           <DebugButton />
           <LogoutButton />
         </View>

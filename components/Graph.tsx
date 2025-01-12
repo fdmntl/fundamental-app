@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 
 import { FText } from '~/components/Text/FText';
-import { DataPoint } from '~/types/data';
+import { DataPoint } from '~/types/graph';
 
 interface GraphProps {
   allData: DataPoint[];
@@ -134,7 +134,7 @@ const Graph = ({ allData }: GraphProps) => {
       )}
 
       {/* Time Range Selection */}
-      <View className="mb-4 flex-row justify-around">
+      <View className="mb-2 flex-row justify-around">
         {['1day', '1week', '1month', '1year'].map((range) => (
           <TouchableOpacity
             key={range}
@@ -151,3 +151,11 @@ const Graph = ({ allData }: GraphProps) => {
 };
 
 export default Graph;
+
+//* Mock data generation
+// const [allData] = useState<DataPoint[]>(
+//   Array.from({ length: 365 }, (_, i) => ({
+//     value: Math.floor(Math.random() * (2763 - 1000 + 1)) + 1000, // Random price
+//     label: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(), // ISO date
+//   }))
+// );

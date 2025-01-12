@@ -15,12 +15,12 @@ export type Token = {
 
 export type TokenList = Token[];
 
-export type UserData = {
+export type User = {
   id: string;
   created_at: string;
   wallet_address: string;
   ens?: string;
-  balances: { [key: string]: number };
+  balances: { token_address: string; balance: number }[];
   selected_money?: string;
 };
 
