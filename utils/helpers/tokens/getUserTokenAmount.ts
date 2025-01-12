@@ -5,5 +5,7 @@ export const getUserTokenAmount = (address: string, tokens: Token[], user: User)
   const digits = tokens.find((token) => token.address === address)?.digits;
 
   if (!balanceObj || !digits || digits === 0) return 0;
-  return balanceObj.balance / Math.pow(10, digits);
+
+  const tokenAmount = balanceObj.balance / Math.pow(10, digits);
+  return tokenAmount;
 };

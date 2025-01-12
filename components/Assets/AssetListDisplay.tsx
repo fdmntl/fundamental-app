@@ -6,6 +6,7 @@ import { FText } from '../Text/FText';
 import { useAppData } from '../Wrappers/AppData';
 
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
+import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 
 interface AssetListDisplayProps {
@@ -15,6 +16,7 @@ interface AssetListDisplayProps {
 export const AssetListDisplay = ({ token }: AssetListDisplayProps) => {
   const { tokens, user } = useAppData();
   const userTokenValue = getUserTokenValue(token.address, tokens, user).toFixed(2);
+  const userTokenAmount = getUserTokenAmount(token.address, tokens, user);
 
   const icon = tokenIcons[token.symbol];
 
@@ -25,14 +27,18 @@ export const AssetListDisplay = ({ token }: AssetListDisplayProps) => {
           <Image source={icon} style={{ height: 40, width: 40 }} />
           <View>
             <FText className="">{token.name}</FText>
-            <FText className="!text-sm" bold>
-              {token.symbol}
-            </FText>
+            {!token.is_stablecoin && (
+              <FText className="!text-sm">
+                {userTokenAmount} {token.symbol}
+              </FText>
+            )}
           </View>
         </View>
-        <FText bold className="!text-2xl">
-          $ {userTokenValue}
-        </FText>
+        <View className="flex items-end justify-center gap-2">
+          <FText bold className="!text-2xl">
+            ${userTokenValue}
+          </FText>
+        </View>
       </View>
     </TouchableOpacity>
   );
