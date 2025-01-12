@@ -21,20 +21,20 @@ export default function Layout() {
   const { theme } = useTheme();
 
   const { isReady } = usePrivy();
-  const { user } = useAppData();
+  const { privy } = useAppData();
 
   useEffect(() => {
-    if (isReady && !user.privyID) {
+    if (isReady && !privy.user) {
       router.navigate('/login'); // TODO: disable login page back gesture
     }
-  }, [isReady, user, router]);
+  }, [isReady, privy, router]);
 
   if (!isReady) {
     return <Loading />;
   }
 
   //* Fail safe
-  if (!user) {
+  if (!privy) {
     return null;
   }
 

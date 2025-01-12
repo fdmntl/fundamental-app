@@ -1,18 +1,14 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-import { User, Wallet, Privy } from '~/types/appData';
-import { Token, UserData } from '~/types/supabaseTypes';
-
 import { useSupabaseSubscription } from '~/services/Supabase/useSupabaseSubscription';
 import { useSupabaseUser } from '~/services/Supabase/useSupabaseUser';
+import { Privy } from '~/types/privy';
+import { Token, User } from '~/types/supabaseTypes';
 
 interface ConfigType {
   user: User;
   setUser: (user: User) => void;
   updateUser: (updates: Partial<User>) => void;
-  wallet: Wallet;
-  setWallet: (wallet: Wallet) => void;
-  updateWallet: (updates: Partial<Wallet>) => void;
   privy: Privy;
   setPrivy: (privy: Privy) => void;
   updatePrivy: (updates: Partial<Privy>) => void;
@@ -20,43 +16,43 @@ interface ConfigType {
   addToken: (token: Token) => void;
   updateToken: (address: string, updates: Partial<Token>) => void;
   getToken: (address: string) => Token | undefined;
-  userData: UserData;
-  getUserData: (id: string) => UserData | undefined;
+  resetAppData: () => void;
 }
 
 const AppContext = createContext<ConfigType | undefined>(undefined);
 
 export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ children }) => {
-  const [user, setUser] = useState<User>({});
-  const [wallet, setWallet] = useState<Wallet>({});
+  const [user, setUser] = useState<User>({
+    id: '',
+    created_at: '',
+    wallet_address: '',
+    balances: [],
+  });
   const [privy, setPrivy] = useState<Privy>({});
   const [tokens, setTokens] = useState<Token[]>([]);
-  const [userData, setUserData] = useState<UserData | null>(null); // Change to single item
+
+  const currentUser = useSupabaseUser({ address: privy.wallet?.account?.address || '' });
+
+  useEffect(() => {
+    if (!currentUser) return;
+    setUser(currentUser);
+  }, [currentUser]);
 
   const tokenData: Token[] = useSupabaseSubscription({ table: 'token_list' });
-
-  const singleUserData: UserData | null = useSupabaseUser({
-    address: user.address || '',
-  });
 
   useEffect(() => {
     setTokens(tokenData);
   }, [tokenData]);
 
-  useEffect(() => {
-    setUserData(singleUserData); // Update state with single user
-  }, [singleUserData]);
-
   const updateUser = (updates: Partial<User>) => {
     setUser((prevUser) => ({ ...prevUser, ...updates }));
   };
 
-  const updateWallet = (updates: Partial<Wallet>) => {
-    setWallet((prevWallet) => ({ ...prevWallet, ...updates }));
-  };
-
   const updatePrivy = (updates: Partial<Privy>) => {
-    setPrivy((prevPrivy) => ({ ...prevPrivy, ...updates }));
+    setPrivy((prevPrivy) => {
+      if (!prevPrivy) return { ...updates } as Privy;
+      return { ...prevPrivy, ...updates };
+    });
   };
 
   const addToken = (token: Token) => {
@@ -73,15 +69,23 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
     return tokens.find((token) => token.address === address);
   };
 
+  const resetAppData = () => {
+    setUser({
+      id: '',
+      created_at: '',
+      wallet_address: '',
+      balances: [],
+    });
+    setPrivy({});
+    setTokens([]);
+  };
+
   return (
     <AppContext.Provider
       value={{
         user,
         setUser,
         updateUser,
-        wallet,
-        setWallet,
-        updateWallet,
         privy,
         setPrivy,
         updatePrivy,
@@ -89,7 +93,7 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
         addToken,
         updateToken,
         getToken,
-        userData, // Expose single user
+        resetAppData,
       }}>
       {children}
     </AppContext.Provider>
