@@ -62,7 +62,7 @@ export const AmountInput = ({
           </FText>
         </TouchableOpacity>
       </View>
-      <View className="flex-row items-center">
+      <View className="-mt-2 flex-row items-center">
         <TextInput
           className={`flex-1 rounded-lg bg-content text-4xl font-semibold
             ${value === '' ? 'text-text' : isValidAmount ? 'text-success' : 'text-error'}`}
