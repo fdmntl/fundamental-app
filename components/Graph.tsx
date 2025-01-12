@@ -134,7 +134,7 @@ const Graph = ({ allData }: GraphProps) => {
       )}
 
       {/* Time Range Selection */}
-      <View className="mb-4 flex-row justify-around">
+      <View className="mb-2 flex-row justify-around">
         {['1day', '1week', '1month', '1year'].map((range) => (
           <TouchableOpacity
             key={range}
