@@ -34,22 +34,16 @@ const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
   };
 
   return (
-    <View className="mb-4 h-40 w-full rounded-xl bg-content p-4">
+    <View className="h-fit w-full gap-4 rounded-xl bg-content p-6">
       <View className="flex-row items-center">
         <FText className="!text-2xl" bold>
           Recipient
         </FText>
       </View>
-      <View className="mt-4 flex-row items-center">
+      <View className="flex-row items-center">
         <TextInput
-          className={`flex-1 rounded-md bg-content p-3
-            ${
-              value === ''
-                ? 'border-[3px] border-background text-text'
-                : isValidAddress
-                  ? 'border-[3px] border-success text-success'
-                  : 'border-[3px] border-error text-error'
-            }`}
+          className={`flex-1 rounded-md bg-content text-4xl font-semibold
+            ${value === '' ? 'text-text' : isValidAddress ? 'text-success' : 'text-error'}`}
           placeholder="0x1234...abcd"
           placeholderTextColor="#888"
           value={value}

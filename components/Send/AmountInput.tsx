@@ -1,9 +1,12 @@
+import { Feather } from '@expo/vector-icons';
 import { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Modal, FlatList, Image } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+
 import { FText } from '~/components/Text/FText';
 import { Token } from '~/types/supabaseTypes';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
+
+// TODO: fix current balance, use token helpers
 
 interface AmountInputProps {
   onChange: (value: string) => void;
@@ -41,40 +44,38 @@ export const AmountInput = ({
   };
 
   return (
-    <View className="mb-4 rounded-xl bg-content p-4">
-      <View className="mb-4 flex-row items-center justify-between">
+    <View className="h-fit w-full gap-2 rounded-xl bg-content p-4 pb-6 pl-6">
+      <View className="flex-row items-center justify-between">
         <FText className="!text-2xl text-text" bold>
           Amount
         </FText>
         <TouchableOpacity
-          className="flex-row items-center space-x-2 rounded-xl bg-primary px-4 py-2"
+          className="flex-row items-center space-x-2 rounded-xl bg-background px-4 py-3"
           onPress={() => setIsPickerOpen(true)}>
           {selectedToken && tokenIcons[selectedToken.symbol] ? (
-            <Image source={tokenIcons[selectedToken.symbol]} className="mr-2 h-6 w-6" />
+            <Image source={tokenIcons[selectedToken.symbol]} className="mr-2 h-8 w-8" />
           ) : (
-            <Feather name="cpu" size={24} className="mr-2 text-white" />
+            <Feather name="cpu" size={24} className="mr-2 text-text" />
           )}
-          <FText className="text-white" bold>
+          <FText className="text-info" bold>
             {selectedToken?.symbol || 'Select Token'}
           </FText>
         </TouchableOpacity>
       </View>
       <View className="flex-row items-center">
         <TextInput
-          className={`flex-1 rounded-lg bg-content p-3 text-lg ${
-            value === ''
-              ? 'border-2 border-background text-text'
-              : isValidAmount
-                ? 'border-2 border-green-500 text-green-600'
-                : 'border-2 border-red-500 text-red-600'
-          }`}
+          className={`flex-1 rounded-lg bg-content text-4xl font-semibold
+            ${value === '' ? 'text-text' : isValidAmount ? 'text-success' : 'text-error'}`}
           keyboardType="numeric"
-          placeholder={`Enter amount (Max: ${selectedTokenBalance})`}
+          placeholder={`0 ${selectedToken?.symbol}`}
           value={value}
           onChangeText={handleInputChange}
           placeholderTextColor="#888"
         />
       </View>
+      <FText className="!text-lg text-info" bold>
+        Balance: {selectedTokenBalance} {selectedToken?.symbol}
+      </FText>
       <Modal visible={isPickerOpen} transparent animationType="fade">
         <View className="flex-1 items-center justify-center">
           <View className="absolute h-full w-full bg-background opacity-50" />
