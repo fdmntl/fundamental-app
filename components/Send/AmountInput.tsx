@@ -48,7 +48,9 @@ export const AmountInput = ({
         </FText>
         <TouchableOpacity
           className="flex-row items-center space-x-2 rounded-xl bg-primary px-4 py-2"
-          onPress={() => setIsPickerOpen(true)}>
+          onPress={() => {
+            if (tokens.length > 1) setIsPickerOpen(true); // Only open if more than one token
+          }}>
           {selectedToken && tokenIcons[selectedToken.symbol] ? (
             <Image source={tokenIcons[selectedToken.symbol]} className="mr-2 h-6 w-6" />
           ) : (
