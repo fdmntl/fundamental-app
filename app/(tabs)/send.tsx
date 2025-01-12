@@ -10,37 +10,20 @@ import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { Token } from '~/types/supabaseTypes';
 
-// TODO: fix balance map using appData instead
-
 export default function Send() {
-  const { userData, tokens } = useAppData();
+  const { user, tokens } = useAppData();
 
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
 
-  // Map balances to a lookup object for quick access
-  const balanceMap = Array.isArray(userData?.balances)
-    ? userData.balances.reduce<Record<string, number>>(
-        (
-          acc: Record<string, number>,
-          { token_address, balance }: { token_address: string; balance: number }
-        ) => {
-          acc[token_address] = balance;
-          return acc;
-        },
-        {}
-      )
-    : {};
+  const possessedTokens = tokens.filter((token) =>
+    user.balances.some((balance) => balance.token_address === token.address)
+  );
 
-  // Filter tokens based on user balances
-  const userTokens = balanceMap
-    ? tokens.filter((token) => balanceMap[token.address] !== undefined)
-    : [];
-
-  // Get the balance of the selected token
-  const selectedTokenBalance =
-    selectedToken && balanceMap ? balanceMap[selectedToken.address] || 0 : 0;
+  const selectedTokenBalance = selectedToken
+    ? user.balances.find((balance) => balance.token_address === selectedToken.address)?.balance || 0
+    : 0;
 
   const isRecipientValid = isAddress(recipient);
   const isAmountValid = parseFloat(amount) > 0 && parseFloat(amount) <= selectedTokenBalance;
@@ -62,7 +45,8 @@ export default function Send() {
           <AmountInput
             value={amount}
             onChange={(value) => setAmount(value)}
-            tokens={userTokens}
+            tokens={possessedTokens}
+            user={user}
             selectedTokenBalance={selectedTokenBalance}
             onTokenChange={(token) => setSelectedToken(token)}
           />

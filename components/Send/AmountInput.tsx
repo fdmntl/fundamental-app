@@ -2,15 +2,15 @@ import { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
 
 import { FText } from '~/components/Text/FText';
-import { Token } from '~/types/supabaseTypes';
+import { Token, User } from '~/types/supabaseTypes';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
-
-// TODO: fix current balance, use token helpers
+import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 
 interface AmountInputProps {
   onChange: (value: string) => void;
   value: string;
   tokens: Token[];
+  user: User;
   defaultToken?: Token;
   selectedTokenBalance: number;
   onTokenChange?: (token: Token) => void;
@@ -20,6 +20,7 @@ export const AmountInput = ({
   onChange,
   value,
   tokens,
+  user,
   defaultToken = undefined,
   selectedTokenBalance,
   onTokenChange,
@@ -31,8 +32,12 @@ export const AmountInput = ({
     onChange(value.replace(/[^0-9.]/g, ''));
   };
 
-  const isValidAmount =
-    value !== '' && !isNaN(Number(value)) && Number(value) <= selectedTokenBalance;
+  const balanceDisplay =
+    selectedToken && selectedTokenBalance
+      ? getUserTokenAmount(selectedToken?.address, tokens, user)
+      : 0;
+
+  const isValidAmount = value !== '' && !isNaN(Number(value)) && Number(value) <= balanceDisplay;
 
   const handleTokenSelect = (token: Token) => {
     setSelectedToken(token);
@@ -69,7 +74,7 @@ export const AmountInput = ({
         />
       </View>
       <FText className="!text-lg text-info" bold>
-        Balance: {selectedTokenBalance} {selectedToken?.symbol}
+        Balance: {balanceDisplay.toFixed(2)} {selectedToken?.symbol}
       </FText>
       <Modal visible={isPickerOpen} transparent animationType="fade">
         <View className="flex-1 items-center justify-center">
