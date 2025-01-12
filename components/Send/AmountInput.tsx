@@ -1,6 +1,5 @@
-import { Feather } from '@expo/vector-icons';
 import { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, Modal, FlatList, Image } from 'react-native';
+import { View, TextInput, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
 
 import { FText } from '~/components/Text/FText';
 import { Token } from '~/types/supabaseTypes';
@@ -21,14 +20,12 @@ export const AmountInput = ({
   onChange,
   value,
   tokens,
-  defaultToken,
+  defaultToken = undefined,
   selectedTokenBalance,
   onTokenChange,
 }: AmountInputProps) => {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
-  const [selectedToken, setSelectedToken] = useState<Token | undefined>(
-    defaultToken || (tokens.length > 0 ? tokens[0] : undefined)
-  );
+  const [selectedToken, setSelectedToken] = useState<Token | undefined>(defaultToken);
 
   const handleInputChange = (value: string) => {
     onChange(value.replace(/[^0-9.]/g, ''));
@@ -43,6 +40,8 @@ export const AmountInput = ({
     if (onTokenChange) onTokenChange(token);
   };
 
+  const tokenIcon = (selectedToken && tokenIcons[selectedToken.symbol]) || tokenIcons.default;
+
   return (
     <View className="h-fit w-full gap-2 rounded-xl bg-content p-4 pb-6 pl-6">
       <View className="flex-row items-center justify-between">
@@ -52,11 +51,7 @@ export const AmountInput = ({
         <TouchableOpacity
           className="flex-row items-center space-x-2 rounded-xl bg-background px-4 py-3"
           onPress={() => setIsPickerOpen(true)}>
-          {selectedToken && tokenIcons[selectedToken.symbol] ? (
-            <Image source={tokenIcons[selectedToken.symbol]} className="mr-2 h-8 w-8" />
-          ) : (
-            <Feather name="cpu" size={24} className="mr-2 text-text" />
-          )}
+          <Image source={tokenIcon} className="mr-2 h-8 w-8" />
           <FText className="text-info" bold>
             {selectedToken?.symbol || 'Select Token'}
           </FText>
@@ -67,7 +62,7 @@ export const AmountInput = ({
           className={`flex-1 rounded-lg bg-content text-4xl font-semibold
             ${value === '' ? 'text-text' : isValidAmount ? 'text-success' : 'text-error'}`}
           keyboardType="numeric"
-          placeholder={`0 ${selectedToken?.symbol}`}
+          placeholder={`0 ${selectedToken?.symbol || ''}`}
           value={value}
           onChangeText={handleInputChange}
           placeholderTextColor="#888"
@@ -79,33 +74,33 @@ export const AmountInput = ({
       <Modal visible={isPickerOpen} transparent animationType="fade">
         <View className="flex-1 items-center justify-center">
           <View className="absolute h-full w-full bg-background opacity-50" />
-          <View className="w-11/12 max-w-md rounded-lg bg-content p-6">
-            <FText className="text-text" bold>
+          <View className="w-11/12 max-w-md gap-4 rounded-xl bg-content p-6">
+            <FText className="!text-2xl text-text" bold>
               Select a token
             </FText>
             <FlatList
               data={tokens}
               keyExtractor={(item) => item.address + item.symbol}
               renderItem={({ item }) => {
-                const icon = tokenIcons[item.symbol] || null;
+                const icon = tokenIcons[item.symbol] || tokenIcons.default;
                 return (
                   <TouchableOpacity
-                    className="flex-row items-center rounded-lg p-3"
+                    className="flex-row items-center gap-4 rounded-lg p-3"
                     onPress={() => handleTokenSelect(item)}>
-                    {icon ? (
-                      <Image source={icon} className="mr-2 h-6 w-6" />
-                    ) : (
-                      <Feather name="cpu" size={24} className="mr-2 text-text" />
-                    )}
-                    <Text className="text-lg text-text">{item.symbol}</Text>
+                    <Image source={icon} className="h-12 w-12" />
+                    <FText className="text-lg text-text" bold>
+                      {item.symbol}
+                    </FText>
                   </TouchableOpacity>
                 );
               }}
             />
             <TouchableOpacity
-              className="mt-4 w-full items-center rounded-lg bg-content py-2"
+              className="w-full items-center rounded-lg bg-content"
               onPress={() => setIsPickerOpen(false)}>
-              <Text className="text-lg text-text">Close</Text>
+              <FText className="text-lg text-text" bold>
+                Close
+              </FText>
             </TouchableOpacity>
           </View>
         </View>

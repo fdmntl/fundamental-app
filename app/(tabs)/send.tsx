@@ -10,6 +10,8 @@ import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { Token } from '~/types/supabaseTypes';
 
+// TODO: fix balance map using appData instead
+
 export default function Send() {
   const { userData, tokens } = useAppData();
 
@@ -61,7 +63,6 @@ export default function Send() {
             value={amount}
             onChange={(value) => setAmount(value)}
             tokens={userTokens}
-            defaultToken={userTokens[0]}
             selectedTokenBalance={selectedTokenBalance}
             onTokenChange={(token) => setSelectedToken(token)}
           />
