@@ -1,3 +1,4 @@
+import { Feather } from '@expo/vector-icons';
 import { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
 
@@ -5,6 +6,7 @@ import { FText } from '~/components/Text/FText';
 import { Token, User } from '~/types/supabaseTypes';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
+import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 
 interface AmountInputProps {
   onChange: (value: string) => void;
@@ -79,23 +81,34 @@ export const AmountInput = ({
       <Modal visible={isPickerOpen} transparent animationType="fade">
         <View className="flex-1 items-center justify-center">
           <View className="absolute h-full w-full bg-background opacity-50" />
-          <View className="w-11/12 max-w-md gap-4 rounded-xl bg-content p-6">
+          <View className="w-11/12 max-w-md gap-6 rounded-2xl bg-content p-6">
             <FText className="!text-2xl text-text" bold>
               Select a token
             </FText>
             <FlatList
               data={tokens}
               keyExtractor={(item) => item.address + item.symbol}
+              ItemSeparatorComponent={() => <View className="h-4" />}
               renderItem={({ item }) => {
                 const icon = tokenIcons[item.symbol] || tokenIcons.default;
+                const isSelected = selectedToken?.address === item.address;
                 return (
                   <TouchableOpacity
-                    className="flex-row items-center gap-4 rounded-lg p-3"
+                    className="flex-row items-center gap-4 rounded-2xl bg-background p-3"
                     onPress={() => handleTokenSelect(item)}>
                     <Image source={icon} className="h-12 w-12" />
                     <FText className="text-lg text-text" bold>
                       {item.symbol}
                     </FText>
+                    {isSelected && <Feather name="check" size={32} className="text-success" />}
+                    <View className="ml-auto items-end justify-end">
+                      <FText className="text-text" bold>
+                        {getUserTokenAmount(item.address, tokens, user).toFixed(2)}
+                      </FText>
+                      <FText className="text-text">
+                        ${getUserTokenValue(item.address, tokens, user).toFixed(2)}
+                      </FText>
+                    </View>
                   </TouchableOpacity>
                 );
               }}
