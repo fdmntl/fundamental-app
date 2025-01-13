@@ -9,7 +9,7 @@ import RecipientInput from '~/components/Send/RecipientInput';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { Token } from '~/types/supabaseTypes';
-import { sendERC20 } from '~/services/viemService';
+import { sendERC20, sendETH } from '~/services/viemService';
 import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
 
 export default function Send() {
@@ -49,12 +49,21 @@ export default function Send() {
       console.error('Wallet not connected');
       return;
     }
-    sendERC20(
-      wallet.provider,
-      selectedToken.address as `0x${string}`,
-      recipient,
-      BigInt(amountToDigits(parseFloat(amount), selectedToken))
-    );
+    if (selectedToken.address === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
+      // ETH is not an ERC-20 token, so we need to handle it separately. We represent it with 0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+      sendETH(
+        wallet.provider,
+        recipient,
+        BigInt(amountToDigits(parseFloat(amount), selectedToken))
+      );
+    } else {
+      sendERC20(
+        wallet.provider,
+        selectedToken.address as `0x${string}`,
+        recipient,
+        BigInt(amountToDigits(parseFloat(amount), selectedToken))
+      );
+    }
   };
 
   return (
