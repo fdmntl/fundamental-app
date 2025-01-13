@@ -57,7 +57,7 @@ export const AmountInput = ({
           Amount
         </FText>
         <TouchableOpacity
-          className="flex-row items-center space-x-2 rounded-xl bg-background px-4 py-3"
+          className="flex-row items-center space-x-2 rounded-full bg-background px-4 py-3"
           onPress={() => {
             if (tokens.length > 1) setIsPickerOpen(true);
           }}>
@@ -102,7 +102,7 @@ export const AmountInput = ({
                 const isSelected = selectedToken?.address === item.address;
                 return (
                   <TouchableOpacity
-                    className="flex-row items-center gap-4 rounded-2xl bg-background p-3"
+                    className="flex-row items-center gap-4 rounded-2xl bg-background p-4"
                     onPress={() => handleTokenSelect(item)}>
                     <Image source={icon} className="h-12 w-12" />
                     <FText className="text-lg text-text" bold>
