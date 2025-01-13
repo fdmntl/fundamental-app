@@ -1,14 +1,19 @@
-import { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, Modal, FlatList, Image } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useState } from 'react';
+import { View, TextInput, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
+
 import { FText } from '~/components/Text/FText';
-import { Token } from '~/types/supabaseTypes';
+import { Token, User } from '~/types/supabaseTypes';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
+import { getTokenAmountPrice } from '~/utils/helpers/tokens/getTokenAmountPrice';
+import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
+import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 
 interface AmountInputProps {
   onChange: (value: string) => void;
   value: string;
   tokens: Token[];
+  user: User;
   defaultToken?: Token;
   selectedTokenBalance: number;
   onTokenChange?: (token: Token) => void;
@@ -18,21 +23,24 @@ export const AmountInput = ({
   onChange,
   value,
   tokens,
-  defaultToken,
+  user,
+  defaultToken = undefined,
   selectedTokenBalance,
   onTokenChange,
 }: AmountInputProps) => {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
-  const [selectedToken, setSelectedToken] = useState<Token | undefined>(
-    defaultToken || (tokens.length > 0 ? tokens[0] : undefined)
-  );
+  const [selectedToken, setSelectedToken] = useState<Token | undefined>(defaultToken);
 
   const handleInputChange = (value: string) => {
     onChange(value.replace(/[^0-9.]/g, ''));
   };
 
-  const isValidAmount =
-    value !== '' && !isNaN(Number(value)) && Number(value) <= selectedTokenBalance;
+  const balanceDisplay =
+    selectedToken && selectedTokenBalance
+      ? getUserTokenAmount(selectedToken?.address, tokens, user)
+      : 0;
+
+  const isValidAmount = value !== '' && !isNaN(Number(value)) && Number(value) <= balanceDisplay;
 
   const handleTokenSelect = (token: Token) => {
     setSelectedToken(token);
@@ -40,73 +48,83 @@ export const AmountInput = ({
     if (onTokenChange) onTokenChange(token);
   };
 
+  const tokenIcon = (selectedToken && tokenIcons[selectedToken.symbol]) || tokenIcons.default;
+
   return (
-    <View className="mb-4 rounded-xl bg-content p-4">
-      <View className="mb-4 flex-row items-center justify-between">
+    <View className="h-fit w-full gap-2 rounded-xl bg-content p-4 pb-6 pl-6">
+      <View className="flex-row items-center justify-between">
         <FText className="!text-2xl text-text" bold>
           Amount
         </FText>
         <TouchableOpacity
-          className="flex-row items-center space-x-2 rounded-xl bg-primary px-4 py-2"
-          onPress={() => {
-            if (tokens.length > 1) setIsPickerOpen(true); // Only open if more than one token
-          }}>
-          {selectedToken && tokenIcons[selectedToken.symbol] ? (
-            <Image source={tokenIcons[selectedToken.symbol]} className="mr-2 h-6 w-6" />
-          ) : (
-            <Feather name="cpu" size={24} className="mr-2 text-white" />
-          )}
-          <FText className="text-white" bold>
+          className="flex-row items-center space-x-2 rounded-xl bg-background px-4 py-3"
+          onPress={() => setIsPickerOpen(true)}>
+          <Image source={tokenIcon} className="mr-2 h-8 w-8" />
+          <FText className="text-info" bold>
             {selectedToken?.symbol || 'Select Token'}
           </FText>
         </TouchableOpacity>
       </View>
-      <View className="flex-row items-center">
+      <View className="-mt-2 flex-row items-center">
         <TextInput
-          className={`flex-1 rounded-lg bg-content p-3 text-lg ${
-            value === ''
-              ? 'border-2 border-background text-text'
-              : isValidAmount
-                ? 'border-2 border-green-500 text-green-600'
-                : 'border-2 border-red-500 text-red-600'
-          }`}
+          className={`flex-1 rounded-lg bg-content text-4xl font-semibold
+            ${value === '' ? 'text-text' : isValidAmount ? 'text-success' : 'text-error'}`}
           keyboardType="numeric"
-          placeholder={`Enter amount (Max: ${selectedTokenBalance})`}
+          placeholder={`0 ${selectedToken?.symbol || ''}`}
           value={value}
           onChangeText={handleInputChange}
           placeholderTextColor="#888"
         />
       </View>
+      <View className="flex-row items-center justify-between">
+        <FText className="!text-neutral" bold>
+          ≈${getTokenAmountPrice(selectedToken?.address || '', Number(value), tokens).toFixed(2)}
+        </FText>
+        <FText className="!text-lg text-info" bold>
+          Balance: {balanceDisplay.toFixed(2)} {selectedToken?.symbol}
+        </FText>
+      </View>
       <Modal visible={isPickerOpen} transparent animationType="fade">
         <View className="flex-1 items-center justify-center">
           <View className="absolute h-full w-full bg-background opacity-50" />
-          <View className="w-11/12 max-w-md rounded-lg bg-content p-6">
-            <FText className="text-text" bold>
+          <View className="w-11/12 max-w-md gap-6 rounded-2xl bg-content p-6">
+            <FText className="!text-2xl text-text" bold>
               Select a token
             </FText>
             <FlatList
               data={tokens}
               keyExtractor={(item) => item.address + item.symbol}
+              ItemSeparatorComponent={() => <View className="h-4" />}
               renderItem={({ item }) => {
-                const icon = tokenIcons[item.symbol] || null;
+                const icon = tokenIcons[item.symbol] || tokenIcons.default;
+                const isSelected = selectedToken?.address === item.address;
                 return (
                   <TouchableOpacity
-                    className="flex-row items-center rounded-lg p-3"
+                    className="flex-row items-center gap-4 rounded-2xl bg-background p-3"
                     onPress={() => handleTokenSelect(item)}>
-                    {icon ? (
-                      <Image source={icon} className="mr-2 h-6 w-6" />
-                    ) : (
-                      <Feather name="cpu" size={24} className="mr-2 text-text" />
-                    )}
-                    <Text className="text-lg text-text">{item.symbol}</Text>
+                    <Image source={icon} className="h-12 w-12" />
+                    <FText className="text-lg text-text" bold>
+                      {item.symbol}
+                    </FText>
+                    {isSelected && <Feather name="check" size={32} className="text-success" />}
+                    <View className="ml-auto items-end justify-end">
+                      <FText className="text-text" bold>
+                        {getUserTokenAmount(item.address, tokens, user).toFixed(2)}
+                      </FText>
+                      <FText className="text-text">
+                        ${getUserTokenValue(item.address, tokens, user).toFixed(2)}
+                      </FText>
+                    </View>
                   </TouchableOpacity>
                 );
               }}
             />
             <TouchableOpacity
-              className="mt-4 w-full items-center rounded-lg bg-content py-2"
+              className="w-full items-center rounded-lg bg-content"
               onPress={() => setIsPickerOpen(false)}>
-              <Text className="text-lg text-text">Close</Text>
+              <FText className="text-lg text-text" bold>
+                Close
+              </FText>
             </TouchableOpacity>
           </View>
         </View>

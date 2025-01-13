@@ -12,6 +12,7 @@
   --color-warning: #db7900;
   --color-info: #1976d2;
   --color-text: #000000;
+  --color-neutral: #888888;
 }
 
 .dark {
@@ -22,4 +23,5 @@
   --color-warning: #ffa726;
   --color-info: #42a5f5;
   --color-text: #ffffff;
+  --color-neutral: #888888;
 }
