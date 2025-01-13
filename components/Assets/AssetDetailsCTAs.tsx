@@ -27,6 +27,7 @@ export const AssetDetailsCTAs = ({ tokenAddress }: { tokenAddress: string }) => 
                   className="flex-row items-center gap-x-2"
                   onPress={() => {
                     if (tokenAddress) {
+                      toggleModal();
                       router.push(`/send/${tokenAddress}`);
                     } else {
                       console.error('Token address is undefined');
