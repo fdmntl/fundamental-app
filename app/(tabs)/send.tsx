@@ -9,14 +9,16 @@ import RecipientInput from '~/components/Send/RecipientInput';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { Token } from '~/types/supabaseTypes';
+import { sendERC20 } from '~/services/viemService';
+import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
 
 export default function Send() {
-  const { user, tokens } = useAppData();
+  const { user, tokens, privy } = useAppData();
 
+  const wallet = privy.wallet;
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
-
   const possessedTokens = tokens.filter((token) =>
     user.balances.some((balance) => balance.token_address === token.address)
   );
@@ -31,7 +33,30 @@ export default function Send() {
   const isInputValid = isRecipientValid && isAmountValid;
 
   const handleSendPress = () => {
-    Alert.alert('Sending', `Sending ${amount} ${selectedToken?.symbol} to ${recipient}`);
+    if (!isInputValid) {
+      Alert.alert('Invalid Input', 'Please check your input and try again');
+      return;
+    }
+    if (!selectedToken) {
+      Alert.alert('No Token Selected', 'Please select a token to send');
+      return;
+    }
+    if (!wallet) {
+      console.error('Wallet not created');
+      return;
+    }
+    if (wallet.status !== 'connected') {
+      console.error('Wallet not connected');
+      return;
+    }
+    console.log('Amount:', amount);
+    sendERC20(
+      wallet.provider,
+      selectedToken.address as `0x${string}`,
+      recipient,
+      BigInt(amountToDigits(parseFloat(amount), selectedToken))
+    );
+    // Alert.alert('Sending', `Sending ${amount} ${selectedToken?.symbol} to ${recipient}`);
   };
 
   return (
