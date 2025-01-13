@@ -49,14 +49,12 @@ export default function Send() {
       console.error('Wallet not connected');
       return;
     }
-    console.log('Amount:', amount);
     sendERC20(
       wallet.provider,
       selectedToken.address as `0x${string}`,
       recipient,
       BigInt(amountToDigits(parseFloat(amount), selectedToken))
     );
-    // Alert.alert('Sending', `Sending ${amount} ${selectedToken?.symbol} to ${recipient}`);
   };
 
   return (
