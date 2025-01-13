@@ -11,6 +11,7 @@ export const themes = {
     '--color-error': '#D63D3D',
     '--color-info': '#1976D2',
     '--color-text': '#000000',
+    '--color-neutral': '#888888',
   }),
   dark: vars({
     '--color-primary': '#8720FE',
@@ -22,5 +23,6 @@ export const themes = {
     '--color-error': '#F05E5C',
     '--color-info': '#42A5F5',
     '--color-text': '#FFFFFF',
+    '--color-neutral': '#888888',
   }),
 };

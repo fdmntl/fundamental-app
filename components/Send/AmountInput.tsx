@@ -5,6 +5,7 @@ import { View, TextInput, TouchableOpacity, Modal, FlatList, Image } from 'react
 import { FText } from '~/components/Text/FText';
 import { Token, User } from '~/types/supabaseTypes';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
+import { getTokenAmountPrice } from '~/utils/helpers/tokens/getTokenAmountPrice';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 
@@ -75,9 +76,14 @@ export const AmountInput = ({
           placeholderTextColor="#888"
         />
       </View>
-      <FText className="!text-lg text-info" bold>
-        Balance: {balanceDisplay.toFixed(2)} {selectedToken?.symbol}
-      </FText>
+      <View className="flex-row items-center justify-between">
+        <FText className="!text-neutral" bold>
+          ≈${getTokenAmountPrice(selectedToken?.address || '', Number(value), tokens).toFixed(2)}
+        </FText>
+        <FText className="!text-lg text-info" bold>
+          Balance: {balanceDisplay.toFixed(2)} {selectedToken?.symbol}
+        </FText>
+      </View>
       <Modal visible={isPickerOpen} transparent animationType="fade">
         <View className="flex-1 items-center justify-center">
           <View className="absolute h-full w-full bg-background opacity-50" />
