@@ -4,18 +4,23 @@ import { View, ScrollView } from 'react-native';
 
 import { AssetDetailsCTAs } from '~/components/Assets/AssetDetailsCTAs';
 import { DetailsHeader } from '~/components/Assets/DetailsHeader';
+import { Container } from '~/components/Container';
 import Graph from '~/components/Graph';
 import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
 import { capitalise } from '~/utils/helpers/strings/capitalise';
+import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
+import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 
 export default function Assets() {
   const { asset } = useLocalSearchParams();
 
   const { getToken } = useAppData();
   const token = getToken(asset as string);
+
+  const { tokens, user } = useAppData();
 
   if (!token) {
     return (
@@ -32,8 +37,21 @@ export default function Assets() {
 
   const icon = tokenIcons[token.symbol];
 
-  // TODO: replace this once the values are available
-  const tempHolding = 1234.56;
+  const userTokenValue = getUserTokenValue(token.address, tokens, user).toFixed(2);
+  const userTokenAmount = getUserTokenAmount(token.address, tokens, user);
+
+  const actualValue = token.value[token.value.length - 1].value;
+
+  const roundedValue = parseFloat(actualValue).toFixed(2);
+
+  const tokenHistory = token.value
+    .map((item) => {
+      return {
+        value: parseFloat(item.value),
+        label: item.timestamp,
+      };
+    })
+    .reverse();
 
   return (
     <>
@@ -45,11 +63,26 @@ export default function Assets() {
             <View className="gap-y-5">
               <View className="flex flex-row items-center justify-center gap-x-2">
                 <FText className="!text-4xl" bold>
-                  ${tempHolding}
+                  ${roundedValue}
                 </FText>
                 <Feather name="trending-up" size={30} className="text-success" />
               </View>
-              <Graph allData={[]} />
+              <Graph allData={tokenHistory} />
+              <Container title="Holdings">
+                <View className="flex flex-row items-center justify-between">
+                  <View>
+                    <FText bold className="!text-2xl">
+                      ${userTokenValue}
+                    </FText>
+                    {!token.is_stablecoin && (
+                      <FText className="!text-base">
+                        {userTokenAmount} {token.symbol}
+                      </FText>
+                    )}
+                  </View>
+                  <FText bold>Total amount</FText>
+                </View>
+              </Container>
               <View>
                 <FText bold>About {title}</FText>
                 <FText>{token.description}</FText>

@@ -1,4 +1,11 @@
-import { usePrivy, useLoginWithEmail, useOAuthFlow, useLogin } from '@privy-io/expo';
+import {
+  usePrivy,
+  useEmbeddedWallet,
+  useLoginWithEmail,
+  useOAuthFlow,
+  useLogin,
+  isNotCreated,
+} from '@privy-io/expo';
 import Constants from 'expo-constants';
 import { router, Stack } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -9,6 +16,7 @@ import { Container } from '~/components/Container';
 import { DebugButton } from '~/components/DebugButton';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
+import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 
 export default function Login() {
@@ -16,14 +24,28 @@ export default function Login() {
   const [code, setCode] = useState('');
 
   const { user } = usePrivy();
+  const wallet = useEmbeddedWallet();
   const emailFlow = useLoginWithEmail();
   const oauth = useOAuthFlow();
 
+  const { updatePrivy } = useAppData();
+
   useEffect(() => {
     if (user) {
+      if (isNotCreated(wallet)) {
+        try {
+          wallet.create({ recoveryMethod: 'privy' });
+          console.log('Success', 'Wallet created successfully!');
+        } catch (error: any) {
+          console.error('Error', 'Failed to create wallet: ' + error.message);
+        }
+      }
+
+      updatePrivy({ user, wallet });
+
       router.navigate('/(tabs)');
     }
-  }, [user, router]);
+  }, [user, router, wallet]);
 
   useEffect(() => {
     if (emailFlow.state.status === 'error') {
@@ -75,7 +97,7 @@ export default function Login() {
           />
           <Button
             title="New UI Login"
-            className="m-auto w-2/3 bg-primary"
+            className="mx-auto my-4 w-2/3 bg-primary"
             onPress={() => login({ loginMethods: ['email', 'sms'] })}
           />
           <FText className="m-auto mt-4 text-text">

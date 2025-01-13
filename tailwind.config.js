@@ -15,6 +15,7 @@ module.exports = {
         error: 'var(--color-error)',
         info: 'var(--color-info)',
         text: 'var(--color-text)',
+        neutral: 'var(--color-neutral)',
       },
     },
   },

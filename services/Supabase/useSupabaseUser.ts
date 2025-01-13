@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import { supabase } from '~/supabaseConfig';
 
 interface SupabaseUserProps {
@@ -31,7 +32,7 @@ export const useSupabaseUser = ({ address }: SupabaseUserProps) => {
         setUser(initialData);
 
         const channel = supabase
-          .channel(`Users:address:${address}`)
+          .channel(`user:${address}`)
           .on(
             'postgres_changes',
             {
