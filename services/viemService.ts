@@ -76,6 +76,7 @@ export const sendETH = async (
       to,
       value: amount,
     });
+    console.log(`Transaction sent: ${txHash}`);
   } catch (error) {
     console.error('Error sending ETH:', error);
   }
