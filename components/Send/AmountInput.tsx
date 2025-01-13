@@ -65,7 +65,7 @@ export const AmountInput = ({
           <FText className="text-info" bold>
             {selectedToken?.symbol || 'Select Token'}
           </FText>
-          <Feather name="chevron-down" size={28} className="text-neutral" />
+          {tokens.length > 1 && <Feather name="chevron-down" size={28} className="text-neutral" />}
         </TouchableOpacity>
       </View>
       <View className="-mt-2 flex-row items-center">
