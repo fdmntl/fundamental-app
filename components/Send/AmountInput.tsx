@@ -83,9 +83,18 @@ export const AmountInput = ({
         <FText className="!text-neutral" bold>
           ≈${getTokenAmountPrice(selectedToken?.address || '', Number(value), tokens).toFixed(2)}
         </FText>
-        <FText className="!text-lg text-info" bold>
-          Balance: {balanceDisplay.toFixed(2)} {selectedToken?.symbol}
-        </FText>
+        <View className="flex-row items-center gap-2">
+          <FText className="!text-lg text-info" bold>
+            {balanceDisplay.toFixed(2)} {selectedToken?.symbol}
+          </FText>
+          <TouchableOpacity
+            className="rounded-xl bg-primary px-2"
+            onPress={() => onChange(balanceDisplay.toString())}>
+            <FText className="text-info" bold>
+              Max
+            </FText>
+          </TouchableOpacity>
+        </View>
       </View>
       <Modal visible={isPickerOpen} transparent animationType="fade">
         <View className="flex-1 items-center justify-center">
