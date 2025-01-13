@@ -1,13 +1,15 @@
 import { Feather } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Modal, TouchableOpacity, View, TouchableWithoutFeedback } from 'react-native';
 
 import { Button } from '../Button';
 import { FText } from '../Text/FText';
 
-export const AssetDetailsCTAs = () => {
+export const AssetDetailsCTAs = ({ tokenAddress }: { tokenAddress: string }) => {
   const [isTransferModalVisible, setisTransferModalVisible] = useState(false);
   const toggleModal = () => setisTransferModalVisible(!isTransferModalVisible);
+  const router = useRouter();
 
   return (
     <View className="absolute bottom-0 w-full items-center">
@@ -24,7 +26,12 @@ export const AssetDetailsCTAs = () => {
                 <TouchableOpacity
                   className="flex-row items-center gap-x-2"
                   onPress={() => {
-                    console.log('Send pressed');
+                    if (tokenAddress) {
+                      toggleModal();
+                      router.push(`/send/${tokenAddress}`);
+                    } else {
+                      console.error('Token address is undefined');
+                    }
                   }}>
                   <Feather name="arrow-up" size={30} className="text-text" />
                   <FText className="!text-2xl" bold>

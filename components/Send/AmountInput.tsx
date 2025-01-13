@@ -57,12 +57,15 @@ export const AmountInput = ({
           Amount
         </FText>
         <TouchableOpacity
-          className="flex-row items-center space-x-2 rounded-xl bg-background px-4 py-3"
-          onPress={() => setIsPickerOpen(true)}>
+          className="flex-row items-center space-x-2 rounded-full bg-background px-4 py-3"
+          onPress={() => {
+            if (tokens.length > 1) setIsPickerOpen(true);
+          }}>
           <Image source={tokenIcon} className="mr-2 h-8 w-8" />
           <FText className="text-info" bold>
             {selectedToken?.symbol || 'Select Token'}
           </FText>
+          {tokens.length > 1 && <Feather name="chevron-down" size={28} className="text-neutral" />}
         </TouchableOpacity>
       </View>
       <View className="-mt-2 flex-row items-center">
@@ -80,9 +83,18 @@ export const AmountInput = ({
         <FText className="!text-neutral" bold>
           ≈${getTokenAmountPrice(selectedToken?.address || '', Number(value), tokens).toFixed(2)}
         </FText>
-        <FText className="!text-lg text-info" bold>
-          Balance: {balanceDisplay.toFixed(2)} {selectedToken?.symbol}
-        </FText>
+        <View className="flex-row items-center gap-2">
+          <FText className="!text-lg text-text" bold>
+            {balanceDisplay.toFixed(2)} {selectedToken?.symbol}
+          </FText>
+          <TouchableOpacity
+            className="rounded-xl bg-primary px-2"
+            onPress={() => onChange(balanceDisplay.toString())}>
+            <FText className="text-white" bold>
+              Max
+            </FText>
+          </TouchableOpacity>
+        </View>
       </View>
       <Modal visible={isPickerOpen} transparent animationType="fade">
         <View className="flex-1 items-center justify-center">
@@ -100,7 +112,7 @@ export const AmountInput = ({
                 const isSelected = selectedToken?.address === item.address;
                 return (
                   <TouchableOpacity
-                    className="flex-row items-center gap-4 rounded-2xl bg-background p-3"
+                    className="flex-row items-center gap-4 rounded-2xl bg-background p-4"
                     onPress={() => handleTokenSelect(item)}>
                     <Image source={icon} className="h-12 w-12" />
                     <FText className="text-lg text-text" bold>

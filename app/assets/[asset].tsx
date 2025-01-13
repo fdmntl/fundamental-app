@@ -89,7 +89,7 @@ export default function Assets() {
               </View>
             </View>
           </ScrollView>
-          <AssetDetailsCTAs />
+          <AssetDetailsCTAs tokenAddress={token.address} />
         </View>
       </Frame>
     </>
