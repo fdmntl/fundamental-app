@@ -10,7 +10,7 @@ import { PrivyEmbeddedWalletProvider } from '@privy-io/expo';
 import { base } from 'viem/chains';
 
 // Creates a wallet client using the Privy Embedded Wallet provider
-const getWalletClient = async (provider: PrivyEmbeddedWalletProvider) => {
+export const getWalletClient = async (provider: PrivyEmbeddedWalletProvider) => {
   await provider.request({
     method: 'wallet_switchEthereumChain',
     params: [{ chainId: '0x2105' }],
@@ -25,7 +25,7 @@ const getWalletClient = async (provider: PrivyEmbeddedWalletProvider) => {
 };
 
 // Creates a public client using the Privy Embedded Wallet provider
-const getPublicClient = async (provider: PrivyEmbeddedWalletProvider) => {
+export const getPublicClient = async (provider: PrivyEmbeddedWalletProvider) => {
   await provider.request({
     method: 'wallet_switchEthereumChain',
     params: [{ chainId: '0x2105' }],
@@ -40,7 +40,7 @@ const getPublicClient = async (provider: PrivyEmbeddedWalletProvider) => {
 };
 
 // Signs any message using the wallet client
-const signMessage = async (provider: PrivyEmbeddedWalletProvider, message: string) => {
+export const signMessage = async (provider: PrivyEmbeddedWalletProvider, message: string) => {
   const client = await getWalletClient(provider);
   const [account] = await client.getAddresses();
 
@@ -55,7 +55,7 @@ const signMessage = async (provider: PrivyEmbeddedWalletProvider, message: strin
 };
 
 // Sends ETH to a destination address
-const sendETH = async (
+export const sendETH = async (
   provider: PrivyEmbeddedWalletProvider,
   destination: string,
   amount: bigint // Amount in wei
@@ -82,7 +82,7 @@ const sendETH = async (
 };
 
 // Calls the `transfer` function of an ERC-20 token contract to send tokens to a destination address
-const sendERC20 = async (
+export const sendERC20 = async (
   provider: PrivyEmbeddedWalletProvider,
   tokenAddress: `0x${string}`,
   destination: `0x${string}`,
@@ -131,7 +131,7 @@ const sendERC20 = async (
 };
 
 // Calls the `register` method of the contract at 0x2441914218D4f50F27189C73cD3A1ADdedAB07B0
-const registerName = async (
+export const registerName = async (
   provider: PrivyEmbeddedWalletProvider,
   label: string,
   owner: `0x${string}`
@@ -180,5 +180,3 @@ const registerName = async (
     console.error('Error calling register method:', error);
   }
 };
-
-export default { getWalletClient, getPublicClient, signMessage, sendETH, sendERC20, registerName };
