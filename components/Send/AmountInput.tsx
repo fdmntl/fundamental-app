@@ -84,13 +84,13 @@ export const AmountInput = ({
           ≈${getTokenAmountPrice(selectedToken?.address || '', Number(value), tokens).toFixed(2)}
         </FText>
         <View className="flex-row items-center gap-2">
-          <FText className="!text-lg text-info" bold>
+          <FText className="!text-lg text-text" bold>
             {balanceDisplay.toFixed(2)} {selectedToken?.symbol}
           </FText>
           <TouchableOpacity
             className="rounded-xl bg-primary px-2"
             onPress={() => onChange(balanceDisplay.toString())}>
-            <FText className="text-info" bold>
+            <FText className="text-white" bold>
               Max
             </FText>
           </TouchableOpacity>
