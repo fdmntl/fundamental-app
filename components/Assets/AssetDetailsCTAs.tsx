@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Modal, TouchableOpacity, View, TouchableWithoutFeedback } from 'react-native';
-import { useRouter } from 'expo-router';
 
 import { Button } from '../Button';
 import { FText } from '../Text/FText';
@@ -27,8 +27,8 @@ export const AssetDetailsCTAs = ({ tokenAddress }: { tokenAddress: string }) => 
                   className="flex-row items-center gap-x-2"
                   onPress={() => {
                     if (tokenAddress) {
-                      // console.log('Navigating to:', `/send/${tokenAddress}`);
-                      router.push(`/send/${tokenAddress}`); // Navigate to dynamic route
+                      toggleModal();
+                      router.push(`/send/${tokenAddress}`);
                     } else {
                       console.error('Token address is undefined');
                     }

@@ -5,17 +5,16 @@ import { View } from 'react-native';
 import { Button } from '~/components/Button';
 import AmountInput from '~/components/Send/AmountInput';
 import RecipientInput from '~/components/Send/RecipientInput';
-import { Frame } from '~/components/Wrappers/Frame';
-import { useAppData } from '~/components/Wrappers/AppData';
-import { Token } from '~/types/supabaseTypes';
 import { SubSendHeader } from '~/components/Send/SubSendHeader';
+import { FText } from '~/components/Text/FText';
+import { useAppData } from '~/components/Wrappers/AppData';
+import { Frame } from '~/components/Wrappers/Frame';
+import { Token } from '~/types/supabaseTypes';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
 
-import { FText } from '~/components/Text/FText';
-
 export default function SendToken() {
-  const { address } = useLocalSearchParams(); // Retrieve token address from route
-  const { tokens, userData } = useAppData();
+  const { address } = useLocalSearchParams();
+  const { tokens, user } = useAppData();
 
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
@@ -23,14 +22,9 @@ export default function SendToken() {
     tokens.find((token) => token.address === address) || null
   );
 
-  const balanceMap = Array.isArray(userData?.balances)
-    ? userData.balances.reduce<Record<string, number>>((acc, { token_address, balance }) => {
-        acc[token_address] = balance;
-        return acc;
-      }, {})
-    : {};
-
-  const selectedTokenBalance = selectedToken ? balanceMap[selectedToken.address] || 0 : 0;
+  const selectedTokenBalance = selectedToken
+    ? user.balances.find((balance) => balance.token_address === selectedToken.address)?.balance || 0
+    : 0;
 
   const isInputValid =
     recipient && parseFloat(amount) > 0 && parseFloat(amount) <= selectedTokenBalance;
@@ -56,51 +50,28 @@ export default function SendToken() {
     <>
       <Stack.Screen options={{ title: selectedToken?.name || 'Send Token', headerShown: false }} />
       <Frame>
-        <View className="flex-1">
+        <View className="flex-1 gap-4">
           <SubSendHeader title={selectedToken.symbol} address={address as string} icon={icon} />
           <RecipientInput value={recipient} onChange={setRecipient} />
           <AmountInput
             value={amount}
             onChange={setAmount}
             tokens={[selectedToken]}
+            user={user}
             defaultToken={selectedToken}
             selectedTokenBalance={selectedTokenBalance}
             onTokenChange={setSelectedToken}
           />
-          <Button
-            title="Send"
-            onPress={handleSendPress}
-            disabled={!isInputValid}
-            className={`bg-primary ${isInputValid ? '' : 'opacity-50'}`}
-          />
+          <View className="absolute bottom-[2rem] w-full items-center">
+            <Button
+              title="Send Funds"
+              onPress={handleSendPress}
+              className={`bg-primary px-12 ${isInputValid ? '' : 'opacity-50'}`}
+              disabled={!isInputValid}
+            />
+          </View>
         </View>
       </Frame>
     </>
   );
 }
-
-// import { useLocalSearchParams } from 'expo-router';
-// import { View } from 'react-native';
-
-// import { FText } from '~/components/Text/FText';
-
-// export default function SendToken() {
-//   const params = useLocalSearchParams();
-//   console.log('Received params:', params); // Debug log
-
-//   const { address } = params;
-//   if (!address) {
-//     console.error('Token address not provided');
-//     return (
-//       <View className="flex h-64 items-center justify-center">
-//         <FText>Token address is missing.</FText>
-//       </View>
-//     );
-//   }
-
-//   return (
-//     <View>
-//       <FText>Sending token at address: {address}</FText>
-//     </View>
-//   );
-// }

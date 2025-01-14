@@ -92,6 +92,13 @@ const Layout = () => {
                   drawerItemStyle: { display: 'none' },
                 }}
               />
+              <Drawer.Screen
+                name="send/[address]"
+                options={{
+                  headerShown: false,
+                  drawerItemStyle: { display: 'none' },
+                }}
+              />
             </Drawer>
           </GestureHandlerRootView>
         </AppDataProvider>
