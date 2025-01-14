@@ -76,7 +76,6 @@ export const sendETH = async (
       to,
       value: amount,
     });
-    console.log(`Transaction sent: ${txHash}`);
   } catch (error) {
     console.error('Error sending ETH:', error);
   }
@@ -124,8 +123,6 @@ export const sendERC20 = async (
       data: data,
       value: 0n, // No ETH is sent with the call
     });
-
-    console.log(`Transaction sent: ${txHash}`);
   } catch (error) {
     console.error('Error sending ERC-20 token:', error);
   }
@@ -175,8 +172,6 @@ export const registerName = async (
       data: data,
       value: 0n, // No ETH is sent with the call
     });
-
-    console.log(`Transaction sent: ${txHash}`);
   } catch (error) {
     console.error('Error calling register method:', error);
   }
