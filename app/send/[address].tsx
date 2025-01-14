@@ -9,13 +9,15 @@ import { SubSendHeader } from '~/components/Send/SubSendHeader';
 import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { useSendTokenCallback } from '~/services/Send/useSendTokenCallback';
 import { Token } from '~/types/supabaseTypes';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
 
 export default function SendToken() {
   const { address } = useLocalSearchParams();
-  const { tokens, user } = useAppData();
+  const { tokens, user, privy } = useAppData();
 
+  const wallet = privy.wallet;
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
   const [selectedToken, setSelectedToken] = useState<Token | null>(
@@ -27,11 +29,18 @@ export default function SendToken() {
     : 0;
 
   const isInputValid =
-    recipient && parseFloat(amount) > 0 && parseFloat(amount) <= selectedTokenBalance;
+    recipient !== '' && parseFloat(amount) > 0 && parseFloat(amount) <= selectedTokenBalance;
+
+  const { handleSendTokenCallback } = useSendTokenCallback({
+    selectedToken,
+    wallet,
+    recipient,
+    amount,
+    isInputValid,
+  });
 
   const handleSendPress = () => {
-    console.log(`Sending ${amount} ${selectedToken?.symbol} to ${recipient}`);
-    // TODO: Implement send logic
+    handleSendTokenCallback();
   };
 
   if (!selectedToken) {

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Alert } from 'react-native';
+import { View } from 'react-native';
 import { isAddress } from 'viem';
 
 import { Button } from '~/components/Button';
@@ -8,15 +8,16 @@ import AmountInput from '~/components/Send/AmountInput';
 import RecipientInput from '~/components/Send/RecipientInput';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { useSendTokenCallback } from '~/services/Send/useSendTokenCallback';
 import { Token } from '~/types/supabaseTypes';
 
 export default function Send() {
-  const { user, tokens } = useAppData();
+  const { user, tokens, privy } = useAppData();
 
+  const wallet = privy.wallet;
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
-
   const possessedTokens = tokens.filter((token) =>
     user.balances.some((balance) => balance.token_address === token.address)
   );
@@ -30,8 +31,16 @@ export default function Send() {
 
   const isInputValid = isRecipientValid && isAmountValid;
 
+  const { handleSendTokenCallback } = useSendTokenCallback({
+    selectedToken,
+    wallet,
+    recipient,
+    amount,
+    isInputValid,
+  });
+
   const handleSendPress = () => {
-    Alert.alert('Sending', `Sending ${amount} ${selectedToken?.symbol} to ${recipient}`);
+    handleSendTokenCallback();
   };
 
   return (

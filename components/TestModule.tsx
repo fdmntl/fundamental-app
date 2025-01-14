@@ -7,10 +7,10 @@ import { FText } from './Text/FText';
 import alchemy from '../services/alchemyService';
 
 import { useAppData } from '~/components/Wrappers/AppData';
-import viem from '~/services/viemService';
+import { getWalletClient } from '~/services/viemService';
 
 const TestModule = () => {
-  const { user, privy, tokens, userData } = useAppData();
+  const { user, privy, tokens } = useAppData();
   const wallet = privy.wallet;
 
   if (!wallet) {
@@ -21,7 +21,7 @@ const TestModule = () => {
     return <FText className="text-lg">Wallet not connected</FText>;
   }
 
-  const walletClient = viem.getWalletClient(wallet.provider);
+  const walletClient = getWalletClient(wallet.provider);
   return (
     <View>
       <Container className="" title="Test Module">
