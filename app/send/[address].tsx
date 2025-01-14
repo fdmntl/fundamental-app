@@ -11,11 +11,14 @@ import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { Token } from '~/types/supabaseTypes';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
+import { sendERC20, sendETH } from '~/services/viemService';
+import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
 
 export default function SendToken() {
   const { address } = useLocalSearchParams();
-  const { tokens, user } = useAppData();
+  const { tokens, user, privy } = useAppData();
 
+  const wallet = privy.wallet;
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
   const [selectedToken, setSelectedToken] = useState<Token | null>(
@@ -30,8 +33,24 @@ export default function SendToken() {
     recipient && parseFloat(amount) > 0 && parseFloat(amount) <= selectedTokenBalance;
 
   const handleSendPress = () => {
-    console.log(`Sending ${amount} ${selectedToken?.symbol} to ${recipient}`);
-    // TODO: Implement send logic
+    if (!isInputValid || !selectedToken || !wallet || wallet.status !== 'connected') {
+      return;
+    }
+    if (selectedToken.address === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
+      // ETH is not an ERC-20 token, so we need to handle it separately. We represent it with 0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+      sendETH(
+        wallet.provider,
+        recipient,
+        BigInt(amountToDigits(parseFloat(amount), selectedToken))
+      );
+    } else {
+      sendERC20(
+        wallet.provider,
+        selectedToken.address as `0x${string}`,
+        recipient as `0x${string}`,
+        BigInt(amountToDigits(parseFloat(amount), selectedToken))
+      );
+    }
   };
 
   if (!selectedToken) {

@@ -33,20 +33,7 @@ export default function Send() {
   const isInputValid = isRecipientValid && isAmountValid;
 
   const handleSendPress = () => {
-    if (!isInputValid) {
-      Alert.alert('Invalid Input', 'Please check your input and try again');
-      return;
-    }
-    if (!selectedToken) {
-      Alert.alert('No Token Selected', 'Please select a token to send');
-      return;
-    }
-    if (!wallet) {
-      console.error('Wallet not created');
-      return;
-    }
-    if (wallet.status !== 'connected') {
-      console.error('Wallet not connected');
+    if (!isInputValid || !selectedToken || !wallet || wallet.status !== 'connected') {
       return;
     }
     if (selectedToken.address === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
@@ -60,7 +47,7 @@ export default function Send() {
       sendERC20(
         wallet.provider,
         selectedToken.address as `0x${string}`,
-        recipient,
+        recipient as `0x${string}`,
         BigInt(amountToDigits(parseFloat(amount), selectedToken))
       );
     }
