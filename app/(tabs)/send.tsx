@@ -10,6 +10,7 @@ import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { useSendTokenCallback } from '~/services/Send/useSendTokenCallback';
 import { Token } from '~/types/supabaseTypes';
+import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 
 export default function Send() {
   const { user, tokens, privy } = useAppData();
@@ -23,7 +24,7 @@ export default function Send() {
   );
 
   const selectedTokenBalance = selectedToken
-    ? user.balances.find((balance) => balance.token_address === selectedToken.address)?.balance || 0
+    ? getUserTokenAmount(selectedToken?.address, tokens, user)
     : 0;
 
   const isRecipientValid = isAddress(recipient);
