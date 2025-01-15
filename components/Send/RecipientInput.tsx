@@ -22,9 +22,7 @@ const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
   const [inputValue, setInputValue] = useState(value);
 
   const handleResolveENS = useCallback(async (ensName: string) => {
-    // console.log('Resolving ENS domain:', ensName); // Debugging: ENS domain input
     if (isAddress(ensName)) {
-      // console.log('Input is a valid Ethereum address:', ensName); // Debugging: Valid address
       setResolvedAddress(ensName);
       onChange(ensName);
       return;
@@ -32,11 +30,9 @@ const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
 
     try {
       const address = await resolveENS(ensName);
-      // console.log('Resolved Address:', address); // Debugging: ENS resolution result
       setResolvedAddress(address);
       onChange(address || ensName);
     } catch (error) {
-      // console.error('Error while resolving ENS domain:', error); // Debugging: Error logs
       setResolvedAddress(null);
       onChange(ensName);
     }
@@ -46,17 +42,14 @@ const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
 
   useEffect(() => {
     if (inputValue.trim()) {
-      // console.log('Debounced ENS resolution triggered for:', inputValue); // Debugging: Triggered input
       debouncedResolveENS(inputValue);
     } else {
-      // console.log('Empty input, skipping ENS resolution'); // Debugging: Empty input case
       setResolvedAddress(null);
       onChange('');
     }
   }, [inputValue, debouncedResolveENS]);
 
   const handleInputChange = (text: string) => {
-    // console.log('Input changed:', text); // Debugging: Input change
     setInputValue(text);
     onChange(text);
   };
@@ -78,12 +71,6 @@ const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
           onChangeText={handleInputChange}
         />
       </View>
-      {/* {resolvedAddress && (
-        <FText className="text-sm text-success">Resolved Address: {resolvedAddress}</FText>
-      )}
-      {!resolvedAddress && inputValue && !isValidENS && (
-        <FText className="text-sm text-error">Invalid address or ENS domain</FText>
-      )} */}
     </View>
   );
 };
