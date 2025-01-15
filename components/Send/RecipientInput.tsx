@@ -48,6 +48,7 @@ const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
 
   const handleInputChange = (text: string) => {
     setInputValue(text);
+    onChange(text);
   };
 
   return (
