@@ -44,15 +44,6 @@ const Graph = ({ allData }: GraphProps) => {
     setFilteredData(newFilteredData);
   }, [selectedRange, allData]);
 
-  // Reset to last data point
-  useEffect(() => {
-    if (filteredData.length > 0) {
-      const lastData = filteredData[filteredData.length - 1];
-      setCurrentValue(lastData.value);
-      setCurrentDate(new Date(lastData.label!).toLocaleDateString());
-    }
-  }, [filteredData]);
-
   const handlePointer = ({
     pointerIndex,
     pointerX,
@@ -72,6 +63,21 @@ const Graph = ({ allData }: GraphProps) => {
     }
   };
 
+  const minValue = Math.min(...filteredData.map((point) => point.value));
+  const maxValue = Math.max(...filteredData.map((point) => point.value));
+
+  const bufferPercentage = 0.5; // 50% buffer
+
+  const range = maxValue - minValue;
+  const adjustedMin = minValue - range * bufferPercentage;
+  const adjustedMax = maxValue + range * bufferPercentage;
+
+  // Normalize the data to fit within the adjusted range
+  const normalizedData = filteredData.map((point) => ({
+    ...point,
+    value: ((point.value - adjustedMin) / (adjustedMax - adjustedMin)) * range,
+  }));
+
   return (
     <View
       className="rounded-xl bg-content p-4 shadow-md"
@@ -87,14 +93,15 @@ const Graph = ({ allData }: GraphProps) => {
 
       {/* Date */}
       {['1week', '1month', '1year'].includes(selectedRange) && currentDate && (
-        <FText className="mb-2 text-sm text-text">{currentDate}</FText>
+        <FText className="mb-2">{currentDate}</FText>
       )}
+      {selectedRange === '1day' && <FText className="mb-2">Today</FText>}
 
       {/* Ensure graph only renders when filteredData is ready */}
       {filteredData.length > 0 ? (
         <LineChart
           areaChart
-          data={filteredData}
+          data={normalizedData}
           height={200}
           width={containerWidth - 30} // Dynamically set width with padding adjustment, still testing this
           adjustToWidth
