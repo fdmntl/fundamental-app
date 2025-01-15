@@ -3,38 +3,31 @@ import { View, TextInput } from 'react-native';
 import { isAddress } from 'viem';
 import { resolveENS } from '~/services/viemService';
 import { FText } from '~/components/Text/FText';
+import { debounce } from '~/utils/helpers/debounce';
 
 interface RecipientInputProps {
   value: string;
   onChange: (value: string) => void;
 }
 
-const debounce = (func: (...args: any[]) => void, delay: number) => {
-  let timer: NodeJS.Timeout;
-  return (...args: any[]) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => func(...args), delay);
-  };
-};
-
 const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
   const [resolvedAddress, setResolvedAddress] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState(value);
 
-  const handleResolveENS = useCallback(async (ensName: string) => {
-    if (isAddress(ensName)) {
-      setResolvedAddress(ensName);
-      onChange(ensName);
+  const handleResolveENS = useCallback(async (recipient: string) => {
+    if (isAddress(recipient)) {
+      setResolvedAddress(recipient);
+      onChange(recipient);
       return;
     }
 
     try {
-      const address = await resolveENS(ensName);
+      const address = await resolveENS(recipient);
       setResolvedAddress(address);
-      onChange(address || ensName);
+      onChange(address || recipient);
     } catch (error) {
       setResolvedAddress(null);
-      onChange(ensName);
+      onChange(recipient);
     }
   }, []);
 
