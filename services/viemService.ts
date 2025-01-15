@@ -176,3 +176,52 @@ export const registerName = async (
     console.error('Error calling register method:', error);
   }
 };
+
+// Calls the `approve` function of an ERC-20 token contract to set an allowance for a spender
+export const approveERC20 = async (
+  provider: PrivyEmbeddedWalletProvider,
+  tokenAddress: `0x${string}`,
+  spender: `0x${string}`,
+  amount: bigint
+) => {
+  const client = await getWalletClient(provider);
+  const [account] = await client.getAddresses();
+
+  if (!spender.startsWith('0x') || spender.length !== 42) {
+    console.error('Invalid spender address:', spender);
+    return;
+  }
+
+  try {
+    // ERC-20 ABI for `approve`
+    const erc20ABI = [
+      {
+        name: 'approve',
+        type: 'function',
+        stateMutability: 'nonpayable',
+        inputs: [
+          { name: 'spender', type: 'address' },
+          { name: 'amount', type: 'uint256' },
+        ],
+        outputs: [{ name: '', type: 'bool' }],
+      },
+    ];
+
+    const data = encodeFunctionData({
+      abi: erc20ABI,
+      functionName: 'approve',
+      args: [spender, amount],
+    });
+
+    const txHash = await client.sendTransaction({
+      account: account,
+      to: tokenAddress,
+      data: data,
+      value: 0n, // No ETH is sent with the call
+    });
+
+    console.log('Approval transaction sent. Hash:', txHash);
+  } catch (error) {
+    console.error('Error setting ERC-20 token approval:', error);
+  }
+};
