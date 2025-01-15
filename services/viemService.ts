@@ -7,7 +7,7 @@ import {
   getContract,
 } from 'viem';
 import { PrivyEmbeddedWalletProvider } from '@privy-io/expo';
-import { base } from 'viem/chains';
+import { base, mainnet } from 'viem/chains';
 
 // Creates a wallet client using the Privy Embedded Wallet provider
 export const getWalletClient = async (provider: PrivyEmbeddedWalletProvider) => {
@@ -174,5 +174,22 @@ export const registerName = async (
     });
   } catch (error) {
     console.error('Error calling register method:', error);
+  }
+};
+
+// Resolves an ENS domain to an Ethereum address
+export const resolveENS = async (ensName: string) => {
+  try {
+    // Create a public client for Ethereum Mainnet
+    const publicClient = createPublicClient({
+      chain: mainnet,
+      transport: http(),
+    });
+
+    // Return the resolved address or null
+    return await publicClient.getEnsAddress({ name: ensName });
+  } catch (error) {
+    console.error('Error resolving ENS domain:', error);
+    throw new Error('Failed to resolve ENS domain');
   }
 };
