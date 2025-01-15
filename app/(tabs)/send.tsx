@@ -27,6 +27,7 @@ export default function Send() {
     : 0;
 
   const isRecipientValid = isAddress(recipient);
+  console.log('Recipient:', recipient, 'is valid:', isRecipientValid);
   const isAmountValid = parseFloat(amount) > 0 && parseFloat(amount) <= selectedTokenBalance;
 
   const isInputValid = isRecipientValid && isAmountValid;
@@ -40,6 +41,7 @@ export default function Send() {
   });
 
   const handleSendPress = () => {
+    console.log('Send funds to:', recipient);
     handleSendTokenCallback();
   };
 

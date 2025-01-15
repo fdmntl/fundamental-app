@@ -19,7 +19,6 @@ const debounce = (func: (...args: any[]) => void, delay: number) => {
 
 const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
   const [resolvedAddress, setResolvedAddress] = useState<string | null>(null);
-  const [isValidENS, setIsValidENS] = useState(false);
   const [inputValue, setInputValue] = useState(value);
 
   const handleResolveENS = useCallback(async (ensName: string) => {
@@ -27,7 +26,7 @@ const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
     if (isAddress(ensName)) {
       // console.log('Input is a valid Ethereum address:', ensName); // Debugging: Valid address
       setResolvedAddress(ensName);
-      setIsValidENS(false);
+      onChange(ensName);
       return;
     }
 
@@ -35,11 +34,11 @@ const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
       const address = await resolveENS(ensName);
       // console.log('Resolved Address:', address); // Debugging: ENS resolution result
       setResolvedAddress(address);
-      setIsValidENS(!!address);
+      onChange(address || ensName);
     } catch (error) {
       // console.error('Error while resolving ENS domain:', error); // Debugging: Error logs
       setResolvedAddress(null);
-      setIsValidENS(false);
+      onChange(ensName);
     }
   }, []);
 
@@ -52,7 +51,7 @@ const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
     } else {
       // console.log('Empty input, skipping ENS resolution'); // Debugging: Empty input case
       setResolvedAddress(null);
-      setIsValidENS(false);
+      onChange('');
     }
   }, [inputValue, debouncedResolveENS]);
 
@@ -72,13 +71,7 @@ const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
       <View className="flex-row items-center">
         <TextInput
           className={`flex-1 rounded-md bg-content text-4xl font-semibold
-            ${
-              inputValue === ''
-                ? 'text-text'
-                : resolvedAddress || isValidENS
-                  ? 'text-success'
-                  : 'text-error'
-            }`}
+            ${inputValue === '' ? 'text-text' : resolvedAddress ? 'text-success' : 'text-error'}`}
           placeholder="0x1234...abcd"
           placeholderTextColor="#888"
           value={inputValue}
