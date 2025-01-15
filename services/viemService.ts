@@ -186,11 +186,8 @@ export const resolveENS = async (ensName: string) => {
       transport: http(),
     });
 
-    // Resolve the ENS domain
-    const address = await publicClient.getEnsAddress({ name: ensName });
-
     // Return the resolved address or an appropriate message
-    return address || 'ENS domain not resolved';
+    return await publicClient.getEnsAddress({ name: ensName });
   } catch (error) {
     console.error('Error resolving ENS domain:', error);
     throw new Error('Failed to resolve ENS domain');

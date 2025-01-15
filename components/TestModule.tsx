@@ -14,7 +14,7 @@ const TestModule = () => {
   const wallet = privy.wallet;
 
   const [ensDomain, setEnsDomain] = useState('');
-  const [resolvedAddress, setResolvedAddress] = useState('');
+  const [resolvedAddress, setResolvedAddress] = useState<string | null>('');
 
   if (!wallet) {
     return <FText className="text-lg">Wallet not created</FText>;
@@ -27,7 +27,14 @@ const TestModule = () => {
   const handleResolveENS = async () => {
     try {
       const address = await resolveENS(ensDomain);
-      setResolvedAddress(address || 'Address not found');
+
+      if (address === null) {
+        console.log('ENS domain not resolved');
+      } else {
+        console.log(`Resolved Address: ${address}`);
+      }
+
+      setResolvedAddress(address);
     } catch (error) {
       console.error(error);
       setResolvedAddress('Error resolving ENS domain');
