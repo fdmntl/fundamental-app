@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, TextInput } from 'react-native';
 import { isAddress } from 'viem';
-
+import { resolveENS } from '~/services/viemService';
 import { FText } from '~/components/Text/FText';
 
 interface RecipientInputProps {
@@ -9,28 +9,57 @@ interface RecipientInputProps {
   onChange: (value: string) => void;
 }
 
+const debounce = (func: (...args: any[]) => void, delay: number) => {
+  let timer: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => func(...args), delay);
+  };
+};
+
 const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
-  // const [ensAvatar, setEnsAvatar] = useState<string | null>(null);
-  // const [ensName, setEnsName] = useState<string | null>(null);
+  const [resolvedAddress, setResolvedAddress] = useState<string | null>(null);
+  const [isValidENS, setIsValidENS] = useState(false);
+  const [inputValue, setInputValue] = useState(value);
 
-  const isValidAddress = isAddress(value);
+  const handleResolveENS = useCallback(async (ensName: string) => {
+    // console.log('Resolving ENS domain:', ensName); // Debugging: ENS domain input
+    if (isAddress(ensName)) {
+      // console.log('Input is a valid Ethereum address:', ensName); // Debugging: Valid address
+      setResolvedAddress(ensName);
+      setIsValidENS(false);
+      return;
+    }
 
-  //* Keep this for further use
-  // const getEnsNameAndAvatar = async () => {
-  //   const ensName = await client.getEnsName({ address: recipientAddress as `0x${string}` });
-  //   if (ensName) {
-  //     console.log('ENS Name:', ensName);
-  //     setEnsName(ensName);
-  //     const ensAvatar = await client.getEnsAvatar({ name: normalize(ensName) });
-  //     setEnsAvatar(ensAvatar);
-  //     console.log('ENS Avatar:', ensAvatar);
-  //   } else {
-  //     console.log('ENS Name not found.');
-  //   }
-  // };
+    try {
+      const address = await resolveENS(ensName);
+      // console.log('Resolved Address:', address); // Debugging: ENS resolution result
+      setResolvedAddress(address);
+      setIsValidENS(!!address);
+    } catch (error) {
+      // console.error('Error while resolving ENS domain:', error); // Debugging: Error logs
+      setResolvedAddress(null);
+      setIsValidENS(false);
+    }
+  }, []);
 
-  const handleInputChange = (value: string) => {
-    onChange(value);
+  const debouncedResolveENS = useCallback(debounce(handleResolveENS, 500), [handleResolveENS]);
+
+  useEffect(() => {
+    if (inputValue.trim()) {
+      // console.log('Debounced ENS resolution triggered for:', inputValue); // Debugging: Triggered input
+      debouncedResolveENS(inputValue);
+    } else {
+      // console.log('Empty input, skipping ENS resolution'); // Debugging: Empty input case
+      setResolvedAddress(null);
+      setIsValidENS(false);
+    }
+  }, [inputValue, debouncedResolveENS]);
+
+  const handleInputChange = (text: string) => {
+    // console.log('Input changed:', text); // Debugging: Input change
+    setInputValue(text);
+    onChange(text);
   };
 
   return (
@@ -43,30 +72,27 @@ const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
       <View className="flex-row items-center">
         <TextInput
           className={`flex-1 rounded-md bg-content text-4xl font-semibold
-            ${value === '' ? 'text-text' : isValidAddress ? 'text-success' : 'text-error'}`}
+            ${
+              inputValue === ''
+                ? 'text-text'
+                : resolvedAddress || isValidENS
+                  ? 'text-success'
+                  : 'text-error'
+            }`}
           placeholder="0x1234...abcd"
           placeholderTextColor="#888"
-          value={value}
-          onChangeText={(text) => {
-            handleInputChange(text);
-          }}
+          value={inputValue}
+          onChangeText={handleInputChange}
         />
-        {/* {ensAvatar && (
-          <View className="ml-4 items-center">
-            <Image
-              source={{
-                uri: ensAvatar,
-              }}
-              className="h-16 w-16 rounded-full"
-            />
-            {ensName && <FText className="font-semibold text-text">{ensName}</FText>}
-          </View>
-        )} */}
       </View>
+      {/* {resolvedAddress && (
+        <FText className="text-sm text-success">Resolved Address: {resolvedAddress}</FText>
+      )}
+      {!resolvedAddress && inputValue && !isValidENS && (
+        <FText className="text-sm text-error">Invalid address or ENS domain</FText>
+      )} */}
     </View>
   );
 };
 
 export default RecipientInput;
-
-// Vitalik's ETH address: 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
