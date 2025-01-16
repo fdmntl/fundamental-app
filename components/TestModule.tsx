@@ -6,7 +6,7 @@ import { Container } from './Container';
 import { FText } from './Text/FText';
 
 import { useAppData } from '~/components/Wrappers/AppData';
-import { setCowInfiniteAllowance } from '~/services/cowService';
+import { setCowInfiniteAllowance } from '~/services/CoW/setCowInfiniteAllowance';
 import { getWalletClient, resolveENS } from '~/services/viemService';
 
 const TestModule = () => {
