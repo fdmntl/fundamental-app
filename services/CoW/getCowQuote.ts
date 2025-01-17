@@ -22,6 +22,5 @@ export const getCowQuote = async (
     kind: OrderQuoteSideKindSell.SELL,
   };
   const { quote } = await orderBookApi2.getQuote(quoteRequest);
-  console.log(quote);
   return quote;
 };
