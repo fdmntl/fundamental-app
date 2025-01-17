@@ -6,8 +6,9 @@ import { Container } from './Container';
 import { FText } from './Text/FText';
 
 import { useAppData } from '~/components/Wrappers/AppData';
-import { setCowInfiniteAllowance } from '~/services/cowService';
+import { setCowInfiniteAllowance } from '~/services/CoW/setCowInfiniteAllowance';
 import { getWalletClient, resolveENS } from '~/services/viemService';
+import { getCowQuote } from '~/services/CoW/getCowQuote';
 
 const TestModule = () => {
   const { user, privy, tokens } = useAppData();
@@ -40,7 +41,6 @@ const TestModule = () => {
       setResolvedAddress('Error resolving ENS domain');
     }
   };
-
   const walletClient = getWalletClient(wallet.provider);
   return (
     <View>
@@ -62,6 +62,17 @@ const TestModule = () => {
           title="Approve USDC"
           onPress={() =>
             setCowInfiniteAllowance(wallet.provider, '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913')
+          }></Button>
+        <Button
+          className="bg-primary"
+          title="Get Cow Quote - 0.1 USDC -> WETH"
+          onPress={() =>
+            getCowQuote(
+              user.wallet_address,
+              '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913', // USDC
+              '0x4200000000000000000000000000000000000006', // WETH
+              '100000' // 0.1 USDC
+            )
           }></Button>
       </Container>
     </View>
