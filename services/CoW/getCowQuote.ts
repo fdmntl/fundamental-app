@@ -5,7 +5,7 @@ import {
   OrderQuoteSideKindSell,
 } from '@cowprotocol/cow-sdk';
 
-const orderBookApi2 = new OrderBookApi({ chainId: SupportedChainId.BASE });
+const orderBookApi = new OrderBookApi({ chainId: SupportedChainId.BASE });
 
 export const getCowQuote = async (
   address: string,
@@ -21,6 +21,6 @@ export const getCowQuote = async (
     sellAmountBeforeFee: sellAmount,
     kind: OrderQuoteSideKindSell.SELL,
   };
-  const { quote } = await orderBookApi2.getQuote(quoteRequest);
+  const { quote } = await orderBookApi.getQuote(quoteRequest);
   return quote;
 };
