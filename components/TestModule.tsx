@@ -9,6 +9,7 @@ import { useAppData } from '~/components/Wrappers/AppData';
 import { setCowInfiniteAllowance } from '~/services/CoW/setCowInfiniteAllowance';
 import { getWalletClient, resolveENS } from '~/services/viemService';
 import { getCowQuote } from '~/services/CoW/getCowQuote';
+import { OrderParameters } from '@cowprotocol/cow-sdk';
 
 const TestModule = () => {
   const { user, privy, tokens } = useAppData();
@@ -16,6 +17,7 @@ const TestModule = () => {
 
   const [ensDomain, setEnsDomain] = useState('');
   const [resolvedAddress, setResolvedAddress] = useState<string | null>('');
+  let quote: OrderParameters;
 
   if (!wallet) {
     return <FText className="text-lg">Wallet not created</FText>;
@@ -66,14 +68,20 @@ const TestModule = () => {
         <Button
           className="bg-primary"
           title="Get Cow Quote - 0.1 USDC -> WETH"
-          onPress={() =>
-            getCowQuote(
-              user.wallet_address,
-              '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913', // USDC
-              '0x4200000000000000000000000000000000000006', // WETH
-              '100000' // 0.1 USDC
-            )
-          }></Button>
+          onPress={async () => {
+            try {
+              quote = await getCowQuote(
+                user.wallet_address,
+                '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+                '0x4200000000000000000000000000000000000006',
+                '10000'
+              );
+              console.log(quote);
+            } catch (error) {
+              console.error('Error fetching quote:', error);
+            }
+          }}
+        />
       </Container>
     </View>
   );
