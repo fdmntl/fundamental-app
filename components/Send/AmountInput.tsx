@@ -17,6 +17,7 @@ interface AmountInputProps {
   defaultToken?: Token;
   selectedTokenBalance: number;
   onTokenChange?: (token: Token) => void;
+  title?: string;
 }
 
 export const AmountInput = ({
@@ -27,6 +28,7 @@ export const AmountInput = ({
   defaultToken = undefined,
   selectedTokenBalance,
   onTokenChange,
+  title = 'Amount',
 }: AmountInputProps) => {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState<Token | undefined>(defaultToken);
@@ -54,7 +56,7 @@ export const AmountInput = ({
     <View className="h-fit w-full gap-2 rounded-xl bg-content p-4 pb-6 pl-6">
       <View className="flex-row items-center justify-between">
         <FText className="!text-2xl text-text" bold>
-          Amount
+          {title}
         </FText>
         <TouchableOpacity
           className="flex-row items-center space-x-2 rounded-full bg-background px-4 py-3"
