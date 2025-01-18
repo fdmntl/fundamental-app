@@ -48,7 +48,7 @@ export const AmountInput = ({
     if (onTokenChange) onTokenChange(token);
   };
 
-  const tokenIcon = (selectedToken && tokenIcons[selectedToken.symbol]) || tokenIcons.default;
+  const tokenIcon = (selectedToken && tokenIcons[selectedToken.symbol]) || null;
 
   return (
     <View className="h-fit w-full gap-2 rounded-xl bg-content p-4 pb-6 pl-6">
@@ -61,7 +61,11 @@ export const AmountInput = ({
           onPress={() => {
             if (tokens.length > 1) setIsPickerOpen(true);
           }}>
-          <Image source={tokenIcon} className="mr-2 h-8 w-8" />
+          {tokenIcon ? (
+            <Image source={tokenIcon} className="mr-2 h-8 w-8" />
+          ) : (
+            <Feather name="globe" size={26} className="mr-2 text-neutral" />
+          )}
           <FText className="text-info" bold>
             {selectedToken?.symbol || 'Select Token'}
           </FText>
@@ -132,7 +136,7 @@ export const AmountInput = ({
               }}
             />
             <TouchableOpacity
-              className="w-full items-center rounded-lg bg-content"
+              className="w-full items-center rounded-lg"
               onPress={() => setIsPickerOpen(false)}>
               <FText className="text-lg text-text" bold>
                 Close
@@ -144,5 +148,3 @@ export const AmountInput = ({
     </View>
   );
 };
-
-export default AmountInput;
