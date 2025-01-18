@@ -100,7 +100,7 @@ export default function Layout() {
             <View className="items-center">
               <Feather
                 size={28}
-                name="dollar-sign"
+                name="repeat"
                 className={`${focused ? 'text-primary' : 'text-text'}`}
               />
               <FText bold className={`${focused ? '!text-primary' : '!text-text'}`}>
