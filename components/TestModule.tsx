@@ -10,6 +10,8 @@ import { setCowInfiniteAllowance } from '~/services/CoW/setCowInfiniteAllowance'
 import { getWalletClient, resolveENS } from '~/services/viemService';
 import { getCowQuote } from '~/services/CoW/getCowQuote';
 import { OrderParameters } from '@cowprotocol/cow-sdk';
+import { signCowQuote } from '~/services/CoW/signCowQuote';
+import { getEthersSigner } from '~/services/ethersService';
 
 const TestModule = () => {
   const { user, privy, tokens } = useAppData();
@@ -17,6 +19,7 @@ const TestModule = () => {
 
   const [ensDomain, setEnsDomain] = useState('');
   const [resolvedAddress, setResolvedAddress] = useState<string | null>('');
+
   let quote: OrderParameters;
 
   if (!wallet) {
@@ -44,6 +47,7 @@ const TestModule = () => {
     }
   };
   const walletClient = getWalletClient(wallet.provider);
+  const signer = getEthersSigner(wallet.provider);
   return (
     <View>
       <Container className="" title="Test Module">
@@ -79,6 +83,18 @@ const TestModule = () => {
               console.log(quote);
             } catch (error) {
               console.error('Error fetching quote:', error);
+            }
+          }}
+        />
+        <Button
+          className="bg-primary"
+          title="Sign Cow Quote"
+          onPress={async () => {
+            try {
+              const signedOrder = await signCowQuote(quote, '10000', user.wallet_address, signer);
+              console.log(signedOrder);
+            } catch (error) {
+              console.error('Error signing quote:', error);
             }
           }}
         />
