@@ -91,7 +91,12 @@ const TestModule = () => {
           title="Sign Cow Quote"
           onPress={async () => {
             try {
-              const signedOrder = await signCowQuote(quote, '10000', user.wallet_address, signer);
+              const signedOrder = await signCowQuote(
+                quote,
+                '10000',
+                user.wallet_address,
+                wallet.provider
+              );
               console.log(signedOrder);
             } catch (error) {
               console.error('Error signing quote:', error);
