@@ -1,8 +1,11 @@
+import { Feather } from '@expo/vector-icons';
 import { useState } from 'react';
 import { View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { HeaderBar } from '~/components/HeaderBar';
 import { AmountInput } from '~/components/Send/AmountInput';
+import { FText } from '~/components/Text/FText';
 import { QuoteDisplay } from '~/components/Trade/QuoteDisplay';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
@@ -26,7 +29,16 @@ export default function Trade() {
   return (
     <Frame>
       <HeaderBar title="Trade" />
-      <View className="">
+      <View className="flex-1 gap-4">
+        <TouchableOpacity>
+          <View className="flex flex-row items-center">
+            <Feather name="clock" size={24} className="text-neutral" />
+            <FText bold className="ml-2 !text-2xl !text-neutral">
+              See your transaction history
+            </FText>
+            <Feather name="chevron-right" size={28} className="ml-auto text-neutral" />
+          </View>
+        </TouchableOpacity>
         <AmountInput
           value={amount}
           onChange={(value) => setAmount(value)}
