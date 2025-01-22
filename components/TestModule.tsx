@@ -12,6 +12,7 @@ import { getCowQuote } from '~/services/CoW/getCowQuote';
 import { OrderParameters } from '@cowprotocol/cow-sdk';
 import { signCowQuote } from '~/services/CoW/signCowQuote';
 import { getEthersSigner } from '~/services/ethersService';
+import { submitCowOrder } from '~/services/CoW/submitCowOrder';
 
 const TestModule = () => {
   const { user, privy, tokens } = useAppData();
@@ -21,6 +22,7 @@ const TestModule = () => {
   const [resolvedAddress, setResolvedAddress] = useState<string | null>('');
 
   let quote: OrderParameters;
+  let signature: string = '';
 
   if (!wallet) {
     return <FText className="text-lg">Wallet not created</FText>;
@@ -47,7 +49,7 @@ const TestModule = () => {
     }
   };
   const walletClient = getWalletClient(wallet.provider);
-  const signer = getEthersSigner(wallet.provider);
+
   return (
     <View>
       <Container className="" title="Test Module">
@@ -63,6 +65,7 @@ const TestModule = () => {
         <FText className="text-lg">Resolved Address:</FText>
         <FText className="text-lg">{resolvedAddress}</FText>
         <FText className="text-lg">Your address is {user.wallet_address}</FText>
+        <FText className="text-lg">Last signature: {signature}</FText>
         <Button
           className="bg-primary"
           title="Approve USDC"
@@ -80,9 +83,9 @@ const TestModule = () => {
                 '0x4200000000000000000000000000000000000006',
                 '10000'
               );
-              console.log(quote);
             } catch (error) {
               console.error('Error fetching quote:', error);
+              console.error('Error details:', JSON.stringify(error, null, 2));
             }
           }}
         />
@@ -93,14 +96,25 @@ const TestModule = () => {
             try {
               const signedOrder = await signCowQuote(
                 quote,
-                '10000',
+                '1',
                 user.wallet_address,
                 wallet.provider
               );
-              console.log(signedOrder);
+              if (signedOrder) {
+                signature = signedOrder;
+              }
             } catch (error) {
               console.error('Error signing quote:', error);
+              console.error('Error details:', JSON.stringify(error, null, 2));
             }
+          }}
+        />
+        <Button
+          className="bg-primary"
+          title="Submit Cow Order"
+          onPress={() => {
+            const orderId = submitCowOrder(quote, signature);
+            console.log('Order ID:', orderId);
           }}
         />
       </Container>
