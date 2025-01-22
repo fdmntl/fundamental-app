@@ -7,9 +7,9 @@ import { FText } from './Text/FText';
 
 import { useAppData } from '~/components/Wrappers/AppData';
 import { setCowInfiniteAllowance } from '~/services/CoW/setCowInfiniteAllowance';
-import { getWalletClient, resolveENS } from '~/services/viemService';
+import { getWalletClient, resolveENS, signMessage } from '~/services/viemService';
 import { getCowQuote } from '~/services/CoW/getCowQuote';
-import { OrderParameters } from '@cowprotocol/cow-sdk';
+import { OrderParameters, SigningResult } from '@cowprotocol/cow-sdk';
 import { signCowQuote } from '~/services/CoW/signCowQuote';
 import { getEthersSigner } from '~/services/ethersService';
 import { submitCowOrder } from '~/services/CoW/submitCowOrder';
@@ -22,7 +22,7 @@ const TestModule = () => {
   const [resolvedAddress, setResolvedAddress] = useState<string | null>('');
 
   let quote: OrderParameters;
-  let signature: string = '';
+  let signature: SigningResult;
 
   if (!wallet) {
     return <FText className="text-lg">Wallet not created</FText>;
@@ -49,6 +49,7 @@ const TestModule = () => {
     }
   };
   const walletClient = getWalletClient(wallet.provider);
+  const signer = getEthersSigner(wallet.provider);
 
   return (
     <View>
@@ -65,7 +66,6 @@ const TestModule = () => {
         <FText className="text-lg">Resolved Address:</FText>
         <FText className="text-lg">{resolvedAddress}</FText>
         <FText className="text-lg">Your address is {user.wallet_address}</FText>
-        <FText className="text-lg">Last signature: {signature}</FText>
         <Button
           className="bg-primary"
           title="Approve USDC"
@@ -94,15 +94,13 @@ const TestModule = () => {
           title="Sign Cow Quote"
           onPress={async () => {
             try {
-              const signedOrder = await signCowQuote(
+              const signature = await signCowQuote(
                 quote,
-                '1',
+                '10000',
                 user.wallet_address,
                 wallet.provider
               );
-              if (signedOrder) {
-                signature = signedOrder;
-              }
+              console.log('Signed order:', signature);
             } catch (error) {
               console.error('Error signing quote:', error);
               console.error('Error details:', JSON.stringify(error, null, 2));

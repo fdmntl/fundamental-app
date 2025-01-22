@@ -31,8 +31,8 @@ export const signCowQuote = async (
     feeAmount,
     receiver: receiver,
   };
-  const orderId = await OrderSigningUtils.signOrder(order, SupportedChainId.BASE, signer);
-  return orderId;
+  const signature = await OrderSigningUtils.signOrder(order, SupportedChainId.BASE, signer);
+  return signature;
   // const order: Order = quote as Order;
   // const digest = hashOrder(domain(1, '0x9008D19f58AAbD9eD0D60971565AA8510560ab41'), order);
   // const signature = await signMessage(provider, digest);
