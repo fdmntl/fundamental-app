@@ -1,10 +1,21 @@
 import { OrderParameters } from '@cowprotocol/cow-sdk';
 
+import {
+  OrderBookApi,
+  OrderQuoteRequest,
+  OrderQuoteSideKindSell,
+  OrderSigningUtils,
+  SupportedChainId,
+  UnsignedOrder,
+} from '@cowprotocol/cow-sdk';
+
 import { Order, OrderBalance, OrderKind, domain, hashOrder } from '@cowprotocol/contracts';
 
 import { signMessage } from '../viemService';
 
 import { PrivyEmbeddedWalletProvider } from '@privy-io/expo';
+
+import { getEthersSigner } from '~/services/ethersService';
 
 export const signCowQuote = async (
   quote: OrderParameters,
@@ -12,9 +23,19 @@ export const signCowQuote = async (
   receiver: string,
   provider: PrivyEmbeddedWalletProvider
 ) => {
-  const order: Order = quote as Order;
-  const digest = hashOrder(domain(1, '0x9008D19f58AAbD9eD0D60971565AA8510560ab41'), order);
-  const signature = await signMessage(provider, digest);
-  console.log('Signature:', signature);
-  return signature;
+  const signer = getEthersSigner(provider);
+  const feeAmount = '0';
+  const order: UnsignedOrder = {
+    ...quote,
+    sellAmount,
+    feeAmount,
+    receiver: receiver,
+  };
+  const orderId = await OrderSigningUtils.signOrder(order, SupportedChainId.BASE, signer);
+  return orderId;
+  // const order: Order = quote as Order;
+  // const digest = hashOrder(domain(1, '0x9008D19f58AAbD9eD0D60971565AA8510560ab41'), order);
+  // const signature = await signMessage(provider, digest);
+  // console.log('Signature:', signature);
+  // return signature;
 };
