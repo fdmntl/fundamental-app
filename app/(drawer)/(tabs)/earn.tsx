@@ -2,10 +2,9 @@ import { Feather } from '@expo/vector-icons';
 import { View } from 'react-native';
 
 import { HeaderBar } from '~/components/HeaderBar';
+import TestModule from '~/components/TestModule';
 import { FText } from '~/components/Text/FText';
 import { Frame } from '~/components/Wrappers/Frame';
-
-import TestModule from '~/components/TestModule';
 
 export default function Earn() {
   return (
