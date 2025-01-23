@@ -7,7 +7,7 @@ import { FText } from './Text/FText';
 
 import { useAppData } from '~/components/Wrappers/AppData';
 import { setCowInfiniteAllowance } from '~/services/CoW/setCowInfiniteAllowance';
-import { getWalletClient, resolveENS, signMessage } from '~/services/viemService';
+import { getWalletClient, resolveENS } from '~/services/viemService';
 import { getCowQuote } from '~/services/CoW/getCowQuote';
 import { OrderParameters, SigningResult } from '@cowprotocol/cow-sdk';
 import { signCowQuote } from '~/services/CoW/signCowQuote';

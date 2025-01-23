@@ -1,17 +1,6 @@
 import { OrderParameters } from '@cowprotocol/cow-sdk';
 
-import {
-  OrderBookApi,
-  OrderQuoteRequest,
-  OrderQuoteSideKindSell,
-  OrderSigningUtils,
-  SupportedChainId,
-  UnsignedOrder,
-} from '@cowprotocol/cow-sdk';
-
-import { Order, OrderBalance, OrderKind, domain, hashOrder } from '@cowprotocol/contracts';
-
-import { signMessage } from '../viemService';
+import { OrderSigningUtils, SupportedChainId, UnsignedOrder } from '@cowprotocol/cow-sdk';
 
 import { PrivyEmbeddedWalletProvider } from '@privy-io/expo';
 

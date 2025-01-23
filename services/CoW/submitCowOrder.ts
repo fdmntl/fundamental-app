@@ -1,16 +1,10 @@
 import {
   OrderBookApi,
   SupportedChainId,
-  OrderQuoteRequest,
-  OrderQuoteSideKindSell,
-  OrderSigningUtils,
-  UnsignedOrder,
   SigningScheme,
   OrderParameters,
   SigningResult,
 } from '@cowprotocol/cow-sdk';
-import { OrderCreation } from '@cowprotocol/cow-sdk/dist/order-book/generated/models/OrderCreation';
-import { PrivyEmbeddedWalletProvider } from '@privy-io/expo';
 
 const orderBookApi = new OrderBookApi({ chainId: SupportedChainId.BASE });
 
