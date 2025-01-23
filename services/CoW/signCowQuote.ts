@@ -4,7 +4,7 @@ import { OrderSigningUtils, SupportedChainId, UnsignedOrder } from '@cowprotocol
 
 import { PrivyEmbeddedWalletProvider } from '@privy-io/expo';
 
-import { getEthersSigner } from '~/services/ethersService';
+import { getEthersSigner } from '~/services/Ethers/getEthersSigner';
 
 export const signCowQuote = async (
   quote: OrderParameters,

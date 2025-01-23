@@ -11,7 +11,7 @@ import { getWalletClient, resolveENS } from '~/services/viemService';
 import { getCowQuote } from '~/services/CoW/getCowQuote';
 import { OrderParameters, SigningResult } from '@cowprotocol/cow-sdk';
 import { signCowQuote } from '~/services/CoW/signCowQuote';
-import { getEthersSigner } from '~/services/ethersService';
+import { getEthersSigner } from '~/services/Ethers/getEthersSigner';
 import { submitCowOrder } from '~/services/CoW/submitCowOrder';
 
 const TestModule = () => {
