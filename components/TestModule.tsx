@@ -74,44 +74,30 @@ const TestModule = () => {
           }></Button>
         <Button
           className="bg-primary"
-          title="Get Cow Quote - 0.1 USDC -> WETH"
+          title="Get Cow Quote - 1 USDC -> WETH"
           onPress={async () => {
-            try {
-              quote = await getCowQuote(
-                user.wallet_address,
-                '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-                '0x4200000000000000000000000000000000000006',
-                '10000'
-              );
-            } catch (error) {
-              console.error('Error fetching quote:', error);
-              console.error('Error details:', JSON.stringify(error, null, 2));
-            }
+            quote = await getCowQuote(
+              user.wallet_address,
+              '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+              '0x4200000000000000000000000000000000000006',
+              '1000000'
+            );
+            console.log('Quote:', quote);
           }}
         />
         <Button
           className="bg-primary"
           title="Sign Cow Quote"
           onPress={async () => {
-            try {
-              const signature = await signCowQuote(
-                quote,
-                '10000',
-                user.wallet_address,
-                wallet.provider
-              );
-              console.log('Signed order:', signature);
-            } catch (error) {
-              console.error('Error signing quote:', error);
-              console.error('Error details:', JSON.stringify(error, null, 2));
-            }
+            signature = await signCowQuote(quote, '1000000', user.wallet_address, wallet.provider);
+            console.log('Signed order:', signature);
           }}
         />
         <Button
           className="bg-primary"
           title="Submit Cow Order"
-          onPress={() => {
-            const orderId = submitCowOrder(quote, signature);
+          onPress={async () => {
+            const orderId = await submitCowOrder(quote, '1000000', signature);
             console.log('Order ID:', orderId);
           }}
         />
