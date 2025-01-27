@@ -11,8 +11,8 @@ import { Token } from '~/types/supabaseTypes';
 export default function Trade() {
   const { user, tokens } = useAppData();
 
-  const [amount, setAmount] = useState('');
-  const [selectedToken, setSelectedToken] = useState<Token | null>(null);
+  const [amount, setAmount] = useState(''); // Payment input value
+  const [selectedToken, setSelectedToken] = useState<Token | null>(null); // Selected payment token
   const possessedTokens = tokens.filter((token) =>
     user.balances.some((balance) => balance.token_address === token.address)
   );
@@ -26,7 +26,8 @@ export default function Trade() {
   return (
     <Frame>
       <HeaderBar title="Trade" />
-      <View className="">
+      <View>
+        {/* Amount Input for "You Pay" */}
         <AmountInput
           value={amount}
           onChange={(value) => setAmount(value)}
@@ -36,7 +37,15 @@ export default function Trade() {
           onTokenChange={(token) => setSelectedToken(token)}
           title="You Pay"
         />
-        <QuoteDisplay />
+
+        {/* Quote Display */}
+        <QuoteDisplay
+          tokens={possessedTokens}
+          user={user}
+          selectedTokenBalance={selectedTokenBalance}
+          youPayValue={parseFloat(amount) || 0} // Pass payment amount
+          youPayToken={selectedToken || possessedTokens[0]} // Pass selected payment token or default to the first token
+        />
       </View>
     </Frame>
   );
