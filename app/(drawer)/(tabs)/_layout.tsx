@@ -25,7 +25,7 @@ export default function Layout() {
 
   useEffect(() => {
     if (isReady && !privy.user) {
-      router.navigate('/login'); // TODO: disable login page back gesture
+      router.replace('/login');
     }
   }, [isReady, privy, router]);
 

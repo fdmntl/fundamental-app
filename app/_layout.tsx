@@ -15,10 +15,9 @@ import {
 import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter';
 import { PrivyProvider, PrivyElements } from '@privy-io/expo';
 import { useFonts } from 'expo-font';
-import { Drawer } from 'expo-router/drawer';
+import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import CustomDrawerContent from '~/components/CustomDrawerContent';
 import { AppDataProvider } from '~/components/Wrappers/AppData';
 import { ThemeWrapper } from '~/components/Wrappers/ThemeWrapper';
 
@@ -46,60 +45,14 @@ const Layout = () => {
       <ThemeWrapper>
         <AppDataProvider>
           <GestureHandlerRootView className="flex-1">
-            <Drawer
-              drawerContent={CustomDrawerContent}
-              screenOptions={{
-                drawerLabelStyle: {
-                  color: 'white',
-                  fontSize: 20,
-                  fontFamily: 'DMSans_700Bold',
-                },
-              }}>
-              <Drawer.Screen name="settings" options={{ headerShown: false, title: 'Settings' }} />
-              <Drawer.Screen name="profile" options={{ headerShown: false, title: 'Profile' }} />
-              <Drawer.Screen
-                name="(tabs)"
-                options={{
-                  headerShown: false,
-                  drawerItemStyle: { display: 'none' },
-                }}
-              />
-              <Drawer.Screen
-                name="login"
-                options={{
-                  headerShown: false,
-                  drawerItemStyle: { display: 'none' },
-                }}
-              />
-              <Drawer.Screen
-                name="+not-found"
-                options={{
-                  headerShown: false,
-                  drawerItemStyle: { display: 'none' },
-                }}
-              />
-              <Drawer.Screen
-                name="details"
-                options={{
-                  headerShown: false,
-                  drawerItemStyle: { display: 'none' },
-                }}
-              />
-              <Drawer.Screen
-                name="assets/[asset]"
-                options={{
-                  headerShown: false,
-                  drawerItemStyle: { display: 'none' },
-                }}
-              />
-              <Drawer.Screen
-                name="send/[address]"
-                options={{
-                  headerShown: false,
-                  drawerItemStyle: { display: 'none' },
-                }}
-              />
-            </Drawer>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+              <Stack.Screen name="assets/[asset]" options={{ title: 'Asset Details' }} />
+              <Stack.Screen name="send/[address]" options={{ title: 'Send Details' }} />
+              <Stack.Screen name="details" options={{ title: 'Details' }} />
+              <Stack.Screen name="login" options={{ title: 'Login', gestureEnabled: false }} />
+              <Stack.Screen name="+not-found" options={{ title: 'Not Found' }} />
+            </Stack>
           </GestureHandlerRootView>
         </AppDataProvider>
       </ThemeWrapper>
@@ -109,19 +62,3 @@ const Layout = () => {
 };
 
 export default Layout;
-
-// Note: Keeping this for a while, we might need it later on (Stack navigation)
-// import { Stack } from 'expo-router';
-// return (
-//   <PrivyProvider appId="clxd5oc5m007jrpv8y8clt6z7">
-//     <ThemeWrapper>
-//       <AppDataProvider>
-//         <Stack>
-//           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-//           <Stack.Screen name="+not-found" options={{ headerShown: true }} />
-//           <Stack.Screen name="login" options={{ headerShown: false }} />
-//         </Stack>
-//       </AppDataProvider>
-//     </ThemeWrapper>
-//   </PrivyProvider>
-// );

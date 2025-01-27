@@ -49,6 +49,7 @@ export const signMessage = async (provider: PrivyEmbeddedWalletProvider, message
       account,
       message,
     });
+    return signature;
   } catch (error) {
     console.error('Error signing message:', error);
   }
