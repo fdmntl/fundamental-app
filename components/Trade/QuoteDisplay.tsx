@@ -5,6 +5,8 @@ import { View, TouchableOpacity, Modal, FlatList, Image, TextInput } from 'react
 import { FText } from '~/components/Text/FText';
 import { Token, User } from '~/types/supabaseTypes';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
+import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
+import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
 
 import { getCowQuote } from '~/services/CoW/getCowQuote';
 
@@ -42,22 +44,29 @@ export const QuoteDisplay = ({
   const tokenIcon = (selectedToken && tokenIcons[selectedToken.symbol]) || null;
 
   const handleCalculateQuote = async () => {
-    if (selectedToken) {
-      const quote = await getCowQuote(
-        user.wallet_address,
-        youPayToken.address,
-        selectedToken.address,
-        youPayValue.toString()
-      );
-      const quoteValue = quote.buyAmount; // Replace 'relevantStringField' with the actual field name
-      setQuoteValue(quoteValue);
-      console.log('Calculating Quote...');
-      console.log(`You Pay Value: ${youPayValue}`);
-      console.log(`You Pay Token: ${youPayToken.symbol}`);
-      console.log(`You Get Value: ${quoteValue}`);
-      console.log(`You Get Token: ${selectedToken?.symbol || 'None'}`);
-    } else {
-      alert('Please select a token to get a quote.');
+    try {
+      if (selectedToken) {
+        const youPayValueConverted = amountToDigits(youPayValue, youPayToken);
+        const quote = await getCowQuote(
+          user.wallet_address,
+          youPayToken.address,
+          selectedToken.address,
+          youPayValueConverted.toString()
+        );
+        const quoteValue = digitsToAmount(Number(quote.buyAmount), selectedToken).toFixed(2);
+        setQuoteValue(quoteValue);
+        console.log('Calculating Quote...');
+        console.log(`You Pay Value: ${youPayValue}`);
+        console.log(`You Pay Token: ${youPayToken.symbol}`);
+        console.log(`You Get Value: ${quoteValue}`);
+        console.log(`You Get Token: ${selectedToken?.symbol || 'None'}`);
+      } else {
+        alert('Please select a token to get a quote.');
+      }
+    } catch (error) {
+      console.error('Error calculating quote:', error);
+      console.error('Error details:', JSON.stringify(error, null, 2));
+      alert('Error calculating quote. Please try again.');
     }
   };
 
@@ -83,11 +92,11 @@ export const QuoteDisplay = ({
           {tokens.length > 1 && <Feather name="chevron-down" size={28} className="text-neutral" />}
         </TouchableOpacity>
       </View>
-      <View className="-mt-2 flex-row items-center">
+      <View className="flex-row items-center">
         <FText
-          className={`flex-1 rounded-md bg-content text-4xl font-semibold ${quoteValue ? '!text-text' : '!text-neutral'}`}
+          className={`flex-1 rounded-md bg-content !text-4xl font-semibold ${quoteValue ? '!text-text' : '!text-neutral'}`}
           bold>
-          {youPayValue} {youPayToken.symbol} {quoteValue || 'quote'} {selectedToken?.symbol}
+          {quoteValue || 'Calculating Quote'} {selectedToken?.symbol}
         </FText>
       </View>
       <TouchableOpacity
