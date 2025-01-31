@@ -9,8 +9,12 @@ export type Token = {
   symbol: string;
   digits: number;
   description: string;
-  value: Value[];
   is_stablecoin: boolean;
+  daily_value: Value[];
+  weekly_value: Value[];
+  monthly_value: Value[];
+  yearly_value: Value[];
+  last_value: number;
 };
 
 export type TokenList = Token[];
