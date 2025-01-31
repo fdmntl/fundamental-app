@@ -2,10 +2,10 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 
+import { DetailsHeader } from '~/components/Assets/DetailsHeader';
 import { Button } from '~/components/Button';
-import { AmountInput } from '~/components/Send/AmountInput';
-import { RecipientInput } from '~/components/Send/RecipientInput';
-import { SubSendHeader } from '~/components/Send/SubSendHeader';
+import AmountInput from '~/components/Send/AmountInput';
+import RecipientInput from '~/components/Send/RecipientInput';
 import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
@@ -61,7 +61,7 @@ export default function SendToken() {
       <Stack.Screen options={{ title: selectedToken?.name || 'Send Token', headerShown: false }} />
       <Frame>
         <View className="flex-1 gap-4">
-          <SubSendHeader title={selectedToken.symbol} address={address as string} icon={icon} />
+          <DetailsHeader title={`Send ${selectedToken.symbol}`} icon={icon} />
           <RecipientInput value={recipient} onChange={setRecipient} />
           <AmountInput
             value={amount}

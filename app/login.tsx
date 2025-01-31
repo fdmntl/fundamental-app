@@ -9,7 +9,7 @@ import {
 import Constants from 'expo-constants';
 import { router, Stack } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { TextInput, View, BackHandler } from 'react-native';
+import { TextInput, View } from 'react-native';
 
 import { Button } from '~/components/Button';
 import { Container } from '~/components/Container';
@@ -29,17 +29,6 @@ export default function Login() {
   const oauth = useOAuthFlow();
 
   const { updatePrivy } = useAppData();
-
-  // This disables user back gesture
-  useEffect(() => {
-    const backAction = () => {
-      return true;
-    };
-
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-
-    return () => backHandler.remove();
-  }, []);
 
   useEffect(() => {
     if (user) {
