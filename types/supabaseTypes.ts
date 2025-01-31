@@ -24,8 +24,8 @@ export type User = {
   created_at: string;
   wallet_address: string;
   ens?: string;
-  balances: { token_address: string; balance: number }[];
-  selected_money?: string;
+  balances: { address: string; balance: number; value: number }[];
+  total_value_historic: Value[];
 };
 
 export type SubscriptionData = {

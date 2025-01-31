@@ -1,8 +1,8 @@
 import { usePrivy } from '@privy-io/expo';
-import { useAppData } from './Wrappers/AppData';
 import React from 'react';
 
 import { Button } from './Button';
+import { useAppData } from './Wrappers/AppData';
 
 export const DebugButton = () => {
   const { user } = useAppData();
@@ -20,7 +20,7 @@ export const DebugButton = () => {
     console.log('\nPrivy Access Token:', accessToken);
     console.log('\n---------------------Tokens---------------------');
     tokens.forEach((token) => {
-      const { name, address, symbol, digits, description, is_stablecoin, value } = token;
+      const { name, address, symbol, digits, description, is_stablecoin } = token;
       console.log({
         name,
         address,
@@ -28,7 +28,6 @@ export const DebugButton = () => {
         digits,
         description,
         is_stablecoin,
-        valueLength: value.length,
       });
     });
   };
