@@ -14,7 +14,7 @@ interface DetailsHeaderProps {
 export const DetailsHeader = ({ title, icon }: DetailsHeaderProps) => {
   return (
     <View className="h-50 z-10 flex-row items-center gap-2 py-4">
-      <TouchableOpacity onPress={() => router.navigate('/assets')}>
+      <TouchableOpacity onPress={() => router.back()}>
         <Feather name="chevron-left" size={42} className="-ml-2 text-text" />
       </TouchableOpacity>
       <FTitle className="mt-2 text-4xl text-text">{title}</FTitle>
