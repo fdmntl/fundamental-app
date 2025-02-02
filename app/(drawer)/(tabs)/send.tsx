@@ -20,8 +20,8 @@ const sendPillContent = () => {
         Here you can quickly and securely send cryptocurrency to any recipient with a valid address.
       </FText>
       <FText className="!text-lg" bold>
-        Just enter the recipient’s address, username or ens domain, specify the amount, and confirm the
-        transaction to transfer funds instantly.
+        Just enter the recipient’s address, username or ens domain, specify the amount, and confirm
+        the transaction to transfer funds instantly.
       </FText>
     </PillMessageBox>
   );
@@ -35,7 +35,7 @@ export default function Send() {
   const [amount, setAmount] = useState('');
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
   const possessedTokens = tokens.filter((token) =>
-    user.balances.some((balance) => balance.token_address === token.address)
+    user.balances.some((balance) => balance.address === token.address)
   );
 
   const selectedTokenBalance = selectedToken
