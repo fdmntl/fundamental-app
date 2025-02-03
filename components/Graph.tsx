@@ -77,7 +77,7 @@ const Graph = ({ graphData }: GraphProps) => {
       )}
 
       {/* Ensure graph only renders when filteredData is ready */}
-      {filteredData.length > 0 ? (
+      {graphData && filteredData.length > 0 ? (
         <LineChart
           areaChart
           data={filteredData}

@@ -1,4 +1,4 @@
-type Value = {
+export type Value = {
   value: string;
   timestamp: string;
 };

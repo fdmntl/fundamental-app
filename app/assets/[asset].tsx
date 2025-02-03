@@ -1,6 +1,5 @@
 import { Feather } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { useMemo } from 'react';
 import { View, ScrollView } from 'react-native';
 
 import { AssetDetailsCTAs } from '~/components/Assets/AssetDetailsCTAs';
@@ -10,6 +9,7 @@ import Graph from '~/components/Graph';
 import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { transformGraphData } from '~/utils/helpers/graph/transformGraphData';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
 import { capitalise } from '~/utils/helpers/strings/capitalise';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
@@ -22,37 +22,6 @@ export default function Assets() {
   const token = getToken(asset as string);
 
   const { tokens, user } = useAppData();
-
-  // TODO: this should move, or be done diretly in the DB, waste of resources
-  const graphData = useMemo(() => {
-    if (!token) return;
-    return {
-      daily_value: token?.daily_value.map((item) => {
-        return {
-          value: parseFloat(item.value),
-          label: item.timestamp,
-        };
-      }),
-      weekly_value: token?.weekly_value.map((item) => {
-        return {
-          value: parseFloat(item.value),
-          label: item.timestamp,
-        };
-      }),
-      monthly_value: token?.monthly_value.map((item) => {
-        return {
-          value: parseFloat(item.value),
-          label: item.timestamp,
-        };
-      }),
-      yearly_value: token?.yearly_value.map((item) => {
-        return {
-          value: parseFloat(item.value),
-          label: item.timestamp,
-        };
-      }),
-    };
-  }, [token]);
 
   if (!token) {
     return (
@@ -90,7 +59,14 @@ export default function Assets() {
                 </FText>
                 <Feather name="trending-up" size={30} className="text-success" />
               </View>
-              <Graph graphData={graphData} />
+              <Graph
+                graphData={{
+                  daily_value: transformGraphData(token.daily_value),
+                  weekly_value: transformGraphData(token.weekly_value),
+                  monthly_value: transformGraphData(token.monthly_value),
+                  yearly_value: transformGraphData(token.yearly_value),
+                }}
+              />
               <Container title="Holdings">
                 <View className="flex flex-row items-center justify-between">
                   <View>
