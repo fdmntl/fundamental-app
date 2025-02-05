@@ -9,7 +9,6 @@ import Graph from '~/components/Graph';
 import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
-import { transformGraphData } from '~/utils/helpers/graph/transformGraphData';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
 import { capitalise } from '~/utils/helpers/strings/capitalise';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
@@ -61,10 +60,10 @@ export default function Assets() {
               </View>
               <Graph
                 graphData={{
-                  daily_value: transformGraphData(token.daily_value),
-                  weekly_value: transformGraphData(token.weekly_value),
-                  monthly_value: transformGraphData(token.monthly_value),
-                  yearly_value: transformGraphData(token.yearly_value),
+                  daily_values: token.daily_values,
+                  weekly_values: token.weekly_values,
+                  monthly_values: token.monthly_values,
+                  yearly_values: token.yearly_values,
                 }}
               />
               <Container title="Holdings">

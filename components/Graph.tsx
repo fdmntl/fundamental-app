@@ -10,8 +10,17 @@ interface GraphProps {
 }
 
 const Graph = ({ graphData }: GraphProps) => {
+  console.log('--------graphData: ');
+  console.log(graphData?.daily_values.length);
+  console.log(graphData?.weekly_values.length);
+  console.log(graphData?.monthly_values.length);
+  console.log(graphData?.yearly_values.length);
   const [selectedRange, setSelectedRange] = useState<string>('1month');
+  console.log('--------selectedRange: ');
+  console.log(selectedRange);
   const [filteredData, setFilteredData] = useState<DataPoint[]>([]);
+  console.log('--------filteredData: ');
+  console.log(filteredData.length);
   const [currentValue, setCurrentValue] = useState<number>(0);
   const [currentDate, setCurrentDate] = useState<string>('');
   const [containerWidth, setContainerWidth] = useState<number>(
@@ -22,16 +31,16 @@ const Graph = ({ graphData }: GraphProps) => {
     if (graphData) {
       switch (selectedRange) {
         case '1day':
-          setFilteredData(graphData.daily_value);
+          setFilteredData(graphData.daily_values);
           break;
         case '1week':
-          setFilteredData(graphData.weekly_value);
+          setFilteredData(graphData.weekly_values);
           break;
         case '1month':
-          setFilteredData(graphData.monthly_value);
+          setFilteredData(graphData.monthly_values);
           break;
         case '1year':
-          setFilteredData(graphData.yearly_value);
+          setFilteredData(graphData.yearly_values);
           break;
       }
     }

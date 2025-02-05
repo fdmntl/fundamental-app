@@ -1,6 +1,6 @@
 export type Value = {
-  value: string;
-  timestamp: string;
+  value: number;
+  label: string;
 };
 
 export type Token = {
@@ -10,10 +10,10 @@ export type Token = {
   digits: number;
   description: string;
   is_stablecoin: boolean;
-  daily_value: Value[];
-  weekly_value: Value[];
-  monthly_value: Value[];
-  yearly_value: Value[];
+  daily_values: Value[];
+  weekly_values: Value[];
+  monthly_values: Value[];
+  yearly_values: Value[];
   last_value: number;
 };
 

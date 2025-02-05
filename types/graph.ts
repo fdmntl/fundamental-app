@@ -4,8 +4,8 @@ export type DataPoint = {
 };
 
 export type GraphData = {
-  daily_value: DataPoint[];
-  weekly_value: DataPoint[];
-  monthly_value: DataPoint[];
-  yearly_value: DataPoint[];
+  daily_values: DataPoint[];
+  weekly_values: DataPoint[];
+  monthly_values: DataPoint[];
+  yearly_values: DataPoint[];
 };
