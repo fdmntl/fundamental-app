@@ -3,55 +3,48 @@ import { View, TouchableOpacity, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 
 import { FText } from '~/components/Text/FText';
-import { DataPoint } from '~/types/graph';
+import { DataPoint, GraphData } from '~/types/graph';
 
 interface GraphProps {
-  allData: DataPoint[];
+  graphData: GraphData | undefined;
 }
 
-const Graph = ({ allData }: GraphProps) => {
+const Graph = ({ graphData }: GraphProps) => {
+  console.log('--------graphData: ');
+  console.log(graphData?.daily_values.length);
+  console.log(graphData?.weekly_values.length);
+  console.log(graphData?.monthly_values.length);
+  console.log(graphData?.yearly_values.length);
   const [selectedRange, setSelectedRange] = useState<string>('1month');
+  console.log('--------selectedRange: ');
+  console.log(selectedRange);
   const [filteredData, setFilteredData] = useState<DataPoint[]>([]);
+  console.log('--------filteredData: ');
+  console.log(filteredData.length);
   const [currentValue, setCurrentValue] = useState<number>(0);
   const [currentDate, setCurrentDate] = useState<string>('');
   const [containerWidth, setContainerWidth] = useState<number>(
     Dimensions.get('window').width - 32 // Default width with padding
   );
 
-  // Filter data based on selected range
   useEffect(() => {
-    const now = new Date();
-    let range = 0;
-
-    switch (selectedRange) {
-      case '1day':
-        range = 1;
-        break;
-      case '1week':
-        range = 7;
-        break;
-      case '1month':
-        range = 30;
-        break;
-      case '1year':
-        setFilteredData([...allData].reverse()); // Reverse the order for latest data on the right
-        return;
+    if (graphData) {
+      switch (selectedRange) {
+        case '1day':
+          setFilteredData(graphData.daily_values);
+          break;
+        case '1week':
+          setFilteredData(graphData.weekly_values);
+          break;
+        case '1month':
+          setFilteredData(graphData.monthly_values);
+          break;
+        case '1year':
+          setFilteredData(graphData.yearly_values);
+          break;
+      }
     }
-
-    const newFilteredData = allData
-      .filter((d) => new Date(d.label!) >= new Date(now.getTime() - range * 24 * 60 * 60 * 1000))
-      .reverse(); // Reverse the filtered data
-    setFilteredData(newFilteredData);
-  }, [selectedRange, allData]);
-
-  // Reset to last data point
-  useEffect(() => {
-    if (filteredData.length > 0) {
-      const lastData = filteredData[filteredData.length - 1];
-      setCurrentValue(lastData.value);
-      setCurrentDate(new Date(lastData.label!).toLocaleDateString());
-    }
-  }, [filteredData]);
+  }, [selectedRange, graphData]);
 
   const handlePointer = ({
     pointerIndex,
@@ -86,12 +79,14 @@ const Graph = ({ allData }: GraphProps) => {
       </FText>
 
       {/* Date */}
-      {['1week', '1month', '1year'].includes(selectedRange) && currentDate && (
+      {['1week', '1month', '1year'].includes(selectedRange) && currentDate ? (
         <FText className="mb-2 text-sm text-text">{currentDate}</FText>
+      ) : (
+        <FText className="mb-2 text-sm text-text">Today</FText>
       )}
 
       {/* Ensure graph only renders when filteredData is ready */}
-      {filteredData.length > 0 ? (
+      {graphData && filteredData.length > 0 ? (
         <LineChart
           areaChart
           data={filteredData}
@@ -125,7 +120,7 @@ const Graph = ({ allData }: GraphProps) => {
         />
       ) : (
         <View className="p-5">
-          {allData.length === 0 ? (
+          {graphData === undefined ? (
             <FText className="text-center text-text">No data available</FText>
           ) : (
             <FText className="text-center text-text">Loading data...</FText>
