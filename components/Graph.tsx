@@ -13,7 +13,7 @@ const Graph = ({ graphData }: GraphProps) => {
   const [selectedRange, setSelectedRange] = useState<string>('1month');
   const [filteredData, setFilteredData] = useState<DataPoint[]>([]);
   const [currentValue, setCurrentValue] = useState<number>(0);
-  const [currentDate, setCurrentDate] = useState<string>('');
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [containerWidth, setContainerWidth] = useState<number>(
     Dimensions.get('window').width - 32 // Default width with padding
   );
@@ -48,11 +48,11 @@ const Graph = ({ graphData }: GraphProps) => {
       // Reset to the last data point when pointer is released
       const lastData = filteredData[filteredData.length - 1];
       setCurrentValue(lastData?.value || 0);
-      setCurrentDate(new Date(lastData?.label || '').toLocaleDateString());
+      setCurrentDate(new Date(lastData?.label || ''));
     } else if (pointerIndex >= 0 && pointerIndex < filteredData.length) {
       // Update current value and date when the pointer is active
       setCurrentValue(filteredData[pointerIndex]?.value || 0);
-      setCurrentDate(new Date(filteredData[pointerIndex]?.label || '').toLocaleDateString());
+      setCurrentDate(new Date(filteredData[pointerIndex]?.label || ''));
     }
   };
 
@@ -73,23 +73,21 @@ const Graph = ({ graphData }: GraphProps) => {
 
   return (
     <View
-      className="rounded-xl bg-content p-4 shadow-md"
+      className="rounded-xl"
       style={{ overflow: 'hidden' }}
       onLayout={(event) => {
         const { width } = event.nativeEvent.layout;
         setContainerWidth(width - 16); // Account for padding inside the frame
       }}>
       {/* Current Price */}
-      <FText className="text-3xl text-text" bold>
+      <FText className="!text-3xl text-text" bold>
         ${currentValue.toFixed(2)}
       </FText>
 
       {/* Date */}
-      {['1week', '1month', '1year'].includes(selectedRange) && currentDate ? (
-        <FText className="mb-2">{currentDate}</FText>
-      ) : (
-        <FText className="mb-2">Today</FText>
-      )}
+      <FText className="mb-4">
+        {currentDate.toLocaleDateString()} at {currentDate.toLocaleTimeString()}
+      </FText>
 
       {/* Ensure graph only renders when filteredData is ready */}
       {graphData && filteredData.length > 0 ? (
@@ -97,7 +95,7 @@ const Graph = ({ graphData }: GraphProps) => {
           areaChart
           data={normalizedData}
           height={200}
-          width={containerWidth - 30} // Dynamically set width with padding adjustment, still testing this
+          width={containerWidth - 6} // Dynamically set width with padding adjustment, still testing this
           adjustToWidth
           initialSpacing={0}
           endSpacing={0}
