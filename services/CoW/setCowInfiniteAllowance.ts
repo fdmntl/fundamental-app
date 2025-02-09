@@ -1,8 +1,6 @@
-import { OrderBookApi } from '@cowprotocol/cow-sdk';
 import { PrivyEmbeddedWalletProvider } from '@privy-io/expo';
 
-import { useAppData } from '~/components/Wrappers/AppData';
-import { getWalletClient, approveERC20 } from './viemService';
+import { approveERC20 } from '~/services/viemService';
 import { maxUint256 } from 'viem';
 
 const cowRelayerAddress = '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110';

@@ -1,6 +1,6 @@
-type Value = {
-  value: string;
-  timestamp: string;
+export type Value = {
+  value: number;
+  label: string;
 };
 
 export type Token = {
@@ -9,8 +9,12 @@ export type Token = {
   symbol: string;
   digits: number;
   description: string;
-  value: Value[];
   is_stablecoin: boolean;
+  daily_values: Value[];
+  weekly_values: Value[];
+  monthly_values: Value[];
+  yearly_values: Value[];
+  last_value: number;
 };
 
 export type TokenList = Token[];
@@ -20,8 +24,8 @@ export type User = {
   created_at: string;
   wallet_address: string;
   ens?: string;
-  balances: { token_address: string; balance: number }[];
-  selected_money?: string;
+  balances: { address: string; balance: number; value: number }[];
+  total_value_historic: Value[];
 };
 
 export type SubscriptionData = {

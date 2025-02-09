@@ -6,8 +6,13 @@ import { Container } from './Container';
 import { FText } from './Text/FText';
 
 import { useAppData } from '~/components/Wrappers/AppData';
-import { setCowInfiniteAllowance } from '~/services/cowService';
+import { setCowInfiniteAllowance } from '~/services/CoW/setCowInfiniteAllowance';
 import { getWalletClient, resolveENS } from '~/services/viemService';
+import { getCowQuote } from '~/services/CoW/getCowQuote';
+import { OrderParameters, SigningResult } from '@cowprotocol/cow-sdk';
+import { signCowQuote } from '~/services/CoW/signCowQuote';
+import { getEthersSigner } from '~/services/Ethers/getEthersSigner';
+import { submitCowOrder } from '~/services/CoW/submitCowOrder';
 
 const TestModule = () => {
   const { user, privy, tokens } = useAppData();
@@ -15,6 +20,9 @@ const TestModule = () => {
 
   const [ensDomain, setEnsDomain] = useState('');
   const [resolvedAddress, setResolvedAddress] = useState<string | null>('');
+
+  let quote: OrderParameters;
+  let signature: SigningResult;
 
   if (!wallet) {
     return <FText className="text-lg">Wallet not created</FText>;
@@ -40,8 +48,9 @@ const TestModule = () => {
       setResolvedAddress('Error resolving ENS domain');
     }
   };
-
   const walletClient = getWalletClient(wallet.provider);
+  const signer = getEthersSigner(wallet.provider);
+
   return (
     <View>
       <Container className="" title="Test Module">
@@ -63,6 +72,35 @@ const TestModule = () => {
           onPress={() =>
             setCowInfiniteAllowance(wallet.provider, '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913')
           }></Button>
+        <Button
+          className="bg-primary"
+          title="Get Cow Quote - 1 USDC -> WETH"
+          onPress={async () => {
+            quote = await getCowQuote(
+              user.wallet_address,
+              '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+              '0x4200000000000000000000000000000000000006',
+              '1000000'
+            );
+            console.log('Quote:', quote);
+          }}
+        />
+        <Button
+          className="bg-primary"
+          title="Sign Cow Quote"
+          onPress={async () => {
+            signature = await signCowQuote(quote, '1000000', user.wallet_address, wallet.provider);
+            console.log('Signed order:', signature);
+          }}
+        />
+        <Button
+          className="bg-primary"
+          title="Submit Cow Order"
+          onPress={async () => {
+            const orderId = await submitCowOrder(quote, '1000000', signature);
+            console.log('Order ID:', orderId);
+          }}
+        />
       </Container>
     </View>
   );

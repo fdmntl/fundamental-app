@@ -3,13 +3,13 @@ import { View, TouchableOpacity, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 
 import { FText } from '~/components/Text/FText';
-import { DataPoint } from '~/types/graph';
+import { DataPoint, GraphData } from '~/types/graph';
 
 interface GraphProps {
-  allData: DataPoint[];
+  graphData: GraphData | undefined;
 }
 
-const Graph = ({ allData }: GraphProps) => {
+const Graph = ({ graphData }: GraphProps) => {
   const [selectedRange, setSelectedRange] = useState<string>('1month');
   const [filteredData, setFilteredData] = useState<DataPoint[]>([]);
   const [currentValue, setCurrentValue] = useState<number>(0);
@@ -18,31 +18,24 @@ const Graph = ({ allData }: GraphProps) => {
     Dimensions.get('window').width - 32 // Default width with padding
   );
 
-  // Filter data based on selected range
   useEffect(() => {
-    const now = new Date();
-    let range = 0;
-
-    switch (selectedRange) {
-      case '1day':
-        range = 1;
-        break;
-      case '1week':
-        range = 7;
-        break;
-      case '1month':
-        range = 30;
-        break;
-      case '1year':
-        setFilteredData([...allData].reverse()); // Reverse the order for latest data on the right
-        return;
+    if (graphData) {
+      switch (selectedRange) {
+        case '1day':
+          setFilteredData(graphData.daily_values);
+          break;
+        case '1week':
+          setFilteredData(graphData.weekly_values);
+          break;
+        case '1month':
+          setFilteredData(graphData.monthly_values);
+          break;
+        case '1year':
+          setFilteredData(graphData.yearly_values);
+          break;
+      }
     }
-
-    const newFilteredData = allData
-      .filter((d) => new Date(d.label!) >= new Date(now.getTime() - range * 24 * 60 * 60 * 1000))
-      .reverse(); // Reverse the filtered data
-    setFilteredData(newFilteredData);
-  }, [selectedRange, allData]);
+  }, [selectedRange, graphData]);
 
   const handlePointer = ({
     pointerIndex,
@@ -92,13 +85,14 @@ const Graph = ({ allData }: GraphProps) => {
       </FText>
 
       {/* Date */}
-      {['1week', '1month', '1year'].includes(selectedRange) && currentDate && (
+      {['1week', '1month', '1year'].includes(selectedRange) && currentDate ? (
         <FText className="mb-2">{currentDate}</FText>
+      ) : (
+        <FText className="mb-2">Today</FText>
       )}
-      {selectedRange === '1day' && <FText className="mb-2">Today</FText>}
 
       {/* Ensure graph only renders when filteredData is ready */}
-      {filteredData.length > 0 ? (
+      {graphData && filteredData.length > 0 ? (
         <LineChart
           areaChart
           data={normalizedData}
@@ -132,7 +126,7 @@ const Graph = ({ allData }: GraphProps) => {
         />
       ) : (
         <View className="p-5">
-          {allData.length === 0 ? (
+          {graphData === undefined ? (
             <FText className="text-center text-text">No data available</FText>
           ) : (
             <FText className="text-center text-text">Loading data...</FText>

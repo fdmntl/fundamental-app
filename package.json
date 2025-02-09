@@ -25,6 +25,7 @@
     "@supabase/supabase-js": "^2.47.8",
     "@tabler/icons-react-native": "^3.7.0",
     "axios": "^1.7.7",
+    "ethers": "^5.7.2",
     "expo": "~51.0.39",
     "expo-app-loading": "^2.1.1",
     "expo-application": "~5.9.1",

@@ -3,13 +3,29 @@ import { View } from 'react-native';
 import { isAddress } from 'viem';
 
 import { Button } from '~/components/Button';
-import { HeaderBar } from '~/components/HeaderBar';
+import { HeaderBar, PillMessageBox } from '~/components/HeaderBar';
 import AmountInput from '~/components/Send/AmountInput';
 import RecipientInput from '~/components/Send/RecipientInput';
+import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { useSendTokenCallback } from '~/services/Send/useSendTokenCallback';
 import { Token } from '~/types/supabaseTypes';
+import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
+
+const sendPillContent = () => {
+  return (
+    <PillMessageBox>
+      <FText className="mb-4 !text-lg" bold>
+        Here you can quickly and securely send cryptocurrency to any recipient with a valid address.
+      </FText>
+      <FText className="!text-lg" bold>
+        Just enter the recipient’s address, username or ens domain, specify the amount, and confirm
+        the transaction to transfer funds instantly.
+      </FText>
+    </PillMessageBox>
+  );
+};
 
 export default function Send() {
   const { user, tokens, privy } = useAppData();
@@ -19,11 +35,11 @@ export default function Send() {
   const [amount, setAmount] = useState('');
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
   const possessedTokens = tokens.filter((token) =>
-    user.balances.some((balance) => balance.token_address === token.address)
+    user.balances.some((balance) => balance.address === token.address)
   );
 
   const selectedTokenBalance = selectedToken
-    ? user.balances.find((balance) => balance.token_address === selectedToken.address)?.balance || 0
+    ? getUserTokenAmount(selectedToken?.address, tokens, user)
     : 0;
 
   const isRecipientValid = isAddress(recipient);
@@ -45,7 +61,7 @@ export default function Send() {
 
   return (
     <Frame>
-      <HeaderBar title="Send" />
+      <HeaderBar title="Send" pillContent={sendPillContent} />
       <View className="flex-1 gap-4">
         <View>
           <RecipientInput value={recipient} onChange={(value) => setRecipient(value)} />

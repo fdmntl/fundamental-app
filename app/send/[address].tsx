@@ -2,16 +2,17 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 
+import { DetailsHeader } from '~/components/Assets/DetailsHeader';
 import { Button } from '~/components/Button';
 import AmountInput from '~/components/Send/AmountInput';
 import RecipientInput from '~/components/Send/RecipientInput';
-import { SubSendHeader } from '~/components/Send/SubSendHeader';
 import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { useSendTokenCallback } from '~/services/Send/useSendTokenCallback';
 import { Token } from '~/types/supabaseTypes';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
+import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 
 export default function SendToken() {
   const { address } = useLocalSearchParams();
@@ -25,7 +26,7 @@ export default function SendToken() {
   );
 
   const selectedTokenBalance = selectedToken
-    ? user.balances.find((balance) => balance.token_address === selectedToken.address)?.balance || 0
+    ? getUserTokenAmount(selectedToken?.address, tokens, user)
     : 0;
 
   const isInputValid =
@@ -60,7 +61,7 @@ export default function SendToken() {
       <Stack.Screen options={{ title: selectedToken?.name || 'Send Token', headerShown: false }} />
       <Frame>
         <View className="flex-1 gap-4">
-          <SubSendHeader title={selectedToken.symbol} address={address as string} icon={icon} />
+          <DetailsHeader title={`Send ${selectedToken.symbol}`} icon={icon} />
           <RecipientInput value={recipient} onChange={setRecipient} />
           <AmountInput
             value={amount}
