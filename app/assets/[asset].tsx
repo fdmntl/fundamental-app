@@ -40,18 +40,9 @@ export default function Assets() {
   const userTokenValue = getUserTokenValue(token.address, tokens, user).toFixed(2);
   const userTokenAmount = getUserTokenAmount(token.address, tokens, user);
 
-  const actualValue = token.value[token.value.length - 1].value;
+  const actualValue = token.last_value;
 
-  const roundedValue = parseFloat(actualValue).toFixed(2);
-
-  const tokenHistory = token.value
-    .map((item) => {
-      return {
-        value: parseFloat(item.value),
-        label: item.timestamp,
-      };
-    })
-    .reverse();
+  const roundedValue = actualValue.toFixed(2);
 
   return (
     <>
@@ -67,7 +58,14 @@ export default function Assets() {
                 </FText>
                 <Feather name="trending-up" size={30} className="text-success" />
               </View>
-              <Graph allData={tokenHistory} />
+              <Graph
+                graphData={{
+                  daily_values: token.daily_values,
+                  weekly_values: token.weekly_values,
+                  monthly_values: token.monthly_values,
+                  yearly_values: token.yearly_values,
+                }}
+              />
               <Container title="Holdings">
                 <View className="flex flex-row items-center justify-between">
                   <View>
