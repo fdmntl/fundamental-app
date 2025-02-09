@@ -133,18 +133,20 @@ const Graph = ({ graphData }: GraphProps) => {
       )}
 
       {/* Time Range Selection */}
-      <View className="mb-2 flex-row justify-around">
-        {['1day', '1week', '1month', '1year'].map((range) => (
-          <TouchableOpacity
-            key={range}
-            onPress={() => setSelectedRange(range)}
-            className={`rounded-xl px-3 py-1 ${selectedRange === range ? 'bg-primary' : ''}`}>
-            <FText className={`${selectedRange === range ? 'text-white' : 'text-text'}`} bold>
-              {range.toUpperCase()}
-            </FText>
-          </TouchableOpacity>
-        ))}
-      </View>
+      {graphData && (
+        <View className="mb-2 flex-row justify-around">
+          {['1day', '1week', '1month', '1year'].map((range) => (
+            <TouchableOpacity
+              key={range}
+              onPress={() => setSelectedRange(range)}
+              className={`rounded-xl px-3 py-1 ${selectedRange === range ? 'bg-primary' : ''}`}>
+              <FText className={`${selectedRange === range ? 'text-white' : 'text-text'}`} bold>
+                {range.toUpperCase()}
+              </FText>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
     </View>
   );
 };
