@@ -44,16 +44,6 @@ export default function Assets() {
 
   const roundedValue = actualValue.toFixed(2);
 
-  // TODO: fix this (graph)
-  // const tokenHistory = token.value
-  //   .map((item) => {
-  //     return {
-  //       value: parseFloat(item.value),
-  //       label: item.timestamp,
-  //     };
-  //   })
-  //   .reverse();
-
   return (
     <>
       <Stack.Screen options={{ title, headerShown: false }} />
@@ -68,7 +58,14 @@ export default function Assets() {
                 </FText>
                 <Feather name="trending-up" size={30} className="text-success" />
               </View>
-              {/* <Graph allData={tokenHistory} /> */}
+              <Graph
+                graphData={{
+                  daily_values: token.daily_values,
+                  weekly_values: token.weekly_values,
+                  monthly_values: token.monthly_values,
+                  yearly_values: token.yearly_values,
+                }}
+              />
               <Container title="Holdings">
                 <View className="flex flex-row items-center justify-between">
                   <View>
