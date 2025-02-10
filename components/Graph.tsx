@@ -56,10 +56,19 @@ const Graph = ({ graphData }: GraphProps) => {
     }
   };
 
-  const minValue = Math.min(...filteredData.map((point) => point.value));
-  const maxValue = Math.max(...filteredData.map((point) => point.value));
+  const firstValue = filteredData[0]?.value || 0;
+  const lastValue = filteredData[filteredData.length - 1]?.value || 0;
+  const isPositive = lastValue > firstValue;
+
+  // Green for positive, red for negative
+  const chartColor = isPositive ? 'rgba(34, 197, 94, 1)' : 'rgba(239, 68, 68, 1)';
+  const startFillColor = isPositive ? 'rgba(34, 197, 94, 0.4)' : 'rgba(239, 68, 68, 0.4)';
+  const endFillColor = isPositive ? 'rgba(34, 197, 94, 0)' : 'rgba(239, 68, 68, 0)';
 
   const bufferPercentage = 0.5; // 50% buffer
+
+  const minValue = Math.min(...filteredData.map((point) => point.value));
+  const maxValue = Math.max(...filteredData.map((point) => point.value));
 
   const range = maxValue - minValue;
   const adjustedMin = minValue - range * bufferPercentage;
@@ -105,9 +114,9 @@ const Graph = ({ graphData }: GraphProps) => {
             hideDataPoints
             yAxisThickness={0}
             xAxisThickness={0}
-            color="rgba(100, 149, 237, 1)"
-            startFillColor="rgba(100, 149, 237, 0.4)"
-            endFillColor="rgba(100, 149, 237, 0)"
+            color={chartColor}
+            startFillColor={startFillColor}
+            endFillColor={endFillColor}
             startOpacity={0.4}
             endOpacity={0.1}
             curved
