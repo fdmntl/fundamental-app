@@ -1,6 +1,6 @@
 import { Feather } from '@expo/vector-icons';
-import { useState } from 'react';
-import { View, TouchableOpacity, Modal, FlatList, Image, TextInput } from 'react-native';
+import { useState, useEffect, useCallback } from 'react';
+import { View, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
 
 import { FText } from '~/components/Text/FText';
 import { Token, User } from '~/types/supabaseTypes';
@@ -9,6 +9,8 @@ import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
 import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
 
 import { getCowQuote } from '~/services/CoW/getCowQuote';
+import { getTokenAmountPrice } from '~/utils/helpers/tokens/getTokenAmountPrice';
+import { debounce } from '~/utils/helpers/debounce';
 
 interface QuoteDisplayProps {
   tokens: Token[];
@@ -43,32 +45,47 @@ export const QuoteDisplay = ({
 
   const tokenIcon = (selectedToken && tokenIcons[selectedToken.symbol]) || null;
 
+  // Function to fetch quote when all conditions are met
   const handleCalculateQuote = async () => {
     try {
-      if (selectedToken) {
-        const youPayValueConverted = amountToDigits(youPayValue, youPayToken);
-        const quote = await getCowQuote(
-          user.wallet_address,
-          youPayToken.address,
-          selectedToken.address,
-          youPayValueConverted.toString()
-        );
-        const quoteValue = digitsToAmount(Number(quote.buyAmount), selectedToken).toFixed(2);
-        setQuoteValue(quoteValue);
-        console.log('Calculating Quote...');
-        console.log(`You Pay Value: ${youPayValue}`);
-        console.log(`You Pay Token: ${youPayToken.symbol}`);
-        console.log(`You Get Value: ${quoteValue}`);
-        console.log(`You Get Token: ${selectedToken?.symbol || 'None'}`);
-      } else {
-        alert('Please select a token to get a quote.');
-      }
+      if (!selectedToken || !youPayValue || !youPayToken || !user.wallet_address) return;
+
+      const youPayValueConverted = amountToDigits(youPayValue, youPayToken);
+      const quote = await getCowQuote(
+        user.wallet_address,
+        youPayToken.address,
+        selectedToken.address,
+        youPayValueConverted.toString()
+      );
+
+      const formattedQuote = digitsToAmount(Number(quote.buyAmount), selectedToken).toFixed(2);
+      setQuoteValue(formattedQuote);
+
+      console.log('Calculating Quote...');
+      console.log(`You Pay Value: ${youPayValue}`);
+      console.log(`You Pay Token: ${youPayToken.symbol}`);
+      console.log(`You Get Value: ${formattedQuote}`);
+      console.log(`You Get Token: ${selectedToken?.symbol || 'None'}`);
     } catch (error) {
       console.error('Error calculating quote:', error);
-      console.error('Error details:', JSON.stringify(error, null, 2));
       alert('Error calculating quote. Please try again.');
     }
   };
+
+  // Wrapped the old handleCalculateQuote in debounce
+  const debouncedCalculateQuote = useCallback(debounce(handleCalculateQuote, 500), [
+    youPayValue,
+    youPayToken,
+    selectedToken,
+    user.wallet_address,
+  ]);
+
+  // Trigger debouncedCalculateQuote on parameter change
+  useEffect(() => {
+    if (youPayValue > 0 && youPayToken && selectedToken && user.wallet_address) {
+      debouncedCalculateQuote();
+    }
+  }, [youPayValue, youPayToken, selectedToken, user.wallet_address, debouncedCalculateQuote]);
 
   return (
     <View className="h-fit w-full gap-2 rounded-xl bg-content p-4 pb-6 pl-6">
@@ -99,13 +116,9 @@ export const QuoteDisplay = ({
           {quoteValue || 'Calculating Quote'} {selectedToken?.symbol}
         </FText>
       </View>
-      <TouchableOpacity
-        className="mt-4 w-full rounded-lg bg-primary px-4 py-3"
-        onPress={handleCalculateQuote}>
-        <FText className="text-center text-white" bold>
-          Calculate Quote
-        </FText>
-      </TouchableOpacity>
+      <FText className="!text-neutral" bold>
+        ≈${getTokenAmountPrice(selectedToken?.address || '', Number(quoteValue), tokens).toFixed(2)}
+      </FText>
       <Modal visible={isPickerOpen} transparent animationType="fade">
         <View className="flex-1 items-center justify-center">
           <View className="absolute h-full w-full bg-background opacity-50" />
