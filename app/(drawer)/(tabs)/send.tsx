@@ -34,9 +34,11 @@ export default function Send() {
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
-  const possessedTokens = tokens.filter((token) =>
-    user.balances.some((balance) => balance.address === token.address)
-  );
+  const possessedTokens = user.balances
+    .map((balance) =>
+      tokens.find((token) => token.address.toLowerCase() === balance.address.toLowerCase())
+    )
+    .filter((token) => token !== undefined) as Token[];
 
   const selectedTokenBalance = selectedToken
     ? getUserTokenAmount(selectedToken?.address, tokens, user)

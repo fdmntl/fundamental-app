@@ -13,12 +13,14 @@ export default function Trade() {
 
   const [amount, setAmount] = useState(''); // Payment input value
   const [selectedToken, setSelectedToken] = useState<Token | null>(null); // Selected payment token
-  const possessedTokens = tokens.filter((token) =>
-    user.balances.some((balance) => balance.token_address === token.address)
-  );
+  const possessedTokens = user.balances
+    .map((balance) =>
+      tokens.find((token) => token.address.toLowerCase() === balance.address.toLowerCase())
+    )
+    .filter((token) => token !== undefined) as Token[];
 
   const selectedTokenBalance = selectedToken
-    ? user.balances.find((balance) => balance.token_address === selectedToken.address)?.balance || 0
+    ? user.balances.find((balance) => balance.address === selectedToken.address)?.balance || 0
     : 0;
 
   const isAmountValid = parseFloat(amount) > 0 && parseFloat(amount) <= selectedTokenBalance;
