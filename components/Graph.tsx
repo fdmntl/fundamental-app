@@ -11,7 +11,7 @@ interface GraphProps {
 
 const Graph = ({ graphData }: GraphProps) => {
   const [selectedRange, setSelectedRange] = useState<string>('1month');
-  const [filteredData, setFilteredData] = useState<DataPoint[]>([]);
+  const [filteredData, setFilteredData] = useState<DataPoint[]>(graphData?.monthly_values || []);
   const [currentValue, setCurrentValue] = useState<number>(0);
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [containerWidth, setContainerWidth] = useState<number>(
@@ -91,37 +91,49 @@ const Graph = ({ graphData }: GraphProps) => {
 
       {/* Ensure graph only renders when filteredData is ready */}
       {graphData && filteredData.length > 0 ? (
-        <LineChart
-          areaChart
-          data={normalizedData}
-          height={200}
-          width={containerWidth - 6} // Dynamically set width with padding adjustment, still testing this
-          adjustToWidth
-          initialSpacing={0}
-          endSpacing={0}
-          hideYAxisText
-          xAxisLabelTextStyle={{ opacity: 0 }}
-          hideDataPoints
-          yAxisThickness={0}
-          xAxisThickness={0}
-          color="rgba(100, 149, 237, 1)"
-          startFillColor="rgba(100, 149, 237, 0.4)"
-          endFillColor="rgba(100, 149, 237, 0)"
-          startOpacity={0.4}
-          endOpacity={0.1}
-          curved
-          isAnimated
-          pointerConfig={{
-            pointerStripHeight: 200,
-            pointerStripColor: 'lightgrey',
-            pointerStripWidth: 1,
-            pointerColor: 'lightgrey',
-            radius: 4,
-            autoAdjustPointerLabelPosition: true,
-            pointerLabelComponent: () => null, // Hide pointer label
-          }}
-          getPointerProps={handlePointer}
-        />
+        <View className="relative">
+          <LineChart
+            areaChart
+            data={normalizedData}
+            height={200}
+            width={containerWidth - 6} // Dynamically set width with padding adjustment, still testing this
+            adjustToWidth
+            initialSpacing={0}
+            endSpacing={0}
+            hideYAxisText
+            xAxisLabelTextStyle={{ opacity: 0 }}
+            hideDataPoints
+            yAxisThickness={0}
+            xAxisThickness={0}
+            color="rgba(100, 149, 237, 1)"
+            startFillColor="rgba(100, 149, 237, 0.4)"
+            endFillColor="rgba(100, 149, 237, 0)"
+            startOpacity={0.4}
+            endOpacity={0.1}
+            curved
+            isAnimated
+            pointerConfig={{
+              pointerStripHeight: 200,
+              pointerStripColor: 'lightgrey',
+              pointerStripWidth: 1,
+              pointerColor: 'lightgrey',
+              radius: 4,
+              autoAdjustPointerLabelPosition: true,
+              pointerLabelComponent: () => null, // Hide pointer label
+            }}
+            getPointerProps={handlePointer}
+          />
+          <View className="absolute right-4 top-0 rounded-full bg-background px-2">
+            <FText className=" text-base !text-neutral" bold>
+              {maxValue.toFixed(2)}
+            </FText>
+          </View>
+          <View className="absolute bottom-9 right-4 rounded-full bg-background px-2">
+            <FText className=" text-base !text-neutral" bold>
+              {minValue.toFixed(2)}
+            </FText>
+          </View>
+        </View>
       ) : (
         <View className="p-5">
           {graphData === undefined ? (
