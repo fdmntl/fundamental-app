@@ -59,7 +59,7 @@ export const AmountInput = ({
           {title}
         </FText>
         <TouchableOpacity
-          className="flex-row items-center space-x-2 rounded-full bg-background px-4 py-3"
+          className="flex-row items-center space-x-2 px-4 py-3"
           onPress={() => {
             if (tokens.length > 1) setIsPickerOpen(true);
           }}>
