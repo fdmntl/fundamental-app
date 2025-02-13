@@ -1,5 +1,12 @@
 import { Token, User } from '~/types/supabaseTypes';
 
+/**
+ * Helper function to get amount of a token for a user
+ * @param address 0x4200000000000000000000000000000000000006
+ * @param tokens [{ address: '0x420 ...', digits: 10 }] tokens array from appData
+ * @param user { balances: [{ address: '0x420 ...', balance: 100 }] } user object from appData
+ * @returns 100 (token amount)
+ */
 export const getUserTokenAmount = (address: string, tokens: Token[], user: User): number => {
   const balanceObj = user.balances.find((b) => b.address === address);
   const digits = tokens.find((token) => token.address === address)?.digits;
