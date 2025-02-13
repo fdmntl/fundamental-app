@@ -11,9 +11,9 @@ interface GraphProps {
 
 const Graph = ({ graphData }: GraphProps) => {
   const [selectedRange, setSelectedRange] = useState<string>('1month');
-  const [filteredData, setFilteredData] = useState<DataPoint[]>([]);
+  const [filteredData, setFilteredData] = useState<DataPoint[]>(graphData?.monthly_values || []);
   const [currentValue, setCurrentValue] = useState<number>(0);
-  const [currentDate, setCurrentDate] = useState<string>('');
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [containerWidth, setContainerWidth] = useState<number>(
     Dimensions.get('window').width - 32 // Default width with padding
   );
@@ -48,67 +48,101 @@ const Graph = ({ graphData }: GraphProps) => {
       // Reset to the last data point when pointer is released
       const lastData = filteredData[filteredData.length - 1];
       setCurrentValue(lastData?.value || 0);
-      setCurrentDate(new Date(lastData?.label || '').toLocaleDateString());
+      setCurrentDate(new Date(lastData?.label || ''));
     } else if (pointerIndex >= 0 && pointerIndex < filteredData.length) {
       // Update current value and date when the pointer is active
       setCurrentValue(filteredData[pointerIndex]?.value || 0);
-      setCurrentDate(new Date(filteredData[pointerIndex]?.label || '').toLocaleDateString());
+      setCurrentDate(new Date(filteredData[pointerIndex]?.label || ''));
     }
   };
 
+  const firstValue = filteredData[0]?.value || 0;
+  const lastValue = filteredData[filteredData.length - 1]?.value || 0;
+  const isPositive = lastValue > firstValue;
+
+  // Green for positive, red for negative
+  const chartColor = isPositive ? 'rgba(34, 197, 94, 1)' : 'rgba(239, 68, 68, 1)';
+  const startFillColor = isPositive ? 'rgba(34, 197, 94, 0.4)' : 'rgba(239, 68, 68, 0.4)';
+  const endFillColor = isPositive ? 'rgba(34, 197, 94, 0)' : 'rgba(239, 68, 68, 0)';
+
+  const bufferPercentage = 0.5; // 50% buffer
+
+  const minValue = Math.min(...filteredData.map((point) => point.value));
+  const maxValue = Math.max(...filteredData.map((point) => point.value));
+
+  const range = maxValue - minValue;
+  const adjustedMin = minValue - range * bufferPercentage;
+  const adjustedMax = maxValue + range * bufferPercentage;
+
+  // Normalize the data to fit within the adjusted range
+  const normalizedData = filteredData.map((point) => ({
+    ...point,
+    value: ((point.value - adjustedMin) / (adjustedMax - adjustedMin)) * range,
+  }));
+
   return (
     <View
-      className="rounded-xl bg-content p-4 shadow-md"
+      className="rounded-xl"
       style={{ overflow: 'hidden' }}
       onLayout={(event) => {
         const { width } = event.nativeEvent.layout;
         setContainerWidth(width - 16); // Account for padding inside the frame
       }}>
       {/* Current Price */}
-      <FText className="text-3xl text-text" bold>
+      <FText className="!text-3xl text-text" bold>
         ${currentValue.toFixed(2)}
       </FText>
 
       {/* Date */}
-      {['1week', '1month', '1year'].includes(selectedRange) && currentDate ? (
-        <FText className="mb-2 text-sm text-text">{currentDate}</FText>
-      ) : (
-        <FText className="mb-2 text-sm text-text">Today</FText>
-      )}
+      <FText className="mb-4">
+        {currentDate.toLocaleDateString()} at {currentDate.toLocaleTimeString()}
+      </FText>
 
       {/* Ensure graph only renders when filteredData is ready */}
       {graphData && filteredData.length > 0 ? (
-        <LineChart
-          areaChart
-          data={filteredData}
-          height={200}
-          width={containerWidth - 30} // Dynamically set width with padding adjustment, still testing this
-          adjustToWidth
-          initialSpacing={0}
-          endSpacing={0}
-          hideYAxisText
-          xAxisLabelTextStyle={{ opacity: 0 }}
-          hideDataPoints
-          yAxisThickness={0}
-          xAxisThickness={0}
-          color="rgba(100, 149, 237, 1)"
-          startFillColor="rgba(100, 149, 237, 0.4)"
-          endFillColor="rgba(100, 149, 237, 0)"
-          startOpacity={0.4}
-          endOpacity={0.1}
-          curved
-          isAnimated
-          pointerConfig={{
-            pointerStripHeight: 200,
-            pointerStripColor: 'lightgrey',
-            pointerStripWidth: 1,
-            pointerColor: 'lightgrey',
-            radius: 4,
-            autoAdjustPointerLabelPosition: true,
-            pointerLabelComponent: () => null, // Hide pointer label
-          }}
-          getPointerProps={handlePointer}
-        />
+        <View className="relative">
+          <LineChart
+            areaChart
+            data={normalizedData}
+            height={200}
+            width={containerWidth - 6} // Dynamically set width with padding adjustment, still testing this
+            adjustToWidth
+            initialSpacing={0}
+            endSpacing={0}
+            hideYAxisText
+            xAxisLabelTextStyle={{ opacity: 0 }}
+            hideDataPoints
+            yAxisThickness={0}
+            xAxisThickness={0}
+            color={chartColor}
+            startFillColor={startFillColor}
+            endFillColor={endFillColor}
+            startOpacity={0.4}
+            endOpacity={0.1}
+            curved
+            isAnimated
+            pointerConfig={{
+              pointerStripHeight: 200,
+              pointerStripColor: 'lightgrey',
+              pointerStripWidth: 1,
+              pointerColor: 'lightgrey',
+              radius: 4,
+              autoAdjustPointerLabelPosition: true,
+              pointerLabelComponent: () => null, // Hide pointer label
+            }}
+            getPointerProps={handlePointer}
+          />
+          <View className="absolute right-4 top-0 rounded-full bg-background px-2">
+            <FText className=" text-base !text-neutral" bold>
+              {maxValue.toFixed(2)}
+            </FText>
+          </View>
+          <View className="absolute bottom-9 right-4 rounded-full bg-background px-2">
+            <FText className=" text-base !text-neutral" bold>
+              {minValue.toFixed(2)}
+            </FText>
+          </View>
+        </View>
       ) : (
         <View className="p-5">
           {graphData === undefined ? (
@@ -120,18 +154,20 @@ const Graph = ({ graphData }: GraphProps) => {
       )}
 
       {/* Time Range Selection */}
-      <View className="mb-2 flex-row justify-around">
-        {['1day', '1week', '1month', '1year'].map((range) => (
-          <TouchableOpacity
-            key={range}
-            onPress={() => setSelectedRange(range)}
-            className={`rounded-xl px-3 py-1 ${selectedRange === range ? 'bg-primary' : ''}`}>
-            <FText className={`${selectedRange === range ? 'text-white' : 'text-text'}`} bold>
-              {range.toUpperCase()}
-            </FText>
-          </TouchableOpacity>
-        ))}
-      </View>
+      {graphData && (
+        <View className="mb-2 flex-row justify-around">
+          {['1day', '1week', '1month', '1year'].map((range) => (
+            <TouchableOpacity
+              key={range}
+              onPress={() => setSelectedRange(range)}
+              className={`rounded-xl px-3 py-1 ${selectedRange === range ? 'bg-primary' : ''}`}>
+              <FText className={`${selectedRange === range ? 'text-white' : 'text-text'}`} bold>
+                {range.toUpperCase()}
+              </FText>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
     </View>
   );
 };

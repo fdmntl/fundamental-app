@@ -1,4 +1,3 @@
-import { Feather } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { View, ScrollView } from 'react-native';
 
@@ -40,10 +39,6 @@ export default function Assets() {
   const userTokenValue = getUserTokenValue(token.address, tokens, user).toFixed(2);
   const userTokenAmount = getUserTokenAmount(token.address, tokens, user);
 
-  const actualValue = token.last_value;
-
-  const roundedValue = actualValue.toFixed(2);
-
   return (
     <>
       <Stack.Screen options={{ title, headerShown: false }} />
@@ -52,12 +47,6 @@ export default function Assets() {
           <DetailsHeader title={title} icon={icon} />
           <ScrollView showsVerticalScrollIndicator={false}>
             <View className="gap-y-5">
-              <View className="flex flex-row items-center justify-center gap-x-2">
-                <FText className="!text-4xl" bold>
-                  ${roundedValue}
-                </FText>
-                <Feather name="trending-up" size={30} className="text-success" />
-              </View>
               <Graph
                 graphData={{
                   daily_values: token.daily_values,
