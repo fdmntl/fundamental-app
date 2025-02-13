@@ -3,14 +3,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { View, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
 
 import { FText } from '~/components/Text/FText';
+import { getCowQuote } from '~/services/CoW/getCowQuote';
 import { Token, User } from '~/types/supabaseTypes';
+import { debounce } from '~/utils/helpers/debounce';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
+import { roundNumberToDecimal } from '~/utils/helpers/numbers/roundNumberToDecimal';
 import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
 import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
-
-import { getCowQuote } from '~/services/CoW/getCowQuote';
 import { getTokenAmountPrice } from '~/utils/helpers/tokens/getTokenAmountPrice';
-import { debounce } from '~/utils/helpers/debounce';
 
 interface QuoteDisplayProps {
   tokens: Token[];
@@ -35,7 +35,8 @@ export const QuoteDisplay = ({
 }: QuoteDisplayProps) => {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState<Token | undefined>(defaultToken);
-  const [quoteValue, setQuoteValue] = useState<string | null>(null);
+  const [quoteValue, setQuoteValue] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleTokenSelect = (token: Token) => {
     setSelectedToken(token);
@@ -50,6 +51,8 @@ export const QuoteDisplay = ({
     try {
       if (!selectedToken || !youPayValue || !youPayToken || !user.wallet_address) return;
 
+      setIsLoading(true);
+
       const youPayValueConverted = amountToDigits(youPayValue, youPayToken);
       const quote = await getCowQuote(
         user.wallet_address,
@@ -58,11 +61,13 @@ export const QuoteDisplay = ({
         youPayValueConverted.toString()
       );
 
-      const formattedQuote = digitsToAmount(Number(quote.buyAmount), selectedToken).toFixed(2);
+      const formattedQuote = digitsToAmount(Number(quote.buyAmount), selectedToken);
       setQuoteValue(formattedQuote);
     } catch (error) {
       console.error('Error calculating quote:', error);
       alert('Error calculating quote. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -88,7 +93,7 @@ export const QuoteDisplay = ({
           {title}
         </FText>
         <TouchableOpacity
-          className="flex-row items-center space-x-2 rounded-full bg-background px-4 py-3"
+          className="flex-row items-center space-x-2 px-4 py-3"
           onPress={() => {
             if (tokens.length > 1) setIsPickerOpen(true);
           }}>
@@ -107,7 +112,9 @@ export const QuoteDisplay = ({
         <FText
           className={`flex-1 rounded-md bg-content !text-4xl font-semibold ${quoteValue ? '!text-text' : '!text-neutral'}`}
           bold>
-          {quoteValue || 'Calculating Quote'} {selectedToken?.symbol}
+          {isLoading
+            ? 'Calculating Quote'
+            : `${roundNumberToDecimal(quoteValue)} ${selectedToken?.symbol || ''}`}
         </FText>
       </View>
       <FText className="!text-neutral" bold>
