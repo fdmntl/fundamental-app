@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { View } from 'react-native';
-import { Button } from '~/components/Button';
 
+import { Button } from '~/components/Button';
 import { HeaderBar } from '~/components/HeaderBar';
 import { AmountInput } from '~/components/Send/AmountInput';
 import { QuoteDisplay } from '~/components/Trade/QuoteDisplay';
@@ -33,7 +33,7 @@ export default function Trade() {
   return (
     <Frame>
       <HeaderBar title="Trade" />
-      <View>
+      <View className="flex-1 gap-4">
         {/* Amount Input for "You Pay" */}
         <AmountInput
           value={amount}
@@ -50,8 +50,8 @@ export default function Trade() {
           tokens={possessedTokens}
           user={user}
           selectedTokenBalance={selectedTokenBalance}
-          youPayValue={parseFloat(amount) || 0} // Pass payment amount
-          youPayToken={selectedToken || possessedTokens[0]} // Pass selected payment token or default to the first token
+          youPayValue={parseFloat(amount) || 0}
+          youPayToken={selectedToken || possessedTokens[0]}
         />
       </View>
       <View className="absolute bottom-[6rem] w-full items-center">
