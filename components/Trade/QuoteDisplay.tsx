@@ -110,7 +110,7 @@ export const QuoteDisplay = ({
       </View>
       <View className="flex-row items-center">
         <FText
-          className={`flex-1 rounded-md bg-content !text-4xl font-semibold ${quoteValue ? '!text-text' : '!text-neutral'}`}
+          className={`flex-1 rounded-md bg-content !text-4xl font-semibold ${quoteValue && !isLoading ? '!text-text' : '!text-neutral'}`}
           bold>
           {isLoading
             ? 'Calculating Quote'
