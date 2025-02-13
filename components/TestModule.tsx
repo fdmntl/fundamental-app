@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput } from 'react-native';
 
 import { Button } from './Button';
@@ -24,6 +24,14 @@ const TestModule = () => {
   let quote: OrderParameters;
   let signature: SigningResult;
 
+  useEffect(() => {
+    if (user.balances) {
+      console.log('User Balances:', user.balances);
+    } else {
+      console.log('No balances found');
+    }
+  }, [user.balances]); // Logs when balances change
+
   if (!wallet) {
     return <FText className="text-lg">Wallet not created</FText>;
   }
@@ -48,6 +56,7 @@ const TestModule = () => {
       setResolvedAddress('Error resolving ENS domain');
     }
   };
+
   const walletClient = getWalletClient(wallet.provider);
   const signer = getEthersSigner(wallet.provider);
 
@@ -66,25 +75,35 @@ const TestModule = () => {
         <FText className="text-lg">Resolved Address:</FText>
         <FText className="text-lg">{resolvedAddress}</FText>
         <FText className="text-lg">Your address is {user.wallet_address}</FText>
+
+        <Button
+          className="bg-primary"
+          title="Log Balances"
+          onPress={() => console.log('User Balances:', user.balances)}
+        />
+
         <Button
           className="bg-primary"
           title="Approve USDC"
           onPress={() =>
-            setCowInfiniteAllowance(wallet.provider, '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913')
-          }></Button>
+            setCowInfiniteAllowance(wallet.provider, '0x833589fCD6eDb6E08f4c7C32D4f71b54bda02913')
+          }
+        />
+
         <Button
           className="bg-primary"
           title="Get Cow Quote - 1 USDC -> WETH"
           onPress={async () => {
             quote = await getCowQuote(
               user.wallet_address,
-              '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+              '0x833589fcd6eDb6E08f4c7C32D4f71b54bda02913',
               '0x4200000000000000000000000000000000000006',
               '1000000'
             );
             console.log('Quote:', quote);
           }}
         />
+
         <Button
           className="bg-primary"
           title="Sign Cow Quote"
@@ -93,6 +112,7 @@ const TestModule = () => {
             console.log('Signed order:', signature);
           }}
         />
+
         <Button
           className="bg-primary"
           title="Submit Cow Order"

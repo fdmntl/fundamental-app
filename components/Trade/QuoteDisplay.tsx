@@ -60,12 +60,6 @@ export const QuoteDisplay = ({
 
       const formattedQuote = digitsToAmount(Number(quote.buyAmount), selectedToken).toFixed(2);
       setQuoteValue(formattedQuote);
-
-      console.log('Calculating Quote...');
-      console.log(`You Pay Value: ${youPayValue}`);
-      console.log(`You Pay Token: ${youPayToken.symbol}`);
-      console.log(`You Get Value: ${formattedQuote}`);
-      console.log(`You Get Token: ${selectedToken?.symbol || 'None'}`);
     } catch (error) {
       console.error('Error calculating quote:', error);
       alert('Error calculating quote. Please try again.');
