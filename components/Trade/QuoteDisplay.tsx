@@ -112,9 +112,11 @@ export const QuoteDisplay = ({
         <FText
           className={`flex-1 rounded-md bg-content !text-4xl font-semibold ${quoteValue && !isLoading ? '!text-text' : '!text-neutral'}`}
           bold>
-          {isLoading
-            ? 'Calculating Quote'
-            : `${roundNumberToDecimal(quoteValue)} ${selectedToken?.symbol || ''}`}
+          {selectedToken
+            ? isLoading
+              ? 'Calculating Quote'
+              : `${roundNumberToDecimal(quoteValue)} ${selectedToken?.symbol || ''}`
+            : 'Select a token'}
         </FText>
       </View>
       <FText className="!text-neutral" bold>
