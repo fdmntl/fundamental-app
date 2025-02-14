@@ -17,7 +17,6 @@ export const useSupabaseUser = ({ address }: SupabaseUserProps) => {
 
     const fetchUserAndSubscribe = async () => {
       try {
-        console.log('Fetching user data for address:', address);
         const { data: initialData, error } = await supabase
           .from('users')
           .select('*')

@@ -4,8 +4,8 @@ import { View } from 'react-native';
 
 import { DetailsHeader } from '~/components/Assets/DetailsHeader';
 import { Button } from '~/components/Button';
-import AmountInput from '~/components/Send/AmountInput';
-import RecipientInput from '~/components/Send/RecipientInput';
+import { AmountInput } from '~/components/Send/AmountInput';
+import { RecipientInput } from '~/components/Send/RecipientInput';
 import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';

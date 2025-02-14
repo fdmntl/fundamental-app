@@ -1,48 +1,42 @@
 import { Feather } from '@expo/vector-icons';
-import { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
+import { useState, useEffect, useCallback } from 'react';
+import { View, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
 
 import { FText } from '~/components/Text/FText';
+import { getCowQuote } from '~/services/CoW/getCowQuote';
 import { Token, User } from '~/types/supabaseTypes';
+import { debounce } from '~/utils/helpers/debounce';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
+import { roundNumberToDecimal } from '~/utils/helpers/numbers/roundNumberToDecimal';
+import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
+import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
 import { getTokenAmountPrice } from '~/utils/helpers/tokens/getTokenAmountPrice';
-import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
-import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 
-interface AmountInputProps {
-  onChange: (value: string) => void;
-  value: string;
+interface QuoteDisplayProps {
   tokens: Token[];
   user: User;
   defaultToken?: Token;
   selectedTokenBalance: number;
   onTokenChange?: (token: Token) => void;
   title?: string;
+  youPayValue: number;
+  youPayToken: Token;
 }
 
-export const AmountInput = ({
-  onChange,
-  value,
+export const QuoteDisplay = ({
   tokens,
   user,
   defaultToken = undefined,
   selectedTokenBalance,
   onTokenChange,
-  title = 'Amount',
-}: AmountInputProps) => {
+  title = 'You Get',
+  youPayValue,
+  youPayToken,
+}: QuoteDisplayProps) => {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState<Token | undefined>(defaultToken);
-
-  const handleInputChange = (value: string) => {
-    onChange(value.replace(/[^0-9.]/g, ''));
-  };
-
-  const balanceDisplay =
-    selectedToken && selectedTokenBalance
-      ? getUserTokenAmount(selectedToken?.address, tokens, user)
-      : 0;
-
-  const isValidAmount = value !== '' && !isNaN(Number(value)) && Number(value) <= balanceDisplay;
+  const [quoteValue, setQuoteValue] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleTokenSelect = (token: Token) => {
     setSelectedToken(token);
@@ -51,6 +45,46 @@ export const AmountInput = ({
   };
 
   const tokenIcon = (selectedToken && tokenIcons[selectedToken.symbol]) || null;
+
+  // Function to fetch quote when all conditions are met
+  const handleCalculateQuote = async () => {
+    try {
+      if (!selectedToken || !youPayValue || !youPayToken || !user.wallet_address) return;
+
+      setIsLoading(true);
+
+      const youPayValueConverted = amountToDigits(youPayValue, youPayToken);
+      const quote = await getCowQuote(
+        user.wallet_address,
+        youPayToken.address,
+        selectedToken.address,
+        youPayValueConverted.toString()
+      );
+
+      const formattedQuote = digitsToAmount(Number(quote.buyAmount), selectedToken);
+      setQuoteValue(formattedQuote);
+    } catch (error) {
+      console.error('Error calculating quote:', error);
+      alert('Error calculating quote. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Wrapped the old handleCalculateQuote in debounce
+  const debouncedCalculateQuote = useCallback(debounce(handleCalculateQuote, 500), [
+    youPayValue,
+    youPayToken,
+    selectedToken,
+    user.wallet_address,
+  ]);
+
+  // Trigger debouncedCalculateQuote on parameter change
+  useEffect(() => {
+    if (youPayValue > 0 && youPayToken && selectedToken && user.wallet_address) {
+      debouncedCalculateQuote();
+    }
+  }, [youPayValue, youPayToken, selectedToken, user.wallet_address, debouncedCalculateQuote]);
 
   return (
     <View className="h-fit w-full gap-2 rounded-xl bg-content p-4 pb-6 pl-6">
@@ -74,34 +108,20 @@ export const AmountInput = ({
           {tokens.length > 1 && <Feather name="chevron-down" size={28} className="text-neutral" />}
         </TouchableOpacity>
       </View>
-      <View className="-mt-2 flex-row items-center">
-        <TextInput
-          className={`flex-1 rounded-lg bg-content text-4xl font-semibold
-            ${value === '' ? 'text-text' : isValidAmount ? 'text-success' : 'text-error'}`}
-          keyboardType="numeric"
-          placeholder={`0 ${selectedToken?.symbol || ''}`}
-          value={value}
-          onChangeText={handleInputChange}
-          placeholderTextColor="#888"
-        />
-      </View>
-      <View className="flex-row items-center justify-between">
-        <FText className="!text-neutral" bold>
-          ≈${getTokenAmountPrice(selectedToken?.address || '', Number(value), tokens).toFixed(2)}
+      <View className="flex-row items-center">
+        <FText
+          className={`flex-1 rounded-md bg-content !text-4xl font-semibold ${quoteValue && !isLoading ? '!text-text' : '!text-neutral'}`}
+          bold>
+          {selectedToken
+            ? isLoading
+              ? 'Calculating Quote'
+              : `${roundNumberToDecimal(quoteValue)} ${selectedToken?.symbol || ''}`
+            : 'Select a token'}
         </FText>
-        <View className="flex-row items-center gap-2">
-          <FText className="!text-lg text-text" bold>
-            {balanceDisplay.toFixed(2)} {selectedToken?.symbol}
-          </FText>
-          <TouchableOpacity
-            className="rounded-xl bg-primary px-2"
-            onPress={() => onChange(balanceDisplay.toString())}>
-            <FText className="text-white" bold>
-              Max
-            </FText>
-          </TouchableOpacity>
-        </View>
       </View>
+      <FText className="!text-neutral" bold>
+        ≈${getTokenAmountPrice(selectedToken?.address || '', Number(quoteValue), tokens).toFixed(2)}
+      </FText>
       <Modal visible={isPickerOpen} transparent animationType="fade">
         <View className="flex-1 items-center justify-center">
           <View className="absolute h-full w-full bg-background opacity-50" />
@@ -125,14 +145,6 @@ export const AmountInput = ({
                       {item.symbol}
                     </FText>
                     {isSelected && <Feather name="check" size={32} className="text-success" />}
-                    <View className="ml-auto items-end justify-end">
-                      <FText className="text-text" bold>
-                        {getUserTokenAmount(item.address, tokens, user).toFixed(2)}
-                      </FText>
-                      <FText className="text-text">
-                        ${getUserTokenValue(item.address, tokens, user).toFixed(2)}
-                      </FText>
-                    </View>
                   </TouchableOpacity>
                 );
               }}
