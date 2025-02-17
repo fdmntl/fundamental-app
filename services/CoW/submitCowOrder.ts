@@ -25,5 +25,6 @@ export const submitCowOrder = async (
   } catch (error) {
     console.error('Error submitting order:', error);
     console.error('Error details:', JSON.stringify(error, null, 2));
+    return null;
   }
 };
