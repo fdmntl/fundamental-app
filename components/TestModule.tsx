@@ -13,6 +13,7 @@ import { OrderParameters, SigningResult } from '@cowprotocol/cow-sdk';
 import { signCowQuote } from '~/services/CoW/signCowQuote';
 import { getEthersSigner } from '~/services/Ethers/getEthersSigner';
 import { submitCowOrder } from '~/services/CoW/submitCowOrder';
+import { getCowOrderStatus } from '~/services/CoW/getCowOrderStatus';
 
 const TestModule = () => {
   const { user, privy, tokens } = useAppData();
@@ -23,6 +24,7 @@ const TestModule = () => {
 
   let quote: OrderParameters;
   let signature: SigningResult;
+  let orderId: string;
 
   useEffect(() => {
     if (user.balances) {
@@ -92,13 +94,13 @@ const TestModule = () => {
 
         <Button
           className="bg-primary"
-          title="Get Cow Quote - 1 USDC -> WETH"
+          title="Get Cow Quote - 0.10 USDC -> WETH"
           onPress={async () => {
             quote = await getCowQuote(
               user.wallet_address,
               '0x833589fcd6eDb6E08f4c7C32D4f71b54bda02913',
               '0x4200000000000000000000000000000000000006',
-              '1000000'
+              '100000'
             );
             console.log('Quote:', quote);
           }}
@@ -108,7 +110,7 @@ const TestModule = () => {
           className="bg-primary"
           title="Sign Cow Quote"
           onPress={async () => {
-            signature = await signCowQuote(quote, '1000000', user.wallet_address, wallet.provider);
+            signature = await signCowQuote(quote, '100000', user.wallet_address, wallet.provider);
             console.log('Signed order:', signature);
           }}
         />
@@ -117,8 +119,22 @@ const TestModule = () => {
           className="bg-primary"
           title="Submit Cow Order"
           onPress={async () => {
-            const orderId = await submitCowOrder(quote, '1000000', signature);
+            const result = await submitCowOrder(quote, '100000', signature);
+            if (result) {
+              orderId = result;
+            }
             console.log('Order ID:', orderId);
+          }}
+        />
+
+        <Button
+          className="bg-primary"
+          title="Get Cow Order Status"
+          onPress={async () => {
+            const orderStatus = await getCowOrderStatus(
+              '0x7a43cf815dae479f40b5f9df705efeaffccaa4751a72535ff368edfcf960ffa7df7782a4f5841ef3ae0bf828b4ac89c3018604f66791c8ed'
+            );
+            // console.log('Order Status:', orderStatus);
           }}
         />
       </Container>
