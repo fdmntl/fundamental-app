@@ -1,8 +1,10 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
+import { useState, useMemo } from 'react';
 import { View, ScrollView } from 'react-native';
 
 import { AssetDetailsCTAs } from '~/components/Assets/AssetDetailsCTAs';
 import { DetailsHeader } from '~/components/Assets/DetailsHeader';
+import { Button } from '~/components/Button';
 import { Container } from '~/components/Container';
 import Graph from '~/components/Graph';
 import { FText } from '~/components/Text/FText';
@@ -20,6 +22,26 @@ export default function Assets() {
   const token = getToken(asset as string);
 
   const { tokens, user } = useAppData();
+
+  // const [graphData, setGraphData] = useState({
+  //   daily_values: token?.daily_values || [],
+  //   weekly_values: token?.weekly_values || [],
+  //   monthly_values: token?.monthly_values || [],
+  //   yearly_values: token?.yearly_values || [],
+  // });
+
+  const graphData = useMemo(() => {
+    console.log('token', token?.daily_values?.length || 'No values');
+    console.log('token', token?.weekly_values?.length || 'No values');
+    console.log('token', token?.monthly_values?.length || 'No values');
+    console.log('token', token?.yearly_values?.length || 'No values');
+    return {
+      daily_values: token?.daily_values || [],
+      weekly_values: token?.weekly_values || [],
+      monthly_values: token?.monthly_values || [],
+      yearly_values: token?.yearly_values || [],
+    };
+  }, [token]);
 
   if (!token) {
     return (
@@ -49,10 +71,10 @@ export default function Assets() {
             <View className="gap-y-5">
               <Graph
                 graphData={{
-                  daily_values: token.daily_values,
-                  weekly_values: token.weekly_values,
-                  monthly_values: token.monthly_values,
-                  yearly_values: token.yearly_values,
+                  daily_values: graphData.daily_values,
+                  weekly_values: graphData.weekly_values,
+                  monthly_values: graphData.monthly_values,
+                  yearly_values: graphData.yearly_values,
                 }}
               />
               <Container title="Holdings">

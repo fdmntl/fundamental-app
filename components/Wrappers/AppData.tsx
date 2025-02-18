@@ -36,12 +36,36 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
 
   useEffect(() => {
     if (!currentUser) return;
-    setUser(currentUser);
+    setUser({
+      ...currentUser,
+      balances: [
+        {
+          address: '0x4200000000000000000000000000000000000006',
+          balance: 311791160460464,
+          value: 0.838724908988587,
+        },
+        {
+          address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+          balance: 6669999,
+          value: 6.669982478412477,
+        },
+      ],
+    });
   }, [currentUser]);
 
   const tokenData: Token[] = useSupabaseSubscription({ table: 'token_list' });
 
   useEffect(() => {
+    console.log('before', tokenData[1]?.daily_values?.length || 'No values');
+    console.log('before', tokenData[1]?.weekly_values?.length || 'No values');
+    console.log('before', tokenData[1]?.monthly_values?.length || 'No values');
+    console.log('before', tokenData[1]?.yearly_values?.length || 'No values');
+    // set 1 sec timeout to simulate loading
+    setTimeout(() => {}, 1000);
+    console.log('after', tokenData[1]?.daily_values?.length || 'No values');
+    console.log('after', tokenData[1]?.weekly_values?.length || 'No values');
+    console.log('after', tokenData[1]?.monthly_values?.length || 'No values');
+    console.log('after', tokenData[1]?.yearly_values?.length || 'No values');
     // Convert all token addresses to lowercase
     const convertedTokens = tokenData.map((token) => ({
       ...token,
