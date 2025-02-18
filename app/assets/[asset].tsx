@@ -1,5 +1,4 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { useMemo } from 'react';
 import { View, ScrollView } from 'react-native';
 
 import { AssetDetailsCTAs } from '~/components/Assets/AssetDetailsCTAs';
@@ -21,16 +20,6 @@ export default function Assets() {
 
   const { getToken } = useAppData();
   const token = getToken(asset as string);
-
-  const graphData = useMemo(
-    () => ({
-      daily_values: token?.daily_values || [],
-      weekly_values: token?.weekly_values || [],
-      monthly_values: token?.monthly_values || [],
-      yearly_values: token?.yearly_values || [],
-    }),
-    [token]
-  );
 
   if (!token) {
     return (
@@ -60,10 +49,10 @@ export default function Assets() {
             <View className="gap-y-5">
               <Graph
                 graphData={{
-                  daily_values: graphData.daily_values,
-                  weekly_values: graphData.weekly_values,
-                  monthly_values: graphData.monthly_values,
-                  yearly_values: graphData.yearly_values,
+                  daily_values: token.daily_values,
+                  weekly_values: token.weekly_values,
+                  monthly_values: token.monthly_values,
+                  yearly_values: token.yearly_values,
                 }}
               />
               <Container title="Holdings">
