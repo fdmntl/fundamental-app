@@ -13,7 +13,7 @@ interface RecipientInputProps {
   onChange: (value: string) => void;
 }
 
-const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
+export const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
   const [resolvedAddress, setResolvedAddress] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState(value);
 
@@ -84,5 +84,3 @@ const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
     </View>
   );
 };
-
-export default RecipientInput;

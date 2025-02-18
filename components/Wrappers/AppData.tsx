@@ -42,7 +42,12 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
   const tokenData: Token[] = useSupabaseSubscription({ table: 'token_list' });
 
   useEffect(() => {
-    setTokens(tokenData);
+    // Convert all token addresses to lowercase
+    const convertedTokens = tokenData.map((token) => ({
+      ...token,
+      address: token.address.toLowerCase(),
+    }));
+    setTokens(convertedTokens);
   }, [tokenData]);
 
   const updateUser = (updates: Partial<User>) => {
