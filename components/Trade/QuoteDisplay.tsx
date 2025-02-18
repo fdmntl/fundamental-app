@@ -1,3 +1,4 @@
+import { OrderParameters } from '@cowprotocol/cow-sdk';
 import { Feather } from '@expo/vector-icons';
 import { useState, useEffect, useCallback } from 'react';
 import { View, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
@@ -20,6 +21,7 @@ interface QuoteDisplayProps {
   title?: string;
   youPayValue: number;
   youPayToken: Token;
+  onQuote?: (quote: OrderParameters) => void;
 }
 
 export const QuoteDisplay = ({
@@ -30,6 +32,7 @@ export const QuoteDisplay = ({
   title = 'You Get',
   youPayValue,
   youPayToken,
+  onQuote,
 }: QuoteDisplayProps) => {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState<Token | undefined>(defaultToken);
@@ -58,6 +61,8 @@ export const QuoteDisplay = ({
         selectedToken.address,
         youPayValueConverted.toString()
       );
+
+      if (onQuote) onQuote(quote);
 
       const formattedQuote = digitsToAmount(Number(quote.buyAmount), selectedToken);
       setQuoteValue(formattedQuote);

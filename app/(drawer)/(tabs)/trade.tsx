@@ -1,3 +1,4 @@
+import { OrderParameters } from '@cowprotocol/cow-sdk';
 import { useState } from 'react';
 import { View } from 'react-native';
 
@@ -8,6 +9,8 @@ import { QuoteDisplay } from '~/components/Trade/QuoteDisplay';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { Token } from '~/types/supabaseTypes';
+import { roundNumberToDecimal } from '~/utils/helpers/numbers/roundNumberToDecimal';
+import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
 
 export default function Trade() {
   const { user, tokens } = useAppData();
@@ -25,11 +28,17 @@ export default function Trade() {
 
   const isAmountValid = parseFloat(payAmount) > 0 && parseFloat(payAmount) <= selectedTokenBalance;
 
+  const [quote, setQuote] = useState<OrderParameters | null>(null);
+
   const handleTradePress = () => {
     console.log('Trade button pressed');
     console.log('Amount:', payAmount);
     console.log('Selected Pay Token:', selectedPayToken?.name);
     console.log('Selected Get Token:', selectedGetToken?.name);
+    if (quote && selectedGetToken) {
+      const formattedQuote = digitsToAmount(Number(quote.buyAmount), selectedGetToken);
+      console.log('Quote amount:', roundNumberToDecimal(formattedQuote));
+    }
   };
 
   return (
@@ -54,6 +63,7 @@ export default function Trade() {
           youPayValue={parseFloat(payAmount) || 0}
           youPayToken={selectedPayToken || possessedTokens[0]}
           onTokenChange={(token) => setSelectedGetToken(token)}
+          onQuote={(quote) => setQuote(quote)}
         />
       </View>
       <View className="absolute bottom-[6rem] w-full items-center">
