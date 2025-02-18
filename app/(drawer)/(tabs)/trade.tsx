@@ -12,22 +12,24 @@ import { Token } from '~/types/supabaseTypes';
 export default function Trade() {
   const { user, tokens } = useAppData();
 
-  const [amount, setAmount] = useState(''); // Payment input value
-  const [selectedToken, setSelectedToken] = useState<Token | null>(null); // Selected payment token
+  const [payAmount, setPayAmount] = useState('');
+  const [selectedPayToken, setSelectedPayToken] = useState<Token | null>(null);
+  const [selectedGetToken, setSelectedGetToken] = useState<Token | null>(null);
   const possessedTokens = user.balances
     .map((balance) => tokens.find((token) => token.address === balance.address))
     .filter((token) => token !== undefined) as Token[];
 
-  const selectedTokenBalance = selectedToken
-    ? user.balances.find((balance) => balance.address === selectedToken.address)?.balance || 0
+  const selectedTokenBalance = selectedPayToken
+    ? user.balances.find((balance) => balance.address === selectedPayToken.address)?.balance || 0
     : 0;
 
-  const isAmountValid = parseFloat(amount) > 0 && parseFloat(amount) <= selectedTokenBalance;
+  const isAmountValid = parseFloat(payAmount) > 0 && parseFloat(payAmount) <= selectedTokenBalance;
 
   const handleTradePress = () => {
     console.log('Trade button pressed');
-    console.log('Amount:', amount);
-    console.log('Selected Token:', selectedTokenBalance);
+    console.log('Amount:', payAmount);
+    console.log('Selected Pay Token:', selectedPayToken?.name);
+    console.log('Selected Get Token:', selectedGetToken?.name);
   };
 
   return (
@@ -36,12 +38,12 @@ export default function Trade() {
       <View className="flex-1 gap-4">
         {/* Amount Input for "You Pay" */}
         <AmountInput
-          value={amount}
-          onChange={(value) => setAmount(value)}
+          value={payAmount}
+          onChange={(value) => setPayAmount(value)}
           tokens={possessedTokens}
           user={user}
           selectedTokenBalance={selectedTokenBalance}
-          onTokenChange={(token) => setSelectedToken(token)}
+          onTokenChange={(token) => setSelectedPayToken(token)}
           title="You Pay"
         />
 
@@ -49,9 +51,9 @@ export default function Trade() {
         <QuoteDisplay
           tokens={possessedTokens}
           user={user}
-          selectedTokenBalance={selectedTokenBalance}
-          youPayValue={parseFloat(amount) || 0}
-          youPayToken={selectedToken || possessedTokens[0]}
+          youPayValue={parseFloat(payAmount) || 0}
+          youPayToken={selectedPayToken || possessedTokens[0]}
+          onTokenChange={(token) => setSelectedGetToken(token)}
         />
       </View>
       <View className="absolute bottom-[6rem] w-full items-center">

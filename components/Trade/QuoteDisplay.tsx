@@ -16,7 +16,6 @@ interface QuoteDisplayProps {
   tokens: Token[];
   user: User;
   defaultToken?: Token;
-  selectedTokenBalance: number;
   onTokenChange?: (token: Token) => void;
   title?: string;
   youPayValue: number;
@@ -27,7 +26,6 @@ export const QuoteDisplay = ({
   tokens,
   user,
   defaultToken = undefined,
-  selectedTokenBalance,
   onTokenChange,
   title = 'You Get',
   youPayValue,
