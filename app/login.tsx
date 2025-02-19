@@ -2,18 +2,16 @@ import {
   usePrivy,
   useEmbeddedWallet,
   useLoginWithEmail,
-  useOAuthFlow,
   useLogin,
   isNotCreated,
 } from '@privy-io/expo';
 import Constants from 'expo-constants';
 import { router, Stack } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { TextInput, View } from 'react-native';
+import { TextInput, View, BackHandler } from 'react-native';
 
 import { Button } from '~/components/Button';
 import { Container } from '~/components/Container';
-import { DebugButton } from '~/components/DebugButton';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
@@ -26,9 +24,15 @@ export default function Login() {
   const { user } = usePrivy();
   const wallet = useEmbeddedWallet();
   const emailFlow = useLoginWithEmail();
-  const oauth = useOAuthFlow();
+  const { login } = useLogin();
 
   const { updatePrivy } = useAppData();
+
+  useEffect(() => {
+    // Prevent back navigation while on the login screen
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
+    return () => backHandler.remove();
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -43,20 +47,16 @@ export default function Login() {
 
       updatePrivy({ user, wallet });
 
-      router.navigate('/(tabs)');
+      router.replace('/(tabs)');
     }
   }, [user, router, wallet]);
 
   useEffect(() => {
     if (emailFlow.state.status === 'error') {
       console.error(emailFlow.state.error);
-    } else if (oauth.state.status === 'error') {
-      console.error(oauth.state.error);
+      // Error state to display a message in the UI
     }
-  }, [emailFlow.state.status, oauth.state.status]);
-
-  // login with google
-  const { login } = useLogin();
+  }, [emailFlow.state.status]);
 
   return (
     <>
@@ -66,12 +66,12 @@ export default function Login() {
         <Container title="E-Mail" className="mt-2 flex">
           <View className="mb-4 rounded-2xl border-2 border-gray-300">
             <TextInput
+              className={`w-full px-2 text-3xl text-text`}
               value={email}
               onChangeText={setEmail}
               placeholder="Email"
               inputMode="email"
-              className="w-full px-2"
-              style={{ marginTop: 20, marginBottom: 20, fontSize: 20 }}
+              placeholderTextColor="#888"
             />
           </View>
           <Button
@@ -79,15 +79,14 @@ export default function Login() {
             className="m-auto mb-4 w-1/2 bg-primary"
             onPress={() => emailFlow.sendCode({ email })}
           />
-
           <View className="mb-4 rounded-2xl border-2 border-gray-300">
             <TextInput
+              className={'w-full px-2 text-3xl text-text'}
               value={code}
               onChangeText={setCode}
               placeholder="Code"
               inputMode="numeric"
-              className="w-full px-2"
-              style={{ marginTop: 20, marginBottom: 20, fontSize: 20 }}
+              placeholderTextColor="#888"
             />
           </View>
           <Button
@@ -95,20 +94,20 @@ export default function Login() {
             className="m-auto w-2/3 bg-primary"
             onPress={() => emailFlow.loginWithCode({ code, email })}
           />
+          {/* New UI Login using updated useLogin
           <Button
             title="New UI Login"
             className="mx-auto my-4 w-2/3 bg-primary"
             onPress={() => login({ loginMethods: ['email', 'sms'] })}
-          />
-          <FText className="m-auto mt-4 text-text">
+          /> */}
+          {/* <FText className="m-auto mt-4 text-text">
             (OTP state:{' '}
             <FText className="!text-primary" bold>
               {emailFlow.state.status}
             </FText>
             )
-          </FText>
+          </FText> */}
         </Container>
-        <DebugButton />
       </Frame>
     </>
   );
