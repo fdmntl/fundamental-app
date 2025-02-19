@@ -42,20 +42,22 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
   const tokenData: Token[] = useSupabaseSubscription({ table: 'token_list' });
 
   useEffect(() => {
-    setTokens((prevTokens) => {
-      const updatedTokens = tokenData.map((newToken) => {
-        const existingToken = prevTokens.find(
-          (prevToken) => prevToken.address.toLowerCase() === newToken.address.toLowerCase()
-        );
+    if (!tokenData.length) return;
 
-        // Note: the supabase subscription returns only values that have changed
-        // so we need to merge the new values with the existing ones
-        // must also ensure that the address is always lowercase
+    setTokens((prevTokens) => {
+      // Create a map of previous tokens for quick lookup (reducing O(n²) to O(n))
+      const prevTokensMap = new Map(
+        prevTokens.map((token) => [token.address.toLowerCase(), token])
+      );
+
+      const updatedTokens = tokenData.map((newToken) => {
+        const address = newToken.address.toLowerCase();
+        const existingToken = prevTokensMap.get(address);
 
         return {
           ...existingToken,
           ...newToken,
-          address: newToken.address.toLowerCase(),
+          address,
           daily_values: newToken.daily_values ?? existingToken?.daily_values ?? [],
           weekly_values: newToken.weekly_values ?? existingToken?.weekly_values ?? [],
           monthly_values: newToken.monthly_values ?? existingToken?.monthly_values ?? [],
