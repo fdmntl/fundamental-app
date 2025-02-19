@@ -3,14 +3,20 @@ import React from 'react';
 
 import { Button } from './Button';
 import { useAppData } from './Wrappers/AppData';
+import { refreshUserBalances } from '~/services/refreshUserBalance';
 
 export const DebugButton = () => {
   const { user } = useAppData();
+  const { updateUser } = useAppData();
   const { privy } = useAppData();
+  const { user: address } = useAppData();
   const { user: privyUser } = usePrivy();
   const { getAccessToken } = usePrivy();
   const { tokens } = useAppData();
   const debug = async () => {
+    console.log('refreshing');
+    await refreshUserBalances(user, updateUser);
+    console.log('done refreshing');
     console.log('\n---------------------App data---------------------');
     console.log('User:', user);
     console.log('\nPrivy:', privy);
