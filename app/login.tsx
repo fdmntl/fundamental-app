@@ -30,7 +30,6 @@ export default function Login() {
   useEffect(() => {
     const handleUserLogin = async () => {
       if (user) {
-        console.log('User logged in, wallet state:', wallet);
         if (isNotCreated(wallet)) {
           try {
             await wallet.create({ recoveryMethod: 'privy' });
