@@ -10,6 +10,7 @@ import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { ProfileModal } from '~/components/Profile/ProfileModal';
 
 import 'fast-text-encoding';
 import 'react-native-get-random-values';
@@ -33,6 +34,7 @@ export default function Home() {
       <ScrollView>
         <FTitle className="text-4xl">Welcome to Fundamental!</FTitle>
         <FText className="text-lg">This is Fundamental</FText>
+        <ProfileModal />
         <View className="mt-4 gap-4">
           <Container className="" title="User info">
             <FText className="text-lg">Your wallet status is {privy.wallet?.status}</FText>
