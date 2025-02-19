@@ -1,35 +1,21 @@
-import {
-  usePrivy,
-  useEmbeddedWallet,
-  useLoginWithEmail,
-  useLogin,
-  isNotCreated,
-} from '@privy-io/expo';
-import Constants from 'expo-constants';
+import { usePrivy, useEmbeddedWallet, useLogin, isNotCreated } from '@privy-io/expo';
 import { router, Stack } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { TextInput, View, BackHandler } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, BackHandler, useColorScheme } from 'react-native';
 
 import { Button } from '~/components/Button';
-import { Container } from '~/components/Container';
-import { DebugButton } from '~/components/DebugButton';
-import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 
 export default function Login() {
-  const [email, setEmail] = useState(Constants.expoConfig?.extra?.email || '');
-  const [code, setCode] = useState('');
-
   const { user } = usePrivy();
   const wallet = useEmbeddedWallet();
-  const emailFlow = useLoginWithEmail();
 
   const { updatePrivy } = useAppData();
 
   useEffect(() => {
-    // Prevent back navigation while on the login screen
+    // Prevent back navigation
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
     return () => backHandler.remove();
   }, []);
@@ -64,13 +50,22 @@ export default function Login() {
     <>
       <Stack.Screen options={{ title: 'Login', headerShown: false }} />
       <Frame>
-        <FTitle className="mx-auto text-4xl">Fundamental</FTitle>
-        <Button
-          title="Login with Privy"
-          className="mx-auto my-4 w-2/3 bg-primary"
-          onPress={() => login({ loginMethods: ['email', 'sms', 'google', 'github'] })}
-        />
-        {/* <DebugButton /> */}
+        <View className="flex flex-1 flex-col items-center justify-center">
+          <FTitle className="text-4xl">Fundamental</FTitle>
+          <Button
+            title="Login/Register"
+            className="mt-2 w-2/3 bg-primary"
+            onPress={() =>
+              login({ loginMethods: ['email', 'google', 'github'] }).catch((error) => {
+                if (error.message.includes('The login flow was closed')) {
+                  console.log('Login flow was cancelled by the user.');
+                } else {
+                  console.error('Login error:', error);
+                }
+              })
+            }
+          />
+        </View>
       </Frame>
     </>
   );
