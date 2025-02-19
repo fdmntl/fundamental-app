@@ -14,6 +14,8 @@ import { signCowQuote } from '~/services/CoW/signCowQuote';
 import { getEthersSigner } from '~/services/Ethers/getEthersSigner';
 import { submitCowOrder } from '~/services/CoW/submitCowOrder';
 import { getCowOrderStatus } from '~/services/CoW/getCowOrderStatus';
+import { ScrollView } from 'react-native';
+import QRCode from 'react-native-qrcode-svg';
 
 const TestModule = () => {
   const { user, privy, tokens } = useAppData();
@@ -63,8 +65,9 @@ const TestModule = () => {
   const signer = getEthersSigner(wallet.provider);
 
   return (
-    <View>
+    <ScrollView contentContainerStyle={{ paddingBottom: 200 }}>
       <Container className="" title="Test Module">
+        <QRCode value={user.wallet_address} size={200} />
         <FText className="text-lg text-text">Resolve ENS Domain</FText>
         <TextInput
           className="my-2 rounded border border-gray-300 p-2 text-text"
@@ -138,7 +141,7 @@ const TestModule = () => {
           }}
         />
       </Container>
-    </View>
+    </ScrollView>
   );
 };
 
