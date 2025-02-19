@@ -16,6 +16,7 @@ import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { debounce } from '~/utils/helpers/debounce';
 
 export default function Login() {
   const [email, setEmail] = useState(Constants.expoConfig?.extra?.email || '');
@@ -35,26 +36,39 @@ export default function Login() {
   }, []);
 
   useEffect(() => {
-    if (user) {
-      if (isNotCreated(wallet)) {
-        try {
-          wallet.create({ recoveryMethod: 'privy' });
-          console.log('Success', 'Wallet created successfully!');
-        } catch (error: any) {
-          console.error('Error', 'Failed to create wallet: ' + error.message);
-        }
-      }
-
-      updatePrivy({ user, wallet });
-
+    // Create a debounced version of the navigation function in order to ensure privy has time to load
+    const debouncedReplace = debounce(() => {
       router.replace('/(tabs)');
-    }
+    }, 500);
+
+    const handleUserLogin = async () => {
+      if (user) {
+        console.log('User logged in, wallet state:', wallet);
+        if (isNotCreated(wallet)) {
+          try {
+            await wallet.create({ recoveryMethod: 'privy' });
+            console.log('Wallet created successfully!');
+          } catch (error: any) {
+            if (error.message?.includes('already has an embedded wallet')) {
+              console.log('Wallet already exists. Skipping creation.');
+            } else {
+              console.error('Failed to create wallet:', error);
+            }
+          }
+        }
+
+        updatePrivy({ user, wallet });
+        console.log('Updating privy');
+        debouncedReplace();
+      }
+    };
+
+    handleUserLogin();
   }, [user, router, wallet]);
 
   useEffect(() => {
     if (emailFlow.state.status === 'error') {
       console.error(emailFlow.state.error);
-      // Error state to display a message in the UI
     }
   }, [emailFlow.state.status]);
 
@@ -66,7 +80,7 @@ export default function Login() {
         <Container title="E-Mail" className="mt-2 flex">
           <View className="mb-4 rounded-2xl border-2 border-gray-300">
             <TextInput
-              className={`w-full px-2 text-3xl text-text`}
+              className="w-full px-2 text-3xl text-text"
               value={email}
               onChangeText={setEmail}
               placeholder="Email"
@@ -81,7 +95,7 @@ export default function Login() {
           />
           <View className="mb-4 rounded-2xl border-2 border-gray-300">
             <TextInput
-              className={'w-full px-2 text-3xl text-text'}
+              className="w-full px-2 text-3xl text-text"
               value={code}
               onChangeText={setCode}
               placeholder="Code"
@@ -94,19 +108,14 @@ export default function Login() {
             className="m-auto w-2/3 bg-primary"
             onPress={() => emailFlow.loginWithCode({ code, email })}
           />
-          {/* New UI Login using updated useLogin
-          <Button
-            title="New UI Login"
-            className="mx-auto my-4 w-2/3 bg-primary"
-            onPress={() => login({ loginMethods: ['email', 'sms'] })}
-          /> */}
-          {/* <FText className="m-auto mt-4 text-text">
-            (OTP state:{' '}
-            <FText className="!text-primary" bold>
-              {emailFlow.state.status}
-            </FText>
-            )
-          </FText> */}
+          {/*
+            Privy's new UI login:
+            <Button
+              title="New UI Login"
+              className="mx-auto my-4 w-2/3 bg-primary"
+              onPress={() => login({ loginMethods: ['email', 'sms'] })}
+            />
+          */}
         </Container>
       </Frame>
     </>
