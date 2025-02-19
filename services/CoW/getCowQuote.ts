@@ -6,7 +6,6 @@ import {
 } from '@cowprotocol/cow-sdk';
 
 const orderBookApi = new OrderBookApi({ chainId: SupportedChainId.BASE });
-
 export const getCowQuote = async (
   address: string,
   sellToken: string,

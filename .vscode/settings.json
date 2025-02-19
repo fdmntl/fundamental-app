@@ -1,3 +1,5 @@
 {
-  "prettier.configPath": "./prettier.config.js"
+  "prettier.configPath": "./prettier.config.js",
+  "editor.indentSize": "tabSize",
+  "editor.tabSize": 2
 }
