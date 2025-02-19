@@ -30,6 +30,7 @@ export const useSendTokenCallback = ({
         wallet.provider,
         recipient,
         BigInt(amountToDigits(parseFloat(amount), selectedToken))
+        // Update the user's balance in the database
       );
     } else {
       sendERC20(
@@ -37,6 +38,7 @@ export const useSendTokenCallback = ({
         selectedToken.address as `0x${string}`,
         recipient as `0x${string}`,
         BigInt(amountToDigits(parseFloat(amount), selectedToken))
+        // Update the user's balance in the database
       );
     }
   }, [amount, isInputValid, recipient, selectedToken, wallet]);
