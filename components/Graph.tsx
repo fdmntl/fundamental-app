@@ -88,9 +88,11 @@ const Graph = ({ graphData }: GraphProps) => {
       </FText>
 
       {/* Date */}
-      <FText className="mb-4">
-        {currentDate.toLocaleDateString()} at {currentDate.toLocaleTimeString()}
-      </FText>
+      {!isNaN(currentDate.getTime()) && !isNaN(currentDate.getDate()) && (
+        <FText className="mb-4">
+          {currentDate.toLocaleDateString()} at {currentDate.toLocaleTimeString()}
+        </FText>
+      )}
 
       {/* Graph */}
       {graphData && filteredData.length > 0 ? (
