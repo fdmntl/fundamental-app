@@ -34,17 +34,18 @@ export const ProfileModal = () => {
       <Modal visible={isExpanded} animationType="fade" transparent onRequestClose={toggleModal}>
         <TouchableWithoutFeedback onPress={toggleModal}>
           <View className="flex-1 items-center justify-center bg-[rgba(0,0,0,0.5)]">
-            <Container title="Your Profile" className="w-11/12 rounded-lg bg-content p-4">
+            <Container title="Your Profile" className="rounded-lg bg-content p-4">
               <TouchableOpacity onPress={() => copyToClipboard(`${user.ens}.fdmntl.eth`)}>
                 <FText className="text-center text-text">
                   @{user.ens} | {user.ens}.fdmntl.eth
                 </FText>
               </TouchableOpacity>
-              <View className="mt-8 flex items-center justify-center">
-                <QRCode value={user.wallet_address} size={200} />
+
+              <View className=" flex w-fit items-center justify-center rounded-xl bg-white p-4">
+                <QRCode value={user.wallet_address} size={280} />
               </View>
               <TouchableOpacity onPress={() => copyToClipboard(user.wallet_address)}>
-                <FText className="mt-2 text-center text-text">{truncatedAddress}</FText>
+                <FText className=" text-center text-text">{truncatedAddress}</FText>
               </TouchableOpacity>
             </Container>
           </View>
