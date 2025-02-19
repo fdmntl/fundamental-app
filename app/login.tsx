@@ -1,10 +1,4 @@
-import {
-  usePrivy,
-  useEmbeddedWallet,
-  useLoginWithEmail,
-  useLogin,
-  isNotCreated,
-} from '@privy-io/expo';
+import { usePrivy, useEmbeddedWallet, useLoginWithEmail, isNotCreated } from '@privy-io/expo';
 import Constants from 'expo-constants';
 import { router, Stack } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -16,7 +10,6 @@ import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
-import { debounce } from '~/utils/helpers/debounce';
 
 export default function Login() {
   const [email, setEmail] = useState(Constants.expoConfig?.extra?.email || '');
@@ -25,7 +18,6 @@ export default function Login() {
   const { user } = usePrivy();
   const wallet = useEmbeddedWallet();
   const emailFlow = useLoginWithEmail();
-  const { login } = useLogin();
 
   const { updatePrivy } = useAppData();
 
@@ -36,11 +28,6 @@ export default function Login() {
   }, []);
 
   useEffect(() => {
-    // Create a debounced version of the navigation function in order to ensure privy has time to load
-    const debouncedReplace = debounce(() => {
-      router.replace('/(tabs)');
-    }, 500);
-
     const handleUserLogin = async () => {
       if (user) {
         console.log('User logged in, wallet state:', wallet);
@@ -58,8 +45,7 @@ export default function Login() {
         }
 
         updatePrivy({ user, wallet });
-        console.log('Updating privy');
-        debouncedReplace();
+        router.navigate('/(tabs)');
       }
     };
 
@@ -108,14 +94,6 @@ export default function Login() {
             className="m-auto w-2/3 bg-primary"
             onPress={() => emailFlow.loginWithCode({ code, email })}
           />
-          {/*
-            Privy's new UI login:
-            <Button
-              title="New UI Login"
-              className="mx-auto my-4 w-2/3 bg-primary"
-              onPress={() => login({ loginMethods: ['email', 'sms'] })}
-            />
-          */}
         </Container>
       </Frame>
     </>
