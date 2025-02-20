@@ -8,12 +8,14 @@ import { AmountInput } from '~/components/Send/AmountInput';
 import { QuoteDisplay } from '~/components/Trade/QuoteDisplay';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { signCowQuote } from '~/services/CoW/signCowQuote';
+import { submitCowOrder } from '~/services/CoW/submitCowOrder';
 import { Token } from '~/types/supabaseTypes';
-import { roundNumberToDecimal } from '~/utils/helpers/numbers/roundNumberToDecimal';
-import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
+import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
 
 export default function Trade() {
-  const { user, tokens } = useAppData();
+  const { user, tokens, privy } = useAppData();
+  const wallet = privy.wallet;
 
   const [payAmount, setPayAmount] = useState('');
   const [selectedPayToken, setSelectedPayToken] = useState<Token | null>(null);
@@ -30,14 +32,23 @@ export default function Trade() {
 
   const [quote, setQuote] = useState<OrderParameters | null>(null);
 
-  const handleTradePress = () => {
-    console.log('Trade button pressed');
-    console.log('Amount:', payAmount);
-    console.log('Selected Pay Token:', selectedPayToken?.name);
-    console.log('Selected Get Token:', selectedGetToken?.name);
-    if (quote && selectedGetToken) {
-      const formattedQuote = digitsToAmount(Number(quote.buyAmount), selectedGetToken);
-      console.log('Quote amount:', roundNumberToDecimal(formattedQuote));
+  const handleTradePress = async () => {
+    if (
+      quote &&
+      selectedPayToken &&
+      user.wallet_address &&
+      payAmount &&
+      wallet &&
+      wallet.status === 'connected'
+    ) {
+      const provider = wallet.provider;
+      const formattedAmount = amountToDigits(Number(payAmount), selectedPayToken).toString();
+      try {
+        const signature = await signCowQuote(quote, formattedAmount, user.wallet_address, provider);
+        await submitCowOrder(quote, formattedAmount, signature);
+      } catch (error) {
+        console.error('Error signing or submitting quote:', error);
+      }
     }
   };
 
