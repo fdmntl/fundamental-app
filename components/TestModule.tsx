@@ -16,6 +16,7 @@ import { submitCowOrder } from '~/services/CoW/submitCowOrder';
 import { getCowOrderStatus } from '~/services/CoW/getCowOrderStatus';
 import { ScrollView } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
+import { checkERC20Allowance } from '~/services/viemService';
 
 const TestModule = () => {
   const { user, privy, tokens } = useAppData();
@@ -95,6 +96,19 @@ const TestModule = () => {
           }
         />
 
+        <Button
+          className="bg-primary"
+          title="Check USDC Allowance"
+          onPress={async () => {
+            const allowance = await checkERC20Allowance(
+              wallet.provider,
+              '0x833589fCD6eDb6E08f4c7C32D4f71b54bda02913',
+              user.wallet_address as `0x${string}`,
+              '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110'
+            );
+            console.log('Allowance:', allowance);
+          }}
+        />
         <Button
           className="bg-primary"
           title="Get Cow Quote - 0.10 USDC -> WETH"
