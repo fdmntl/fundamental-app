@@ -5,6 +5,7 @@ import {
   createPublicClient,
   http,
   getContract,
+  getAddress,
 } from 'viem';
 import { PrivyEmbeddedWalletProvider } from '@privy-io/expo';
 import { base, mainnet } from 'viem/chains';
@@ -224,6 +225,48 @@ export const approveERC20 = async (
     console.log('Approval transaction sent. Hash:', txHash);
   } catch (error) {
     console.error('Error setting ERC-20 token approval:', error);
+  }
+};
+
+// Checks the allowance of a spender for an ERC-20 token.
+// Returns 0n if the call fails or the allowance is not set.
+export const checkERC20Allowance = async (
+  provider: PrivyEmbeddedWalletProvider,
+  tokenAddress: `0x${string}`,
+  owner: `0x${string}`,
+  spender: `0x${string}`
+) => {
+  const client = await getPublicClient(provider);
+
+  // ERC-20 ABI for `allowance`
+  const erc20ABI = [
+    {
+      name: 'allowance',
+      type: 'function',
+      stateMutability: 'view',
+      inputs: [
+        { name: 'owner', type: 'address' },
+        { name: 'spender', type: 'address' },
+      ],
+      outputs: [{ name: '', type: 'uint256' }],
+    },
+  ];
+
+  try {
+    const normalizedTokenAddress = getAddress(tokenAddress);
+    const normalizedOwner = getAddress(owner);
+    const normalizedSpender = getAddress(spender);
+    const allowance = await client.readContract({
+      address: normalizedTokenAddress,
+      abi: erc20ABI,
+      functionName: 'allowance',
+      args: [normalizedOwner, normalizedSpender],
+    });
+
+    return BigInt(allowance as string);
+  } catch (error) {
+    console.error('Error checking ERC-20 allowance:', error);
+    return 0n;
   }
 };
 
