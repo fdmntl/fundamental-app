@@ -8,6 +8,7 @@ import { AmountInput } from '~/components/Send/AmountInput';
 import { QuoteDisplay } from '~/components/Trade/QuoteDisplay';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { checkAndSetCowAllowance } from '~/services/CoW/setCowInfiniteAllowance';
 import { signCowQuote } from '~/services/CoW/signCowQuote';
 import { submitCowOrder } from '~/services/CoW/submitCowOrder';
 import { Token } from '~/types/supabaseTypes';
@@ -44,6 +45,7 @@ export default function Trade() {
       const provider = wallet.provider;
       const formattedAmount = amountToDigits(Number(payAmount), selectedPayToken).toString();
       try {
+        await checkAndSetCowAllowance(provider, selectedPayToken.address, user.wallet_address);
         const signature = await signCowQuote(quote, formattedAmount, user.wallet_address, provider);
         await submitCowOrder(quote, formattedAmount, signature);
       } catch (error) {

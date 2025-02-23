@@ -1,3 +1,4 @@
+import { PrivyEmbeddedWalletProvider } from '@privy-io/expo';
 import {
   createWalletClient,
   custom,
@@ -7,7 +8,6 @@ import {
   getContract,
   getAddress,
 } from 'viem';
-import { PrivyEmbeddedWalletProvider } from '@privy-io/expo';
 import { base, mainnet } from 'viem/chains';
 
 // Creates a wallet client using the Privy Embedded Wallet provider
@@ -73,7 +73,7 @@ export const sendETH = async (
   const to = destination as `0x${string}`;
   try {
     const txHash = await client.sendTransaction({
-      account: account,
+      account,
       from: account,
       to,
       value: amount,
@@ -120,9 +120,9 @@ export const sendERC20 = async (
     });
 
     const txHash = await client.sendTransaction({
-      account: account,
+      account,
       to: tokenAddress,
-      data: data,
+      data,
       value: 0n, // No ETH is sent with the call
     });
   } catch (error) {
@@ -169,9 +169,9 @@ export const registerName = async (
 
     // Send transaction
     const txHash = await client.sendTransaction({
-      account: account,
+      account,
       to: contractAddress,
-      data: data,
+      data,
       value: 0n, // No ETH is sent with the call
     });
   } catch (error) {
@@ -216,9 +216,9 @@ export const approveERC20 = async (
     });
 
     const txHash = await client.sendTransaction({
-      account: account,
+      account,
       to: tokenAddress,
-      data: data,
+      data,
       value: 0n, // No ETH is sent with the call
     });
 
@@ -232,9 +232,9 @@ export const approveERC20 = async (
 // Returns 0n if the call fails or the allowance is not set.
 export const checkERC20Allowance = async (
   provider: PrivyEmbeddedWalletProvider,
-  tokenAddress: `0x${string}`,
-  owner: `0x${string}`,
-  spender: `0x${string}`
+  tokenAddress: string,
+  owner: string,
+  spender: string
 ) => {
   const client = await getPublicClient(provider);
 

@@ -1,25 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput } from 'react-native';
+import { OrderParameters, SigningResult } from '@cowprotocol/cow-sdk';
+import { useState, useEffect } from 'react';
+import { TextInput, ScrollView } from 'react-native';
+import QRCode from 'react-native-qrcode-svg';
 
 import { Button } from './Button';
 import { Container } from './Container';
 import { FText } from './Text/FText';
 
 import { useAppData } from '~/components/Wrappers/AppData';
-import { setCowInfiniteAllowance } from '~/services/CoW/setCowInfiniteAllowance';
-import { getWalletClient, resolveENS } from '~/services/viemService';
-import { getCowQuote } from '~/services/CoW/getCowQuote';
-import { OrderParameters, SigningResult } from '@cowprotocol/cow-sdk';
-import { signCowQuote } from '~/services/CoW/signCowQuote';
-import { getEthersSigner } from '~/services/Ethers/getEthersSigner';
-import { submitCowOrder } from '~/services/CoW/submitCowOrder';
 import { getCowOrderStatus } from '~/services/CoW/getCowOrderStatus';
-import { ScrollView } from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
-import { checkERC20Allowance } from '~/services/viemService';
+import { getCowQuote } from '~/services/CoW/getCowQuote';
+import { setCowInfiniteAllowance } from '~/services/CoW/setCowInfiniteAllowance';
+import { signCowQuote } from '~/services/CoW/signCowQuote';
+import { submitCowOrder } from '~/services/CoW/submitCowOrder';
+import { getEthersSigner } from '~/services/Ethers/getEthersSigner';
+import { getWalletClient, resolveENS, checkERC20Allowance } from '~/services/viemService';
 
 const TestModule = () => {
-  const { user, privy, tokens } = useAppData();
+  const { user, privy } = useAppData();
   const wallet = privy.wallet;
 
   const [ensDomain, setEnsDomain] = useState('');
