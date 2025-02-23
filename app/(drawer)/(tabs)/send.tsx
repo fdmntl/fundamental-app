@@ -79,25 +79,25 @@ export default function Send() {
     <Frame>
       <HeaderBar title="Send" pillContent={sendPillContent} />
         <View className="flex-1 gap-4">
-      <ScrollView showsVerticalScrollIndicator={false}
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
-              }
-            >
-          <View className='flex-1 mb-4'>
-            <RecipientInput value={recipient} onChange={(value) => setRecipient(value)} />
-          </View>
-          <View className='flex-1 mb-4'>
-            <AmountInput
-              value={amount}
-              onChange={(value) => setAmount(value)}
-              tokens={possessedTokens}
-              user={user}
-              selectedTokenBalance={selectedTokenBalance}
-              onTokenChange={(token) => setSelectedToken(token)}
-            />
-          </View>
-            </ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+            }
+          >
+            <View className='flex-1 mb-4'>
+              <RecipientInput value={recipient} onChange={(value) => setRecipient(value)} />
+            </View>
+            <View className='flex-1 mb-4'>
+              <AmountInput
+                value={amount}
+                onChange={(value) => setAmount(value)}
+                tokens={possessedTokens}
+                user={user}
+                selectedTokenBalance={selectedTokenBalance}
+                onTokenChange={(token) => setSelectedToken(token)}
+              />
+            </View>
+          </ScrollView>
           <View className="absolute bottom-[6rem] w-full items-center">
             <Button
               title="Send Funds"
