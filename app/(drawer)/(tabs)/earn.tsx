@@ -12,19 +12,19 @@ import { useAppData } from '~/components/Wrappers/AppData';
 import { refreshUserBalances } from '~/services/refreshUserBalance';
 
 export default function Earn() {
-    const { user, updateUser } = useAppData();
-    const [refreshing, setRefreshing] = React.useState(false);
-    const onRefresh = useCallback(async () => {
-      // Ensure refresh only happens when triggered otherwise it refreshes the user balances on every render (not cool)
-      if (!refreshing) {
-        setRefreshing(true);
-        try {
-          await refreshUserBalances(user, updateUser);
-        } finally {
-          setRefreshing(false);
-        }
+  const { user, updateUser } = useAppData();
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = useCallback(async () => {
+    // Ensure refresh only happens when triggered otherwise it refreshes the user balances on every render (not cool)
+    if (!refreshing) {
+      setRefreshing(true);
+      try {
+        await refreshUserBalances(user, updateUser);
+      } finally {
+        setRefreshing(false);
       }
-    }, [refreshing, refreshUserBalances]);
+    }
+  }, [refreshing, refreshUserBalances]);
   return (
     <Frame>
       <HeaderBar title="Earn" />
