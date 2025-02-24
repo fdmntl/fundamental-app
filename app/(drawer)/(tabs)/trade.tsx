@@ -1,5 +1,4 @@
-import React from 'react';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { View } from 'react-native';
 
 import { Button } from '~/components/Button';
@@ -8,9 +7,7 @@ import { AmountInput } from '~/components/Send/AmountInput';
 import { QuoteDisplay } from '~/components/Trade/QuoteDisplay';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
-import { refreshUserBalances } from '~/services/refreshUserBalance';
 import { Token } from '~/types/supabaseTypes';
-import { ScrollView, RefreshControl } from 'react-native-gesture-handler';
 
 export default function Trade() {
   const { user, tokens, updateUser } = useAppData();
@@ -33,49 +30,30 @@ export default function Trade() {
     console.log('Selected Token:', selectedTokenBalance);
   };
 
-  const [refreshing, setRefreshing] = React.useState(false);
-  const onRefresh = useCallback(async () => {
-    // Ensure refresh only happens when triggered otherwise it refreshes the user balances on every render (not cool)
-    if (!refreshing) {
-      setRefreshing(true);
-      try {
-        await refreshUserBalances(user, updateUser);
-      } finally {
-        setRefreshing(false);
-      }
-    }
-  }, [refreshing, refreshUserBalances]);
-
   return (
     <Frame>
       <HeaderBar title="Trade" />
-      <ScrollView showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
-        }
-      >
-        <View className="flex-1 gap-4">
-          {/* Amount Input for "You Pay" */}
-          <AmountInput
-            value={amount}
-            onChange={(value) => setAmount(value)}
-            tokens={possessedTokens}
-            user={user}
-            selectedTokenBalance={selectedTokenBalance}
-            onTokenChange={(token) => setSelectedToken(token)}
-            title="You Pay"
-          />
+      <View className="flex-1 gap-4">
+        {/* Amount Input for "You Pay" */}
+        <AmountInput
+          value={amount}
+          onChange={(value) => setAmount(value)}
+          tokens={possessedTokens}
+          user={user}
+          selectedTokenBalance={selectedTokenBalance}
+          onTokenChange={(token) => setSelectedToken(token)}
+          title="You Pay"
+        />
 
-          {/* Quote Display */}
-          <QuoteDisplay
-            tokens={possessedTokens}
-            user={user}
-            selectedTokenBalance={selectedTokenBalance}
-            youPayValue={parseFloat(amount) || 0}
-            youPayToken={selectedToken || possessedTokens[0]}
-          />
-        </View>
-      </ScrollView>
+        {/* Quote Display */}
+        <QuoteDisplay
+          tokens={possessedTokens}
+          user={user}
+          selectedTokenBalance={selectedTokenBalance}
+          youPayValue={parseFloat(amount) || 0}
+          youPayToken={selectedToken || possessedTokens[0]}
+        />
+      </View>
       <View className="absolute bottom-[6rem] w-full items-center">
         <Button
           title="Trade"

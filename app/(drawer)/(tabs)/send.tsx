@@ -1,5 +1,4 @@
-import React from 'react';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { View } from 'react-native';
 import { isAddress } from 'viem';
 
@@ -10,11 +9,9 @@ import { RecipientInput } from '~/components/Send/RecipientInput';
 import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
-import { refreshUserBalances } from '~/services/refreshUserBalance';
 import { useSendTokenCallback } from '~/services/Send/useSendTokenCallback';
 import { Token } from '~/types/supabaseTypes';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
-import { ScrollView, RefreshControl } from 'react-native-gesture-handler';
 
 const sendPillContent = () => {
   return (
@@ -62,51 +59,32 @@ export default function Send() {
     handleSendTokenCallback();
   };
 
-  const [refreshing, setRefreshing] = React.useState(false);
-  const onRefresh = useCallback(async () => {
-    // Ensure refresh only happens when triggered otherwise it refreshes the user balances on every render (not cool)
-    if (!refreshing) {
-      setRefreshing(true);
-      try {
-        await refreshUserBalances(user, updateUser);
-      } finally {
-        setRefreshing(false);
-      }
-    }
-  }, [refreshing, refreshUserBalances]);
-
   return (
     <Frame>
       <HeaderBar title="Send" pillContent={sendPillContent} />
-        <View className="flex-1 gap-4">
-          <ScrollView showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
-            }
-          >
-            <View className='flex-1 mb-4'>
-              <RecipientInput value={recipient} onChange={(value) => setRecipient(value)} />
-            </View>
-            <View className='flex-1 mb-4'>
-              <AmountInput
-                value={amount}
-                onChange={(value) => setAmount(value)}
-                tokens={possessedTokens}
-                user={user}
-                selectedTokenBalance={selectedTokenBalance}
-                onTokenChange={(token) => setSelectedToken(token)}
-              />
-            </View>
-          </ScrollView>
-          <View className="absolute bottom-[6rem] w-full items-center">
-            <Button
-              title="Send Funds"
-              onPress={handleSendPress}
-              className={`bg-primary px-12 ${isInputValid ? '' : 'opacity-50'}`}
-              disabled={!isInputValid}
-            />
-          </View>
+      <View className="flex-1 gap-4">
+        <View className="mb-4 flex-1">
+          <RecipientInput value={recipient} onChange={(value) => setRecipient(value)} />
         </View>
+        <View className="mb-4 flex-1">
+          <AmountInput
+            value={amount}
+            onChange={(value) => setAmount(value)}
+            tokens={possessedTokens}
+            user={user}
+            selectedTokenBalance={selectedTokenBalance}
+            onTokenChange={(token) => setSelectedToken(token)}
+          />
+        </View>
+        <View className="absolute bottom-[6rem] w-full items-center">
+          <Button
+            title="Send Funds"
+            onPress={handleSendPress}
+            className={`bg-primary px-12 ${isInputValid ? '' : 'opacity-50'}`}
+            disabled={!isInputValid}
+          />
+        </View>
+      </View>
     </Frame>
   );
 }
