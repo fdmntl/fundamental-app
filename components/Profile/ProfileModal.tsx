@@ -23,34 +23,44 @@ export const ProfileModal = () => {
     console.log('Copied to clipboard:', text);
   };
 
-  return (
-    <View className="w-full">
-      <TouchableOpacity onPress={toggleModal} className="w-full rounded p-2">
+  if (!user.ens) {
+    return (
+      <View className="w-full">
         <Container title="" className="w-full">
-          <FText className="text-center text-text">@{user.ens}</FText>
-          <FText className="text-center text-text">{user.ens}.fdmntl.eth</FText>
+          <FText className="text-center text-text">You don't have an ENS!</FText>
+          <FText className="text-center text-text">{truncatedAddress}</FText>
         </Container>
-      </TouchableOpacity>
-      <Modal visible={isExpanded} animationType="fade" transparent onRequestClose={toggleModal}>
-        <TouchableWithoutFeedback onPress={toggleModal}>
-          <View className="flex-1 items-center justify-center bg-[rgba(0,0,0,0.5)]">
-            <Container title="Your Profile" className="rounded-lg bg-content p-4">
-              <TouchableOpacity onPress={() => copyToClipboard(`${user.ens}.fdmntl.eth`)}>
-                <FText className="text-center text-text">
-                  @{user.ens} | {user.ens}.fdmntl.eth
-                </FText>
-              </TouchableOpacity>
-
-              <View className=" flex w-fit items-center justify-center rounded-xl bg-white p-4">
-                <QRCode value={user.wallet_address} size={280} />
-              </View>
-              <TouchableOpacity onPress={() => copyToClipboard(user.wallet_address)}>
-                <FText className=" text-center text-text">{truncatedAddress}</FText>
-              </TouchableOpacity>
-            </Container>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-    </View>
-  );
+      </View>
+    );
+  } else {
+    return (
+      <View className="w-full">
+        <TouchableOpacity onPress={toggleModal} className="w-full rounded p-2">
+          <Container title="" className="w-full">
+            <FText className="text-center text-text">@{user.ens}</FText>
+            <FText className="text-center text-text">{user.ens}.fdmntl.eth</FText>
+          </Container>
+        </TouchableOpacity>
+        <Modal visible={isExpanded} animationType="fade" transparent onRequestClose={toggleModal}>
+          <TouchableWithoutFeedback onPress={toggleModal}>
+            <View className="flex-1 items-center justify-center bg-[rgba(0,0,0,0.5)]">
+              <Container title="Your Profile" className="rounded-lg bg-content p-4">
+                <TouchableOpacity onPress={() => copyToClipboard(`${user.ens}.fdmntl.eth`)}>
+                  <FText className="text-center text-text">
+                    @{user.ens} | {user.ens}.fdmntl.eth
+                  </FText>
+                </TouchableOpacity>
+                <View className=" flex w-fit items-center justify-center rounded-xl bg-white p-4">
+                  <QRCode value={user.wallet_address} size={280} />
+                </View>
+                <TouchableOpacity onPress={() => copyToClipboard(user.wallet_address)}>
+                  <FText className=" text-center text-text">{truncatedAddress}</FText>
+                </TouchableOpacity>
+              </Container>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+      </View>
+    );
+  }
 };
