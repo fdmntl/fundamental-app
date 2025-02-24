@@ -1,7 +1,9 @@
-import { OrderParameters } from '@cowprotocol/cow-sdk';
-
-import { OrderSigningUtils, SupportedChainId, UnsignedOrder } from '@cowprotocol/cow-sdk';
-
+import {
+  OrderParameters,
+  OrderSigningUtils,
+  SupportedChainId,
+  UnsignedOrder,
+} from '@cowprotocol/cow-sdk';
 import { PrivyEmbeddedWalletProvider } from '@privy-io/expo';
 
 import { getEthersSigner } from '~/services/Ethers/getEthersSigner';
@@ -18,7 +20,7 @@ export const signCowQuote = async (
     ...quote,
     sellAmount,
     feeAmount,
-    receiver: receiver,
+    receiver,
   };
   const signature = await OrderSigningUtils.signOrder(order, SupportedChainId.BASE, signer);
   return signature;

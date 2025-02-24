@@ -2,17 +2,18 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
+import { BalanceRefreshControl } from '~/components/BalanceRefreshControl';
 import { Container } from '~/components/Container';
 import Graph from '~/components/Graph';
 import { HeaderBar } from '~/components/HeaderBar';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
-import { DataPoint, GraphData } from '~/types/graph';
-import { BalanceRefreshControl } from '~/components/BalanceRefreshControl';
+import { GraphData } from '~/types/graph';
 
 // TODO: use user balance instead of token list
 
 export default function Assets() {
+  // TODO: display user balance history graph
   const [allData] = useState<GraphData | undefined>();
   const { tokens } = useAppData();
 

@@ -1,3 +1,4 @@
+import { PrivyEmbeddedWalletProvider } from '@privy-io/expo';
 import {
   createWalletClient,
   custom,
@@ -5,8 +6,8 @@ import {
   createPublicClient,
   http,
   getContract,
+  getAddress,
 } from 'viem';
-import { PrivyEmbeddedWalletProvider } from '@privy-io/expo';
 import { base, mainnet } from 'viem/chains';
 
 // Creates a wallet client using the Privy Embedded Wallet provider
@@ -72,7 +73,7 @@ export const sendETH = async (
   const to = destination as `0x${string}`;
   try {
     const txHash = await client.sendTransaction({
-      account: account,
+      account,
       from: account,
       to,
       value: amount,
@@ -119,9 +120,9 @@ export const sendERC20 = async (
     });
 
     const txHash = await client.sendTransaction({
-      account: account,
+      account,
       to: tokenAddress,
-      data: data,
+      data,
       value: 0n, // No ETH is sent with the call
     });
   } catch (error) {
@@ -168,9 +169,9 @@ export const registerName = async (
 
     // Send transaction
     const txHash = await client.sendTransaction({
-      account: account,
+      account,
       to: contractAddress,
-      data: data,
+      data,
       value: 0n, // No ETH is sent with the call
     });
   } catch (error) {
@@ -215,15 +216,57 @@ export const approveERC20 = async (
     });
 
     const txHash = await client.sendTransaction({
-      account: account,
+      account,
       to: tokenAddress,
-      data: data,
+      data,
       value: 0n, // No ETH is sent with the call
     });
 
     console.log('Approval transaction sent. Hash:', txHash);
   } catch (error) {
     console.error('Error setting ERC-20 token approval:', error);
+  }
+};
+
+// Checks the allowance of a spender for an ERC-20 token.
+// Returns 0n if the call fails or the allowance is not set.
+export const checkERC20Allowance = async (
+  provider: PrivyEmbeddedWalletProvider,
+  tokenAddress: string,
+  owner: string,
+  spender: string
+) => {
+  const client = await getPublicClient(provider);
+
+  // ERC-20 ABI for `allowance`
+  const erc20ABI = [
+    {
+      name: 'allowance',
+      type: 'function',
+      stateMutability: 'view',
+      inputs: [
+        { name: 'owner', type: 'address' },
+        { name: 'spender', type: 'address' },
+      ],
+      outputs: [{ name: '', type: 'uint256' }],
+    },
+  ];
+
+  try {
+    const normalizedTokenAddress = getAddress(tokenAddress);
+    const normalizedOwner = getAddress(owner);
+    const normalizedSpender = getAddress(spender);
+    const allowance = await client.readContract({
+      address: normalizedTokenAddress,
+      abi: erc20ABI,
+      functionName: 'allowance',
+      args: [normalizedOwner, normalizedSpender],
+    });
+
+    return BigInt(allowance as string);
+  } catch (error) {
+    console.error('Error checking ERC-20 allowance:', error);
+    return 0n;
   }
 };
 

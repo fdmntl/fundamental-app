@@ -17,7 +17,7 @@ export const submitCowOrder = async (
     const orderId = await orderBookApi.sendOrder({
       ...quote,
       ...signature,
-      sellAmount: sellAmount,
+      sellAmount,
       feeAmount: '0',
       signingScheme: signature.signingScheme as unknown as SigningScheme,
     });
