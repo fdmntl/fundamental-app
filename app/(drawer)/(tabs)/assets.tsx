@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View } from 'react-native';
 
 import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
+import { BalanceRefreshControl } from '~/components/BalanceRefreshControl';
 import { Container } from '~/components/Container';
 import Graph from '~/components/Graph';
 import { HeaderBar } from '~/components/HeaderBar';
@@ -22,7 +23,7 @@ export default function Assets() {
   return (
     <Frame>
       <HeaderBar title="Assets" />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <BalanceRefreshControl>
         <View className="flex gap-y-5">
           <Graph graphData={allData} />
           <Container title="Money">
@@ -40,7 +41,7 @@ export default function Assets() {
             </View>
           </Container>
         </View>
-      </ScrollView>
+      </BalanceRefreshControl>
     </Frame>
   );
 }
