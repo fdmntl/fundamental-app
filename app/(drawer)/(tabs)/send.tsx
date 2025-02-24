@@ -28,7 +28,7 @@ const sendPillContent = () => {
 };
 
 export default function Send() {
-  const { user, tokens, privy, updateUser } = useAppData();
+  const { user, tokens, privy } = useAppData();
 
   const wallet = privy.wallet;
   const [recipient, setRecipient] = useState('');
