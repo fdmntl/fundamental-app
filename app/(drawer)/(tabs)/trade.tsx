@@ -10,7 +10,7 @@ import { Frame } from '~/components/Wrappers/Frame';
 import { Token } from '~/types/supabaseTypes';
 
 export default function Trade() {
-  const { user, tokens } = useAppData();
+  const { user, tokens, updateUser } = useAppData();
 
   const [amount, setAmount] = useState(''); // Payment input value
   const [selectedToken, setSelectedToken] = useState<Token | null>(null); // Selected payment token
