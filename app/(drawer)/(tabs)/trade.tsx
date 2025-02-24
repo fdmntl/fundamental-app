@@ -11,12 +11,11 @@ import { Frame } from '~/components/Wrappers/Frame';
 import { checkAndSetCowAllowance } from '~/services/CoW/setCowInfiniteAllowance';
 import { signCowQuote } from '~/services/CoW/signCowQuote';
 import { submitCowOrder } from '~/services/CoW/submitCowOrder';
-import { refreshUserBalances } from '~/services/refreshUserBalance';
 import { Token } from '~/types/supabaseTypes';
 import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
 
 export default function Trade() {
-  const { user, tokens, privy, updateUser } = useAppData();
+  const { user, tokens, privy } = useAppData();
   const wallet = privy.wallet;
 
   const [payAmount, setPayAmount] = useState('');
@@ -49,7 +48,6 @@ export default function Trade() {
         await checkAndSetCowAllowance(provider, selectedPayToken.address, user.wallet_address);
         const signature = await signCowQuote(quote, formattedAmount, user.wallet_address, provider);
         await submitCowOrder(quote, formattedAmount, signature);
-        await refreshUserBalances(user, updateUser);
       } catch (error) {
         console.error('Error signing or submitting quote:', error);
       }
