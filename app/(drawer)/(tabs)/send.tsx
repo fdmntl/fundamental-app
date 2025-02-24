@@ -63,10 +63,10 @@ export default function Send() {
     <Frame>
       <HeaderBar title="Send" pillContent={sendPillContent} />
       <View className="flex-1 gap-4">
-        <View className="mb-4 flex-1">
+        <View>
           <RecipientInput value={recipient} onChange={(value) => setRecipient(value)} />
         </View>
-        <View className="mb-4 flex-1">
+        <View>
           <AmountInput
             value={amount}
             onChange={(value) => setAmount(value)}
