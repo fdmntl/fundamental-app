@@ -45,7 +45,7 @@ export const ProfileModal = () => {
         <Modal visible={isExpanded} animationType="fade" transparent onRequestClose={toggleModal}>
           <TouchableWithoutFeedback onPress={toggleModal}>
             <View className="flex-1 items-center justify-center bg-[rgba(0,0,0,0.5)]">
-              <Container className="rounded-lg bg-content p-3">
+              <Container className="rounded-lg bg-content px-2">
                 <View className="gap-5">
                   <View className="gap-1">
                     <FText className="!text-3xl" bold>
@@ -67,7 +67,7 @@ export const ProfileModal = () => {
                     <FText className="!text-2xl !text-neutral">{truncatedAddress}</FText>
                     <Feather name="copy" size={18} className="text-text" />
                   </TouchableOpacity>
-                  <View className="mb-[-4px] flex items-center justify-center">
+                  <View className="flex items-center justify-center">
                     <FTitle className="!text-2xl !text-neutral">Fundamental</FTitle>
                   </View>
                 </View>
