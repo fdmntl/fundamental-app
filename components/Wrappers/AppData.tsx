@@ -42,12 +42,32 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
   const tokenData: Token[] = useSupabaseSubscription({ table: 'token_list' });
 
   useEffect(() => {
-    // Convert all token addresses to lowercase
-    const convertedTokens = tokenData.map((token) => ({
-      ...token,
-      address: token.address.toLowerCase(),
-    }));
-    setTokens(convertedTokens);
+    if (!tokenData.length) return;
+
+    setTokens((prevTokens) => {
+      // Create a map of previous tokens for quick lookup (reducing O(n²) to O(n))
+      const prevTokensMap = new Map(
+        prevTokens.map((token) => [token.address.toLowerCase(), token])
+      );
+
+      const updatedTokens = tokenData.map((newToken) => {
+        const address = newToken.address.toLowerCase();
+        const existingToken = prevTokensMap.get(address);
+
+        return {
+          ...existingToken,
+          ...newToken,
+          address,
+          daily_values: newToken.daily_values ?? existingToken?.daily_values ?? [],
+          weekly_values: newToken.weekly_values ?? existingToken?.weekly_values ?? [],
+          monthly_values: newToken.monthly_values ?? existingToken?.monthly_values ?? [],
+          yearly_values: newToken.yearly_values ?? existingToken?.yearly_values ?? [],
+          last_value: newToken.last_value ?? existingToken?.last_value ?? 0,
+        };
+      });
+
+      return updatedTokens;
+    });
   }, [tokenData]);
 
   const updateUser = (updates: Partial<User>) => {

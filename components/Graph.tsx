@@ -1,41 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, TouchableOpacity, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 
 import { FText } from '~/components/Text/FText';
-import { DataPoint, GraphData } from '~/types/graph';
+import { GraphData, GraphRange, graphRangeMap } from '~/types/graph';
 
 interface GraphProps {
   graphData: GraphData | undefined;
 }
 
 const Graph = ({ graphData }: GraphProps) => {
-  const [selectedRange, setSelectedRange] = useState<string>('1month');
-  const [filteredData, setFilteredData] = useState<DataPoint[]>(graphData?.monthly_values || []);
-  const [currentValue, setCurrentValue] = useState<number>(0);
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [containerWidth, setContainerWidth] = useState<number>(
-    Dimensions.get('window').width - 32 // Default width with padding
-  );
+  const [selectedRange, setSelectedRange] = useState('1month');
+  const [containerWidth, setContainerWidth] = useState(Dimensions.get('window').width - 32);
+
+  const filteredData = useMemo(() => {
+    if (!graphData) return [];
+    return graphData[graphRangeMap[selectedRange as GraphRange]] || [];
+  }, [graphData, selectedRange]);
+
+  const lastDataPoint = useMemo(() => filteredData[filteredData.length - 1] || {}, [filteredData]);
+  const [currentValue, setCurrentValue] = useState(lastDataPoint?.value || 0);
+  const [currentDate, setCurrentDate] = useState(new Date(lastDataPoint?.label || ''));
 
   useEffect(() => {
-    if (graphData) {
-      switch (selectedRange) {
-        case '1day':
-          setFilteredData(graphData.daily_values);
-          break;
-        case '1week':
-          setFilteredData(graphData.weekly_values);
-          break;
-        case '1month':
-          setFilteredData(graphData.monthly_values);
-          break;
-        case '1year':
-          setFilteredData(graphData.yearly_values);
-          break;
-      }
-    }
-  }, [selectedRange, graphData]);
+    setCurrentValue(lastDataPoint?.value || 0);
+    setCurrentDate(new Date(lastDataPoint?.label || ''));
+  }, [lastDataPoint]);
 
   const handlePointer = ({
     pointerIndex,
@@ -44,20 +34,20 @@ const Graph = ({ graphData }: GraphProps) => {
     pointerIndex: number;
     pointerX: number;
   }) => {
-    if (pointerX === 0) {
-      // Reset to the last data point when pointer is released
-      const lastData = filteredData[filteredData.length - 1];
-      setCurrentValue(lastData?.value || 0);
-      setCurrentDate(new Date(lastData?.label || ''));
-    } else if (pointerIndex >= 0 && pointerIndex < filteredData.length) {
-      // Update current value and date when the pointer is active
-      setCurrentValue(filteredData[pointerIndex]?.value || 0);
-      setCurrentDate(new Date(filteredData[pointerIndex]?.label || ''));
+    if (pointerX === 0 || pointerIndex < 0 || pointerIndex >= filteredData.length) {
+      // Reset to the last data point
+      setCurrentValue(lastDataPoint?.value || 0);
+      setCurrentDate(new Date(lastDataPoint?.label || ''));
+    } else {
+      // Get the data point at the pointer index
+      const point = filteredData[pointerIndex];
+      setCurrentValue(point?.value || 0);
+      setCurrentDate(new Date(point?.label || ''));
     }
   };
 
   const firstValue = filteredData[0]?.value || 0;
-  const lastValue = filteredData[filteredData.length - 1]?.value || 0;
+  const lastValue = lastDataPoint.value || 0;
   const isPositive = lastValue > firstValue;
 
   // Green for positive, red for negative
@@ -75,10 +65,14 @@ const Graph = ({ graphData }: GraphProps) => {
   const adjustedMax = maxValue + range * bufferPercentage;
 
   // Normalize the data to fit within the adjusted range
-  const normalizedData = filteredData.map((point) => ({
-    ...point,
-    value: ((point.value - adjustedMin) / (adjustedMax - adjustedMin)) * range,
-  }));
+  const normalizedData = useMemo(
+    () =>
+      filteredData.map((point) => ({
+        ...point,
+        value: ((point.value - adjustedMin) / (adjustedMax - adjustedMin)) * range,
+      })),
+    [filteredData, adjustedMin, adjustedMax, range]
+  );
 
   return (
     <View
@@ -94,11 +88,13 @@ const Graph = ({ graphData }: GraphProps) => {
       </FText>
 
       {/* Date */}
-      <FText className="mb-4">
-        {currentDate.toLocaleDateString()} at {currentDate.toLocaleTimeString()}
-      </FText>
+      {!isNaN(currentDate.getTime()) && !isNaN(currentDate.getDate()) && (
+        <FText className="mb-4">
+          {currentDate.toLocaleDateString()} at {currentDate.toLocaleTimeString()}
+        </FText>
+      )}
 
-      {/* Ensure graph only renders when filteredData is ready */}
+      {/* Graph */}
       {graphData && filteredData.length > 0 ? (
         <View className="relative">
           <LineChart

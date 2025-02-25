@@ -11,6 +11,7 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
+.vscode/
 # expo router
 expo-env.d.ts
 

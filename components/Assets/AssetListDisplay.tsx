@@ -6,6 +6,7 @@ import { FText } from '../Text/FText';
 import { useAppData } from '../Wrappers/AppData';
 
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
+import { roundNumberToDecimal } from '~/utils/helpers/numbers/roundNumberToDecimal';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 
@@ -26,10 +27,10 @@ export const AssetListDisplay = ({ token }: AssetListDisplayProps) => {
         <View className="flex flex-row items-center gap-x-3">
           <Image source={icon} style={{ height: 40, width: 40 }} />
           <View>
-            <FText className="">{token.name}</FText>
+            <FText bold>{token.name}</FText>
             {!token.is_stablecoin && (
               <FText className="!text-sm">
-                {userTokenAmount} {token.symbol}
+                {roundNumberToDecimal(userTokenAmount)} {token.symbol}
               </FText>
             )}
           </View>

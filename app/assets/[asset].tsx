@@ -16,10 +16,10 @@ import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 export default function Assets() {
   const { asset } = useLocalSearchParams();
 
+  const { tokens, user } = useAppData();
+
   const { getToken } = useAppData();
   const token = getToken(asset as string);
-
-  const { tokens, user } = useAppData();
 
   if (!token) {
     return (
