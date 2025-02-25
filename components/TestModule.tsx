@@ -66,7 +66,6 @@ const TestModule = () => {
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: 200 }}>
       <Container className="" title="Test Module">
-        <QRCode value={user.wallet_address} size={200} />
         <FText className="text-lg text-text">Resolve ENS Domain</FText>
         <TextInput
           className="my-2 rounded border border-gray-300 p-2 text-text"
