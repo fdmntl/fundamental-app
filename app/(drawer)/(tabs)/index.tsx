@@ -31,9 +31,9 @@ export default function Home() {
 
   const showToast = () => {
     Toast.show({
-      type: 'success',
+      type: 'fundamental',
       text1: 'Hello',
-      text2: 'This is some something 👋',
+      text2: 'This is a toast 👋',
     });
   };
 
