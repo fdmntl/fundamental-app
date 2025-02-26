@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { Button } from '~/components/Button';
 import { HeaderBar } from '~/components/HeaderBar';
 import { AmountInput } from '~/components/Send/AmountInput';
+import { OrderStatusPolling } from '~/components/Trade/OrderStatusPolling';
 import { QuoteDisplay } from '~/components/Trade/QuoteDisplay';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
@@ -21,6 +22,7 @@ export default function Trade() {
   const [payAmount, setPayAmount] = useState('');
   const [selectedPayToken, setSelectedPayToken] = useState<Token | null>(null);
   const [selectedGetToken, setSelectedGetToken] = useState<Token | null>(null);
+  const [orderUid, setOrderUid] = useState<string | null>(null);
   const possessedTokens = user.balances
     .map((balance) => tokens.find((token) => token.address === balance.address))
     .filter((token) => token !== undefined) as Token[];
@@ -47,7 +49,8 @@ export default function Trade() {
       try {
         await checkAndSetCowAllowance(provider, selectedPayToken.address, user.wallet_address);
         const signature = await signCowQuote(quote, formattedAmount, user.wallet_address, provider);
-        await submitCowOrder(quote, formattedAmount, signature);
+        const orderUid = await submitCowOrder(quote, formattedAmount, signature);
+        setOrderUid(orderUid);
       } catch (error) {
         console.error('Error signing or submitting quote:', error);
       }
@@ -87,6 +90,8 @@ export default function Trade() {
           disabled={!isAmountValid}
         />
       </View>
+      {/* // Check order status with polling */}
+      {orderUid && <OrderStatusPolling orderUid={orderUid} />}
     </Frame>
   );
 }
