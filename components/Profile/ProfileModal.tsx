@@ -2,6 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { useState } from 'react';
 import { Modal, TouchableOpacity, View, TouchableWithoutFeedback } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
+import Toast from 'react-native-toast-message';
 
 import { Container } from '../Container';
 import { FText } from '../Text/FText';
@@ -10,6 +11,7 @@ import { useAppData } from '../Wrappers/AppData';
 
 import { copyToClipboard } from '~/utils/helpers/copyToClipboard';
 import { trimAddress } from '~/utils/helpers/strings/trimAddress';
+import { toastConfig } from '~/utils/toastConfig';
 
 export const ProfileModal = () => {
   const [isExpanded, setisExpanded] = useState(false);
@@ -74,6 +76,7 @@ export const ProfileModal = () => {
               </Container>
             </View>
           </TouchableWithoutFeedback>
+          <Toast topOffset={55} config={toastConfig} />
         </Modal>
       </View>
     );

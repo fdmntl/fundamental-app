@@ -17,9 +17,11 @@ import { PrivyProvider, PrivyElements } from '@privy-io/expo';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Toast from 'react-native-toast-message';
 
 import { AppDataProvider } from '~/components/Wrappers/AppData';
 import { ThemeWrapper } from '~/components/Wrappers/ThemeWrapper';
+import { toastConfig } from '~/utils/toastConfig';
 
 const Layout = () => {
   const [fontsLoaded] = useFonts({
@@ -56,6 +58,7 @@ const Layout = () => {
           </GestureHandlerRootView>
         </AppDataProvider>
       </ThemeWrapper>
+      <Toast topOffset={55} config={toastConfig} />
       <PrivyElements />
     </PrivyProvider>
   );
