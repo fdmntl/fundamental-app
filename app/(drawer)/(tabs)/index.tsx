@@ -40,7 +40,7 @@ export default function Home() {
   return (
     <Frame>
       <HeaderBar title="Home" pillContent={homePillContent} />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View className="gap-2">
           <FTitle className="text-4xl">Welcome to Fundamental!</FTitle>
           <FText className="text-lg">This is Fundamental</FText>
