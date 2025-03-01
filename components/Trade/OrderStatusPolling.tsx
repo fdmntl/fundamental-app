@@ -53,7 +53,7 @@ export const OrderStatusPolling = ({ orderUid }: OrderStatusPollingProps) => {
         text2: token && price ? `You bought ${price} ${token.symbol}` : undefined,
       });
     } catch (error) {
-      console.error('Error polling order status:', error);
+      console.log('Error polling order status:', error);
     }
     scheduleNextPoll();
   };

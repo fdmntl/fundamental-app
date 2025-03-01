@@ -52,7 +52,7 @@ export default function Trade() {
         const orderUid = await submitCowOrder(quote, formattedAmount, signature);
         setOrderUid(orderUid);
       } catch (error) {
-        console.error('Error signing or submitting quote:', error);
+        console.log('Error signing or submitting quote:', error);
       }
     }
   };
