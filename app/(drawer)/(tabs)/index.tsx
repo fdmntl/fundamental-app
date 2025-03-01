@@ -1,5 +1,6 @@
 import { Link } from 'expo-router';
 import { View, ScrollView } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import { Button } from '~/components/Button';
 import { Container } from '~/components/Container';
@@ -29,6 +30,14 @@ export default function Home() {
         </FText>
       </PillMessageBox>
     );
+  };
+
+  const showToast = () => {
+    Toast.show({
+      type: 'fundamental',
+      text1: 'Hello',
+      text2: 'This is a toast 👋',
+    });
   };
 
   async function AddUser(user: any, wallet: any) {
@@ -100,6 +109,7 @@ export default function Home() {
               <FText className="text-lg">Your created your account at {user.created_at}</FText>
               <FText className="text-lg">Your ens is {user.ens}</FText>
             </Container>
+            <Button title="Show toast" onPress={showToast} />
             <DebugButton />
             <LogoutButton />
           </View>
