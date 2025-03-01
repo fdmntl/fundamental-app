@@ -80,6 +80,7 @@ export const sendETH = async (
     });
   } catch (error) {
     console.error('Error sending ETH:', error);
+    throw error;
   }
 };
 
@@ -127,6 +128,7 @@ export const sendERC20 = async (
     });
   } catch (error) {
     console.error('Error sending ERC-20 token:', error);
+    throw error;
   }
 };
 
