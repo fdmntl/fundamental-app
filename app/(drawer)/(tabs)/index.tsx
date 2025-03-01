@@ -12,9 +12,8 @@ import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
-import { InsertSupabaseData } from '~/services/Supabase/insertData';
 import { useEffect, useRef } from 'react';
-import { supabase } from '~/supabaseConfig';
+import { AddUser } from '~/services/addUserToDB';
 
 import 'fast-text-encoding';
 import 'react-native-get-random-values';
@@ -39,43 +38,6 @@ export default function Home() {
       text2: 'This is a toast 👋',
     });
   };
-
-  async function AddUser(user: any, wallet: any) {
-    const user_id = user.id;
-    // Check if user already exists in Supabase
-    const { data: existingUser, error: fetchError } = await supabase
-      .from('users')
-      .select('id')
-      .eq('wallet_address', wallet.account.address)
-      .single();
-
-    if (fetchError && fetchError.code !== 'PGRST116') {
-      console.error('❌ Supabase fetch error:', fetchError);
-      return;
-    }
-    if (existingUser) {
-      console.log('User already exists in Supabase, skipping creation');
-      return;
-    }
-    const data = {
-      id: user_id,
-      created_at: new Date(),
-      ens: '', // might wanna add this later
-      balances: [],
-      wallet_address: wallet.account.address,
-      total_value_historic: [],
-    };
-    try {
-      const insertedUsers = await InsertSupabaseData({
-        tableName: 'users',
-        data: [data],
-        upsert: false,
-      });
-      console.log('✅ User added:', insertedUsers);
-    } catch (error: any) {
-      console.error('❌ Failed to add user:', error);
-    }
-  }
 
   const ref = useRef(false);
   useEffect(() => {

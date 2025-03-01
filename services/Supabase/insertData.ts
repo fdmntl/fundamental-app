@@ -26,7 +26,7 @@ export async function InsertSupabaseData({
   const { data: result, error } = await query;
 
   if (error) {
-    throw new Error('query failed', error.message);
+    throw new Error(`query failed: ${error.message}`);
   }
   console.log('✅ Successfully inserted data');
   return result;
