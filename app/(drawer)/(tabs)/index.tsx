@@ -11,9 +11,8 @@ import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
-import { slice } from 'viem';
 import { InsertSupabaseData } from '~/services/Supabase/insertData';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { supabase } from '~/supabaseConfig';
 
 import 'fast-text-encoding';
@@ -69,10 +68,14 @@ export default function Home() {
   }
 
   useEffect(() => {
-    if (user && privy.wallet) {
-      AddUser(privy.user, privy.wallet);
+    const ref = useRef(false);
+    if (privy.user && privy.wallet) {
+      if (ref.current === false) {
+        AddUser(privy.user, privy.wallet);
+        ref.current = true;
+      }
     }
-  }, [user, privy.wallet]);
+  }, [privy.user, privy.wallet]);
 
   return (
     <Frame>
