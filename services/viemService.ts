@@ -52,7 +52,7 @@ export const signMessage = async (provider: PrivyEmbeddedWalletProvider, message
     });
     return signature;
   } catch (error) {
-    console.error('Error signing message:', error);
+    console.log('Error signing message:', error);
   }
 };
 
@@ -79,7 +79,7 @@ export const sendETH = async (
       value: amount,
     });
   } catch (error) {
-    console.error('Error sending ETH:', error);
+    console.log('Error sending ETH:', error);
     throw error;
   }
 };
@@ -95,7 +95,7 @@ export const sendERC20 = async (
   const [account] = await client.getAddresses();
 
   if (!destination.startsWith('0x') || destination.length !== 42) {
-    console.error('Invalid destination address:', destination);
+    console.log('Invalid destination address:', destination);
     return;
   }
 
@@ -127,7 +127,7 @@ export const sendERC20 = async (
       value: 0n, // No ETH is sent with the call
     });
   } catch (error) {
-    console.error('Error sending ERC-20 token:', error);
+    console.log('Error sending ERC-20 token:', error);
     throw error;
   }
 };

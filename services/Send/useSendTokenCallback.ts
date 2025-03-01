@@ -46,7 +46,7 @@ export const useSendTokenCallback = ({
         text2: `You sent ${amount} ${selectedToken.symbol} to ${recipient}`,
       });
     } catch (error) {
-      console.error('Error sending token', error);
+      console.log('Error sending token', error);
       Toast.show({
         type: 'error',
         text1: 'Error Sending Transaction',
