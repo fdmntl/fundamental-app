@@ -37,11 +37,12 @@ export default function Home() {
     const { data: existingUser, error: fetchError } = await supabase
       .from('users')
       .select('id')
-      .eq('id', user_id)
+      .eq('wallet_address', wallet.account.address)
       .single();
 
     if (fetchError && fetchError.code !== 'PGRST116') {
-      throw fetchError;
+      console.error('❌ Supabase fetch error:', fetchError);
+      return;
     }
     if (existingUser) {
       console.log('User already exists in Supabase, skipping creation');
@@ -67,14 +68,20 @@ export default function Home() {
     }
   }
 
+  const ref = useRef(false);
   useEffect(() => {
-    const ref = useRef(false);
-    if (privy.user && privy.wallet) {
-      if (ref.current === false) {
-        AddUser(privy.user, privy.wallet);
-        ref.current = true;
+    const addUserIfNeeded = async () => {
+      if (privy.user && privy.wallet && !ref.current) {
+        try {
+          await AddUser(privy.user, privy.wallet);
+          ref.current = true;
+        } catch (error) {
+          console.error('Error adding user:', error);
+        }
       }
-    }
+    };
+
+    addUserIfNeeded();
   }, [privy.user, privy.wallet]);
 
   return (
