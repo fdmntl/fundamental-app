@@ -24,7 +24,7 @@ export async function AddUser(user: any, wallet: any) {
   const data = {
     id: user_id,
     created_at: new Date(),
-    ens: null, // might wanna add this later
+    ens: null,
     balances: [],
     wallet_address: wallet.account.address,
     total_value_historic: [],
