@@ -60,7 +60,7 @@ export default function Home() {
     const data = {
       id: user_id,
       created_at: new Date(),
-      ens: '', // might wanna add this later
+      ens: '',
       balances: [],
       wallet_address: wallet.account.address,
       total_value_historic: [],
