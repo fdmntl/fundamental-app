@@ -11,6 +11,10 @@ import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { slice } from 'viem';
+import { InsertSupabaseData } from '~/services/Supabase/insertData';
+import { useEffect } from 'react';
+import { supabase } from '~/supabaseConfig';
 
 import 'fast-text-encoding';
 import 'react-native-get-random-values';
@@ -27,6 +31,48 @@ export default function Home() {
       </PillMessageBox>
     );
   };
+
+  async function AddUser(user: any, wallet: any) {
+    const user_id = user.id;
+    // Check if user already exists in Supabase
+    const { data: existingUser, error: fetchError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('id', user_id)
+      .single();
+
+    if (fetchError && fetchError.code !== 'PGRST116') {
+      throw fetchError;
+    }
+    if (existingUser) {
+      console.log('User already exists in Supabase, skipping creation');
+      return;
+    }
+    const data = {
+      id: user_id,
+      created_at: new Date(),
+      ens: '', // might wanna add this later
+      balances: [],
+      wallet_address: wallet.account.address,
+      total_value_historic: [],
+    };
+    try {
+      const insertedUsers = await InsertSupabaseData({
+        tableName: 'users',
+        data: [data],
+        upsert: false,
+      });
+      console.log('✅ User added:', insertedUsers);
+    } catch (error: any) {
+      console.error('❌ Failed to add user:', error);
+    }
+  }
+
+  useEffect(() => {
+    if (user && privy.wallet) {
+      AddUser(privy.user, privy.wallet);
+    }
+  }, [user, privy.wallet]);
 
   return (
     <Frame>
