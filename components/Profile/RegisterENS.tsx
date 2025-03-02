@@ -14,6 +14,7 @@ import { Button } from '../Button';
 import { View } from 'react-native';
 import { TextInputField } from '../TextInputField';
 import { registerName } from '~/services/viemService';
+import { updateENS } from '~/services/Supabase/updateENS';
 
 export const RegisterENS = () => {
   const { privy, user } = useAppData();
@@ -70,6 +71,7 @@ export const RegisterENS = () => {
             if (isValidSubname(subname)) {
               try {
                 await registerName(provider, subname, address as `0x${string}`);
+                updateENS(user.id, subname);
                 Toast.show({
                   type: 'success',
                   text1: 'ENS registered',
