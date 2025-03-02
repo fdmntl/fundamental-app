@@ -13,10 +13,24 @@ import { toastConfig } from '~/utils/toastConfig';
 import { Button } from '../Button';
 import { View } from 'react-native';
 import { TextInputField } from '../TextInputField';
+import { registerName } from '~/services/viemService';
 
 export const RegisterENS = () => {
   const { privy, user } = useAppData();
   const [subname, setSubname] = useState('');
+  const address = privy.wallet?.account?.address || '';
+
+  if (!privy.wallet || privy.wallet.status !== 'connected') {
+    return (
+      <Container>
+        <FText className="!text-2xl" bold>
+          Privy wallet error: not connected
+        </FText>
+      </Container>
+    );
+  }
+
+  const provider = privy.wallet.provider;
 
   // Check if the subname is valid and available
   const isValidSubname = (subaname: string) => {
@@ -52,15 +66,25 @@ export const RegisterENS = () => {
         </View>
         <Button
           title="Register"
-          onPress={() => {
+          onPress={async () => {
             if (isValidSubname(subname)) {
-              // Register the ENS
-              Toast.show({
-                type: 'success',
-                text1: 'ENS Registered',
-                text2: 'Your ENS has been successfully registered!',
-                ...toastConfig,
-              });
+              try {
+                await registerName(provider, subname, address as `0x${string}`);
+                Toast.show({
+                  type: 'success',
+                  text1: 'ENS registered',
+                  text2: 'Your ENS has been successfully registered.',
+                  ...toastConfig,
+                });
+              } catch (error) {
+                console.error('Error registering ENS:', error);
+                Toast.show({
+                  type: 'error',
+                  text1: 'Error registering ENS',
+                  text2: 'There was an error registering your ENS. Please try again.',
+                  ...toastConfig,
+                });
+              }
             } else {
               Toast.show({
                 type: 'error',
