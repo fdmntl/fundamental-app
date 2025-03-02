@@ -1,6 +1,6 @@
 import { usePrivy, useEmbeddedWallet, useLogin, isNotCreated } from '@privy-io/expo';
 import { router, Stack } from 'expo-router';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { View, BackHandler, Image } from 'react-native';
 
 import { Button } from '~/components/Button';
@@ -8,6 +8,7 @@ import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { InsertSupabaseData } from '~/services/Supabase/insertData';
 
 const fundy = require('../assets/fundy.png');
 
@@ -29,12 +30,10 @@ export default function Login() {
         if (isNotCreated(wallet)) {
           try {
             await wallet.create({ recoveryMethod: 'privy' });
-            console.log('Wallet created successfully!');
+            console.log('✅ Wallet created successfully!');
           } catch (error: any) {
             if (error.message?.includes('already has an embedded wallet')) {
-              console.log('Wallet already exists. Skipping creation.');
-            } else {
-              console.error('Failed to create wallet:', error);
+              console.log('✅ Wallet already exists. Skipping creation.');
             }
           }
         }
