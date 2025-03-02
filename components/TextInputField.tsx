@@ -14,7 +14,7 @@ interface TextInputFieldProps {
 }
 
 export const TextInputField = ({
-  label,
+  label = '',
   placeholder = '',
   value,
   onChange,
