@@ -1,4 +1,5 @@
 import { Link } from 'expo-router';
+import { useEffect, useRef } from 'react';
 import { View, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -12,7 +13,6 @@ import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
-import { useEffect, useRef } from 'react';
 import { AddUser } from '~/services/addUserToDB';
 
 import 'fast-text-encoding';
@@ -64,7 +64,7 @@ export default function Home() {
           <FText className="text-lg">This is Fundamental</FText>
           <ProfileModal />
           <View className="gap-4">
-            <Container className="" title="User info">
+            {/* <Container className="" title="User info">
               <FText className="text-lg">Your wallet status is {privy.wallet?.status}</FText>
               <FText className="text-lg">Your address is {privy.wallet?.account?.address}</FText>
               <FText className="text-lg">Your userId is {user.id}</FText>
@@ -72,7 +72,7 @@ export default function Home() {
               <FText className="text-lg">Your ens is {user.ens}</FText>
             </Container>
             <Button title="Show toast" onPress={showToast} />
-            <DebugButton />
+            <DebugButton /> */}
             <LogoutButton />
           </View>
           <Container title="Hello World" className="mt-4">
@@ -87,12 +87,12 @@ export default function Home() {
               </FText>
             </View>
           </Container>
-          <Link
+          {/* <Link
             className="mt-4 bg-primary"
             href={{ pathname: '/details', params: { name: 'Dan' } }}
             asChild>
             <Button title="Show Details" />
-          </Link>
+          </Link> */}
         </View>
       </ScrollView>
     </Frame>
