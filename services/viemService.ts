@@ -144,6 +144,7 @@ export const registerName = async (
 
   if (!owner.startsWith('0x') || owner.length !== 42) {
     console.error('Invalid owner address:', owner);
+    throw new Error('Invalid owner address');
     return;
   }
 
@@ -178,6 +179,7 @@ export const registerName = async (
     });
   } catch (error) {
     console.error('Error calling register method:', error);
+    throw error;
   }
 };
 
