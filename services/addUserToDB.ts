@@ -33,7 +33,6 @@ export async function AddUser(user: any, wallet: any) {
     const insertedUsers = await InsertSupabaseData({
       tableName: 'users',
       data: [data],
-      upsert: false,
     });
     console.log('✅ User added:', insertedUsers);
   } catch (error: any) {
