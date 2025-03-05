@@ -20,26 +20,20 @@ export async function updateSupabaseData({ tableName, data }: InsertDataProps<an
   console.log('Updating data:', data);
 
   try {
-    const { data: user, error: fetchError } = await supabase
-      .from(tableName)
-      .select()
-      .eq('id', user_id);
-
-    if (fetchError) {
-      throw new Error(`Query failed: ${fetchError.message}`);
-    }
-    if (!user || user.length === 0) {
-      throw new Error('No user found');
-    }
-    const { data: updated_user, error: updateError } = await supabase
-      .from(tableName)
-      .update(data[0])
-      .eq('id', user_id);
+    const {
+      data: updated_user,
+      error: updateError,
+      count,
+    } = await supabase.from(tableName).update(data[0]).eq('id', user_id).select().single();
 
     if (updateError) {
       throw new Error(`Query failed: ${updateError.message}`);
     }
-    console.log('✅ Successfully updated data');
+    if (!updated_user || count === 0) {
+      throw new Error('No user found or update failed');
+    }
+
+    console.log('✅ Successfully updated data:', updated_user);
     return updated_user;
   } catch (err) {
     console.error('Error in updateSupabaseData:', err);
