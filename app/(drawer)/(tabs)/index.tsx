@@ -39,20 +39,25 @@ export default function Home() {
     });
   };
 
-  const ref = useRef(false);
+  const isProcessing = useRef(false);
   useEffect(() => {
-    const addUserIfNeeded = async () => {
-      if (privy.user && privy.wallet && !ref.current) {
+    const timeoutId = setTimeout(async () => {
+      if (privy.user && privy.wallet && !isProcessing.current) {
         try {
+          isProcessing.current = true;
+          // Execute AddUser after timeout
           await AddUser(privy.user, privy.wallet);
-          ref.current = true;
         } catch (error) {
           console.error('Error adding user:', error);
+        } finally {
+          isProcessing.current = false;
+          console.log('Timeout finished');
         }
       }
-    };
+    }, 4000);
 
-    addUserIfNeeded();
+    // Cleanup timeout on re-render or component unmount
+    return () => clearTimeout(timeoutId);
   }, [privy.user, privy.wallet]);
 
   return (
