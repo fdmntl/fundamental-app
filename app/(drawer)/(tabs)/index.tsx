@@ -12,8 +12,6 @@ import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
-import { useEffect, useRef } from 'react';
-import { AddUser } from '~/services/addUserToDB';
 
 import 'fast-text-encoding';
 import 'react-native-get-random-values';
@@ -38,22 +36,6 @@ export default function Home() {
       text2: 'This is a toast 👋',
     });
   };
-
-  const ref = useRef(false);
-  useEffect(() => {
-    const addUserIfNeeded = async () => {
-      if (privy.user && privy.wallet && !ref.current) {
-        try {
-          await AddUser(privy.user, privy.wallet);
-          ref.current = true;
-        } catch (error) {
-          console.error('Error adding user:', error);
-        }
-      }
-    };
-
-    addUserIfNeeded();
-  }, [privy.user, privy.wallet]);
 
   return (
     <Frame>
