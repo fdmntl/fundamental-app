@@ -1,4 +1,4 @@
-import { usePrivy, useEmbeddedWallet, useLogin, useEmbeddedEthereumWallet } from '@privy-io/expo';
+import { usePrivy, useEmbeddedWallet, useLogin } from '@privy-io/expo';
 import { router, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { View, BackHandler, Image } from 'react-native';

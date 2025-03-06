@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { View, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -16,9 +16,18 @@ import { Frame } from '~/components/Wrappers/Frame';
 import 'fast-text-encoding';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
+import { useEmbeddedWallet, usePrivy } from '@privy-io/expo';
 
 export default function Home() {
   const { privy, user } = useAppData();
+  const { user: privyUser } = usePrivy();
+  const wallet = useEmbeddedWallet();
+  const { updatePrivy } = useAppData();
+
+  if (!privyUser) {
+    return null;
+  }
+
   const homePillContent = () => {
     return (
       <PillMessageBox>
@@ -53,6 +62,7 @@ export default function Home() {
               <FText className="text-lg">Your created your account at {user.created_at}</FText>
               <FText className="text-lg">Your ens is {user.ens}</FText>
             </Container>
+            <Button title="update privy" onPress={() => updatePrivy({ user: privyUser, wallet })} />
             <Button title="Show toast" onPress={showToast} />
             <DebugButton />
             <LogoutButton />
