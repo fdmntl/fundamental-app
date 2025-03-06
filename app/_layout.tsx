@@ -43,7 +43,15 @@ const Layout = () => {
   }
 
   return (
-    <PrivyProvider appId="clxd5oc5m007jrpv8y8clt6z7">
+    <PrivyProvider
+      appId="clxd5oc5m007jrpv8y8clt6z7"
+      config={{
+        embedded: {
+          ethereum: {
+            createOnLogin: 'users-without-wallets',
+          },
+        },
+      }}>
       <ThemeWrapper>
         <AppDataProvider>
           <GestureHandlerRootView className="flex-1">
