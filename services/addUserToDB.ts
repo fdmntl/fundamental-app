@@ -1,10 +1,12 @@
 import { slice } from 'viem';
-import { supabase } from '~/supabaseConfig';
+
 import { InsertSupabaseData } from './Supabase/insertData';
 
-export async function AddUser(user: any, wallet: any) {
+import { supabase } from '~/supabaseConfig';
+
+export async function addUserToDB(user: any, wallet: any) {
   const user_id = slice(user.id, 10, user.id.length);
-  console.log('Adding user to Supabase:', user_id);
+  console.log('Checking user in Supabase:', user_id);
   console.log(wallet.account.address);
   // Check if user already exists in Supabase
   const { data: existingUser, error: fetchError } = await supabase
@@ -12,8 +14,10 @@ export async function AddUser(user: any, wallet: any) {
     .select('id')
     .eq('wallet_address', wallet.account.address)
     .single();
+  console.log('existingUser: ', existingUser);
+  console.log('fetchError: ', fetchError);
 
-  if (fetchError && fetchError.code !== 'PGRST116') {
+  if (fetchError) {
     console.error('❌ Supabase fetch error:', fetchError);
     return;
   }
