@@ -1,15 +1,13 @@
-import { usePrivy, useEmbeddedWallet, useLogin, isNotCreated } from '@privy-io/expo';
+import { usePrivy, useEmbeddedWallet, useLogin, useEmbeddedEthereumWallet } from '@privy-io/expo';
 import { router, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { View, BackHandler, Image } from 'react-native';
-
 import { Button } from '~/components/Button';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
-import { AddUser } from '~/services/addUserToDB';
-import { InsertSupabaseData } from '~/services/Supabase/insertData';
+import { addUserToDB } from '~/services/addUserToDB';
 
 const fundy = require('../assets/fundy.png');
 
@@ -20,34 +18,30 @@ export default function Login() {
   const { updatePrivy } = useAppData();
 
   useEffect(() => {
-    // Prevent back navigation
+    if (user) {
+      updatePrivy({ user, wallet });
+      router.navigate('/(tabs)');
+    }
+  }, [user]);
+
+  useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
     return () => backHandler.remove();
   }, []);
 
-  // useEffect(() => {
-  //   const handleUserLogin = async () => {
-  //     if (user) {
-  //       if (isNotCreated(wallet)) {
-  //         try {
-  //           await wallet.create({ recoveryMethod: 'privy' });
-  //           console.log('✅ Wallet created successfully!');
-  //         } catch (error: any) {
-  //           if (error.message?.includes('already has an embedded wallet')) {
-  //             console.log('✅ Wallet already exists. Skipping creation.');
-  //           }
-  //         }
-  //       }
-
-  //       updatePrivy({ user, wallet });
-  //       router.navigate('/(tabs)');
-  //     }
-  //   };
-
-  //   handleUserLogin();
-  // }, [user, router, wallet]);
-
   const { login } = useLogin();
+
+  const handleLogin = async () => {
+    try {
+      const session = await login({ loginMethods: ['email', 'google', 'github'] });
+      console.log('Logged in:', session.user);
+      await addUserToDB(session.user);
+      updatePrivy({ user: session.user, wallet });
+      router.navigate('/(tabs)');
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  };
 
   return (
     <>
@@ -61,26 +55,7 @@ export default function Login() {
           </FText>
         </View>
         <View className="absolute bottom-16 w-full items-center">
-          <Button
-            title="Login/Register"
-            className="mt-2 w-1/2 !bg-content"
-            onPress={() =>
-              login({ loginMethods: ['email', 'google', 'github'] })
-                .then(async () => {
-                  console.log('Adding user yeah');
-                  await AddUser(user, wallet);
-                  console.log('user added yeah');
-                  router.navigate('/(tabs)');
-                })
-                .catch((error) => {
-                  if (error.message.includes('The login flow was closed')) {
-                    console.log('Login flow was cancelled by the user.');
-                  } else {
-                    console.error('Login error:', error);
-                  }
-                })
-            }
-          />
+          <Button title="Login/Register" className="mt-2 w-1/2 !bg-content" onPress={handleLogin} />
         </View>
       </Frame>
     </>

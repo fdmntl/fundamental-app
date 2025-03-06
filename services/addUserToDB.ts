@@ -3,21 +3,28 @@ import { slice } from 'viem';
 import { InsertSupabaseData } from './Supabase/insertData';
 
 import { supabase } from '~/supabaseConfig';
+import { PrivyUser } from '@privy-io/expo';
 
-export async function addUserToDB(user: any, wallet: any) {
-  const user_id = slice(user.id, 10, user.id.length);
+export async function addUserToDB(user: PrivyUser) {
+  console.log('User: ', user);
+  // This serves to get rid of the did:privy: prefix
+  const user_id = user.id.slice(10);
   console.log('Checking user in Supabase:', user_id);
-  console.log(wallet.account.address);
+  const wallet = user.linked_accounts.find((account) => account.type === 'wallet');
+  if (!wallet) {
+    console.error('❌ No wallet found for user:', user);
+    return;
+  }
   // Check if user already exists in Supabase
   const { data: existingUser, error: fetchError } = await supabase
     .from('users')
     .select('id')
-    .eq('wallet_address', wallet.account.address)
+    .eq('wallet_address', wallet.address)
     .single();
   console.log('existingUser: ', existingUser);
   console.log('fetchError: ', fetchError);
 
-  if (fetchError) {
+  if (fetchError && fetchError.code !== 'PGRST116') {
     console.error('❌ Supabase fetch error:', fetchError);
     return;
   }
@@ -30,7 +37,7 @@ export async function addUserToDB(user: any, wallet: any) {
     created_at: new Date(),
     ens: null,
     balances: [],
-    wallet_address: wallet.account.address,
+    wallet_address: wallet.address,
     total_value_historic: [],
   };
   try {
