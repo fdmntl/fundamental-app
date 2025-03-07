@@ -5,7 +5,7 @@ import { cssInterop } from 'nativewind';
 import { useEffect } from 'react';
 import { View } from 'react-native';
 
-import Loading from '~/components/Loading';
+import { Loading } from '~/components/Loading';
 import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { useTheme } from '~/components/Wrappers/ThemeWrapper';
@@ -20,23 +20,23 @@ cssInterop(Feather, {
 export default function Layout() {
   const { theme } = useTheme();
 
-  const { isReady } = usePrivy();
-  const { privy } = useAppData();
+  // const { isReady } = usePrivy();
+  // const { privy } = useAppData();
 
-  useEffect(() => {
-    if (isReady && !privy.user) {
-      router.replace('/login');
-    }
-  }, [isReady, privy, router]);
+  // useEffect(() => {
+  //   if (isReady && !privy.user) {
+  //     router.replace('/login');
+  //   }
+  // }, [isReady, privy, router]);
 
-  if (!isReady) {
-    return <Loading />;
-  }
+  // if (!isReady) {
+  //   return <Loading />;
+  // }
 
-  //* Fail safe
-  if (!privy) {
-    return null;
-  }
+  // //* Fail safe
+  // if (!privy) {
+  //   return null;
+  // }
 
   return (
     <Tabs

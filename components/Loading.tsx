@@ -81,7 +81,7 @@ const LoadingDots = () => {
   );
 };
 
-const Loading = () => {
+export const Loading = () => {
   return (
     <View className="flex flex-1 bg-primary">
       <View className="m-auto">
@@ -91,5 +91,3 @@ const Loading = () => {
     </View>
   );
 };
-
-export default Loading;
