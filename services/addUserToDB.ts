@@ -1,16 +1,15 @@
-import { slice } from 'viem';
-
 import { InsertSupabaseData } from './Supabase/insertData';
 
 import { supabase } from '~/supabaseConfig';
-import { PrivyUser } from '@privy-io/expo';
 
-export async function addUserToDB(user: PrivyUser) {
+export async function addUserToDB(user: any) {
   console.log('User: ', user);
   // This serves to get rid of the did:privy: prefix
   const user_id = user.id.slice(10);
   console.log('Checking user in Supabase:', user_id);
-  const wallet = user.linked_accounts.find((account) => account.type === 'wallet');
+  const wallet = user.linked_accounts.find(
+    (account: { type: string }) => account.type === 'wallet'
+  );
   if (!wallet) {
     console.error('❌ No wallet found for user:', user);
     return;
