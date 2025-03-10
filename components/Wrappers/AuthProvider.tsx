@@ -1,10 +1,4 @@
-import {
-  usePrivy,
-  useEmbeddedEthereumWallet,
-  useLogin,
-  LoginUIConfig,
-  useEmbeddedWallet,
-} from '@privy-io/expo';
+import { usePrivy, useEmbeddedWallet, useLogin, LoginUIConfig } from '@privy-io/expo';
 import React, { useState, useEffect, createContext, useContext } from 'react';
 
 interface AuthState {
@@ -22,7 +16,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { user } = usePrivy();
-  const wallet = useEmbeddedEthereumWallet();
+  const wallet = useEmbeddedWallet();
   //   const wallet = useEmbeddedWallet();
   const { login } = useLogin();
 

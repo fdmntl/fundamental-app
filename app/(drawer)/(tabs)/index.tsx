@@ -19,18 +19,26 @@ import '@ethersproject/shims';
 import { useEmbeddedWallet, usePrivy } from '@privy-io/expo';
 
 import { useAuth } from '~/components/Wrappers/AuthProvider';
+import { useEffect } from 'react';
 
 export default function Home() {
-  // const { privy, user } = useAppData();
-  // const { user: privyUser } = usePrivy();
-  // const wallet = useEmbeddedWallet();
-  // const { updatePrivy } = useAppData();
+  const { privy, user } = useAppData();
+  const { user: privyUser } = usePrivy();
+  const wallet = useEmbeddedWallet();
+  const { updatePrivy } = useAppData();
 
-  const { user, wallet } = useAuth();
-
+  // const { user, wallet } = useAuth();
   // if (!privyUser) {
   //   return null;
   // }
+
+  useEffect(() => {
+    const updateUser = async () => {
+      await updatePrivy({ user: privyUser!, wallet });
+    };
+
+    updateUser();
+  }, [privyUser, wallet]);
 
   const homePillContent = () => {
     return (
@@ -60,12 +68,12 @@ export default function Home() {
           <ProfileModal />
           <View className="gap-4">
             <Container className="" title="User info">
-              <FText className="text-lg">Your address is {wallet?.wallets[0].address}</FText>
-              <FText className="text-lg">Your userId is {user?.id}</FText>
-              <FText className="text-lg">Your created your account at {user?.created_at}</FText>
-              <FText className="text-lg">Your ens is {user?.ens}</FText>
+              <FText className="text-lg">Your wallet status is {privy.wallet?.status}</FText>
+              <FText className="text-lg">Your address is {privy.wallet?.account?.address}</FText>
+              <FText className="text-lg">Your userId is {user.id}</FText>
+              <FText className="text-lg">Your created your account at {user.created_at}</FText>
+              <FText className="text-lg">Your ens is {user.ens}</FText>
             </Container>
-            {/* <Button title="update privy" onPress={() => updatePrivy({ user: privyUser, wallet })} /> */}
             <Button title="Show toast" onPress={showToast} />
             <DebugButton />
             <LogoutButton />

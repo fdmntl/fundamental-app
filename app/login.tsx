@@ -14,63 +14,63 @@ import { addUserToDB } from '~/services/addUserToDB';
 const fundy = require('../assets/fundy.png');
 
 export default function Login() {
-  // const { user } = usePrivy();
-  // const wallet = useEmbeddedWallet();
+  const { user } = usePrivy();
+  const wallet = useEmbeddedWallet();
 
-  // const { updatePrivy } = useAppData();
-
-  // const { login } = useLogin();
-
-  // const handleLogin = async () => {
-  //   try {
-  //     const session = await login({ loginMethods: ['email', 'google', 'github'] });
-  //     console.log('Logged in:', session.user);
-  //     await addUserToDB(session.user);
-  //     console.log('**** User added to DB ****');
-  //     // updatePrivy({ user: session.user, wallet });
-  //     // console.log('**** User and wallet updated in Privy ****');
-  //     // router.navigate('/(tabs)');
-  //   } catch (error) {
-  //     console.error('Login error:', error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (user && wallet && wallet.status === 'connected') {
-  //     console.log('---> Wallet:', wallet);
-  //     console.log('---> User:', user);
-  //     updatePrivy({ user, wallet });
-  //     console.log('**** User and wallet updated in Privy ****');
-  //     console.log('**** Navigating to tabs ****');
-  //     router.navigate('/(tabs)');
-  //   }
-  // }, [user, wallet, wallet.status]);
-
-  const { user, wallet, login, updateAuth, isReady } = useAuth();
   const { updatePrivy } = useAppData();
+
+  const { login } = useLogin();
 
   const handleLogin = async () => {
     try {
       const session = await login({ loginMethods: ['email', 'google', 'github'] });
       console.log('Logged in:', session.user);
       await addUserToDB(session.user);
-      updateAuth({ user });
+      console.log('**** User added to DB ****');
+      // updatePrivy({ user: session.user, wallet });
+      // console.log('**** User and wallet updated in Privy ****');
+      // router.navigate('/(tabs)');
     } catch (error) {
       console.error('Login error:', error);
     }
   };
 
   useEffect(() => {
-    if (user && wallet && isReady) {
+    if (user && wallet && wallet.status === 'connected') {
       console.log('---> Wallet:', wallet);
       console.log('---> User:', user);
-      updateAuth({ user, wallet });
       updatePrivy({ user, wallet });
       console.log('**** User and wallet updated in Privy ****');
       console.log('**** Navigating to tabs ****');
       router.navigate('/(tabs)');
     }
-  }, [user, wallet, isReady]);
+  }, [user, wallet, wallet.status]);
+
+  // const { user, wallet, login, updateAuth, isReady } = useAuth();
+  // const { updatePrivy } = useAppData();
+
+  // const handleLogin = async () => {
+  //   try {
+  //     const session = await login({ loginMethods: ['email', 'google', 'github'] });
+  //     console.log('Logged in:', session.user);
+  //     await addUserToDB(session.user);
+  //     updateAuth({ user });
+  //   } catch (error) {
+  //     console.error('Login error:', error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (user && wallet && isReady) {
+  //     console.log('---> Wallet:', wallet);
+  //     console.log('---> User:', user);
+  //     updateAuth({ user, wallet });
+  //     updatePrivy({ user, wallet });
+  //     console.log('**** User and wallet updated in Privy ****');
+  //     console.log('**** Navigating to tabs ****');
+  //     router.navigate('/(tabs)');
+  //   }
+  // }, [user, wallet, isReady]);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);

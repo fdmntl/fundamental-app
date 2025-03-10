@@ -15,7 +15,7 @@ export const DebugButton = () => {
   const debug = async () => {
     await refreshUserBalances(user, updateUser);
     console.log('\n---------------------App data---------------------');
-    console.log('User:', user);
+    // console.log('User:', user);
     console.log('\nPrivy:', privy);
     console.log('\n---------------------Privy data---------------------');
     console.log('Privy User:', privyUser);
