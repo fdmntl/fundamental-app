@@ -13,13 +13,15 @@ import {
   DMSerifText_400Regular_Italic,
 } from '@expo-google-fonts/dm-serif-text';
 import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter';
-import { PrivyProvider, PrivyElements } from '@privy-io/expo';
+import { PrivyProvider, PrivyElements, AuthBoundary } from '@privy-io/expo';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, Redirect } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
+import { Loading } from '~/components/Loading';
 import { AppDataProvider } from '~/components/Wrappers/AppData';
+import { AuthProvider } from '~/components/Wrappers/AuthProvider';
 import { ThemeWrapper } from '~/components/Wrappers/ThemeWrapper';
 import { toastConfig } from '~/utils/toastConfig';
 
@@ -52,22 +54,24 @@ const Layout = () => {
           },
         },
       }}>
-      <ThemeWrapper>
-        <AppDataProvider>
-          <GestureHandlerRootView className="flex-1">
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-              <Stack.Screen name="assets/[asset]" options={{ title: 'Asset Details' }} />
-              <Stack.Screen name="send/[address]" options={{ title: 'Send Details' }} />
-              <Stack.Screen name="details" options={{ title: 'Details' }} />
-              <Stack.Screen name="login" options={{ title: 'Login', gestureEnabled: false }} />
-              <Stack.Screen name="+not-found" options={{ title: 'Not Found' }} />
-            </Stack>
-          </GestureHandlerRootView>
-        </AppDataProvider>
-      </ThemeWrapper>
-      <Toast topOffset={55} config={toastConfig} />
-      <PrivyElements />
+      <AuthProvider>
+        <ThemeWrapper>
+          <AppDataProvider>
+            <GestureHandlerRootView className="flex-1">
+              <Stack screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+                <Stack.Screen name="assets/[asset]" options={{ title: 'Asset Details' }} />
+                <Stack.Screen name="send/[address]" options={{ title: 'Send Details' }} />
+                <Stack.Screen name="details" options={{ title: 'Details' }} />
+                <Stack.Screen name="login" options={{ title: 'Login', gestureEnabled: false }} />
+                <Stack.Screen name="+not-found" options={{ title: 'Not Found' }} />
+              </Stack>
+            </GestureHandlerRootView>
+          </AppDataProvider>
+        </ThemeWrapper>
+        <Toast topOffset={55} config={toastConfig} />
+        <PrivyElements />
+      </AuthProvider>
     </PrivyProvider>
   );
 };

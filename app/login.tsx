@@ -2,10 +2,12 @@ import { usePrivy, useEmbeddedWallet, useLogin } from '@privy-io/expo';
 import { router, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { View, BackHandler, Image } from 'react-native';
+
 import { Button } from '~/components/Button';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
+import { useAuth } from '~/components/Wrappers/AuthProvider';
 import { Frame } from '~/components/Wrappers/Frame';
 import { addUserToDB } from '~/services/addUserToDB';
 
@@ -17,18 +19,6 @@ export default function Login() {
 
   const { updatePrivy } = useAppData();
 
-  useEffect(() => {
-    if (user) {
-      updatePrivy({ user, wallet });
-      router.navigate('/(tabs)');
-    }
-  }, [user]);
-
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
-    return () => backHandler.remove();
-  }, []);
-
   const { login } = useLogin();
 
   const handleLogin = async () => {
@@ -36,12 +26,56 @@ export default function Login() {
       const session = await login({ loginMethods: ['email', 'google', 'github'] });
       console.log('Logged in:', session.user);
       await addUserToDB(session.user);
-      updatePrivy({ user: session.user, wallet });
-      router.navigate('/(tabs)');
+      console.log('**** User added to DB ****');
+      // updatePrivy({ user: session.user, wallet });
+      // console.log('**** User and wallet updated in Privy ****');
+      // router.navigate('/(tabs)');
     } catch (error) {
       console.error('Login error:', error);
     }
   };
+
+  useEffect(() => {
+    if (user && wallet && wallet.status === 'connected') {
+      console.log('---> Wallet:', wallet);
+      console.log('---> User:', user);
+      updatePrivy({ user, wallet });
+      console.log('**** User and wallet updated in Privy ****');
+      console.log('**** Navigating to tabs ****');
+      router.navigate('/(tabs)');
+    }
+  }, [user, wallet, wallet.status]);
+
+  // const { user, wallet, login, updateAuth, isReady } = useAuth();
+  // const { updatePrivy } = useAppData();
+
+  // const handleLogin = async () => {
+  //   try {
+  //     const session = await login({ loginMethods: ['email', 'google', 'github'] });
+  //     console.log('Logged in:', session.user);
+  //     await addUserToDB(session.user);
+  //     updateAuth({ user });
+  //   } catch (error) {
+  //     console.error('Login error:', error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (user && wallet && isReady) {
+  //     console.log('---> Wallet:', wallet);
+  //     console.log('---> User:', user);
+  //     updateAuth({ user, wallet });
+  //     updatePrivy({ user, wallet });
+  //     console.log('**** User and wallet updated in Privy ****');
+  //     console.log('**** Navigating to tabs ****');
+  //     router.navigate('/(tabs)');
+  //   }
+  // }, [user, wallet, isReady]);
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <>

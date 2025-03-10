@@ -18,15 +18,27 @@ import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import { useEmbeddedWallet, usePrivy } from '@privy-io/expo';
 
+import { useAuth } from '~/components/Wrappers/AuthProvider';
+import { useEffect } from 'react';
+
 export default function Home() {
   const { privy, user } = useAppData();
   const { user: privyUser } = usePrivy();
   const wallet = useEmbeddedWallet();
   const { updatePrivy } = useAppData();
 
-  if (!privyUser) {
-    return null;
-  }
+  // const { user, wallet } = useAuth();
+  // if (!privyUser) {
+  //   return null;
+  // }
+
+  useEffect(() => {
+    const updateUser = async () => {
+      await updatePrivy({ user: privyUser!, wallet });
+    };
+
+    updateUser();
+  }, [privyUser, wallet]);
 
   const homePillContent = () => {
     return (
@@ -62,7 +74,6 @@ export default function Home() {
               <FText className="text-lg">Your created your account at {user.created_at}</FText>
               <FText className="text-lg">Your ens is {user.ens}</FText>
             </Container>
-            <Button title="update privy" onPress={() => updatePrivy({ user: privyUser, wallet })} />
             <Button title="Show toast" onPress={showToast} />
             <DebugButton />
             <LogoutButton />
