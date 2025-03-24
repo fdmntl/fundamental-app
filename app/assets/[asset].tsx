@@ -1,4 +1,3 @@
-import { Feather } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { View, ScrollView } from 'react-native';
 
@@ -17,10 +16,10 @@ import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 export default function Assets() {
   const { asset } = useLocalSearchParams();
 
+  const { tokens, user } = useAppData();
+
   const { getToken } = useAppData();
   const token = getToken(asset as string);
-
-  const { tokens, user } = useAppData();
 
   if (!token) {
     return (
@@ -40,20 +39,6 @@ export default function Assets() {
   const userTokenValue = getUserTokenValue(token.address, tokens, user).toFixed(2);
   const userTokenAmount = getUserTokenAmount(token.address, tokens, user);
 
-  const actualValue = token.last_value;
-
-  const roundedValue = actualValue.toFixed(2);
-
-  // TODO: fix this (graph)
-  // const tokenHistory = token.value
-  //   .map((item) => {
-  //     return {
-  //       value: parseFloat(item.value),
-  //       label: item.timestamp,
-  //     };
-  //   })
-  //   .reverse();
-
   return (
     <>
       <Stack.Screen options={{ title, headerShown: false }} />
@@ -62,13 +47,14 @@ export default function Assets() {
           <DetailsHeader title={title} icon={icon} />
           <ScrollView showsVerticalScrollIndicator={false}>
             <View className="gap-y-5">
-              <View className="flex flex-row items-center justify-center gap-x-2">
-                <FText className="!text-4xl" bold>
-                  ${roundedValue}
-                </FText>
-                <Feather name="trending-up" size={30} className="text-success" />
-              </View>
-              {/* <Graph allData={tokenHistory} /> */}
+              <Graph
+                graphData={{
+                  daily_values: token.daily_values,
+                  weekly_values: token.weekly_values,
+                  monthly_values: token.monthly_values,
+                  yearly_values: token.yearly_values,
+                }}
+              />
               <Container title="Holdings">
                 <View className="flex flex-row items-center justify-between">
                   <View>

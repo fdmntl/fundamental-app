@@ -1,114 +1,79 @@
-import {
-  usePrivy,
-  useEmbeddedWallet,
-  useLoginWithEmail,
-  useOAuthFlow,
-  useLogin,
-  isNotCreated,
-} from '@privy-io/expo';
-import Constants from 'expo-constants';
+import { usePrivy, useEmbeddedWallet, useLogin, isNotCreated } from '@privy-io/expo';
 import { router, Stack } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { TextInput, View } from 'react-native';
+import { useEffect } from 'react';
+import { View, BackHandler, Image } from 'react-native';
 
 import { Button } from '~/components/Button';
-import { Container } from '~/components/Container';
-import { DebugButton } from '~/components/DebugButton';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { InsertSupabaseData } from '~/services/Supabase/insertData';
+
+const fundy = require('../assets/fundy.png');
 
 export default function Login() {
-  const [email, setEmail] = useState(Constants.expoConfig?.extra?.email || '');
-  const [code, setCode] = useState('');
-
   const { user } = usePrivy();
   const wallet = useEmbeddedWallet();
-  const emailFlow = useLoginWithEmail();
-  const oauth = useOAuthFlow();
 
   const { updatePrivy } = useAppData();
 
   useEffect(() => {
-    if (user) {
-      if (isNotCreated(wallet)) {
-        try {
-          wallet.create({ recoveryMethod: 'privy' });
-          console.log('Success', 'Wallet created successfully!');
-        } catch (error: any) {
-          console.error('Error', 'Failed to create wallet: ' + error.message);
-        }
-      }
-
-      updatePrivy({ user, wallet });
-
-      router.navigate('/(tabs)');
-    }
-  }, [user, router, wallet]);
+    // Prevent back navigation
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
+    return () => backHandler.remove();
+  }, []);
 
   useEffect(() => {
-    if (emailFlow.state.status === 'error') {
-      console.error(emailFlow.state.error);
-    } else if (oauth.state.status === 'error') {
-      console.error(oauth.state.error);
-    }
-  }, [emailFlow.state.status, oauth.state.status]);
+    const handleUserLogin = async () => {
+      if (user) {
+        if (isNotCreated(wallet)) {
+          try {
+            await wallet.create({ recoveryMethod: 'privy' });
+            console.log('✅ Wallet created successfully!');
+          } catch (error: any) {
+            if (error.message?.includes('already has an embedded wallet')) {
+              console.log('✅ Wallet already exists. Skipping creation.');
+            }
+          }
+        }
 
-  // login with google
+        updatePrivy({ user, wallet });
+        router.navigate('/(tabs)');
+      }
+    };
+
+    handleUserLogin();
+  }, [user, router, wallet]);
+
   const { login } = useLogin();
 
   return (
     <>
       <Stack.Screen options={{ title: 'Login', headerShown: false }} />
       <Frame>
-        <FTitle className="mx-auto text-4xl">Fundamental</FTitle>
-        <Container title="E-Mail" className="mt-2 flex">
-          <View className="mb-4 rounded-2xl border-2 border-gray-300">
-            <TextInput
-              value={email}
-              onChangeText={setEmail}
-              placeholder="Email"
-              inputMode="email"
-              className="w-full px-2"
-              style={{ marginTop: 20, marginBottom: 20, fontSize: 20 }}
-            />
-          </View>
-          <Button
-            title="Send Code"
-            className="m-auto mb-4 w-1/2 bg-primary"
-            onPress={() => emailFlow.sendCode({ email })}
-          />
-
-          <View className="mb-4 rounded-2xl border-2 border-gray-300">
-            <TextInput
-              value={code}
-              onChangeText={setCode}
-              placeholder="Code"
-              inputMode="numeric"
-              className="w-full px-2"
-              style={{ marginTop: 20, marginBottom: 20, fontSize: 20 }}
-            />
-          </View>
-          <Button
-            title="Login"
-            className="m-auto w-2/3 bg-primary"
-            onPress={() => emailFlow.loginWithCode({ code, email })}
-          />
-          <Button
-            title="New UI Login"
-            className="mx-auto my-4 w-2/3 bg-primary"
-            onPress={() => login({ loginMethods: ['email', 'sms'] })}
-          />
-          <FText className="m-auto mt-4 text-text">
-            (OTP state:{' '}
-            <FText className="!text-primary" bold>
-              {emailFlow.state.status}
-            </FText>
-            )
+        <View className="mb-64 flex flex-1 flex-col items-center justify-center">
+          <Image source={fundy} style={{ height: 64, width: 96 }} resizeMode="contain" />
+          <FTitle className="mt-4 text-4xl">Fundamental</FTitle>
+          <FText className="text-left !text-neutral" bold>
+            The easiest wallet in the world.
           </FText>
-        </Container>
-        <DebugButton />
+        </View>
+        <View className="absolute bottom-16 w-full items-center">
+          <Button
+            title="Login/Register"
+            className="mt-2 w-1/2 !bg-content"
+            onPress={() =>
+              login({ loginMethods: ['email', 'google', 'github'] }).catch((error) => {
+                if (error.message.includes('The login flow was closed')) {
+                  console.log('Login flow was cancelled by the user.');
+                } else {
+                  console.error('Login error:', error);
+                }
+              })
+            }
+          />
+        </View>
       </Frame>
     </>
   );

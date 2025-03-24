@@ -1,18 +1,20 @@
 import { useState } from 'react';
-import { View, ScrollView } from 'react-native';
+import { View } from 'react-native';
 
 import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
+import { BalanceRefreshControl } from '~/components/BalanceRefreshControl';
 import { Container } from '~/components/Container';
 import Graph from '~/components/Graph';
 import { HeaderBar } from '~/components/HeaderBar';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
-import { DataPoint } from '~/types/graph';
+import { GraphData } from '~/types/graph';
 
 // TODO: use user balance instead of token list
 
 export default function Assets() {
-  const [allData] = useState<DataPoint[]>([]);
+  // TODO: display user balance history graph
+  const [allData] = useState<GraphData | undefined>();
   const { tokens } = useAppData();
 
   const stableCoins = tokens.filter((item) => item.is_stablecoin);
@@ -21,9 +23,9 @@ export default function Assets() {
   return (
     <Frame>
       <HeaderBar title="Assets" />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <BalanceRefreshControl>
         <View className="flex gap-y-5">
-          <Graph allData={allData} />
+          <Graph graphData={allData} />
           <Container title="Money">
             <View className="flex gap-y-4">
               {stableCoins.map((item) => (
@@ -39,7 +41,7 @@ export default function Assets() {
             </View>
           </Container>
         </View>
-      </ScrollView>
+      </BalanceRefreshControl>
     </Frame>
   );
 }

@@ -17,7 +17,7 @@ export const submitCowOrder = async (
     const orderId = await orderBookApi.sendOrder({
       ...quote,
       ...signature,
-      sellAmount: sellAmount,
+      sellAmount,
       feeAmount: '0',
       signingScheme: signature.signingScheme as unknown as SigningScheme,
     });
@@ -25,5 +25,6 @@ export const submitCowOrder = async (
   } catch (error) {
     console.error('Error submitting order:', error);
     console.error('Error details:', JSON.stringify(error, null, 2));
+    return null;
   }
 };

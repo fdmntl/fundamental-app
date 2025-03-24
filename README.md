@@ -46,4 +46,6 @@ We’re constantly improving and expanding Fundamental, building openly for maxi
 
 Start your onchain journey with **Fundamental** today!
 
+Learn more at [fundamentalwallet.com](https://www.fundamentalwallet.com/)
+
 <img src="assets/fundy.png" alt="Fundamental Logo" width="200" />

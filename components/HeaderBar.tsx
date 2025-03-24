@@ -8,9 +8,9 @@ import { FTitle } from './Text/FTitle';
 
 const fundy = require('../assets/fundy.png');
 
-const PillMessageBox = ({ children }: { children: React.ReactNode }): JSX.Element => {
+export const PillMessageBox = ({ children }: { children: React.ReactNode }): JSX.Element => {
   return (
-    <View className="relative rounded-xl border-2 border-primary bg-[rgba(135,32,254,0.5)] p-3">
+    <View className="relative mb-4 rounded-xl border-2 border-primary bg-[rgba(135,32,254,0.5)] p-3">
       <View className="absolute left-[325] top-[-13] border-b-[13px] border-l-[10px] border-r-[10px] border-b-[rgba(135,32,254,0.5)] border-l-transparent border-r-transparent" />
       {children}
     </View>
@@ -23,7 +23,7 @@ interface HeaderBarProps {
   pillMethod?: () => void;
 }
 
-const HeaderBar = ({ title, pillContent, pillMethod }: HeaderBarProps): JSX.Element => {
+export const HeaderBar = ({ title, pillContent, pillMethod }: HeaderBarProps): JSX.Element => {
   const navigation = useNavigation();
   const [isPillOpened, setIsPillOpened] = useState(false);
 
@@ -63,7 +63,6 @@ const HeaderBar = ({ title, pillContent, pillMethod }: HeaderBarProps): JSX.Elem
         <Animated.View
           style={{
             opacity: fadeAnim,
-            marginBottom: 20,
             position: 'relative',
           }}>
           {isPillOpened && pillContent()}
@@ -72,37 +71,3 @@ const HeaderBar = ({ title, pillContent, pillMethod }: HeaderBarProps): JSX.Elem
     </View>
   );
 };
-// const HeaderBar = ({ title, pillContent, pillMethod }: HeaderBarProps): JSX.Element => {
-//   const navigation = useNavigation();
-
-//   const openDrawer = () => {
-//     navigation.dispatch(DrawerActions.openDrawer());
-//   };
-
-//   const [isPillOpened, setIsPillOpened] = useState(false);
-
-//   const togglePill = () => {
-//     pillMethod && pillMethod();
-//     pillContent && setIsPillOpened(!isPillOpened);
-//   };
-
-//   return (
-//     <View className="flex flex-col">
-//       <View className="h-50 z-10 flex-row items-center gap-2 py-4">
-//         <TouchableOpacity onPress={openDrawer}>
-//           <Feather name="menu" size={36} className="text-text" />
-//         </TouchableOpacity>
-//         <Title className="mt-2 text-4xl text-text">{title}</Title>
-//         <TouchableOpacity onPress={togglePill} className="ml-auto">
-//           <Image source={fundy} style={{ height: 64, width: 96 }} resizeMode="contain" />
-//         </TouchableOpacity>
-//       </View>
-//       <View />
-//       {isPillOpened && pillContent && (
-//         <View className="relative mb-5">{pillContent && pillContent()}</View>
-//       )}
-//     </View>
-//   );
-// };
-
-export { HeaderBar, PillMessageBox };

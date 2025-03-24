@@ -4,8 +4,8 @@ import { isAddress } from 'viem';
 
 import { Button } from '~/components/Button';
 import { HeaderBar, PillMessageBox } from '~/components/HeaderBar';
-import AmountInput from '~/components/Send/AmountInput';
-import RecipientInput from '~/components/Send/RecipientInput';
+import { AmountInput } from '~/components/Send/AmountInput';
+import { RecipientInput } from '~/components/Send/RecipientInput';
 import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
@@ -34,9 +34,9 @@ export default function Send() {
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
-  const possessedTokens = tokens.filter((token) =>
-    user.balances.some((balance) => balance.address === token.address)
-  );
+  const possessedTokens = user.balances
+    .map((balance) => tokens.find((token) => token.address === balance.address))
+    .filter((token) => token !== undefined) as Token[];
 
   const selectedTokenBalance = selectedToken
     ? getUserTokenAmount(selectedToken?.address, tokens, user)

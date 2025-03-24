@@ -3,14 +3,22 @@ import React from 'react';
 
 import { Button } from './Button';
 import { useAppData } from './Wrappers/AppData';
+import { refreshUserBalances } from '~/services/refreshUserBalance';
+import { AddUser } from '~/services/addUserToDB';
+
+import { slice } from 'viem';
 
 export const DebugButton = () => {
   const { user } = useAppData();
+  const { updateUser } = useAppData();
   const { privy } = useAppData();
+  const { user: address } = useAppData();
   const { user: privyUser } = usePrivy();
   const { getAccessToken } = usePrivy();
   const { tokens } = useAppData();
   const debug = async () => {
+    await refreshUserBalances(user, updateUser);
+    await AddUser(privy.user, privy.wallet);
     console.log('\n---------------------App data---------------------');
     console.log('User:', user);
     console.log('\nPrivy:', privy);
