@@ -15,7 +15,7 @@ export default function DrawerLayout() {
           drawerLabelStyle: {
             color: theme === 'dark' ? '#fff' : '#000',
             fontSize: 25,
-            fontFamily: 'DMSans_700Bold',
+            fontFamily: 'Inter_700Bold',
           },
         }}>
         <Drawer.Screen
