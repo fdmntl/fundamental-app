@@ -4,5 +4,5 @@ const WETH = require('assets/icons/WETH.png');
 export const tokenIcons: { [key: string]: any } = {
   WETH,
   USDC,
-  default: require('assets/favicon.png'),
+  default: USDC,
 };
