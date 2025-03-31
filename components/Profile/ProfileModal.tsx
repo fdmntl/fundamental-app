@@ -1,13 +1,12 @@
 import { Feather } from '@expo/vector-icons';
 import { useState } from 'react';
-import { Modal, TouchableOpacity, View, TouchableWithoutFeedback } from 'react-native';
+import { Image, View, Modal, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import Toast from 'react-native-toast-message';
 
 import { Container } from '../Container';
 import { RegisterENS } from './RegisterENS';
 import { FText } from '../Text/FText';
-import { FTitle } from '../Text/FTitle';
 import { useAppData } from '../Wrappers/AppData';
 
 import { copyToClipboard } from '~/utils/helpers/copyToClipboard';
@@ -73,7 +72,12 @@ export const ProfileModal = () => {
                 </TouchableOpacity>
 
                 <View className="flex items-center justify-center">
-                  <FTitle className="!text-2xl !text-neutral">Fundamental</FTitle>
+                  {/* <FTitle className="!text-2xl !text-neutral">Fundamental</FTitle> */}
+                  <Image
+                    source={require('../../assets/fundamental-text.png')}
+                    style={{ width: 125, height: 22 }}
+                    resizeMode="contain"
+                  />
                 </View>
               </View>
             </Container>
