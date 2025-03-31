@@ -16,13 +16,13 @@ export const themes = {
   dark: vars({
     '--color-primary': '#8720FE',
     '--color-secondary': '#33FE00',
-    '--color-background': '#1F1D2B',
-    '--color-content': '#252836',
+    '--color-background': '#18141F',
+    '--color-content': '#24202C',
     '--color-success': '#66BB6A',
     '--color-warning': '#FFA726',
     '--color-error': '#F05E5C',
-    '--color-info': '#42A5F5',
-    '--color-text': '#FFFFFF',
-    '--color-neutral': '#888888',
+    '--color-info': '#7CA7FF',
+    '--color-text': '#E4E0EC',
+    '--color-neutral': '#9C94AA',
   }),
 };

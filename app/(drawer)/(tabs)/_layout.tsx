@@ -48,12 +48,12 @@ export default function Layout() {
           bottom: 0,
           left: 0,
           right: 0,
-          height: 85,
+          height: 90,
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: theme === 'dark' ? 'rgba(31, 29, 43	, 0.9)' : 'rgba(243, 243, 248, 0.9)',
+          backgroundColor: theme === 'dark' ? 'rgba(36, 32, 44, 0.9)' : 'rgba(243, 243, 248, 0.9)',
           borderTopWidth: 0,
-          paddingVertical: 15,
+          paddingVertical: 20,
         },
       }}>
       <Tabs.Screen

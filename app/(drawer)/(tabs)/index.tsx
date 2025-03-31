@@ -62,6 +62,36 @@ export default function Home() {
           <FTitle className="text-4xl">Welcome to Fundamental!</FTitle>
           <FText className="text-lg">This is Fundamental</FText>
           <ProfileModal />
+          <FText bold className="!text-success">
+            This is success
+          </FText>
+          <FText bold className="!text-warning">
+            This is warning
+          </FText>
+          <FText bold className="!text-error">
+            This is error
+          </FText>
+          <FText bold className="!text-info">
+            This is info
+          </FText>
+          <FText bold className="!text-neutral">
+            This is neutral
+          </FText>
+          <FText bold className="!text-primary">
+            This is primary
+          </FText>
+          <FText bold className="!text-secondary">
+            This is secondary
+          </FText>
+          <FText bold className="!text-background">
+            This is background
+          </FText>
+          <FText bold className="!text-content">
+            This is content
+          </FText>
+          <FText bold className="!text-text">
+            This is text
+          </FText>
           <View className="gap-4">
             <Container className="" title="User info">
               <FText className="text-lg">Your wallet status is {privy.wallet?.status}</FText>
