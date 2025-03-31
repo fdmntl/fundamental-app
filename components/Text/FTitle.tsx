@@ -7,10 +7,8 @@ interface TitleProps {
 }
 
 export const FTitle = ({ children, className, italic, ...props }: TitleProps) => {
-  const font = italic ? 'DMSerifText_400Regular_Italic' : 'DMSerifText_400Regular';
-
   return (
-    <Text className={`${className} text-text`} style={{ fontFamily: font }} {...props}>
+    <Text className={`${className} text-text`} style={{ fontFamily: 'Inter_700Bold' }} {...props}>
       {children}
     </Text>
   );
