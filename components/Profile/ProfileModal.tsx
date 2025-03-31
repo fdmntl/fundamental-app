@@ -72,7 +72,6 @@ export const ProfileModal = () => {
                 </TouchableOpacity>
 
                 <View className="flex items-center justify-center">
-                  {/* <FTitle className="!text-2xl !text-neutral">Fundamental</FTitle> */}
                   <Image
                     source={require('../../assets/fundamental-text.png')}
                     style={{ width: 125, height: 22 }}
