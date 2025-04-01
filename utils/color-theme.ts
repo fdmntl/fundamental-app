@@ -26,3 +26,5 @@ export const themes = {
     '--color-neutral': '#9C94AA',
   }),
 };
+
+// Note: potential new primary - #AC47EA
