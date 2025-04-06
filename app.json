@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "fundamental",
+    "name": "fundamental-app",
     "slug": "fundamental",
     "version": "1.0.0",
     "scheme": "fundamental-app",
@@ -24,7 +24,11 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fundamental.fundamental-app",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -42,7 +46,9 @@
       },
       "eas": {
         "projectId": "b6bd4dc1-4982-4321-ab53-5690af646b68"
-      }
+      },
+      "supabaseUrl": "process.env.EXPO_PUBLIC_SUPABASE_URL",
+      "supabaseKey": "process.env.EXPO_PUBLIC_SUPABASE_KEY"
     },
     "owner": "fundamental"
   }
