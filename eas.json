@@ -1,16 +1,50 @@
 {
   "cli": {
-    "version": ">= 10.1.0"
+    "version": ">= 10.1.0",
+    "appVersionSource": "local"
   },
   "build": {
+    "release": {
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:bundleRelease",
+        "distribution": "store",
+        "env": {
+          "EXPO_ANDROID_BUILD_ARGUMENTS": "--no-interactive"
+        }
+      }
+    },
     "development": {
-      "developmentClient": true,
-      "distribution": "internal"
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleDebug",
+        "developmentClient": true,
+        "distribution": "internal",
+        "env": {
+          "EXPO_ANDROID_BUILD_ARGUMENTS": "--no-interactive"
+        }
+      }
     },
     "preview": {
-      "distribution": "internal"
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease",
+        "distribution": "internal",
+        "env": {
+          "EXPO_ANDROID_BUILD_ARGUMENTS": "--no-interactive"
+        }
+      }
     },
-    "production": {}
+    "production": {
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease",
+        "distribution": "store",
+        "env": {
+          "EXPO_ANDROID_BUILD_ARGUMENTS": "--no-interactive"
+        }
+      }
+    }
   },
   "submit": {
     "production": {}
