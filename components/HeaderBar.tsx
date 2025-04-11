@@ -1,12 +1,9 @@
 import { Feather } from '@expo/vector-icons';
 import { DrawerActions } from '@react-navigation/native';
 import { useNavigation } from 'expo-router';
-import { useState, useRef } from 'react';
-import { View, Image, TouchableOpacity, Animated } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 
 import { FTitle } from './Text/FTitle';
-
-// const fundy = require('../assets/fundy.png');
 
 export const PillMessageBox = ({ children }: { children: React.ReactNode }): JSX.Element => {
   return (
