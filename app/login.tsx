@@ -5,12 +5,8 @@ import { View, BackHandler, Image } from 'react-native';
 
 import { Button } from '~/components/Button';
 import { FText } from '~/components/Text/FText';
-import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
-import { InsertSupabaseData } from '~/services/Supabase/insertData';
-
-const fundy = require('../assets/fundy.png');
 
 export default function Login() {
   const { user } = usePrivy();
