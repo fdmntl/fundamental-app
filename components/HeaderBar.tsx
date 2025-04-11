@@ -6,7 +6,7 @@ import { View, Image, TouchableOpacity, Animated } from 'react-native';
 
 import { FTitle } from './Text/FTitle';
 
-const fundy = require('../assets/fundy.png');
+// const fundy = require('../assets/fundy.png');
 
 export const PillMessageBox = ({ children }: { children: React.ReactNode }): JSX.Element => {
   return (
@@ -25,41 +25,41 @@ interface HeaderBarProps {
 
 export const HeaderBar = ({ title, pillContent, pillMethod }: HeaderBarProps): JSX.Element => {
   const navigation = useNavigation();
-  const [isPillOpened, setIsPillOpened] = useState(false);
+  // const [isPillOpened, setIsPillOpened] = useState(false);
 
   const openDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer());
   };
 
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  // const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const togglePill = () => {
-    pillMethod && pillMethod();
+  // const togglePill = () => {
+  //   pillMethod && pillMethod();
 
-    if (pillContent) {
-      setIsPillOpened(!isPillOpened);
+  //   if (pillContent) {
+  //     setIsPillOpened(!isPillOpened);
 
-      Animated.timing(fadeAnim, {
-        toValue: isPillOpened ? 0 : 1,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    }
-  };
+  //     Animated.timing(fadeAnim, {
+  //       toValue: isPillOpened ? 0 : 1,
+  //       duration: 300,
+  //       useNativeDriver: true,
+  //     }).start();
+  //   }
+  // };
 
   return (
     <View className="flex flex-col">
-      <View className="h-50 z-10 flex-row items-center gap-2 py-4">
+      <View className="z-10 h-[6rem] flex-row items-center gap-2 py-4">
         <TouchableOpacity onPress={openDrawer}>
           <Feather name="menu" size={36} className="text-text" />
         </TouchableOpacity>
         <FTitle className="mt-1 text-4xl text-text">{title}</FTitle>
-        <TouchableOpacity onPress={togglePill} className="ml-auto">
+        {/* <TouchableOpacity onPress={togglePill} className="ml-auto">
           <Image source={fundy} style={{ height: 64, width: 96 }} resizeMode="contain" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <View />
-      {pillContent && (
+      {/* {pillContent && (
         <Animated.View
           style={{
             opacity: fadeAnim,
@@ -67,7 +67,7 @@ export const HeaderBar = ({ title, pillContent, pillMethod }: HeaderBarProps): J
           }}>
           {isPillOpened && pillContent()}
         </Animated.View>
-      )}
+      )} */}
     </View>
   );
 };
