@@ -42,9 +42,15 @@ const Layout = () => {
           <GestureHandlerRootView className="flex-1">
             <Stack screenOptions={{ headerShown: false, animation: 'none' }}>
               <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-              <Stack.Screen name="assets/[asset]" options={{ title: 'Asset Details' }} />
-              <Stack.Screen name="send/[address]" options={{ title: 'Send Details' }} />
-              <Stack.Screen name="details" options={{ title: 'Details' }} />
+              <Stack.Screen
+                name="assets/[asset]"
+                options={{ title: 'Asset Details', animation: 'default' }}
+              />
+              <Stack.Screen
+                name="send/[address]"
+                options={{ title: 'Send Details', animation: 'default' }}
+              />
+              <Stack.Screen name="details" options={{ title: 'Details', animation: 'default' }} />
               <Stack.Screen name="login" options={{ title: 'Login', gestureEnabled: false }} />
               <Stack.Screen name="+not-found" options={{ title: 'Not Found' }} />
             </Stack>
