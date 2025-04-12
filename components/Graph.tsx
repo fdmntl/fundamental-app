@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { View, TouchableOpacity, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 
@@ -99,9 +99,10 @@ const Graph = ({ graphData }: GraphProps) => {
         <View className="relative">
           <LineChart
             areaChart
+            hideAxesAndRules
             data={normalizedData}
             height={200}
-            width={containerWidth - 6} // Dynamically set width with padding adjustment, still testing this
+            width={containerWidth}
             adjustToWidth
             initialSpacing={0}
             endSpacing={0}
@@ -114,7 +115,7 @@ const Graph = ({ graphData }: GraphProps) => {
             startFillColor={startFillColor}
             endFillColor={endFillColor}
             startOpacity={0.4}
-            endOpacity={0.1}
+            endOpacity={0}
             curved
             isAnimated
             pointerConfig={{
