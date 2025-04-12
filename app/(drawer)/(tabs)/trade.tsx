@@ -79,11 +79,11 @@ export default function Trade() {
           onQuote={(quote) => setQuote(quote)}
         />
       </View>
-      <View className="absolute bottom-[6rem] w-full items-center">
+      <View className="absolute bottom-[7rem] w-full items-center">
         <Button
           title="Trade"
           onPress={handleTradePress}
-          className="bg-primary px-12"
+          className="bg-primary px-20"
           disabled={!isAmountValid}
         />
       </View>
