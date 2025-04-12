@@ -9,13 +9,14 @@ import { HeaderBar } from '~/components/HeaderBar';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { GraphData } from '~/types/graph';
+import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 
 // TODO: use user balance instead of token list
 
 export default function Assets() {
   // TODO: display user balance history graph
   const [allData] = useState<GraphData | undefined>();
-  const { tokens } = useAppData();
+  const { tokens, user } = useAppData();
 
   const stableCoins = tokens.filter((item) => item.is_stablecoin);
   const cryptos = tokens.filter((item) => !item.is_stablecoin);
@@ -28,16 +29,28 @@ export default function Assets() {
           <Graph graphData={allData} />
           <Container title="Money">
             <View className="flex gap-y-4">
-              {stableCoins.map((item) => (
-                <AssetListDisplay key={item.address} token={item} />
-              ))}
+              {stableCoins
+                .sort(
+                  (a, b) =>
+                    getUserTokenValue(b.address, tokens, user) -
+                    getUserTokenValue(a.address, tokens, user)
+                )
+                .map((item) => (
+                  <AssetListDisplay key={item.address} token={item} />
+                ))}
             </View>
           </Container>
           <Container title="Crypto">
             <View className="flex gap-y-4">
-              {cryptos.map((item) => (
-                <AssetListDisplay key={item.address} token={item} />
-              ))}
+              {cryptos
+                .sort(
+                  (a, b) =>
+                    getUserTokenValue(b.address, tokens, user) -
+                    getUserTokenValue(a.address, tokens, user)
+                )
+                .map((item) => (
+                  <AssetListDisplay key={item.address} token={item} />
+                ))}
             </View>
           </Container>
         </View>
