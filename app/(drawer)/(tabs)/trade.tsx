@@ -83,7 +83,7 @@ export default function Trade() {
         <Button
           title="Trade"
           onPress={handleTradePress}
-          className={`bg-primary px-12 ${isAmountValid ? '' : 'opacity-50'}`}
+          className="bg-primary px-12"
           disabled={!isAmountValid}
         />
       </View>

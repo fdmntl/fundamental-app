@@ -7,14 +7,18 @@ interface ButtonProps {
   title: string;
   onPress: () => void;
   className?: string;
+  disabled?: boolean;
 }
 
-export const Button = ({ title, onPress, className }: ButtonProps) => {
+export const Button = ({ title, onPress, className, disabled }: ButtonProps) => {
   return (
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.8}
-      className={`flex items-center justify-center overflow-hidden rounded-3xl px-6 py-3 ${className}`}>
+      disabled={disabled}
+      className={`flex items-center justify-center overflow-hidden rounded-3xl px-6 py-3 ${
+        disabled ? 'opacity-50' : ''
+      } ${className}`}>
       <LinearGradient
         colors={['#741AD9', '#8720FE', '#A250F5']}
         start={{ x: 0, y: 0 }}
