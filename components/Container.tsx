@@ -1,4 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { useMemo } from 'react';
 import { View } from 'react-native';
 
 import { FText } from './Text/FText';
@@ -10,6 +11,14 @@ interface ContainerProps {
 }
 
 export const Container = ({ title, className, children }: ContainerProps) => {
+  const gradientDirection = useMemo(
+    () => ({
+      start: { x: Math.random(), y: Math.random() },
+      end: { x: Math.random(), y: Math.random() },
+    }),
+    []
+  );
+
   return (
     <View className={`${className} rounded-xl bg-content`}>
       {title && (
@@ -19,9 +28,8 @@ export const Container = ({ title, className, children }: ContainerProps) => {
           </FText>
 
           <LinearGradient
-            colors={['#6115B5', '#741AD9', '#8720FE', '#8435E0', '#A250F5', '#D455FF']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
+            colors={['#8720FE', '#A250F5']}
+            {...gradientDirection}
             style={{ height: 3, width: '100%', borderRadius: 1 }}
           />
         </View>
@@ -30,3 +38,5 @@ export const Container = ({ title, className, children }: ContainerProps) => {
     </View>
   );
 };
+
+// colors={['#6115B5', '#741AD9', '#8720FE', '#8435E0', '#A250F5', '#D455FF']}
