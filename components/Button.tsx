@@ -1,23 +1,33 @@
-import { forwardRef } from 'react';
-import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 
 import { FText } from './Text/FText';
 
-type ButtonProps = {
+interface ButtonProps {
   title: string;
-} & TouchableOpacityProps;
+  onPress: () => void;
+  className?: string;
+  disabled?: boolean;
+}
 
-export const Button = forwardRef<TouchableOpacity, ButtonProps>(
-  ({ title, ...touchableProps }, ref) => {
-    return (
-      <TouchableOpacity
-        ref={ref}
-        {...touchableProps}
-        className={`items-center rounded-[28px] bg-primary p-3 ${touchableProps.className}`}>
-        <FText className="text-center text-lg text-white" bold>
-          {title}
-        </FText>
-      </TouchableOpacity>
-    );
-  }
-);
+export const Button = ({ title, onPress, className, disabled }: ButtonProps) => {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.8}
+      disabled={disabled}
+      className={`flex items-center justify-center overflow-hidden rounded-3xl px-6 py-3 ${
+        disabled ? 'opacity-50' : ''
+      } ${className}`}>
+      <LinearGradient
+        colors={['#741AD9', '#8720FE', '#A250F5']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={StyleSheet.absoluteFillObject} // Ensures full coverage of the gradient
+      />
+      <FText className="text-lg text-white" bold>
+        {title}
+      </FText>
+    </TouchableOpacity>
+  );
+};
