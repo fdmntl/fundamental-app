@@ -71,7 +71,7 @@ export default function Trade() {
 
         {/* Quote Display */}
         <QuoteDisplay
-          tokens={possessedTokens}
+          tokens={tokens}
           user={user}
           youPayValue={parseFloat(payAmount) || 0}
           youPayToken={selectedPayToken || possessedTokens[0]}
