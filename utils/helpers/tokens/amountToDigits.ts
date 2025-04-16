@@ -10,6 +10,13 @@ export const amountToDigits = (amount: number, token: Token): number => {
   return amount * Math.pow(10, token.digits);
 };
 
+/**
+ * Helper function to convert an amount to a string with the correct number of digits after the comma 
+ * @param amount 10000000000
+ * @param token { digits: 10 }
+ * @returns '0'
+ * */
+
 export const printableAmountToDigits = (amount: number, token: Token): string => {
   if (amount === 0) {
     return '0';

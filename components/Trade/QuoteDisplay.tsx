@@ -9,7 +9,7 @@ import { Token, User } from '~/types/supabaseTypes';
 import { debounce } from '~/utils/helpers/debounce';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
 import { roundNumberToDecimal } from '~/utils/helpers/numbers/roundNumberToDecimal';
-import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
+import { amountToDigits, printableAmountToDigits } from '~/utils/helpers/tokens/amountToDigits';
 import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
 import { getTokenAmountPrice } from '~/utils/helpers/tokens/getTokenAmountPrice';
 
@@ -118,7 +118,7 @@ export const QuoteDisplay = ({
           {selectedToken
             ? isLoading
               ? 'Calculating Quote'
-              : `${roundNumberToDecimal(quoteValue)} ${selectedToken?.symbol || ''}`
+              : `${printableAmountToDigits(quoteValue, selectedToken)} ${selectedToken?.symbol || ''}`
             : 'Select a token'}
         </FText>
       </View>
