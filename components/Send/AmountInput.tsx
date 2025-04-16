@@ -77,7 +77,7 @@ export const AmountInput = ({
       <View className="-mt-2 flex-row items-center">
         <TextInput
           className={`flex-1 rounded-lg bg-content text-4xl font-semibold
-            ${value === '' || isValidAmount ? 'text-text' : 'text-error'}`}
+            ${value === '' ? 'text-text' : isValidAmount ? 'text-text' : 'text-error'}`}
           keyboardType="numeric"
           placeholder={`0 ${selectedToken?.symbol || ''}`}
           value={value}

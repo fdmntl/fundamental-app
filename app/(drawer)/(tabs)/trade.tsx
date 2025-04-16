@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { Button } from '~/components/Button';
 import { HeaderBar } from '~/components/HeaderBar';
 import { AmountInput } from '~/components/Send/AmountInput';
+import { ConfirmTradeModal } from '~/components/Trade/ConfirmTradeModal';
 import { QuoteDisplay } from '~/components/Trade/QuoteDisplay';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
@@ -21,6 +22,13 @@ export default function Trade() {
   const [payAmount, setPayAmount] = useState('');
   const [selectedPayToken, setSelectedPayToken] = useState<Token | null>(null);
   const [selectedGetToken, setSelectedGetToken] = useState<Token | null>(null);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [quote, setQuote] = useState<OrderParameters | null>(null);
+
+  const toggleConfirmModal = () => {
+    setIsConfirmModalOpen((prev) => !prev);
+  };
+
   const possessedTokens = user.balances
     .map((balance) => tokens.find((token) => token.address === balance.address))
     .filter((token) => token !== undefined) as Token[];
@@ -30,8 +38,6 @@ export default function Trade() {
     : 0;
 
   const isAmountValid = parseFloat(payAmount) > 0 && parseFloat(payAmount) <= selectedTokenBalance;
-
-  const [quote, setQuote] = useState<OrderParameters | null>(null);
 
   const handleTradePress = async () => {
     if (
@@ -82,11 +88,20 @@ export default function Trade() {
       <View className="absolute bottom-[7rem] w-full items-center">
         <Button
           title="Trade"
-          onPress={handleTradePress}
-          className="bg-primary px-20"
+          onPress={toggleConfirmModal}
+          className="bg-primary px-[5rem]"
+          // TODO: be sure to have the quote and all required elements (buy&sell token, amount, etc) before enabling the button
           disabled={!isAmountValid}
         />
       </View>
+      <ConfirmTradeModal
+        isModalOpen={isConfirmModalOpen}
+        toggleModal={toggleConfirmModal}
+        onConfirm={handleTradePress}
+        quote={quote}
+        selectedPayToken={selectedPayToken}
+        selectedGetToken={selectedGetToken}
+      />
     </Frame>
   );
 }
