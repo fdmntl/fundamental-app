@@ -10,7 +10,8 @@
         "gradleCommand": ":app:bundleRelease",
         "distribution": "store",
         "env": {
-          "EXPO_ANDROID_BUILD_ARGUMENTS": "--no-interactive"
+          "EXPO_ANDROID_BUILD_ARGUMENTS": "--no-interactive",
+          "EXPO_ANDROID_MIN_SDK_VERSION": "26"
         }
       }
     },
@@ -21,7 +22,8 @@
         "developmentClient": true,
         "distribution": "internal",
         "env": {
-          "EXPO_ANDROID_BUILD_ARGUMENTS": "--no-interactive"
+          "EXPO_ANDROID_BUILD_ARGUMENTS": "--no-interactive",
+          "EXPO_ANDROID_MIN_SDK_VERSION": "26"
         }
       }
     },
@@ -31,7 +33,8 @@
         "gradleCommand": ":app:assembleRelease",
         "distribution": "internal",
         "env": {
-          "EXPO_ANDROID_BUILD_ARGUMENTS": "--no-interactive"
+          "EXPO_ANDROID_BUILD_ARGUMENTS": "--no-interactive",
+          "EXPO_ANDROID_MIN_SDK_VERSION": "26"
         }
       }
     },
@@ -41,7 +44,8 @@
         "gradleCommand": ":app:assembleRelease",
         "distribution": "store",
         "env": {
-          "EXPO_ANDROID_BUILD_ARGUMENTS": "--no-interactive"
+          "EXPO_ANDROID_BUILD_ARGUMENTS": "--no-interactive",
+          "EXPO_ANDROID_MIN_SDK_VERSION": "26"
         }
       }
     }

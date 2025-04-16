@@ -12,6 +12,7 @@ npm-debug.*
 *.orig.*
 web-build/
 .vscode/
+.idea/
 # expo router
 expo-env.d.ts
 
