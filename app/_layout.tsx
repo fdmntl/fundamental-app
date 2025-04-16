@@ -8,11 +8,7 @@ import {
   DMSans_700Bold,
   DMSans_700Bold_Italic,
 } from '@expo-google-fonts/dm-sans';
-import {
-  DMSerifText_400Regular,
-  DMSerifText_400Regular_Italic,
-} from '@expo-google-fonts/dm-serif-text';
-import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from '@expo-google-fonts/inter';
+import { Inter_500Medium, Inter_700Bold } from '@expo-google-fonts/inter';
 import { PrivyProvider, PrivyElements } from '@privy-io/expo';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
@@ -25,17 +21,14 @@ import { toastConfig } from '~/utils/toastConfig';
 
 const Layout = () => {
   const [fontsLoaded] = useFonts({
-    DMSerifText_400Regular,
-    DMSerifText_400Regular_Italic,
     DMSans_400Regular,
     DMSans_400Regular_Italic,
     DMSans_500Medium,
     DMSans_500Medium_Italic,
     DMSans_700Bold,
     DMSans_700Bold_Italic,
-    Inter_400Regular,
     Inter_500Medium,
-    Inter_600SemiBold,
+    Inter_700Bold,
   });
 
   if (!fontsLoaded) {
@@ -47,11 +40,17 @@ const Layout = () => {
       <ThemeWrapper>
         <AppDataProvider>
           <GestureHandlerRootView className="flex-1">
-            <Stack screenOptions={{ headerShown: false }}>
+            <Stack screenOptions={{ headerShown: false, animation: 'none' }}>
               <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-              <Stack.Screen name="assets/[asset]" options={{ title: 'Asset Details' }} />
-              <Stack.Screen name="send/[address]" options={{ title: 'Send Details' }} />
-              <Stack.Screen name="details" options={{ title: 'Details' }} />
+              <Stack.Screen
+                name="assets/[asset]"
+                options={{ title: 'Asset Details', animation: 'default' }}
+              />
+              <Stack.Screen
+                name="send/[address]"
+                options={{ title: 'Send Details', animation: 'default' }}
+              />
+              <Stack.Screen name="details" options={{ title: 'Details', animation: 'default' }} />
               <Stack.Screen name="login" options={{ title: 'Login', gestureEnabled: false }} />
               <Stack.Screen name="+not-found" options={{ title: 'Not Found' }} />
             </Stack>

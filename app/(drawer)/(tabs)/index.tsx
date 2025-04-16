@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { useEffect, useRef } from 'react';
 import { View, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -12,7 +12,6 @@ import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
-import { useEffect, useRef } from 'react';
 import { AddUser } from '~/services/addUserToDB';
 
 import 'fast-text-encoding';
@@ -58,7 +57,7 @@ export default function Home() {
   return (
     <Frame>
       <HeaderBar title="Home" pillContent={homePillContent} />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View className="gap-2">
           <FTitle className="text-4xl">Welcome to Fundamental!</FTitle>
           <FText className="text-lg">This is Fundamental</FText>
@@ -87,14 +86,17 @@ export default function Home() {
               </FText>
             </View>
           </Container>
-          <Link
-            className="mt-4 bg-primary"
-            href={{ pathname: '/details', params: { name: 'Dan' } }}
-            asChild>
-            <Button title="Show Details" />
-          </Link>
         </View>
       </ScrollView>
     </Frame>
   );
+}
+
+{
+  /* <Link
+            className="mt-4 bg-primary"
+            href={{ pathname: '/details', params: { name: 'Dan' } }}
+            asChild>
+            <Button title="Show Details" onPress={() => {}} />
+          </Link> */
 }
