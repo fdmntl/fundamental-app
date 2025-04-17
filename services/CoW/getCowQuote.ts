@@ -4,12 +4,11 @@ import {
   OrderQuoteRequest,
   OrderQuoteSideKindSell,
 } from '@cowprotocol/cow-sdk';
+import { getCowAppdata } from './getCowAppdata';
 
 const orderBookApi = new OrderBookApi({ chainId: SupportedChainId.BASE });
 
-const appDataContent: string =
-  '{"appCode":"Fundamental","environment":"production","metadata":{"hooks":{"version":"0.1.0"},"quote":{"slippageBips":100,"smartSlippage":false}},"version":"1.3.0"}';
-const appDataHash: string = '0x6562949e4016f912411cc2b2439b95721938a99acfbe2433c4252d2109df533a';
+const { content, hash } = getCowAppdata();
 
 export const getCowQuote = async (
   address: string,
@@ -24,8 +23,8 @@ export const getCowQuote = async (
     receiver: address,
     sellAmountBeforeFee: sellAmount,
     kind: OrderQuoteSideKindSell.SELL,
-    appData: appDataContent,
-    appDataHash,
+    appData: content,
+    appDataHash: hash,
   };
   const { quote } = await orderBookApi.getQuote(quoteRequest);
   return quote;
