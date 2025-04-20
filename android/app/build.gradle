@@ -127,34 +127,34 @@ android {
             def isCI = System.getenv("GITHUB_ACTIONS") == "true"
 
             if (isCI) {
-                def storePassword = System.getenv("KEYSTORE_PASSWORD")
-                def keyAlias = System.getenv("KEY_ALIAS")
-                def keyPassword = System.getenv("KEY_PASSWORD")
+                def keystorePassword = System.getenv("KEYSTORE_PASSWORD")
+                def keyAliasEnv = System.getenv("KEY_ALIAS")
+                def keyPasswordEnv = System.getenv("KEY_PASSWORD")
                 def keystoreFile = file("../test.jks")
                 println("Keystore file path: ${keystoreFile.absolutePath}")
                 println("keystore: ${keystoreFile}")
 
-                if (storePassword && keyAlias && keyPassword && keystoreFile.exists()) {
+                if (keystorePassword && keyAliasEnv && keyPasswordEnv && keystoreFile.exists()) {
                     storeFile keystoreFile
-                    storePassword storePassword
-                    keyAlias keyAlias
-                    keyPassword keyPassword
+                    storePassword keystorePassword
+                    keyAlias keyAliasEnv
+                    keyPassword keyPasswordEnv
                     println("✅ CI signing config applied.")
                 } else {
                     // Log the missing variables for debugging
-                    if (!storePassword) {
+                    if (!keystorePassword) {
                         println("❌ Missing KEYSTORE_PASSWORD environment variable.")
                     }
-                    if (!keyAlias) {
+                    if (!keyAliasEnv) {
                         println("❌ Missing KEY_ALIAS environment variable.")
                     }
-                    if (!keyPassword) {
+                    if (!keyPasswordEnv) {
                         println("❌ Missing KEY_PASSWORD environment variable.")
                     }
-                    if (keystoreFile.exists()) {
-                        println("✅ Keystore file found at: ${keystoreFile.absolutePath}")
-                    } else {
+                    if (!keystoreFile.exists()) {
                         println("❌ Keystore file not found at: ${keystoreFile.absolutePath}")
+                    } else {
+                        println("✅ Keystore file exists at: ${keystoreFile.absolutePath}")
                     }
                     println("❌ Missing CI signing environment variables or keystore file.")
                 }
