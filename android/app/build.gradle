@@ -130,7 +130,7 @@ android {
                 def storePassword = System.getenv("KEYSTORE_PASSWORD")
                 def keyAlias = System.getenv("KEY_ALIAS")
                 def keyPassword = System.getenv("KEY_PASSWORD")
-                def keystoreFile = file("android/test.jks")
+                def keystoreFile = file("../test.jks")
                 println("Keystore file path: ${keystoreFile.absolutePath}")
                 println("keystore: ${keystoreFile}")
 
