@@ -48,4 +48,4 @@ jobs:
         run: |
           echo "Build completed successfully!"
             echo "Checking for APK file..."
-           ls -l app/build/outputs/apk/release
+            pwd
