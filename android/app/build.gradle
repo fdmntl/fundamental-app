@@ -130,7 +130,7 @@ android {
                 def storePassword = System.getenv("KEYSTORE_PASSWORD")
                 def keyAlias = System.getenv("KEY_ALIAS")
                 def keyPassword = System.getenv("KEY_PASSWORD")
-                def keystoreFile = file("test.jks")
+                def keystoreFile = file("android/test.jks")
 
                 if (storePassword && keyAlias && keyPassword && keystoreFile.exists()) {
                     storeFile keystoreFile
