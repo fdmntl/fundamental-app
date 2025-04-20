@@ -48,4 +48,8 @@ jobs:
         run: |
           echo "Build completed successfully!"
             echo "Checking for APK file..."
-            pwd
+            if [ -f android/app/build/outputs/apk/release/app-release.apk ]; then
+              echo "APK file found!"
+            else
+              echo "❌ APK file not found!"
+            fi
