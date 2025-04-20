@@ -28,9 +28,17 @@ jobs:
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/test.jks
       - name: ls -l
-        run: ls -l android/test.jks
-      - name: cat test.jks
-        run: cat android/test.jks
+        run: |
+          ls -l android/test.jks
+          file android/test.jks
+          echo "Keystore file created successfully!"
+      - name: Set permissions for keystore
+        run: chmod 600 android/test.jks
+      - name: Debug environment variables
+        run: |
+          if [ -z "$KEYSTORE_PASSWORD" ]; then echo "❌ KEYSTORE_PASSWORD is missing"; fi
+          if [ -z "$KEY_ALIAS" ]; then echo "❌ KEY_ALIAS is missing"; fi
+          if [ -z "$KEY_PASSWORD" ]; then echo "❌ KEY_PASSWORD is missing"; fi
       - name: Build project
         run: |
           cd android
