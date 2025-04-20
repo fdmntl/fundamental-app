@@ -14,8 +14,7 @@ web-build/
 .vscode/
 .idea/
 *.keystore
-*.properties
-
+android/local.properties
 # expo router
 expo-env.d.ts
 
