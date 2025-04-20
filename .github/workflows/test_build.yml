@@ -17,9 +17,17 @@ jobs:
           node-version: '18'
       - name: Install dependencies
         run: npm install
+      - name: Set executable permissions for gradlew
+        run: chmod +x android/gradlew
       - name: Build project
         run: cd android && ./gradlew clean && ./gradlew assembleRelease
       - name: Confirm build
         run: |
           echo "Build completed successfully!"
-          echo "You can download the build from the EAS dashboard."
+            echo "Checking for APK file..."
+            if [ -f "android/app/build/outputs/apk/release/app-release.apk" ]; then
+                echo "APK file found!"
+                else
+                echo "APK file not found!"
+                exit 1
+                fi
