@@ -149,8 +149,10 @@ android {
                     if (!keyPassword) {
                         println("❌ Missing KEY_PASSWORD environment variable.")
                     }
-                    if (!keystoreFile.exists()) {
-                        println("❌ Keystore file not found.")
+                    if (keystoreFile.exists()) {
+                        println("✅ Keystore file found at: ${keystoreFile.absolutePath}")
+                    } else {
+                        println("❌ Keystore file not found at: ${keystoreFile.absolutePath}")
                     }
                     println("❌ Missing CI signing environment variables or keystore file.")
                 }
