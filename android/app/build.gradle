@@ -139,6 +139,19 @@ android {
                     keyPassword keyPassword
                     println("✅ CI signing config applied.")
                 } else {
+                    // Log the missing variables for debugging
+                    if (!storePassword) {
+                        println("❌ Missing KEYSTORE_PASSWORD environment variable.")
+                    }
+                    if (!keyAlias) {
+                        println("❌ Missing KEY_ALIAS environment variable.")
+                    }
+                    if (!keyPassword) {
+                        println("❌ Missing KEY_PASSWORD environment variable.")
+                    }
+                    if (!keystoreFile.exists()) {
+                        println("❌ Keystore file not found.")
+                    }
                     println("❌ Missing CI signing environment variables or keystore file.")
                 }
             } else {
