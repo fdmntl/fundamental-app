@@ -33,7 +33,7 @@ jobs:
           file android/test.jks
           echo "Keystore file created successfully!"
       - name: Set permissions for keystore
-        run: chmod 600 android/test.jks
+        run: chmod 600 /app/android/test.jks
       - name: Debug environment variables
         run: |
           if [ -z "$KEYSTORE_PASSWORD" ]; then echo "❌ KEYSTORE_PASSWORD is missing"; fi
