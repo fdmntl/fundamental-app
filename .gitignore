@@ -13,11 +13,14 @@ npm-debug.*
 web-build/
 .vscode/
 .idea/
+*.keystore
+*.properties
+
 # expo router
 expo-env.d.ts
 
 ios
-android
+
 
 # macOS
 .DS_Store

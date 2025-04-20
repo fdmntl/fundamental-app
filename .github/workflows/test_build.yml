@@ -17,10 +17,8 @@ jobs:
           node-version: '18'
       - name: Install dependencies
         run: npm install
-      - name: Install EAS CLI
-        run: npm install -g eas-cli
       - name: Build project
-        run: eas build --profile release --platform android
+        run: cd android && ./gradlew clean && ./gradlew assembleRelease
       - name: Confirm build
         run: |
           echo "Build completed successfully!"

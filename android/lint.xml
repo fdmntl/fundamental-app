@@ -1,0 +1,5 @@
+<lint>
+    <issue id="UnsafeOptInUsageError">
+        <ignore />
+    </issue>
+</lint>
