@@ -78,7 +78,9 @@ const Layout = () => {
 
   console.log('Rendering main app layout');
   return (
-    <PrivyProvider appId="clxd5oc5m007jrpv8y8clt6z7">
+    <PrivyProvider
+      appId="clxd5oc5m007jrpv8y8clt6z7"
+      clientId="client-WY2nCVozcYUzD3HEthM1D1PKt3cFK56DG9mKHCtbZA3Uc">
       <ThemeWrapper>
         <AppDataProvider>
           <GestureHandlerRootView className="flex-1">
