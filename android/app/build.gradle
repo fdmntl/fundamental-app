@@ -123,17 +123,36 @@ android {
     }
 
     signingConfigs {
-        debug {
-            storeFile file("../../test.jks")
-            storePassword "leoleo"
-            keyAlias "test-leo"
-            keyPassword "leoleo"
-        }
         release {
-            storeFile file("../../test.jks")
-            storePassword "leoleo"
-            keyAlias "test-leo"
-            keyPassword "leoleo"
+            def isCI = System.getenv("GITHUB_ACTIONS") == "true"
+
+            if (isCI) {
+                def storePassword = System.getenv("KEYSTORE_PASSWORD")
+                def keyAlias = System.getenv("KEY_ALIAS")
+                def keyPassword = System.getenv("KEY_PASSWORD")
+                def keystoreFile = file("test.jks")
+
+                if (storePassword && keyAlias && keyPassword && keystoreFile.exists()) {
+                    storeFile keystoreFile
+                    storePassword storePassword
+                    keyAlias keyAlias
+                    keyPassword keyPassword
+                    println("✅ CI signing config applied.")
+                } else {
+                    println("❌ Missing CI signing environment variables or keystore file.")
+                }
+            } else {
+                def keystoreFile = file("../../test.jks")
+                if (keystoreFile.exists()) {
+                    storeFile keystoreFile
+                    storePassword "leoleo"
+                    keyAlias "test-leo"
+                    keyPassword "leoleo"
+                    println("✅ Local signing config applied.")
+                } else {
+                    println("❌ Keystore file not found.")
+                }
+            }
         }
     }
 

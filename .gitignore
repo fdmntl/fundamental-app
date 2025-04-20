@@ -15,6 +15,7 @@ web-build/
 .idea/
 *.keystore
 android/local.properties
+*.base64
 # expo router
 expo-env.d.ts
 
