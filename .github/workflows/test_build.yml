@@ -27,6 +27,8 @@ jobs:
       - name: Decode and save keystore
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/test.jks
+      - name: ls -l
+        run: ls -l android/test.jks
       - name: Build project
         run: |
           cd android
