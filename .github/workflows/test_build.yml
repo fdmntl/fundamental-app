@@ -5,6 +5,11 @@ on:
       - main
       - dev
       - try-build
+env:
+  KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+  KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+  KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+  KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
 jobs:
   build:
     runs-on: ubuntu-latest
