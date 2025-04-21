@@ -1,12 +1,14 @@
 import { OrderParameters } from '@cowprotocol/cow-sdk';
 import { Feather } from '@expo/vector-icons';
-import React from 'react';
 import { Modal, View, TouchableWithoutFeedback, Image } from 'react-native';
 
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { Token } from '~/types/supabaseTypes';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
+import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
+import { getTokenAmountPrice } from '~/utils/helpers/tokens/getTokenAmountPrice';
+import { useAppData } from '../Wrappers/AppData';
 
 interface ConfirmTradeModalProps {
   isModalOpen: boolean;
@@ -25,6 +27,10 @@ export const ConfirmTradeModal = ({
   selectedPayToken,
   selectedGetToken,
 }: ConfirmTradeModalProps) => {
+  if (!quote || !selectedPayToken || !selectedGetToken) {
+    return null; // or handle the error case
+  }
+  const { tokens } = useAppData();
   return (
     <Modal visible={isModalOpen} animationType="fade" transparent onRequestClose={toggleModal}>
       <TouchableWithoutFeedback onPress={toggleModal}>
@@ -43,10 +49,18 @@ export const ConfirmTradeModal = ({
                   />
                   <View className="flex-col">
                     <FText className="!text-2xl" bold>
-                      {quote?.sellAmount} {selectedPayToken?.symbol}
+                      {digitsToAmount(Number(quote.sellAmount), selectedPayToken!) +
+                        digitsToAmount(Number(quote.feeAmount), selectedPayToken!)}
+                      {selectedPayToken.symbol}
                     </FText>
                     <FText className="!text-neutral" bold>
-                      ≈${quote?.sellAmount}
+                      ≈$
+                      {getTokenAmountPrice(
+                        selectedPayToken.address || '',
+                        digitsToAmount(Number(quote.sellAmount), selectedPayToken!) +
+                          digitsToAmount(Number(quote.feeAmount), selectedPayToken!),
+                        tokens
+                      ).toFixed(2)}
                     </FText>
                   </View>
                 </View>

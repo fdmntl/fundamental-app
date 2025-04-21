@@ -101,6 +101,7 @@ export default function Trade() {
         quote={quote}
         selectedPayToken={selectedPayToken}
         selectedGetToken={selectedGetToken}
+        payAmount={payAmount}
       />
     </Frame>
   );
