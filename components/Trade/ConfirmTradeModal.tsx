@@ -2,21 +2,22 @@ import { OrderParameters } from '@cowprotocol/cow-sdk';
 import { Feather } from '@expo/vector-icons';
 import { Modal, View, TouchableWithoutFeedback, Image } from 'react-native';
 
+import { useAppData } from '../Wrappers/AppData';
+
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { Token } from '~/types/supabaseTypes';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
 import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
 import { getTokenAmountPrice } from '~/utils/helpers/tokens/getTokenAmountPrice';
-import { useAppData } from '../Wrappers/AppData';
 
 interface ConfirmTradeModalProps {
   isModalOpen: boolean;
   toggleModal: () => void;
   onConfirm: () => void;
-  quote: OrderParameters | null;
-  selectedPayToken: Token | null;
-  selectedGetToken: Token | null;
+  quote: OrderParameters;
+  selectedPayToken: Token;
+  selectedGetToken: Token;
 }
 
 export const ConfirmTradeModal = ({
@@ -27,10 +28,8 @@ export const ConfirmTradeModal = ({
   selectedPayToken,
   selectedGetToken,
 }: ConfirmTradeModalProps) => {
-  if (!quote || !selectedPayToken || !selectedGetToken) {
-    return null; // or handle the error case
-  }
   const { tokens } = useAppData();
+
   return (
     <Modal visible={isModalOpen} animationType="fade" transparent onRequestClose={toggleModal}>
       <TouchableWithoutFeedback onPress={toggleModal}>
@@ -44,13 +43,13 @@ export const ConfirmTradeModal = ({
                 </FText>
                 <View className="flex-row items-center gap-2 p-2">
                   <Image
-                    source={tokenIcons[selectedPayToken?.symbol ?? 'default']}
+                    source={tokenIcons[selectedPayToken.symbol ?? 'default']}
                     className="h-12 w-12"
                   />
                   <View className="flex-col">
                     <FText className="!text-2xl" bold>
                       {digitsToAmount(Number(quote.sellAmount), selectedPayToken!) +
-                        digitsToAmount(Number(quote.feeAmount), selectedPayToken!)}
+                        digitsToAmount(Number(quote.feeAmount), selectedPayToken!)}{' '}
                       {selectedPayToken.symbol}
                     </FText>
                     <FText className="!text-neutral" bold>
@@ -71,15 +70,21 @@ export const ConfirmTradeModal = ({
                 </FText>
                 <View className="flex-row items-center gap-2 p-2">
                   <Image
-                    source={tokenIcons[selectedGetToken?.symbol ?? 'default']}
+                    source={tokenIcons[selectedGetToken.symbol ?? 'default']}
                     className="h-12 w-12"
                   />
                   <View className="flex-col">
                     <FText className="!text-2xl" bold>
-                      {quote?.buyAmount} {selectedGetToken?.symbol}
+                      {digitsToAmount(Number(quote.buyAmount), selectedGetToken!)}{' '}
+                      {selectedGetToken.symbol}
                     </FText>
                     <FText className="!text-neutral" bold>
-                      ≈${quote?.buyAmount}
+                      ≈$
+                      {getTokenAmountPrice(
+                        selectedGetToken.address || '',
+                        digitsToAmount(Number(quote.buyAmount), selectedGetToken!),
+                        tokens
+                      ).toFixed(2)}
                     </FText>
                   </View>
                 </View>

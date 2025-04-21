@@ -60,6 +60,8 @@ export default function Trade() {
     }
   };
 
+  const isValid = isAmountValid && selectedPayToken && selectedGetToken && quote;
+
   return (
     <Frame>
       <HeaderBar title="Trade" />
@@ -90,19 +92,19 @@ export default function Trade() {
           title="Trade"
           onPress={toggleConfirmModal}
           className="bg-primary px-[5rem]"
-          // TODO: be sure to have the quote and all required elements (buy&sell token, amount, etc) before enabling the button
-          disabled={!isAmountValid}
+          disabled={!isValid}
         />
       </View>
-      <ConfirmTradeModal
-        isModalOpen={isConfirmModalOpen}
-        toggleModal={toggleConfirmModal}
-        onConfirm={handleTradePress}
-        quote={quote}
-        selectedPayToken={selectedPayToken}
-        selectedGetToken={selectedGetToken}
-        payAmount={payAmount}
-      />
+      {selectedGetToken && selectedPayToken && quote ? (
+        <ConfirmTradeModal
+          isModalOpen={isConfirmModalOpen}
+          toggleModal={toggleConfirmModal}
+          onConfirm={handleTradePress}
+          quote={quote}
+          selectedPayToken={selectedPayToken}
+          selectedGetToken={selectedGetToken}
+        />
+      ) : null}
     </Frame>
   );
 }
