@@ -34,7 +34,7 @@ export const ConfirmTradeModal = ({
     <Modal visible={isModalOpen} animationType="fade" transparent onRequestClose={toggleModal}>
       <TouchableWithoutFeedback onPress={toggleModal}>
         <View className="flex-1 items-center justify-center bg-[rgba(0,0,0,0.5)]">
-          <View className="w-full max-w-md gap-5 rounded-2xl bg-background p-4">
+          <View className="w-full max-w-md gap-5 rounded-2xl bg-background p-5">
             <FTitle className="!text-3xl">Confirm Trade</FTitle>
             <View className="gap-2">
               <View className="rounded-t-2xl bg-content px-3 py-2">
@@ -89,6 +89,13 @@ export const ConfirmTradeModal = ({
                   </View>
                 </View>
               </View>
+            </View>
+            <View className="flex-row items-center gap-2">
+              <Feather name="compass" size={24} color="#7CA7FF" />
+              <FText className="!text-xl !text-neutral" bold>
+                Gas fee: {digitsToAmount(Number(quote.feeAmount), selectedPayToken!)}{' '}
+                {selectedPayToken.symbol}
+              </FText>
             </View>
             <View className="flex-row items-center justify-center gap-32">
               <Feather name="x" size={40} color="#f87171" onPress={toggleModal} />
