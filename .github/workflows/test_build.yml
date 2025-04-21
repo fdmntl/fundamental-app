@@ -53,3 +53,8 @@ jobs:
             else
               echo "❌ APK file not found!"
             fi
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          path: android/app/build/outputs/apk/release/app-release.apk
+          name: app-release.apk
