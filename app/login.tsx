@@ -25,13 +25,8 @@ export default function Login() {
   }, []);
 
   useEffect(() => {
-    fetch('https://www.google.com')
-      .then(() => console.log('HTTPS Works'))
-      .catch((err) => console.log('HTTPS FAIL', err));
     const handleUserLogin = async () => {
-      console.log('before if user');
       if (user) {
-        console.log('User exists:', user);
         if (isNotCreated(wallet)) {
           console.log('Wallet not created yet. Creating wallet...');
           try {

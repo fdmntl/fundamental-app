@@ -45,7 +45,6 @@ const Layout = () => {
   useEffect(() => {
     console.log('App layout mounting');
     try {
-      // Check if Privy app ID is available
       const privyAppId = Constants.expoConfig?.extra?.privyAppId;
       console.log('Privy App ID:', privyAppId);
 
