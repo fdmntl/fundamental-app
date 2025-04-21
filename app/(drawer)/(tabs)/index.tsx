@@ -18,7 +18,6 @@ import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import { useEmbeddedWallet, usePrivy } from '@privy-io/expo';
 
-import { useAuth } from '~/components/Wrappers/AuthProvider';
 import { useEffect } from 'react';
 
 export default function Home() {
@@ -26,11 +25,6 @@ export default function Home() {
   const { user: privyUser } = usePrivy();
   const wallet = useEmbeddedWallet();
   const { updatePrivy } = useAppData();
-
-  // const { user, wallet } = useAuth();
-  // if (!privyUser) {
-  //   return null;
-  // }
 
   useEffect(() => {
     const updateUser = async () => {
