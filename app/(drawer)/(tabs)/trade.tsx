@@ -1,6 +1,7 @@
 import { OrderParameters } from '@cowprotocol/cow-sdk';
 import { useState } from 'react';
 import { View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import { Button } from '~/components/Button';
 import { HeaderBar } from '~/components/HeaderBar';
@@ -69,11 +70,21 @@ export default function Trade() {
         {/* Amount Input for "You Pay" */}
         <AmountInput
           value={payAmount}
+          selectedToken={selectedPayToken}
           onChange={(value) => setPayAmount(value)}
           tokens={possessedTokens}
           user={user}
           selectedTokenBalance={selectedTokenBalance}
-          onTokenChange={(token) => setSelectedPayToken(token)}
+          onTokenChange={(token) => {
+            if (token && token.address === selectedGetToken?.address) {
+              Toast.show({
+                type: 'error',
+                text1: 'You cannot select the same token to pay and receive.',
+              });
+              return;
+            }
+            setSelectedPayToken(token);
+          }}
           title="You Pay"
         />
 
@@ -81,9 +92,19 @@ export default function Trade() {
         <QuoteDisplay
           tokens={tokens}
           user={user}
+          selectedToken={selectedGetToken}
           youPayValue={parseFloat(payAmount) || 0}
           youPayToken={selectedPayToken || possessedTokens[0]}
-          onTokenChange={(token) => setSelectedGetToken(token)}
+          onTokenChange={(token) => {
+            if (token && token.address === selectedPayToken?.address) {
+              Toast.show({
+                type: 'error',
+                text1: 'You cannot select the same token to pay and receive.',
+              });
+              return;
+            }
+            setSelectedGetToken(token);
+          }}
           onQuote={(quote) => setQuote(quote)}
         />
       </View>
