@@ -76,7 +76,7 @@ export default function SendToken() {
             <Button
               title="Send Funds"
               onPress={handleSendPress}
-              className={`bg-primary px-12 ${isInputValid ? '' : 'opacity-50'}`}
+              className="bg-primary px-20"
               disabled={!isInputValid}
             />
           </View>

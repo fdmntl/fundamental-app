@@ -1,7 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Image, Animated } from 'react-native';
-
-const fundy = require('../assets/fundy.png');
+import { useEffect, useRef, useState } from 'react';
+import { View, Image, Animated, ImageBackground } from 'react-native';
 
 const useCrescendoAnimation = (delay: number) => {
   const opacity1 = useRef(new Animated.Value(0)).current;
@@ -61,7 +59,7 @@ const Dot = ({ opacity }: { opacity: Animated.Value }) => {
           height: 6,
           width: 6,
           borderRadius: 100,
-          backgroundColor: 'black',
+          backgroundColor: 'white',
           opacity,
         },
       ]}
@@ -82,12 +80,24 @@ const LoadingDots = () => {
 };
 
 export const Loading = () => {
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
   return (
-    <View className="flex flex-1 bg-primary">
-      <View className="m-auto">
-        <Image source={fundy} style={{ height: 64, width: 96 }} resizeMode="contain" />
-        <LoadingDots />
-      </View>
-    </View>
+    <ImageBackground
+      source={require('../assets/fundamental-gradient.png')}
+      style={{ flex: 1, backgroundColor: '#18141F' }}
+      resizeMode="cover"
+      onLoadEnd={() => setIsImageLoaded(true)}>
+      {isImageLoaded && (
+        <View className="flex-1 items-center justify-center gap-4">
+          <Image
+            source={require('../assets/eye.png')}
+            style={{ height: 50, width: 50 }}
+            resizeMode="contain"
+          />
+          <LoadingDots />
+        </View>
+      )}
+    </ImageBackground>
   );
 };

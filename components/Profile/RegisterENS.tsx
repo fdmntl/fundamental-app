@@ -1,20 +1,27 @@
-import { Feather } from '@expo/vector-icons';
 import { useState } from 'react';
+import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-import { Container } from '../Container';
+import { Button } from '../Button';
 import { FText } from '../Text/FText';
-import { FTitle } from '../Text/FTitle';
+import { TextInputField } from '../TextInputField';
 import { useAppData } from '../Wrappers/AppData';
 
-import { copyToClipboard } from '~/utils/helpers/copyToClipboard';
-import { trimAddress } from '~/utils/helpers/strings/trimAddress';
-import { toastConfig } from '~/utils/toastConfig';
-import { Button } from '../Button';
-import { View } from 'react-native';
-import { TextInputField } from '../TextInputField';
-import { registerName } from '~/services/viemService';
 import { updateENS } from '~/services/Supabase/updateENS';
+import { registerName } from '~/services/viemService';
+import { toastConfig } from '~/utils/toastConfig';
+
+// Check if the subname is valid and available
+// TODO: Check if the subname is available
+const isValidSubname = (subname: string) => {
+  if (subname.length < 1 || subname.length > 16) {
+    return false;
+  }
+  if (!/^[a-zA-Z0-9-_]*$/.test(subname)) {
+    return false;
+  }
+  return true;
+};
 
 export const RegisterENS = () => {
   const { privy, user } = useAppData();
@@ -23,81 +30,66 @@ export const RegisterENS = () => {
 
   if (!privy.wallet || privy.wallet.status !== 'connected') {
     return (
-      <Container>
-        <FText className="!text-2xl" bold>
-          Privy wallet error: not connected
-        </FText>
-      </Container>
+      <FText className="!text-2xl" bold>
+        Privy wallet error: not connected
+      </FText>
     );
   }
 
   const provider = privy.wallet.provider;
 
-  // Check if the subname is valid and available
-  const isValidSubname = (subaname: string) => {
-    if (subname.length < 1 || subname.length > 16) {
-      return false;
-    }
-    if (!/^[a-zA-Z0-9-_]*$/.test(subname)) {
-      return false;
-    }
-    return true;
-  };
   return (
-    <Container className="gap-5">
-      <View className="flex flex-wrap">
-        <FText className="!text-2xl" bold>
-          Register an ENS
+    <View className="flex gap-4">
+      <FText className="!text-2xl" bold>
+        Register an ENS
+      </FText>
+      <View className="w-full flex-row items-center gap-2">
+        <TextInputField
+          className="w-[200px]"
+          placeholder="username"
+          value={subname}
+          onChange={(value) => {
+            setSubname(value);
+          }}
+          isValid={isValidSubname(subname)}
+        />
+        <FText className="!text-3xl" bold>
+          .fdmntl.eth
         </FText>
-        <View className="w-full flex-row items-center">
-          <View className="w-3/5">
-            <TextInputField
-              label=""
-              placeholder="username"
-              value={subname}
-              onChange={(value) => {
-                setSubname(value);
-              }}
-              isValid={isValidSubname(subname)}
-            />
-          </View>
-          <FText className="mt-9 !text-3xl" bold>
-            .fdmntl.eth
-          </FText>
-        </View>
-        <Button
-          title="Register"
-          onPress={async () => {
-            if (isValidSubname(subname)) {
-              try {
-                await registerName(provider, subname, address as `0x${string}`);
-                updateENS(user.id, subname);
-                Toast.show({
-                  type: 'success',
-                  text1: 'ENS registered',
-                  text2: 'Your ENS has been successfully registered.',
-                  ...toastConfig,
-                });
-              } catch (error) {
-                console.error('Error registering ENS:', error);
-                Toast.show({
-                  type: 'error',
-                  text1: 'Error registering ENS',
-                  text2: 'There was an error registering your ENS. Please try again.',
-                  ...toastConfig,
-                });
-              }
-            } else {
+      </View>
+      <Button
+        title="Register"
+        className="mx-auto w-[150px]"
+        onPress={async () => {
+          if (isValidSubname(subname)) {
+            try {
+              await registerName(provider, subname, address as `0x${string}`);
+              updateENS(user.id, subname);
+              Toast.show({
+                type: 'success',
+                text1: 'ENS registered',
+                text2: 'Your ENS has been successfully registered.',
+                ...toastConfig,
+              });
+            } catch (error) {
+              console.error('Error registering ENS:', error);
               Toast.show({
                 type: 'error',
-                text1: 'Invalid ENS',
-                text2: 'Please enter a valid ENS name.',
+                text1: 'Error registering ENS',
+                text2: 'There was an error registering your ENS. Please try again.',
                 ...toastConfig,
               });
             }
-          }}
-        />
-      </View>
-    </Container>
+          } else {
+            Toast.show({
+              type: 'error',
+              text1: 'Invalid ENS',
+              text2: 'Please enter a valid ENS name.',
+              ...toastConfig,
+            });
+          }
+        }}
+      />
+    </View>
   );
 };

@@ -5,8 +5,10 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import CustomDrawerContent from '~/components/CustomDrawerContent';
 import { Loading } from '~/components/Loading';
+import { useTheme } from '~/components/Wrappers/ThemeWrapper';
 
 export default function DrawerLayout() {
+  const { theme } = useTheme();
   return (
     <AuthBoundary loading={<Loading />} unauthenticated={<Redirect href="/login" />}>
       <GestureHandlerRootView className="flex-1">
@@ -15,9 +17,9 @@ export default function DrawerLayout() {
           screenOptions={{
             headerShown: false,
             drawerLabelStyle: {
-              color: 'white',
-              fontSize: 20,
-              fontFamily: 'DMSans_700Bold',
+              color: theme === 'dark' ? '#fff' : '#000',
+              fontSize: 25,
+              fontFamily: 'Inter_700Bold',
             },
           }}>
           <Drawer.Screen

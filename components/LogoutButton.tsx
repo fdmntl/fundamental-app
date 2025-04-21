@@ -18,5 +18,5 @@ export const LogoutButton = () => {
     }
   };
 
-  return <Button onPress={handleLogout} className="bg-primary" title="Logout" />;
+  return <Button onPress={handleLogout} title="Logout" />;
 };

@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@coinbase/wallet-mobile-sdk": "^1.0.13",
+    "@cowprotocol/app-data": "^2.5.1",
     "@cowprotocol/cow-sdk": "^5.10.0",
     "@ethersproject/shims": "^5.7.0",
     "@expo-google-fonts/dm-sans": "^0.2.3",

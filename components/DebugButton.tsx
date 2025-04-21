@@ -2,6 +2,7 @@ import { usePrivy } from '@privy-io/expo';
 
 import { Button } from './Button';
 import { useAppData } from './Wrappers/AppData';
+
 import { refreshUserBalances } from '~/services/refreshUserBalance';
 
 export const DebugButton = () => {
@@ -35,5 +36,5 @@ export const DebugButton = () => {
     });
   };
 
-  return <Button onPress={debug} className="bg-primary" title="Debug" />;
+  return <Button onPress={debug} title="Debug" />;
 };

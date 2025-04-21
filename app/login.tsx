@@ -5,12 +5,9 @@ import { View, BackHandler, Image } from 'react-native';
 
 import { Button } from '~/components/Button';
 import { FText } from '~/components/Text/FText';
-import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { addUserToDB } from '~/services/addUserToDB';
-
-const fundy = require('../assets/fundy.png');
 
 export default function Login() {
   const { user } = usePrivy();
@@ -49,15 +46,27 @@ export default function Login() {
     <>
       <Stack.Screen options={{ title: 'Login', headerShown: false }} />
       <Frame>
-        <View className="mb-64 flex flex-1 flex-col items-center justify-center">
-          <Image source={fundy} style={{ height: 64, width: 96 }} resizeMode="contain" />
-          <FTitle className="mt-4 text-4xl">Fundamental</FTitle>
-          <FText className="text-left !text-neutral" bold>
+        <View className="mb-64 flex flex-1 flex-col items-center justify-center gap-2">
+          <Image
+            source={require('../assets/fundamental-text.png')}
+            style={{ height: 55, width: 312.5 }}
+            resizeMode="contain"
+          />
+          <FText className="mb-2 text-left !text-2xl !text-neutral" bold>
             The easiest wallet in the world.
           </FText>
+          <Image
+            source={require('../assets/app-icon.png')}
+            style={{ height: 64, width: 64 }}
+            resizeMode="contain"
+          />
         </View>
         <View className="absolute bottom-16 w-full items-center">
-          <Button title="Login/Register" className="mt-2 w-1/2 !bg-content" onPress={handleLogin} />
+          <Button
+            title="Take Control Now"
+            className="mt-2 w-1/2 !bg-content"
+            onPress={handleLogin}
+          />
         </View>
       </Frame>
     </>

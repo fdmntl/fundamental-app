@@ -1,4 +1,4 @@
-import { Link, router } from 'expo-router';
+import { useEffect } from 'react';
 import { View, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -17,8 +17,6 @@ import 'fast-text-encoding';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import { useEmbeddedWallet, usePrivy } from '@privy-io/expo';
-
-import { useEffect } from 'react';
 
 export default function Home() {
   const { privy, user } = useAppData();
@@ -55,7 +53,7 @@ export default function Home() {
   return (
     <Frame>
       <HeaderBar title="Home" pillContent={homePillContent} />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View className="gap-2">
           <FTitle className="text-4xl">Welcome to Fundamental!</FTitle>
           <FText className="text-lg">This is Fundamental</FText>
@@ -84,12 +82,6 @@ export default function Home() {
               </FText>
             </View>
           </Container>
-          <Link
-            className="mt-4 bg-primary"
-            href={{ pathname: '/details', params: { name: 'Dan' } }}
-            asChild>
-            <Button title="Show Details" />
-          </Link>
         </View>
       </ScrollView>
     </Frame>
