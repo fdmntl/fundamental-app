@@ -79,7 +79,7 @@ const LoadingDots = () => {
   );
 };
 
-const Loading = () => {
+export const Loading = () => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   return (
@@ -101,5 +101,3 @@ const Loading = () => {
     </ImageBackground>
   );
 };
-
-export default Loading;
