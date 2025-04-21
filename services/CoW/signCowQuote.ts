@@ -6,7 +6,10 @@ import {
 } from '@cowprotocol/cow-sdk';
 import { PrivyEmbeddedWalletProvider } from '@privy-io/expo';
 
+import { getCowAppdata } from './getCowAppdata';
 import { getEthersSigner } from '~/services/Ethers/getEthersSigner';
+
+const { hash } = getCowAppdata();
 
 export const signCowQuote = async (
   quote: OrderParameters,
@@ -15,13 +18,15 @@ export const signCowQuote = async (
   provider: PrivyEmbeddedWalletProvider
 ) => {
   const signer = getEthersSigner(provider);
-  const feeAmount = '0';
   const order: UnsignedOrder = {
     ...quote,
-    sellAmount,
-    feeAmount,
+    sellAmount: sellAmount,
+    buyAmount: quote.buyAmount,
+    feeAmount: '0',
     receiver,
+    appData: hash,
   };
+  console.log('SELL ORDER:', order);
   const signature = await OrderSigningUtils.signOrder(order, SupportedChainId.BASE, signer);
   return signature;
 };
