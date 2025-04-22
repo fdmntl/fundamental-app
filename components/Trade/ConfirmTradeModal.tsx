@@ -1,6 +1,15 @@
 import { OrderParameters } from '@cowprotocol/cow-sdk';
 import { Feather } from '@expo/vector-icons';
-import { Modal, View, TouchableWithoutFeedback, Image } from 'react-native';
+import { useState, useRef, useEffect } from 'react';
+import {
+  Animated,
+  Easing,
+  Modal,
+  View,
+  TouchableWithoutFeedback,
+  Image,
+  LayoutAnimation,
+} from 'react-native';
 
 import { useAppData } from '../Wrappers/AppData';
 
@@ -29,6 +38,29 @@ export const ConfirmTradeModal = ({
   selectedGetToken,
 }: ConfirmTradeModalProps) => {
   const { tokens } = useAppData();
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const toggleDropdown = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  const dropdownAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(dropdownAnim, {
+      toValue: isDropdownOpen ? 1 : 0,
+      duration: 300,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: false,
+    }).start();
+  }, [isDropdownOpen]);
+
+  const CoWFee = quote.feeAmount;
+  const gasFee = 0;
+  const fundamentalFee = 0;
+  // TODO: Add gas fee and fundamental fee calculation
+  const totalFee = CoWFee;
 
   return (
     <Modal visible={isModalOpen} animationType="fade" transparent onRequestClose={toggleModal}>
@@ -90,12 +122,53 @@ export const ConfirmTradeModal = ({
                 </View>
               </View>
             </View>
-            <View className="flex-row items-center gap-2">
-              <Feather name="compass" size={24} color="#7CA7FF" />
-              <FText className="!text-xl !text-neutral" bold>
-                Gas fee: {digitsToAmount(Number(quote.feeAmount), selectedPayToken!)}{' '}
-                {selectedPayToken.symbol}
-              </FText>
+            <View>
+              <View className="flex-row items-center gap-2">
+                <Feather name="compass" size={24} color="#7CA7FF" />
+                <View className="flex-row items-center gap-1">
+                  <FText className="!text-xl !text-neutral" bold>
+                    Fees:
+                  </FText>
+                  <FText className="!text-xl" bold>
+                    {digitsToAmount(Number(totalFee), selectedPayToken)} {selectedPayToken.symbol}
+                  </FText>
+                </View>
+                <Feather
+                  name={isDropdownOpen ? 'chevron-up' : 'chevron-down'}
+                  size={24}
+                  color="#7CA7FF"
+                  onPress={toggleDropdown}
+                  className="ml-auto"
+                />
+              </View>
+              {isDropdownOpen && (
+                <View className="mt-4 rounded-xl border border-dashed border-neutral p-2">
+                  <View className="flex-row items-center justify-between">
+                    <FText className="!text-lg !text-neutral" bold>
+                      CoW Fee:
+                    </FText>
+                    <FText className="!text-lg" bold>
+                      {digitsToAmount(Number(CoWFee), selectedPayToken)} {selectedPayToken.symbol}
+                    </FText>
+                  </View>
+                  <View className="flex-row items-center justify-between">
+                    <FText className="!text-lg !text-neutral" bold>
+                      Gas Fee:
+                    </FText>
+                    <FText className="!text-lg" bold>
+                      {gasFee} {selectedPayToken.symbol}
+                    </FText>
+                  </View>
+                  <View className="flex-row items-center justify-between">
+                    <FText className="!text-lg !text-neutral" bold>
+                      Fundamental Fee:
+                    </FText>
+                    <FText className="!text-lg" bold>
+                      {fundamentalFee} {selectedPayToken.symbol}
+                    </FText>
+                  </View>
+                </View>
+              )}
             </View>
             <View className="flex-row items-center justify-center gap-32">
               <Feather name="x" size={40} color="#f87171" onPress={toggleModal} />

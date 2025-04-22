@@ -55,8 +55,16 @@ export default function Trade() {
         await checkAndSetCowAllowance(provider, selectedPayToken.address, user.wallet_address);
         const signature = await signCowQuote(quote, formattedAmount, user.wallet_address, provider);
         await submitCowOrder(quote, formattedAmount, signature);
+        Toast.show({
+          type: 'success',
+          text1: 'Trade successful!',
+        });
       } catch (error) {
         console.error('Error signing or submitting quote:', error);
+        Toast.show({
+          type: 'error',
+          text1: 'Trade failed. Please try again.',
+        });
       }
     }
   };
@@ -83,6 +91,7 @@ export default function Trade() {
               });
               return;
             }
+            setPayAmount('');
             setSelectedPayToken(token);
           }}
           title="You Pay"
