@@ -1,3 +1,4 @@
+import { useEmbeddedWallet, usePrivy } from '@privy-io/expo';
 import { useEffect } from 'react';
 import { View, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -16,7 +17,6 @@ import { Frame } from '~/components/Wrappers/Frame';
 import 'fast-text-encoding';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
-import { useEmbeddedWallet, usePrivy } from '@privy-io/expo';
 
 export default function Home() {
   const { privy, user } = useAppData();
