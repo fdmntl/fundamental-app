@@ -17,16 +17,13 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
 import { SendFeedbackButton } from '~/components/Feedback/sendFeedbackButton';
-import { AppDataProvider, useAppData } from '~/components/Wrappers/AppData';
+import { AppDataProvider } from '~/components/Wrappers/AppData';
 import { AuthProvider } from '~/components/Wrappers/AuthProvider';
 import { ThemeWrapper } from '~/components/Wrappers/ThemeWrapper';
 import { posthog } from '~/utils/postHogClient';
 import { toastConfig } from '~/utils/toastConfig';
 
 const Layout = () => {
-  const { user } = useAppData();
-  const userId = user?.id || 'defaultUserId';
-
   const [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_400Regular_Italic,
@@ -74,7 +71,7 @@ const Layout = () => {
                   <Stack.Screen name="login" options={{ title: 'Login', gestureEnabled: false }} />
                   <Stack.Screen name="+not-found" options={{ title: 'Not Found' }} />
                 </Stack>
-                <SendFeedbackButton userId={userId} />
+                <SendFeedbackButton userId="test" />
               </GestureHandlerRootView>
             </AppDataProvider>
           </ThemeWrapper>
