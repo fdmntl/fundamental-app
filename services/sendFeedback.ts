@@ -14,7 +14,7 @@ async function sendFeedbackToSupaBase(payload: SendFeedbackPayload) {
 
   try {
     await InsertSupabaseData({
-      tableName: 'feedback',
+      tableName: 'user_feedback',
       data: [
         {
           user_id: userId,
