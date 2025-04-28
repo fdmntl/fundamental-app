@@ -1,12 +1,9 @@
 import { usePrivy } from '@privy-io/expo';
-import React from 'react';
 
 import { Button } from './Button';
 import { useAppData } from './Wrappers/AppData';
-import { refreshUserBalances } from '~/services/refreshUserBalance';
-import { AddUser } from '~/services/addUserToDB';
 
-import { slice } from 'viem';
+import { refreshUserBalances } from '~/services/refreshUserBalance';
 
 export const DebugButton = () => {
   const { user } = useAppData();
@@ -18,9 +15,8 @@ export const DebugButton = () => {
   const { tokens } = useAppData();
   const debug = async () => {
     await refreshUserBalances(user, updateUser);
-    await AddUser(privy.user, privy.wallet);
     console.log('\n---------------------App data---------------------');
-    console.log('User:', user);
+    // console.log('User:', user);
     console.log('\nPrivy:', privy);
     console.log('\n---------------------Privy data---------------------');
     console.log('Privy User:', privyUser);
@@ -40,5 +36,5 @@ export const DebugButton = () => {
     });
   };
 
-  return <Button onPress={debug} className="bg-primary" title="Debug" />;
+  return <Button onPress={debug} title="Debug" />;
 };

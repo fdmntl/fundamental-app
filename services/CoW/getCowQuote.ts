@@ -4,8 +4,12 @@ import {
   OrderQuoteRequest,
   OrderQuoteSideKindSell,
 } from '@cowprotocol/cow-sdk';
+import { getCowAppdata } from './getCowAppdata';
 
 const orderBookApi = new OrderBookApi({ chainId: SupportedChainId.BASE });
+
+const { content, hash } = getCowAppdata();
+
 export const getCowQuote = async (
   address: string,
   sellToken: string,
@@ -19,6 +23,8 @@ export const getCowQuote = async (
     receiver: address,
     sellAmountBeforeFee: sellAmount,
     kind: OrderQuoteSideKindSell.SELL,
+    appData: content,
+    appDataHash: hash,
   };
   const { quote } = await orderBookApi.getQuote(quoteRequest);
   return quote;

@@ -9,7 +9,7 @@ export default {
     web: {
       bundler: 'metro',
       output: 'static',
-      favicon: './assets/favicon.png',
+      favicon: './assets/favicon.ico',
     },
     plugins: ['expo-router', 'expo-secure-store', 'expo-font'],
     experiments: {
@@ -17,12 +17,12 @@ export default {
       tsconfigPaths: true,
     },
     orientation: 'portrait',
-    icon: './assets/icon.png',
-    userInterfaceStyle: 'light',
+    icon: './assets/app-icon.png',
+    userInterfaceStyle: 'dark',
     splash: {
       image: './assets/splash.png',
       resizeMode: 'contain',
-      backgroundColor: '#ffffff',
+      backgroundColor: '#18141F',
     },
     assetBundlePatterns: ['**/*'],
     ios: {
@@ -34,8 +34,8 @@ export default {
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: './assets/adaptive-icon.png',
-        backgroundColor: '#ffffff',
+        foregroundImage: './assets/adaptative-icon.png',
+        backgroundColor: '#18141F',
       },
       package: 'com.fundamental.fundamentalapp',
       minSdkVersion: 26,

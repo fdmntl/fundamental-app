@@ -1,13 +1,9 @@
 import { Feather } from '@expo/vector-icons';
-import { usePrivy } from '@privy-io/expo';
-import { Tabs, router } from 'expo-router';
+import { Tabs } from 'expo-router';
 import { cssInterop } from 'nativewind';
-import { useEffect } from 'react';
 import { View } from 'react-native';
 
-import Loading from '~/components/Loading';
 import { FText } from '~/components/Text/FText';
-import { useAppData } from '~/components/Wrappers/AppData';
 import { useTheme } from '~/components/Wrappers/ThemeWrapper';
 
 cssInterop(Feather, {
@@ -20,24 +16,6 @@ cssInterop(Feather, {
 export default function Layout() {
   const { theme } = useTheme();
 
-  const { isReady } = usePrivy();
-  const { privy } = useAppData();
-
-  useEffect(() => {
-    if (isReady && !privy.user) {
-      router.replace('/login');
-    }
-  }, [isReady, privy, router]);
-
-  if (!isReady) {
-    return <Loading />;
-  }
-
-  //* Fail safe
-  if (!privy) {
-    return null;
-  }
-
   return (
     <Tabs
       screenOptions={{
@@ -48,12 +26,12 @@ export default function Layout() {
           bottom: 0,
           left: 0,
           right: 0,
-          height: 85,
+          height: 90,
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: theme === 'dark' ? 'rgba(31, 29, 43	, 0.9)' : 'rgba(243, 243, 248, 0.9)',
+          backgroundColor: theme === 'dark' ? 'rgba(36, 32, 44, 0.9)' : 'rgba(243, 243, 248, 0.9)',
           borderTopWidth: 0,
-          paddingVertical: 15,
+          paddingVertical: 20,
         },
       }}>
       <Tabs.Screen

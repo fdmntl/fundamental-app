@@ -59,6 +59,7 @@ export const RegisterENS = () => {
       </View>
       <Button
         title="Register"
+        className="mx-auto w-[150px]"
         onPress={async () => {
           if (isValidSubname(subname)) {
             try {

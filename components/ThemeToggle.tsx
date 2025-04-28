@@ -8,7 +8,7 @@ const ThemeToggle = () => {
   return (
     <TouchableOpacity onPress={toggleTheme}>
       {theme === 'light' ? (
-        <Feather name="sun" size={42} color="white" />
+        <Feather name="sun" size={42} color="black" />
       ) : (
         <Feather name="moon" size={42} color="white" />
       )}

@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { useEffect } from 'react';
 import { View, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -12,15 +12,26 @@ import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
-import { useEffect, useRef } from 'react';
-import { AddUser } from '~/services/addUserToDB';
 
 import 'fast-text-encoding';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
+import { useEmbeddedWallet, usePrivy } from '@privy-io/expo';
 
 export default function Home() {
   const { privy, user } = useAppData();
+  const { user: privyUser } = usePrivy();
+  const wallet = useEmbeddedWallet();
+  const { updatePrivy } = useAppData();
+
+  useEffect(() => {
+    const updateUser = async () => {
+      await updatePrivy({ user: privyUser!, wallet });
+    };
+
+    updateUser();
+  }, [privyUser, wallet]);
+
   const homePillContent = () => {
     return (
       <PillMessageBox>
@@ -39,26 +50,10 @@ export default function Home() {
     });
   };
 
-  const ref = useRef(false);
-  useEffect(() => {
-    const addUserIfNeeded = async () => {
-      if (privy.user && privy.wallet && !ref.current) {
-        try {
-          await AddUser(privy.user, privy.wallet);
-          ref.current = true;
-        } catch (error) {
-          console.error('Error adding user:', error);
-        }
-      }
-    };
-
-    addUserIfNeeded();
-  }, [privy.user, privy.wallet]);
-
   return (
     <Frame>
       <HeaderBar title="Home" pillContent={homePillContent} />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View className="gap-2">
           <FTitle className="text-4xl">Welcome to Fundamental!</FTitle>
           <FText className="text-lg">This is Fundamental</FText>
@@ -87,12 +82,6 @@ export default function Home() {
               </FText>
             </View>
           </Container>
-          <Link
-            className="mt-4 bg-primary"
-            href={{ pathname: '/details', params: { name: 'Dan' } }}
-            asChild>
-            <Button title="Show Details" />
-          </Link>
         </View>
       </ScrollView>
     </Frame>
