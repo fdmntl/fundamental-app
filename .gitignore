@@ -15,6 +15,8 @@ web-build/
 .idea/
 *.keystore
 android/local.properties
+android/app/src/main/assets/*
+ android/app/src/main/res/*
 *.base64
 *.apk
 # expo router
