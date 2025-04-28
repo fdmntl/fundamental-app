@@ -27,7 +27,7 @@ export default {
     assetBundlePatterns: ['**/*'],
     ios: {
       supportsTablet: true,
-      bundleIdentifier: 'com.fundamental.fundamental-app',
+      bundleIdentifier: 'com.fundamental.fundamentalapp',
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
       },
@@ -37,7 +37,7 @@ export default {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#ffffff',
       },
-      package: 'com.bendrbang.fundamentalapp',
+      package: 'com.fundamental.fundamentalapp',
       minSdkVersion: 26,
     },
     extra: {

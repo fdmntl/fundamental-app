@@ -112,10 +112,10 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.bendrbang.fundamentalapp'
+    namespace 'com.fundamental.fundamentalapp'
 
     defaultConfig {
-        applicationId 'com.bendrbang.fundamentalapp'
+        applicationId 'com.fundamental.fundamentalapp'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

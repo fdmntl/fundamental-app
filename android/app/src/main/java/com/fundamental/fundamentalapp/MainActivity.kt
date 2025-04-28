@@ -1,4 +1,4 @@
-package com.bendrbang.fundamentalapp
+package com.fundamental.fundamentalapp
 
 import android.os.Build
 import android.os.Bundle
