@@ -44,7 +44,7 @@ if (getRNMinorVersion() >= 75) {
   }
 }
 
-rootProject.name = 'fundamental'
+rootProject.name = 'fundamental-app'
 
 dependencyResolutionManagement {
   versionCatalogs {

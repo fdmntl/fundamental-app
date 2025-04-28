@@ -26,6 +26,7 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="fundamental-app"/>
         <data android:scheme="com.fundamental.fundamentalapp"/>
+        <data android:scheme="exp+fundamental"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>

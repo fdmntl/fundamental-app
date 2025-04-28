@@ -2,10 +2,6 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
-println ">>> minSdkVersion: ${minSdkVersion}"
-println ">>> rootProject.ext.minSdkVersion: ${rootProject.ext.minSdkVersion}"
-
-
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 
 static def versionToNumber(major, minor, patch) {
@@ -108,12 +104,12 @@ def enableProguardInReleaseBuilds = (findProperty('android.enableProguardInRelea
 def jscFlavor = 'org.webkit:android-jsc:+'
 
 android {
-    ndkVersion "26.1.10909125"
+    ndkVersion rootProject.ext.ndkVersion
+
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
     namespace 'com.fundamental.fundamentalapp'
-
     defaultConfig {
         applicationId 'com.fundamental.fundamentalapp'
         minSdkVersion rootProject.ext.minSdkVersion
@@ -121,8 +117,13 @@ android {
         versionCode 1
         versionName "1.0.0"
     }
-
     signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
         release {
             def isCI = System.getenv("GITHUB_ACTIONS") == "true"
 
@@ -172,30 +173,24 @@ android {
             }
         }
     }
-
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
-            shrinkResources false
+            shrinkResources (findProperty('android.enableShrinkResourcesInReleaseBuilds')?.toBoolean() ?: false)
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-        }
-        debug {
-            signingConfig signingConfigs.release
-            minifyEnabled false
-            shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            crunchPngs (findProperty('android.enablePngCrunchInReleaseBuilds')?.toBoolean() ?: true)
         }
     }
-    configurations.all {
-        resolutionStrategy {
-            force 'androidx.core:core-ktx:1.10.0'  // Use a version compatible with your setup
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging (findProperty('expo.useLegacyPackaging')?.toBoolean() ?: false)
         }
     }
 }
-
-
-
 
 // Apply static values from `gradle.properties` to the `android.packagingOptions`
 // Accepts values in comma delimited lists, example:

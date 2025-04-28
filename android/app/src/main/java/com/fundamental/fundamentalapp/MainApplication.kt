@@ -15,22 +15,18 @@ import com.facebook.soloader.SoLoader
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ReactNativeHostWrapper
 
-import com.swmansion.reanimated.ReanimatedPackage
-
 class MainApplication : Application(), ReactApplication {
 
   override val reactNativeHost: ReactNativeHost = ReactNativeHostWrapper(
         this,
         object : DefaultReactNativeHost(this) {
           override fun getPackages(): List<ReactPackage> {
-            val packages = PackageList(this).packages
-            packages.add(ReanimatedPackage())
             // Packages that cannot be autolinked yet can be added manually here, for example:
             // packages.add(new MyReactNativePackage());
-            return packages
+            return PackageList(this).packages
           }
 
-          override fun getJSMainModuleName(): String = "index.android.bundle"
+          override fun getJSMainModuleName(): String = ".expo/.virtual-metro-entry"
 
           override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG
 

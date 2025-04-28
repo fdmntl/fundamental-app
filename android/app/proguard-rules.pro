@@ -10,6 +10,5 @@
 # react-native-reanimated
 -keep class com.swmansion.reanimated.** { *; }
 -keep class com.facebook.react.turbomodule.** { *; }
--dontwarn com.facebook.react.turbomodule.**
 
 # Add any project specific keep options here:
