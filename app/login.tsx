@@ -1,4 +1,4 @@
-import { usePrivy, useEmbeddedWallet, useLogin, isNotCreated } from '@privy-io/expo';
+import { usePrivy, useEmbeddedWallet, useLogin } from '@privy-io/expo';
 import { router, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { View, BackHandler, Image } from 'react-native';
@@ -7,6 +7,7 @@ import { Button } from '~/components/Button';
 import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { addUserToDB } from '~/services/addUserToDB';
 
 export default function Login() {
   const { user } = usePrivy();
@@ -14,35 +15,32 @@ export default function Login() {
 
   const { updatePrivy } = useAppData();
 
+  const { login } = useLogin();
+
+  const handleLogin = async () => {
+    try {
+      const session = await login({ loginMethods: ['email', 'google', 'github'] });
+      console.log('Logged in:', session.user);
+      await addUserToDB(session.user);
+      console.log('**** User added to DB ****');
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  };
+
   useEffect(() => {
-    // Prevent back navigation
+    if (user && wallet && wallet.status === 'connected') {
+      updatePrivy({ user, wallet });
+      console.log('**** User and wallet updated in Privy ****');
+      console.log('**** Navigating to tabs ****');
+      router.navigate('/(tabs)');
+    }
+  }, [user, wallet, wallet.status]);
+
+  useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
     return () => backHandler.remove();
   }, []);
-
-  useEffect(() => {
-    const handleUserLogin = async () => {
-      if (user) {
-        if (isNotCreated(wallet)) {
-          try {
-            await wallet.create({ recoveryMethod: 'privy' });
-            console.log('✅ Wallet created successfully!');
-          } catch (error: any) {
-            if (error.message?.includes('already has an embedded wallet')) {
-              console.log('✅ Wallet already exists. Skipping creation.');
-            }
-          }
-        }
-
-        updatePrivy({ user, wallet });
-        router.navigate('/(tabs)');
-      }
-    };
-
-    handleUserLogin();
-  }, [user, router, wallet]);
-
-  const { login } = useLogin();
 
   return (
     <>
@@ -67,15 +65,7 @@ export default function Login() {
           <Button
             title="Take Control Now"
             className="mt-2 w-1/2 !bg-content"
-            onPress={() =>
-              login({ loginMethods: ['email', 'google', 'github'] }).catch((error) => {
-                if (error.message.includes('The login flow was closed')) {
-                  console.log('Login flow was cancelled by the user.');
-                } else {
-                  console.error('Login error:', error);
-                }
-              })
-            }
+            onPress={handleLogin}
           />
         </View>
       </Frame>

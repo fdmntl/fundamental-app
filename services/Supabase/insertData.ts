@@ -3,14 +3,9 @@ import { supabase } from '~/supabaseConfig';
 interface InsertDataProps<T> {
   data: T[];
   tableName: string;
-  upsert?: boolean;
 }
 
-export async function InsertSupabaseData({
-  tableName,
-  data,
-  upsert = false,
-}: InsertDataProps<any>) {
+export async function InsertSupabaseData({ tableName, data }: InsertDataProps<any>) {
   if (!tableName || typeof tableName !== 'string') {
     throw new Error('Table name must be a valid string');
   }
@@ -22,7 +17,7 @@ export async function InsertSupabaseData({
   }
 
   console.log('Inserting data:', data);
-  const query = supabase.from(tableName).insert(data, { upsert });
+  const query = supabase.from(tableName).insert(data);
   const { data: result, error } = await query;
 
   if (error) {
