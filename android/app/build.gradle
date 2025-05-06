@@ -355,10 +355,8 @@ def jscFlavor = 'org.webkit:android-jsc:+'
 
 android {
     ndkVersion rootProject.ext.ndkVersion
-
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
-
     namespace 'com.fundamental.fundamentalapp'
     defaultConfig {
         applicationId 'com.fundamental.fundamentalapp'
@@ -489,14 +487,13 @@ dependencies {
     } else {
         implementation jscFlavor
     }
-    
+
     // Firebase dependencies
     // Import the Firebase BoM
-    implementation platform('com.google.firebase:firebase-bom:33.13.0')
-    
+    implementation platform('com.google.firebase:firebase-bom:32.7.3')
     // Analytics dependency
     implementation 'com.google.firebase:firebase-analytics'
-    
+
     // Add other Firebase dependencies as needed
     // implementation 'com.google.firebase:firebase-auth'
     // implementation 'com.google.firebase:firebase-firestore'
