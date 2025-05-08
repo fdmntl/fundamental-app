@@ -16,3 +16,22 @@ export enum ScreenName {
   Profile = 'profile',
   Other = 'other',
 }
+
+export const FeedbackTypeLabels: Record<FeedbackType, string> = {
+  [FeedbackType.Bug]: 'Bug Report',
+  [FeedbackType.FeatureRequest]: 'Feature Request',
+  [FeedbackType.UiIssue]: 'UI Issue',
+  [FeedbackType.DesignCritique]: 'Design Critique',
+  [FeedbackType.PerformanceIssue]: 'Performance Issue',
+  [FeedbackType.Other]: 'Other',
+};
+
+export const ScreenNameLabels: Record<ScreenName, string> = {
+  [ScreenName.Home]: 'Home',
+  [ScreenName.Assets]: 'Assets',
+  [ScreenName.Trade]: 'Trade',
+  [ScreenName.Earn]: 'Earn',
+  [ScreenName.Send]: 'Send',
+  [ScreenName.Profile]: 'Profile',
+  [ScreenName.Other]: 'Other',
+};

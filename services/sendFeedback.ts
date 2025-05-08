@@ -3,21 +3,19 @@ import { InsertSupabaseData } from './Supabase/insertData';
 import { posthog } from '~/utils/postHogClient';
 
 interface SendFeedbackPayload {
-  userId: string;
   screen: string;
   type: string;
   text: string;
 }
 
 async function sendFeedbackToSupaBase(payload: SendFeedbackPayload) {
-  const { userId, screen, type, text } = payload;
+  const { screen, type, text } = payload;
 
   try {
     await InsertSupabaseData({
       tableName: 'user_feedback',
       data: [
         {
-          user_id: userId,
           screen,
           type,
           text,
@@ -30,10 +28,9 @@ async function sendFeedbackToSupaBase(payload: SendFeedbackPayload) {
 }
 
 function sendFeedbackToPostHog(payload: SendFeedbackPayload) {
-  const { userId, screen, type, text } = payload;
+  const { screen, type, text } = payload;
 
   posthog.capture('feedback', {
-    user_id: userId,
     screen,
     type,
     text,

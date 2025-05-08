@@ -71,7 +71,7 @@ const Layout = () => {
                   <Stack.Screen name="login" options={{ title: 'Login', gestureEnabled: false }} />
                   <Stack.Screen name="+not-found" options={{ title: 'Not Found' }} />
                 </Stack>
-                <SendFeedbackButton userId="test" />
+                <SendFeedbackButton />
               </GestureHandlerRootView>
             </AppDataProvider>
           </ThemeWrapper>
