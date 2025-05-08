@@ -11,8 +11,9 @@ import {
 import { Inter_500Medium, Inter_700Bold } from '@expo-google-fonts/inter';
 import { PrivyProvider, PrivyElements } from '@privy-io/expo';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useNavigationContainerRef } from 'expo-router';
 import { PostHogProvider } from 'posthog-react-native';
+import { useEffect, useRef } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
@@ -20,10 +21,14 @@ import { SendFeedbackButton } from '~/components/Feedback/sendFeedbackButton';
 import { AppDataProvider } from '~/components/Wrappers/AppData';
 import { AuthProvider } from '~/components/Wrappers/AuthProvider';
 import { ThemeWrapper } from '~/components/Wrappers/ThemeWrapper';
+import { trackEvent } from '~/services/PostHog/trackEvent';
 import { posthog } from '~/utils/postHogClient';
 import { toastConfig } from '~/utils/toastConfig';
 
 const Layout = () => {
+  const navRef = useNavigationContainerRef();
+  const routeNameRef = useRef<string | null>(null);
+
   const [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_400Regular_Italic,
@@ -34,6 +39,28 @@ const Layout = () => {
     Inter_500Medium,
     Inter_700Bold,
   });
+
+  // Track app opened event
+  useEffect(() => {
+    trackEvent('app_opened');
+  }, []);
+
+  // Track screen views
+  useEffect(() => {
+    const unsubscribe = navRef.addListener('state', () => {
+      const currentRoute = navRef.getCurrentRoute();
+      if (!currentRoute) return;
+
+      if (routeNameRef.current !== currentRoute.name) {
+        trackEvent('page_view', {
+          screen: currentRoute.name,
+        });
+        routeNameRef.current = currentRoute.name;
+      }
+    });
+
+    return unsubscribe;
+  }, [navRef]);
 
   if (!fontsLoaded) {
     return null;
