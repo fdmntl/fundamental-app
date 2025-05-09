@@ -10,6 +10,9 @@ env:
   KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
   KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
   KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+  EXPO_PUBLIC_ALCHEMY_API_KEY: ${{ secrets.EXPO_PUBLIC_ALCHEMY_API_KEY }}
+  EXPO_PUBLIC_SUPABASE_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_KEY }}
+  EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
 jobs:
   build:
     runs-on: ubuntu-latest
