@@ -20,6 +20,7 @@
     "@expo-google-fonts/dm-serif-text": "^0.2.3",
     "@expo-google-fonts/inter": "^0.2.3",
     "@expo/vector-icons": "^14.0.0",
+    "@monerium/sdk": "^3.4.2",
     "@privy-io/expo": "^0.44.0",
     "@react-navigation/drawer": "^6.7.2",
     "@react-navigation/native": "^6.1.7",
