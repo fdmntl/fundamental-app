@@ -1,10 +1,10 @@
 name: CI/CD Pipeline
 on:
-  push:
+  pull_request:
     branches:
       - main
       - dev
-      - try-build
+
 env:
   KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
   KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -13,6 +13,7 @@ env:
   EXPO_PUBLIC_ALCHEMY_API_KEY: ${{ secrets.EXPO_PUBLIC_ALCHEMY_API_KEY }}
   EXPO_PUBLIC_SUPABASE_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_KEY }}
   EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+  EXPO_PUBLIC_POSTHOG_KEY: ${{ secrets.EXPO_PUBLIC_POSTHOG_KEY }}
 jobs:
   build:
     runs-on: ubuntu-latest

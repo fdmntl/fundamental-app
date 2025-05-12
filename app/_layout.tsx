@@ -15,7 +15,7 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { useState, useEffect } from 'react';
 import Constants from 'expo-constants';
 
@@ -43,7 +43,6 @@ const Layout = () => {
     return null;
   }
 
-  console.log('Rendering main app layout');
   return (
     <PrivyProvider
       appId="clxd5oc5m007jrpv8y8clt6z7"
