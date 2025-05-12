@@ -11,7 +11,7 @@ export default {
       output: 'static',
       favicon: './assets/favicon.ico',
     },
-    plugins: ['expo-router', 'expo-secure-store', 'expo-font'],
+    plugins: ['expo-router', 'expo-secure-store', 'expo-font', 'expo-localization'],
     experiments: {
       typedRoutes: true,
       tsconfigPaths: true,
