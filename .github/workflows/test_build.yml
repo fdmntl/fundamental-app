@@ -30,14 +30,14 @@ jobs:
         run: chmod +x android/gradlew
       - name: Decode and save keystore
         run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | tr -d '\n' | base64 --decode > android/test.jks
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | tr -d '\n' | base64 --decode > android/fundamental.jks
       - name: ls -l
         run: |
-          ls -l android/test.jks
-          file android/test.jks
+          ls -l android/fundamental.jks
+          file android/fundamental.jks
           echo "Keystore file created successfully!"
       - name: Set permissions for keystore
-        run: chmod 600 android/test.jks
+        run: chmod 600 android/fundamental.jks
       - name: Debug environment variables
         run: |
           if [ -z "$KEYSTORE_PASSWORD" ]; then echo "❌ KEYSTORE_PASSWORD is missing"; fi
