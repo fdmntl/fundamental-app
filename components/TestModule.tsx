@@ -15,6 +15,7 @@ import { signCowQuote } from '~/services/CoW/signCowQuote';
 import { submitCowOrder } from '~/services/CoW/submitCowOrder';
 import { getEthersSigner } from '~/services/Ethers/getEthersSigner';
 import { getWalletClient, resolveENS, checkERC20Allowance } from '~/services/viemService';
+import { coinbaseOnramp } from '~/services/Onramp/coinbaseOnramp';
 
 const TestModule = () => {
   const { user, privy } = useAppData();
@@ -66,6 +67,10 @@ const TestModule = () => {
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: 200 }}>
       <Container className="" title="Test Module">
+        <Button
+          className="bg-primary"
+          title="Coinbase Onramp Test"
+          onPress={() => coinbaseOnramp(user.wallet_address)}></Button>
         <FText className="text-lg text-text">Resolve ENS Domain</FText>
         <TextInput
           className="my-2 rounded border border-gray-300 p-2 text-text"

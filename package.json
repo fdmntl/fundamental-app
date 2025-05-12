@@ -12,6 +12,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@coinbase/onchainkit": "^0.38.13",
     "@coinbase/wallet-mobile-sdk": "^1.0.13",
     "@cowprotocol/app-data": "^2.5.1",
     "@cowprotocol/cow-sdk": "^5.10.0",
