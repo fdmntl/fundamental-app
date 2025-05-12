@@ -133,6 +133,9 @@ android {
                 def keystoreFile = file("../fundamental.jks")
                 println("Keystore file path: ${keystoreFile.absolutePath}")
                 println("keystore: ${keystoreFile}")
+                println("keystorePassword: ${keystorePassword}")
+                println("keyAliasEnv: ${keyAliasEnv}")
+                println("keyPasswordEnv: ${keyPasswordEnv}")
 
                 if (keystorePassword && keyAliasEnv && keyPasswordEnv && keystoreFile.exists()) {
                     storeFile keystoreFile
