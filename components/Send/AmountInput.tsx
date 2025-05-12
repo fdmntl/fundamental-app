@@ -1,6 +1,14 @@
 import { Feather } from '@expo/vector-icons';
 import { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  FlatList,
+  Image,
+  TouchableWithoutFeedback,
+} from 'react-native';
 
 import { FText } from '~/components/Text/FText';
 import { Token, User } from '~/types/supabaseTypes';
@@ -14,7 +22,7 @@ interface AmountInputProps {
   value: string;
   tokens: Token[];
   user: User;
-  defaultToken?: Token;
+  selectedToken: Token | null;
   selectedTokenBalance: number;
   onTokenChange?: (token: Token) => void;
   title?: string;
@@ -25,13 +33,12 @@ export const AmountInput = ({
   value,
   tokens,
   user,
-  defaultToken = undefined,
+  selectedToken,
   selectedTokenBalance,
   onTokenChange,
   title = 'Amount',
 }: AmountInputProps) => {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
-  const [selectedToken, setSelectedToken] = useState<Token | undefined>(defaultToken);
 
   const handleInputChange = (value: string) => {
     onChange(value.replace(/[^0-9.]/g, ''));
@@ -45,7 +52,6 @@ export const AmountInput = ({
   const isValidAmount = value !== '' && !isNaN(Number(value)) && Number(value) <= balanceDisplay;
 
   const handleTokenSelect = (token: Token) => {
-    setSelectedToken(token);
     setIsPickerOpen(false);
     if (onTokenChange) onTokenChange(token);
   };
@@ -77,7 +83,7 @@ export const AmountInput = ({
       <View className="-mt-2 flex-row items-center">
         <TextInput
           className={`flex-1 rounded-lg bg-content text-4xl font-semibold
-            ${value === '' ? 'text-text' : isValidAmount ? 'text-success' : 'text-error'}`}
+            ${value === '' ? 'text-text' : isValidAmount ? 'text-text' : 'text-error'}`}
           keyboardType="numeric"
           placeholder={`0 ${selectedToken?.symbol || ''}`}
           value={value}
@@ -103,49 +109,51 @@ export const AmountInput = ({
         </View>
       </View>
       <Modal visible={isPickerOpen} transparent animationType="fade">
-        <View className="flex-1 items-center justify-center">
-          <View className="absolute h-full w-full bg-background opacity-50" />
-          <View className="w-11/12 max-w-md gap-6 rounded-2xl bg-content p-6">
-            <FText className="!text-2xl text-text" bold>
-              Select a token
-            </FText>
-            <FlatList
-              data={tokens}
-              keyExtractor={(item) => item.address + item.symbol}
-              ItemSeparatorComponent={() => <View className="h-4" />}
-              renderItem={({ item }) => {
-                const icon = tokenIcons[item.symbol] || tokenIcons.default;
-                const isSelected = selectedToken?.address === item.address;
-                return (
-                  <TouchableOpacity
-                    className="flex-row items-center gap-4 rounded-2xl bg-background p-4"
-                    onPress={() => handleTokenSelect(item)}>
-                    <Image source={icon} className="h-12 w-12" />
-                    <FText className="text-lg text-text" bold>
-                      {item.symbol}
-                    </FText>
-                    {isSelected && <Feather name="check" size={32} className="text-success" />}
-                    <View className="ml-auto items-end justify-end">
-                      <FText className="text-text" bold>
-                        {getUserTokenAmount(item.address, tokens, user).toFixed(2)}
-                      </FText>
-                      <FText className="text-text">
-                        ${getUserTokenValue(item.address, tokens, user).toFixed(2)}
-                      </FText>
-                    </View>
-                  </TouchableOpacity>
-                );
-              }}
-            />
-            <TouchableOpacity
-              className="w-full items-center rounded-lg"
-              onPress={() => setIsPickerOpen(false)}>
-              <FText className="text-lg text-text" bold>
-                Close
+        <TouchableWithoutFeedback onPress={() => setIsPickerOpen(false)}>
+          <View className="flex-1 items-center justify-center">
+            <View className="absolute h-full w-full bg-background opacity-50" />
+            <View className="w-11/12 max-w-md gap-6 rounded-2xl bg-content p-6">
+              <FText className="!text-2xl text-text" bold>
+                Select a token
               </FText>
-            </TouchableOpacity>
+              <FlatList
+                data={tokens}
+                keyExtractor={(item) => item.address + item.symbol}
+                ItemSeparatorComponent={() => <View className="h-4" />}
+                renderItem={({ item }) => {
+                  const icon = tokenIcons[item.symbol] || tokenIcons.default;
+                  const isSelected = selectedToken?.address === item.address;
+                  return (
+                    <TouchableOpacity
+                      className="flex-row items-center gap-4 rounded-2xl bg-background p-4"
+                      onPress={() => handleTokenSelect(item)}>
+                      <Image source={icon} className="h-12 w-12" />
+                      <FText className="text-lg text-text" bold>
+                        {item.symbol}
+                      </FText>
+                      {isSelected && <Feather name="check" size={32} className="text-success" />}
+                      <View className="ml-auto items-end justify-end">
+                        <FText className="text-text" bold>
+                          {getUserTokenAmount(item.address, tokens, user).toFixed(2)}
+                        </FText>
+                        <FText className="text-text">
+                          ${getUserTokenValue(item.address, tokens, user).toFixed(2)}
+                        </FText>
+                      </View>
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+              <TouchableOpacity
+                className="w-full items-center rounded-lg"
+                onPress={() => setIsPickerOpen(false)}>
+                <FText className="text-lg text-text" bold>
+                  Close
+                </FText>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );
