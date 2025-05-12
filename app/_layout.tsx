@@ -15,18 +15,14 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
-import { View } from 'react-native';
-import { useState, useEffect } from 'react';
-import Constants from 'expo-constants';
+import { useState } from 'react';
 
-import { Loading } from '~/components/Loading';
 import { AppDataProvider } from '~/components/Wrappers/AppData';
 import { AuthProvider } from '~/components/Wrappers/AuthProvider';
 import { ThemeWrapper } from '~/components/Wrappers/ThemeWrapper';
 import { toastConfig } from '~/utils/toastConfig';
 
 const Layout = () => {
-  const [error, setError] = useState<string | null>(null);
   const [fontsLoaded] = useFonts({
     DMSans_400Regular,
     DMSans_400Regular_Italic,
