@@ -172,7 +172,15 @@ export const ConfirmTradeModal = ({
             </View>
             <View className="flex-row items-center justify-center gap-32">
               <Feather name="x" size={40} color="#f87171" onPress={toggleModal} />
-              <Feather name="check" size={40} color="#4ade80" onPress={onConfirm} />
+              <Feather
+                name="check"
+                size={40}
+                color="#4ade80"
+                onPress={() => {
+                  onConfirm();
+                  toggleModal();
+                }}
+              />
             </View>
           </View>
         </View>
