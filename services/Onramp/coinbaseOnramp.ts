@@ -6,7 +6,7 @@ export async function coinbaseOnramp(addr: string) {
   const url = getOnrampBuyUrl({
     projectId,
     addresses: { [addr]: ['base'] },
-    assets: ['USDC'],
+    assets: ['USDC', 'ETH'],
     presetFiatAmount: 20,
     fiatCurrency: 'EUR',
   });
