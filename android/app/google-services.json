@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "747597881669",
+    "project_id": "fundamental-wallet",
+    "storage_bucket": "fundamental-wallet.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:747597881669:android:5bf98a58a92d59cb279e2c",
+        "android_client_info": {
+          "package_name": "com.fundamental.fundamentalapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCByHToKC95-k4sXrVTb4I7RczZtTMf1UM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
