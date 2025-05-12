@@ -67,7 +67,26 @@ const Layout = () => {
   }
 
   return (
-    <PostHogProvider client={posthog}>
+    <PostHogProvider
+      client={posthog}
+      autocapture={{
+        captureTouches: true,
+        captureLifecycleEvents: true,
+        captureScreens: true,
+        ignoreLabels: [],
+        customLabelProp: 'ph-label',
+        noCaptureProp: 'ph-no-capture',
+        navigation: {
+          routeToName: (name, params) => {
+            if (params.id) return `${name}/${params.id}`;
+            return name;
+          },
+          routeToProperties: (name, params) => {
+            if (name === 'SensitiveScreen') return undefined;
+            return params;
+          },
+        },
+      }}>
       <PrivyProvider
         appId="clxd5oc5m007jrpv8y8clt6z7"
         config={{
