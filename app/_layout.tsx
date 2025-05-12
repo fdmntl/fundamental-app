@@ -78,7 +78,7 @@ const Layout = () => {
         noCaptureProp: 'ph-no-capture',
         navigation: {
           routeToName: (name, params) => {
-            if (params.id) return `${name}/${params.id}`;
+            if (params?.id) return `${name}/${params.id}`;
             return name;
           },
           routeToProperties: (name, params) => {
