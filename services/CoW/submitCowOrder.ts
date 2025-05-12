@@ -6,6 +6,8 @@ import {
   SigningResult,
 } from '@cowprotocol/cow-sdk';
 
+import { trackEvent } from '../PostHog/trackEvent';
+
 const orderBookApi = new OrderBookApi({ chainId: SupportedChainId.BASE });
 
 export const submitCowOrder = async (
@@ -20,6 +22,14 @@ export const submitCowOrder = async (
       sellAmount,
       feeAmount: '0',
       signingScheme: signature.signingScheme as unknown as SigningScheme,
+    });
+
+    trackEvent('cow_order_submitted', {
+      orderId,
+      sellAmount,
+      buyToken: quote.buyToken,
+      sellToken: quote.sellToken,
+      buyAmount: quote.buyAmount,
     });
     return orderId;
   } catch (error) {

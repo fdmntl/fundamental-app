@@ -10,6 +10,8 @@ import {
 } from 'viem';
 import { base, mainnet } from 'viem/chains';
 
+import { trackEvent } from './PostHog/trackEvent';
+
 // Creates a wallet client using the Privy Embedded Wallet provider
 export const getWalletClient = async (provider: PrivyEmbeddedWalletProvider) => {
   await provider.request({
@@ -78,6 +80,12 @@ export const sendETH = async (
       to,
       value: amount,
     });
+
+    trackEvent('send_eth', {
+      destination,
+      amount,
+      txHash,
+    });
   } catch (error) {
     console.log('Error sending ETH:', error);
     throw error;
@@ -125,6 +133,13 @@ export const sendERC20 = async (
       to: tokenAddress,
       data,
       value: 0n, // No ETH is sent with the call
+    });
+
+    trackEvent('send_erc20', {
+      tokenAddress,
+      destination,
+      amount,
+      txHash,
     });
   } catch (error) {
     console.log('Error sending ERC-20 token:', error);
@@ -176,6 +191,12 @@ export const registerName = async (
       to: contractAddress,
       data,
       value: 0n, // No ETH is sent with the call
+    });
+
+    trackEvent('register_ens', {
+      label,
+      owner,
+      txHash,
     });
   } catch (error) {
     console.error('Error calling register method:', error);
