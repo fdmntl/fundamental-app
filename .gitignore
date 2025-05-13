@@ -12,11 +12,21 @@ npm-debug.*
 *.orig.*
 web-build/
 .vscode/
+.idea/
+*.keystore
+android/local.properties
+android/app/src/main/assets/*
+android/app/src/main/res/raw/*
+android/app/src/main/res/drawable-*
+*.base64
+*.apk
+
+
 # expo router
 expo-env.d.ts
 
 ios
-android
+
 
 # macOS
 .DS_Store
@@ -27,3 +37,7 @@ android
 # Documentation
 docs/
 .env
+
+eas.json
+eas.json
+eas.json

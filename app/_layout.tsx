@@ -16,6 +16,7 @@ import { PostHogProvider } from 'posthog-react-native';
 import { useEffect, useRef } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
+import { useState } from 'react';
 
 import { SendFeedbackButton } from '~/components/Feedback/sendFeedbackButton';
 import { AppDataProvider } from '~/components/Wrappers/AppData';
@@ -63,6 +64,7 @@ const Layout = () => {
   }, [navRef]);
 
   if (!fontsLoaded) {
+    console.log('Fonts not loaded yet');
     return null;
   }
 
@@ -89,6 +91,7 @@ const Layout = () => {
       }}>
       <PrivyProvider
         appId="clxd5oc5m007jrpv8y8clt6z7"
+        clientId="client-WY2nCVozcYUzD3HEthM1D1PKt3cFK56DG9mKHCtbZA3Uc"
         config={{
           embedded: {
             ethereum: {
