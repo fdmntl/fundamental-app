@@ -3,6 +3,7 @@ import { View } from 'react-native';
 
 import { HeaderBar } from '~/components/HeaderBar';
 import TestModule from '~/components/TestModule';
+import OnRamping from '~/components/on-ramping';
 import { FText } from '~/components/Text/FText';
 import { Frame } from '~/components/Wrappers/Frame';
 
@@ -11,7 +12,8 @@ export default function Earn() {
     <Frame>
       <HeaderBar title="Earn" />
       <View className="mx-auto items-center">
-        <TestModule />
+        {/* <TestModule /> */}
+        <OnRamping />
       </View>
     </Frame>
   );
