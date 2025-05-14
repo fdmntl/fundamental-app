@@ -62,11 +62,7 @@ export default function Login() {
           />
         </View>
         <View className="absolute bottom-16 w-full items-center">
-          <Button
-            title="Take Control Now"
-            className="mt-2 w-1/2 !bg-content"
-            onPress={handleLogin}
-          />
+          <Button title="Take Control Now" className="mt-2 !bg-content" onPress={handleLogin} />
         </View>
       </Frame>
     </>
