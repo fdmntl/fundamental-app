@@ -23,7 +23,11 @@ export default function Login() {
       console.log('Logged in:', session.user);
       await addUserToDB(session.user);
       console.log('**** User added to DB ****');
-    } catch (error) {
+    } catch (error: any) {
+      if (error.message === 'The login flow was closed') {
+        console.log('Login flow was closed by the user.');
+        return;
+      }
       console.error('Login error:', error);
     }
   };
