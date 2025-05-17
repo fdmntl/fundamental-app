@@ -8,6 +8,7 @@ import { Container } from './Container';
 import { FText } from './Text/FText';
 
 import { useAppData } from '~/components/Wrappers/AppData';
+import { getCowOrderBook } from '~/services/CoW/getCowOrderBook';
 import { getCowOrderStatus } from '~/services/CoW/getCowOrderStatus';
 import { getCowQuote } from '~/services/CoW/getCowQuote';
 import { setCowInfiniteAllowance } from '~/services/CoW/setCowInfiniteAllowance';
@@ -154,6 +155,14 @@ const TestModule = () => {
               '0x7a43cf815dae479f40b5f9df705efeaffccaa4751a72535ff368edfcf960ffa7df7782a4f5841ef3ae0bf828b4ac89c3018604f66791c8ed'
             );
             // console.log('Order Status:', orderStatus);
+          }}
+        />
+        <Button
+          className="bg-primary"
+          title="Get Cow Order Book"
+          onPress={async () => {
+            const orderBook = await getCowOrderBook(user.wallet_address);
+            console.log('Order Book:', orderBook);
           }}
         />
       </Container>
