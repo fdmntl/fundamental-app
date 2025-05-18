@@ -8,7 +8,12 @@ import {
   DMSans_700Bold,
   DMSans_700Bold_Italic,
 } from '@expo-google-fonts/dm-sans';
-import { Inter_500Medium, Inter_700Bold } from '@expo-google-fonts/inter';
+import {
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+} from '@expo-google-fonts/inter';
 import { PrivyProvider, PrivyElements } from '@privy-io/expo';
 import { useFonts } from 'expo-font';
 import { Stack, useNavigationContainerRef } from 'expo-router';
@@ -16,7 +21,6 @@ import { PostHogProvider } from 'posthog-react-native';
 import { useEffect, useRef } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
-import { useState } from 'react';
 
 import { SendFeedbackButton } from '~/components/Feedback/sendFeedbackButton';
 import { AppDataProvider } from '~/components/Wrappers/AppData';
@@ -37,7 +41,9 @@ const Layout = () => {
     DMSans_500Medium_Italic,
     DMSans_700Bold,
     DMSans_700Bold_Italic,
+    Inter_400Regular,
     Inter_500Medium,
+    Inter_600SemiBold,
     Inter_700Bold,
   });
 

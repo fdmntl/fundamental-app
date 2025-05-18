@@ -46,7 +46,7 @@ export default function Assets() {
         <View className="flex-1">
           <DetailsHeader title={title} icon={icon} />
           <ScrollView showsVerticalScrollIndicator={false}>
-            <View className="gap-y-5">
+            <View className="gap-y-5 pb-24">
               <Graph
                 graphData={{
                   daily_values: token.daily_values,
