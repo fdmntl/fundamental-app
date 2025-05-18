@@ -1,4 +1,5 @@
-import { Feather } from '@expo/vector-icons';
+import { Feather, FontAwesome6 } from '@expo/vector-icons';
+
 import { Tabs } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { View } from 'react-native';
@@ -7,6 +8,13 @@ import { FText } from '~/components/Text/FText';
 import { useTheme } from '~/components/Wrappers/ThemeWrapper';
 
 cssInterop(Feather, {
+  className: {
+    target: 'style',
+    nativeStyleToProp: { color: 'color' },
+  },
+});
+
+cssInterop(FontAwesome6, {
   className: {
     target: 'style',
     nativeStyleToProp: { color: 'color' },
