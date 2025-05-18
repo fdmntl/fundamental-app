@@ -50,7 +50,9 @@ export const HeaderBar = ({ title, pillContent, pillMethod }: HeaderBarProps): J
         <TouchableOpacity onPress={openDrawer}>
           <Feather name="menu" size={36} className="text-text" />
         </TouchableOpacity>
-        <FTitle className="mt-1 text-4xl text-text">{title}</FTitle>
+        <View className="absolute left-0 right-0 items-center">
+          <FTitle className="mt-1 text-4xl text-text">{title}</FTitle>
+        </View>
         {/* <TouchableOpacity onPress={togglePill} className="ml-auto">
           <Image source={fundy} style={{ height: 64, width: 96 }} resizeMode="contain" />
         </TouchableOpacity> */}
