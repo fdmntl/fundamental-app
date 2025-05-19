@@ -34,7 +34,5 @@ export const printableAmountToDigits = (amount: number, token: Token): number =>
       nbofdigitsaftercomma++;
     }
   }
-  console.log('amount', amount);
-  console.log('nbofdigitsaftercomma', nbofdigitsaftercomma);
   return Number(amount.toFixed(nbofdigitsaftercomma - 1));
 };
