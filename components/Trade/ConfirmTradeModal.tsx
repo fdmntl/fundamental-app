@@ -17,6 +17,7 @@ import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { Token } from '~/types/supabaseTypes';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
+import { printableAmountToDigits } from '~/utils/helpers/tokens/amountToDigits';
 import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
 import { getTokenAmountPrice } from '~/utils/helpers/tokens/getTokenAmountPrice';
 
@@ -107,7 +108,10 @@ export const ConfirmTradeModal = ({
                   />
                   <View className="flex-col">
                     <FText className="!text-2xl" bold>
-                      {digitsToAmount(Number(quote.buyAmount), selectedGetToken!)}{' '}
+                      {printableAmountToDigits(
+                        digitsToAmount(Number(quote.buyAmount), selectedGetToken!),
+                        selectedGetToken!
+                      )}{' '}
                       {selectedGetToken.symbol}
                     </FText>
                     <FText className="!text-neutral" bold>

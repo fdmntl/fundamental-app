@@ -9,3 +9,32 @@ import { Token } from '~/types/supabaseTypes';
 export const amountToDigits = (amount: number, token: Token): number => {
   return amount * Math.pow(10, token.digits);
 };
+
+export const printableAmountToDigits = (amount: number, token: Token): number => {
+  if (amount === 0) {
+    return 0;
+  }
+
+  if (token.last_value <= 0.01) {
+    return Number(amount.toFixed(0));
+  }
+
+  let nbofTokens = amount;
+  let nbofdigitsaftercomma = 0;
+  let modulo = 1;
+
+  while (modulo < nbofTokens) {
+    modulo *= 10;
+  }
+
+  while (nbofTokens * token.last_value >= 0.01) {
+    nbofTokens %= modulo;
+    modulo /= 10;
+    if (nbofTokens < 1) {
+      nbofdigitsaftercomma++;
+    }
+  }
+  console.log('amount', amount);
+  console.log('nbofdigitsaftercomma', nbofdigitsaftercomma);
+  return Number(amount.toFixed(nbofdigitsaftercomma - 1));
+};

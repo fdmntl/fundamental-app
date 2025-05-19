@@ -16,7 +16,7 @@ import { Token, User } from '~/types/supabaseTypes';
 import { debounce } from '~/utils/helpers/debounce';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
 import { roundNumberToDecimal } from '~/utils/helpers/numbers/roundNumberToDecimal';
-import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
+import { amountToDigits, printableAmountToDigits } from '~/utils/helpers/tokens/amountToDigits';
 import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
 import { getTokenAmountPrice } from '~/utils/helpers/tokens/getTokenAmountPrice';
 
@@ -64,12 +64,13 @@ export const QuoteDisplay = ({
         user.wallet_address,
         youPayToken.address,
         selectedToken.address,
-        youPayValueConverted.toString()
+        youPayValueConverted.toString(),
       );
 
       if (onQuote) onQuote(quote);
 
-      const formattedQuote = digitsToAmount(Number(quote.buyAmount), selectedToken);
+      let formattedQuote = digitsToAmount(Number(quote.buyAmount), selectedToken);
+      formattedQuote = printableAmountToDigits(formattedQuote, selectedToken);
       setQuoteValue(formattedQuote);
     } catch (error) {
       console.error('Error calculating quote:', error);
