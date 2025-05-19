@@ -17,6 +17,6 @@ export const Frame = ({ children }: { children: React.ReactNode }) => {
 };
 
 const styles = {
-  outerMargin: 'flex flex-1 bg-background',
+  outerMargin: 'flex flex-1 bg-background pt-6',
   frame: 'flex flex-1 m-6 bg-background h-screen',
 };

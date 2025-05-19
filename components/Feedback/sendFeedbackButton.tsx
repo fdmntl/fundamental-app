@@ -1,6 +1,6 @@
 import { Feather } from '@expo/vector-icons';
 import { useState } from 'react';
-import { View, TouchableOpacity, Modal, TextInput } from 'react-native';
+import { View, TouchableOpacity, Modal, TextInput, Platform } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Toast from 'react-native-toast-message';
 
@@ -75,7 +75,7 @@ export const SendFeedbackButton = () => {
               Give us feedback on your experience!
             </FText>
 
-            <View className="z-50 gap-2">
+            <View className={`${Platform.OS === 'ios' && 'z-50'} gap-2`}>
               <FText className="text-lg font-bold !text-black">Feedback Type</FText>
               <DropDownPicker
                 open={typeModalOpen}
@@ -87,10 +87,12 @@ export const SendFeedbackButton = () => {
                 value={feedbackType || null}
                 setValue={setFeedbackType}
                 placeholder="Select feedback type"
+                zIndex={2000}
+                zIndexInverse={1000}
               />
             </View>
 
-            <View className="z-40 gap-2">
+            <View className={`${Platform.OS === 'ios' && 'z-40'} gap-2`}>
               <FText className="text-lg font-bold !text-black">Screen Name</FText>
               <DropDownPicker
                 open={screenModalOpen}
@@ -102,6 +104,8 @@ export const SendFeedbackButton = () => {
                 value={screenName || null}
                 setValue={setScreenName}
                 placeholder="Select screen name"
+                zIndex={1000}
+                zIndexInverse={2000}
               />
             </View>
 

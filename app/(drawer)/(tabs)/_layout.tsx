@@ -1,12 +1,20 @@
-import { Feather } from '@expo/vector-icons';
+import { Feather, FontAwesome6 } from '@expo/vector-icons';
+
 import { Tabs } from 'expo-router';
 import { cssInterop } from 'nativewind';
-import { View } from 'react-native';
+import { View, Platform } from 'react-native';
 
 import { FText } from '~/components/Text/FText';
 import { useTheme } from '~/components/Wrappers/ThemeWrapper';
 
 cssInterop(Feather, {
+  className: {
+    target: 'style',
+    nativeStyleToProp: { color: 'color' },
+  },
+});
+
+cssInterop(FontAwesome6, {
   className: {
     target: 'style',
     nativeStyleToProp: { color: 'color' },
@@ -31,7 +39,7 @@ export default function Layout() {
           justifyContent: 'center',
           backgroundColor: theme === 'dark' ? 'rgba(36, 32, 44, 0.9)' : 'rgba(243, 243, 248, 0.9)',
           borderTopWidth: 0,
-          paddingVertical: 20,
+          paddingVertical: Platform.OS === 'ios' ? 20 : 0,
         },
       }}>
       <Tabs.Screen

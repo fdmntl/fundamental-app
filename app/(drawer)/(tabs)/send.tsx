@@ -69,6 +69,7 @@ export default function Send() {
         <View>
           <AmountInput
             value={amount}
+            selectedToken={selectedToken}
             onChange={(value) => setAmount(value)}
             tokens={possessedTokens}
             user={user}
