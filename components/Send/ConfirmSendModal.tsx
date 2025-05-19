@@ -27,7 +27,7 @@ export const ConfirmSendModal = ({
     <TouchableWithoutFeedback onPress={toggleModal}>
       <View className="flex-1 items-center justify-center bg-[rgba(0,0,0,0.5)]">
         <TouchableWithoutFeedback onPress={() => {}}>
-          <View className="w-full max-w-md gap-2 rounded-2xl bg-background p-5">
+          <View className="w-[85%] gap-2 rounded-2xl bg-background p-5">
             <FTitle className="!text-3xl">Confirm Send</FTitle>
             <View className="gap-2">
               <View className="rounded-2xl bg-content p-2 px-3">
