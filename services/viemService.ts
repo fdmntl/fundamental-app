@@ -83,7 +83,7 @@ export const sendETH = async (
 
     trackEvent('send_eth', {
       destination,
-      amount,
+      amount: amount.toString(),
       txHash,
     });
   } catch (error) {
@@ -138,7 +138,7 @@ export const sendERC20 = async (
     trackEvent('send_erc20', {
       tokenAddress,
       destination,
-      amount,
+      amount: amount.toString(),
       txHash,
     });
   } catch (error) {
