@@ -1,6 +1,7 @@
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { View, Image } from 'react-native';
 
+import { ProfileModal } from './Profile/ProfileModal';
 import ThemeToggle from './ThemeToggle';
 
 export default function CustomDrawerContent(props: any) {
@@ -13,6 +14,9 @@ export default function CustomDrawerContent(props: any) {
             style={{ height: 44, width: 250 }}
             resizeMode="contain"
           />
+        </View>
+        <View className="p-4">
+          <ProfileModal />
         </View>
         <DrawerItemList {...props} />
         <View className="p-5">
