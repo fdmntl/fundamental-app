@@ -39,5 +39,5 @@ export const printableAmountToDigits = (amount: number, token: Token): number =>
     nbofdigitsaftercomma = 0;
   }
 
-  return Number(amount.toFixed(nbofdigitsaftercomma - 1));
+  return Number(amount.toFixed(Math.max(0, nbofdigitsaftercomma - 1)));
 };
