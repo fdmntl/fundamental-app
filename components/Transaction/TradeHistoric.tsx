@@ -6,8 +6,8 @@ import { FText } from '../Text/FText';
 
 import { fetchData } from '~/services/Supabase/fetchData';
 import { User } from '~/types/supabaseTypes';
-import { printableDigitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
-
+import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
+import { printToken } from '~/utils/helpers/tokens/printToken';
 interface TransactionBookDisplayProps {
   user: User;
 }
@@ -45,10 +45,10 @@ export const TransactionBookDisplay = ({ user }: TransactionBookDisplayProps) =>
         // fill buyToken and sellToken with the token name
         const updatedOrders = filteredOrders.map((order) => {
           const buyToken = tokens.find(
-            (token) => token.address.toLowerCase() === order.buyTokenAdress
+            (token) => token.address.toLowerCase() === order.buyTokenAddress
           );
           const sellToken = tokens.find(
-            (token) => token.address.toLowerCase() === order.sellTokenAdress
+            (token) => token.address.toLowerCase() === order.sellTokenAddress
           );
           return {
             ...order,
@@ -83,10 +83,12 @@ export const TransactionBookDisplay = ({ user }: TransactionBookDisplayProps) =>
           <View key={index} className="flex flex-row justify-between p-2">
             <FText className="text-lg">{order.status}</FText>
             <FText className="text-lg">
-              {printableDigitsToAmount(order.sellAmount, order.sellToken)} {order.sellToken.symbol}
+              {printToken(digitsToAmount(order.sellAmount, order.sellToken), order.sellToken)}
+              {order.sellToken.symbol}
             </FText>
             <FText className="text-lg">
-              {printableDigitsToAmount(order.buyAmount, order.buyToken)} {order.buyToken.symbol}
+              {printToken(digitsToAmount(order.buyAmount, order.buyToken), order.buyToken)}
+              {order.buyToken.symbol}
             </FText>
             <FText className="text-lg">{order.date}</FText>
           </View>
