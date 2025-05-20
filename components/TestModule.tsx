@@ -147,10 +147,10 @@ const TestModule = () => {
           className="bg-primary"
           title="Get Cow Order Status"
           onPress={async () => {
-            await getCowOrderStatus(
+            const orderStatus = await getCowOrderStatus(
               '0x7a43cf815dae479f40b5f9df705efeaffccaa4751a72535ff368edfcf960ffa7df7782a4f5841ef3ae0bf828b4ac89c3018604f66791c8ed'
             );
-            // console.log('Order Status:', orderStatus);
+            console.log('Order Status:', orderStatus);
           }}
         />
       </Container>
