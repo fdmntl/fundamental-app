@@ -32,8 +32,8 @@ export const TransactionBookDisplay = ({ user }: TransactionBookDisplayProps) =>
           buyAmount: order.buyAmount,
           sellAmount: order.sellAmount,
           date: order.creationDate.slice(11, 19),
-          buyTokenAdress: order.buyToken,
-          sellTokenAdress: order.sellToken,
+          buyTokenAddress: order.buyToken,
+          sellTokenAddress: order.sellToken,
           buyToken: null,
           sellToken: null,
         }));
