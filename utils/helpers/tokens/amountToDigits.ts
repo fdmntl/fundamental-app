@@ -11,7 +11,7 @@ export const amountToDigits = (amount: number, token: Token): number => {
 };
 
 export const printableAmountToDigits = (amount: number, token: Token): number => {
-  if (amount === 0) {
+  if (amount === 0 || !amount || !token) {
     return 0;
   }
 
@@ -34,5 +34,10 @@ export const printableAmountToDigits = (amount: number, token: Token): number =>
       nbofdigitsaftercomma++;
     }
   }
+
+  if (nbofdigitsaftercomma - 1 < 0) {
+    nbofdigitsaftercomma = 0;
+  }
+
   return Number(amount.toFixed(nbofdigitsaftercomma - 1));
 };

@@ -64,13 +64,12 @@ export const QuoteDisplay = ({
         user.wallet_address,
         youPayToken.address,
         selectedToken.address,
-        youPayValueConverted.toString(),
+        youPayValueConverted.toString()
       );
 
       if (onQuote) onQuote(quote);
 
-      let formattedQuote = digitsToAmount(Number(quote.buyAmount), selectedToken);
-      formattedQuote = printableAmountToDigits(formattedQuote, selectedToken);
+      const formattedQuote = digitsToAmount(Number(quote.buyAmount), selectedToken);
       setQuoteValue(formattedQuote);
     } catch (error) {
       console.error('Error calculating quote:', error);
@@ -124,7 +123,7 @@ export const QuoteDisplay = ({
           {selectedToken
             ? isLoading
               ? 'Calculating Quote'
-              : `${roundNumberToDecimal(quoteValue)} ${selectedToken?.symbol || ''}`
+              : `${printableAmountToDigits(quoteValue, selectedToken)} ${selectedToken?.symbol || ''}`
             : 'Select a token'}
         </FText>
       </View>
