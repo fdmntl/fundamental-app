@@ -56,7 +56,7 @@ export const TransactionBookDisplay = ({ user }: TransactionBookDisplayProps) =>
             sellToken: sellToken ? sellToken : 'Unknown',
           };
         });
-        setBook(updatedOrders || 'No Book available');
+        setBook(updatedOrders || []);
       } catch (error) {
         console.error('Error fetching order Book:', error);
       } finally {
