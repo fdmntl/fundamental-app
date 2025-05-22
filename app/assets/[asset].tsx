@@ -1,5 +1,5 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
 
 import { AssetDetailsCTAs } from '~/components/Assets/AssetDetailsCTAs';
 import { DetailsHeader } from '~/components/Assets/DetailsHeader';
@@ -8,6 +8,8 @@ import Graph from '~/components/Graph';
 import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { useGraphData } from '~/hooks/useGraphData';
+import { GraphRange } from '~/types/graph';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
 import { capitalise } from '~/utils/helpers/strings/capitalise';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
@@ -36,6 +38,13 @@ export default function Assets() {
 
   const icon = tokenIcons[token.symbol];
 
+  const { selectedRange, setSelectedRange, dataForSelectedRange } = useGraphData({
+    daily_values: token.daily_values,
+    weekly_values: token.weekly_values,
+    monthly_values: token.monthly_values,
+    yearly_values: token.yearly_values,
+  });
+
   const userTokenValue = getUserTokenValue(token.address, tokens, user).toFixed(2);
   const userTokenAmount = getUserTokenAmount(token.address, tokens, user);
 
@@ -48,12 +57,25 @@ export default function Assets() {
           <ScrollView showsVerticalScrollIndicator={false}>
             <View className="gap-y-5 pb-24">
               <Graph
-                graphData={{
-                  daily_values: token.daily_values,
-                  weekly_values: token.weekly_values,
-                  monthly_values: token.monthly_values,
-                  yearly_values: token.yearly_values,
-                }}
+                data={dataForSelectedRange}
+                selectedRangeComponent={
+                  <View className="mb-2 flex-row justify-around">
+                    {['1day', '1week', '1month', '1year'].map((range) => (
+                      <TouchableOpacity
+                        key={range}
+                        onPress={() => setSelectedRange(range as GraphRange)}
+                        className={`rounded-xl px-3 py-1 ${
+                          selectedRange === range ? 'bg-primary' : ''
+                        }`}>
+                        <FText
+                          className={`${selectedRange === range ? 'text-white' : 'text-text'}`}
+                          bold>
+                          {range.toUpperCase()}
+                        </FText>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                }
               />
               <Container title="Holdings">
                 <View className="flex flex-row items-center justify-between">

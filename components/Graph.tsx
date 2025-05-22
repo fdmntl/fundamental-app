@@ -3,20 +3,19 @@ import { View, TouchableOpacity, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 
 import { FText } from '~/components/Text/FText';
-import { GraphData, GraphRange, graphRangeMap } from '~/types/graph';
+import { DataPoint, GraphRange, graphRangeMap } from '~/types/graph';
 
 interface GraphProps {
-  graphData: GraphData | undefined;
+  data: DataPoint[];
+  selectedRangeComponent?: React.ReactNode;
 }
 
-const Graph = ({ graphData }: GraphProps) => {
-  const [selectedRange, setSelectedRange] = useState('1month');
+const Graph = ({ data, selectedRangeComponent }: GraphProps) => {
   const [containerWidth, setContainerWidth] = useState(Dimensions.get('window').width - 32);
 
   const filteredData = useMemo(() => {
-    if (!graphData) return [];
-    return graphData[graphRangeMap[selectedRange as GraphRange]] || [];
-  }, [graphData, selectedRange]);
+    return data || [];
+  }, [data]);
 
   const lastDataPoint = useMemo(() => filteredData[filteredData.length - 1] || {}, [filteredData]);
   const [currentValue, setCurrentValue] = useState(lastDataPoint?.value || 0);
@@ -95,7 +94,7 @@ const Graph = ({ graphData }: GraphProps) => {
       )}
 
       {/* Graph */}
-      {graphData && filteredData.length > 0 ? (
+      {filteredData.length > 0 ? (
         <View className="relative">
           <LineChart
             areaChart
@@ -142,29 +141,12 @@ const Graph = ({ graphData }: GraphProps) => {
         </View>
       ) : (
         <View className="p-5">
-          {graphData === undefined ? (
-            <FText className="text-center text-text">No data available</FText>
-          ) : (
-            <FText className="text-center text-text">Loading data...</FText>
-          )}
+          <FText className="text-center text-text">No data available</FText>
         </View>
       )}
 
       {/* Time Range Selection */}
-      {graphData && (
-        <View className="mb-2 flex-row justify-around">
-          {['1day', '1week', '1month', '1year'].map((range) => (
-            <TouchableOpacity
-              key={range}
-              onPress={() => setSelectedRange(range)}
-              className={`rounded-xl px-3 py-1 ${selectedRange === range ? 'bg-primary' : ''}`}>
-              <FText className={`${selectedRange === range ? 'text-white' : 'text-text'}`} bold>
-                {range.toUpperCase()}
-              </FText>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
+      {selectedRangeComponent}
     </View>
   );
 };
