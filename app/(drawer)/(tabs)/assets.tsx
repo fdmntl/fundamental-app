@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { View, TouchableOpacity } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
 import { BalanceRefreshControl } from '~/components/BalanceRefreshControl';
@@ -18,7 +19,18 @@ import { FText } from '~/components/Text/FText';
 export default function Assets() {
   // Graph state for selecting timeframe
   const [selectedRange, setSelectedRange] = useState<GraphRange>('1month');
+  // Disable scroll when interacting with the chart
+  const [scrollEnabled, setScrollEnabled] = useState(true);
+
   const { tokens, user } = useAppData();
+  // Time range options and labels
+  const rangeOptions: GraphRange[] = ['1day', '1week', '1month', '1year'];
+  const rangeLabels: Record<GraphRange, string> = {
+    '1day': '1D',
+    '1week': '1W',
+    '1month': '1M',
+    '1year': '1Y',
+  };
 
   // Combine token series into total portfolio value series
   const totalData = useMemo(() => {
@@ -45,28 +57,35 @@ export default function Assets() {
   return (
     <Frame>
       <HeaderBar title="Assets" />
-      <BalanceRefreshControl>
+      <BalanceRefreshControl scrollEnabled={scrollEnabled}>
         <View className="flex gap-y-5">
-          <Graph
-            data={totalData}
-            selectedRange={selectedRange}
-            selectedRangeComponent={
-              <View className="mb-2 flex-row justify-around">
-                {['1day', '1week', '1month', '1year'].map((range) => (
-                  <TouchableOpacity
-                    key={range}
-                    onPress={() => setSelectedRange(range as GraphRange)}
-                    className={`rounded-xl px-3 py-1 ${selectedRange === range ? 'bg-primary' : ''}`}>
-                    <FText
-                      className={`${selectedRange === range ? 'text-white' : 'text-text'}`}
-                      bold>
-                      {range.toUpperCase()}
-                    </FText>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            }
-          />
+          <View
+            onTouchStart={() => setScrollEnabled(false)}
+            onTouchEnd={() => setScrollEnabled(true)}
+            onTouchCancel={() => setScrollEnabled(true)}>
+            <Container>
+              <Graph
+                data={totalData}
+                selectedRange={selectedRange}
+                selectedRangeComponent={
+                  <View className="mb-2 flex-row justify-around">
+                    {rangeOptions.map((range) => (
+                      <TouchableOpacity
+                        key={range}
+                        onPress={() => setSelectedRange(range)}
+                        className={`rounded-xl px-3 py-1 ${selectedRange === range ? 'bg-primary' : ''}`}>
+                        <FText
+                          className={`${selectedRange === range ? 'text-white' : 'text-text'}`}
+                          bold>
+                          {rangeLabels[range]}
+                        </FText>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                }
+              />
+            </Container>
+          </View>
           <Container title="Money">
             <View className="flex gap-y-4">
               {stableCoins

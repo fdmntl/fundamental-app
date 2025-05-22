@@ -7,9 +7,13 @@ import { useTheme } from './Wrappers/ThemeWrapper';
 
 interface BalanceRefreshControlProps {
   children: React.ReactNode;
+  scrollEnabled?: boolean;
 }
 
-export const BalanceRefreshControl = ({ children }: BalanceRefreshControlProps) => {
+export const BalanceRefreshControl = ({
+  children,
+  scrollEnabled = true,
+}: BalanceRefreshControlProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const { user, updateUser } = useAppData();
   const { theme } = useTheme();
@@ -33,6 +37,7 @@ export const BalanceRefreshControl = ({ children }: BalanceRefreshControlProps) 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
+      scrollEnabled={scrollEnabled}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={tintColor} />
       }>

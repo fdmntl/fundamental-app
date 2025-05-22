@@ -1,5 +1,6 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { View, ScrollView, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
 
 import { AssetDetailsCTAs } from '~/components/Assets/AssetDetailsCTAs';
 import { DetailsHeader } from '~/components/Assets/DetailsHeader';
@@ -16,6 +17,8 @@ import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 
 export default function Assets() {
+  // disable outer scroll when interacting with chart
+  const [scrollEnabled, setScrollEnabled] = useState(true);
   const { asset } = useLocalSearchParams();
 
   const { tokens, user } = useAppData();
@@ -63,30 +66,37 @@ export default function Assets() {
       <Frame>
         <View className="flex-1">
           <DetailsHeader title={title} icon={icon} />
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={scrollEnabled}>
             <View className="gap-y-5 pb-24">
-              <Graph
-                data={dataForSelectedRange}
-                selectedRange={selectedRange}
-                selectedRangeComponent={
-                  <View className="mb-2 flex-row justify-around">
-                    {rangeOptions.map((range) => (
-                      <TouchableOpacity
-                        key={range}
-                        onPress={() => setSelectedRange(range)}
-                        className={`rounded-xl px-3 py-1 ${
-                          selectedRange === range ? 'bg-primary' : ''
-                        }`}>
-                        <FText
-                          className={`${selectedRange === range ? 'text-white' : 'text-text'}`}
-                          bold>
-                          {rangeLabels[range]}
-                        </FText>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                }
-              />
+              <Container>
+                <View
+                  onTouchStart={() => setScrollEnabled(false)}
+                  onTouchEnd={() => setScrollEnabled(true)}
+                  onTouchCancel={() => setScrollEnabled(true)}>
+                  <Graph
+                    data={dataForSelectedRange}
+                    selectedRange={selectedRange}
+                    selectedRangeComponent={
+                      <View className="mb-2 flex-row justify-around">
+                        {rangeOptions.map((range) => (
+                          <TouchableOpacity
+                            key={range}
+                            onPress={() => setSelectedRange(range)}
+                            className={`rounded-xl px-3 py-1 ${
+                              selectedRange === range ? 'bg-primary' : ''
+                            }`}>
+                            <FText
+                              className={`${selectedRange === range ? 'text-white' : 'text-text'}`}
+                              bold>
+                              {rangeLabels[range]}
+                            </FText>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    }
+                  />
+                </View>
+              </Container>
               <Container title="Holdings">
                 <View className="flex flex-row items-center justify-between">
                   <View>

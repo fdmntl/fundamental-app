@@ -105,10 +105,10 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
   return (
     <View
       className="rounded-xl"
-      style={{ overflow: 'hidden' }}
+      style={{ overflow: 'hidden', paddingHorizontal: 0 }}
       onLayout={(event) => {
         const { width } = event.nativeEvent.layout;
-        setContainerWidth(width); // Account for padding inside the frame
+        setContainerWidth(width);
       }}>
       {/* Current Price */}
       <FText className="!text-3xl text-text" bold>
@@ -127,7 +127,7 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
             areaChart
             hideAxesAndRules
             data={normalizedData}
-            height={200}
+            height={150}
             width={containerWidth}
             adjustToWidth
             initialSpacing={0}
