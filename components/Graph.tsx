@@ -83,7 +83,7 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
   const startFillColor = isPositive ? 'rgba(34, 197, 94, 0.4)' : 'rgba(239, 68, 68, 0.4)';
   const endFillColor = isPositive ? 'rgba(34, 197, 94, 0)' : 'rgba(239, 68, 68, 0)';
 
-  const bufferPercentage = 0.5; // 50% buffer
+  const bufferPercentage = 0; // no buffer, min touches bottom, max touches top
 
   const minValue = Math.min(...filteredData.map((point) => point.value));
   const maxValue = Math.max(...filteredData.map((point) => point.value));
@@ -97,7 +97,10 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
     () =>
       filteredData.map((point) => ({
         ...point,
-        value: ((point.value - adjustedMin) / (adjustedMax - adjustedMin)) * range,
+        value:
+          adjustedMax === adjustedMin
+            ? 0
+            : ((point.value - adjustedMin) / (adjustedMax - adjustedMin)) * range,
       })),
     [filteredData, adjustedMin, adjustedMax, range]
   );
@@ -105,10 +108,10 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
   return (
     <View
       className="rounded-xl"
-      style={{ overflow: 'hidden', paddingHorizontal: 0 }}
+      style={{ overflow: 'hidden' }}
       onLayout={(event) => {
         const { width } = event.nativeEvent.layout;
-        setContainerWidth(width);
+        setContainerWidth(width); // Account for padding inside the frame
       }}>
       {/* Current Price */}
       <FText className="!text-3xl text-text" bold>
@@ -127,7 +130,9 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
             areaChart
             hideAxesAndRules
             data={normalizedData}
-            height={150}
+            maxValue={range}
+            yAxisOffset={0}
+            height={200}
             width={containerWidth}
             adjustToWidth
             initialSpacing={0}
