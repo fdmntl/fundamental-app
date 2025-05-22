@@ -68,7 +68,7 @@ export default function Assets() {
           <DetailsHeader title={title} icon={icon} />
           <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={scrollEnabled}>
             <View className="gap-y-5 pb-24">
-              <Container>
+              <Container noPadding>
                 <View
                   onTouchStart={() => setScrollEnabled(false)}
                   onTouchEnd={() => setScrollEnabled(true)}
@@ -82,11 +82,11 @@ export default function Assets() {
                           <TouchableOpacity
                             key={range}
                             onPress={() => setSelectedRange(range)}
-                            className={`rounded-lg px-3 py-1 ${
+                            className={`rounded-lg px-4 py-2 ${
                               selectedRange === range ? 'bg-primary' : ''
                             }`}>
                             <FText
-                              className={`${selectedRange === range ? 'text-white' : 'text-text'} !text-sm`}
+                              className={`${selectedRange === range ? 'text-white' : 'text-text'} !text-base`}
                               bold>
                               {rangeLabels[range]}
                             </FText>

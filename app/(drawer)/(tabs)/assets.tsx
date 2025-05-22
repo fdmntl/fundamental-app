@@ -63,7 +63,7 @@ export default function Assets() {
             onTouchStart={() => setScrollEnabled(false)}
             onTouchEnd={() => setScrollEnabled(true)}
             onTouchCancel={() => setScrollEnabled(true)}>
-            <Container>
+            <Container noPadding>
               <Graph
                 data={totalData}
                 selectedRange={selectedRange}
@@ -73,9 +73,9 @@ export default function Assets() {
                       <TouchableOpacity
                         key={range}
                         onPress={() => setSelectedRange(range)}
-                        className={`rounded-lg px-3 py-1 ${selectedRange === range ? 'bg-primary' : ''}`}>
+                        className={`rounded-lg px-4 py-2 ${selectedRange === range ? 'bg-primary' : ''}`}>
                         <FText
-                          className={`${selectedRange === range ? 'text-white' : 'text-text'} !text-sm`}
+                          className={`${selectedRange === range ? 'text-white' : 'text-text'} !text-base`}
                           bold>
                           {rangeLabels[range]}
                         </FText>

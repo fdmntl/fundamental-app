@@ -15,7 +15,7 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
   const [containerWidth, setContainerWidth] = useState(Dimensions.get('window').width - 32);
   const [pointerXPos, setPointerXPos] = useState<number | null>(null);
 
-  const dateLabelAreaHeight = 20; // Space for the date label at the top
+  const dateLabelAreaHeight = 20;
   const chartDisplayHeight = 100 - dateLabelAreaHeight;
 
   // Calculate clamped bubble position to keep text on screen
@@ -105,7 +105,7 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
   const startFillColor = isPositive ? 'rgba(34, 197, 94, 0.4)' : 'rgba(239, 68, 68, 0.4)';
   const endFillColor = isPositive ? 'rgba(34, 197, 94, 0)' : 'rgba(239, 68, 68, 0)';
 
-  const bufferPercentage = 0; // no buffer, min touches bottom, max touches top
+  const bufferPercentage = 0;
 
   const minValue = Math.min(...filteredData.map((point) => point.value));
   const maxValue = Math.max(...filteredData.map((point) => point.value));
@@ -133,24 +133,24 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
       style={{ overflow: 'hidden' }}
       onLayout={(event) => {
         const { width } = event.nativeEvent.layout;
-        setContainerWidth(width); // Account for padding inside the frame
+        setContainerWidth(width);
       }}>
-      {/* Current Price */}
-      <FText className="!text-3xl text-text" bold>
-        ${currentValue.toFixed(2)}
-      </FText>
-
-      {/* Percent Change Badge */}
-      <FText className={`${isPositive ? '!text-green-500' : '!text-red-500'} mb-2`}>
-        {isPositive ? '+' : ''}
-        {percentChange.toFixed(2)}% {periodLabel}
-      </FText>
+      <View className="p-4">
+        {/* Current Price */}
+        <FText className="!text-4xl text-text" bold>
+          ${currentValue.toFixed(2)}
+        </FText>
+        {/* Percent Change Badge */}
+        <FText className={`${isPositive ? '!text-green-500' : '!text-red-500'} text-xl`}>
+          {isPositive ? '+' : ''}
+          {percentChange.toFixed(2)}% {periodLabel}
+        </FText>
+      </View>
 
       {/* Graph */}
       {filteredData.length > 0 ? (
         <View className="relative" style={{ paddingTop: dateLabelAreaHeight }}>
           <LineChart
-            // areaChart
             hideAxesAndRules
             data={normalizedData}
             maxValue={range}
@@ -161,8 +161,10 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
             initialSpacing={0}
             endSpacing={0}
             hideYAxisText
+            yAxisLabelWidth={0}
             xAxisLabelTextStyle={{ opacity: 0 }}
             hideDataPoints
+            curved
             yAxisThickness={0}
             xAxisThickness={0}
             color={chartColor}
@@ -170,8 +172,10 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
             endFillColor={endFillColor}
             startOpacity={0.4}
             endOpacity={0}
-            curved
             isAnimated
+            animateOnDataChange
+            animationDuration={1000}
+            onDataChangeAnimationDuration={250}
             pointerConfig={{
               pointerStripHeight: chartDisplayHeight,
               pointerStripColor: 'rgba(200,200,200,0.5)',
@@ -202,8 +206,7 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
         </View>
       )}
 
-      {/* Time Range Selection */}
-      {selectedRangeComponent}
+      <View className="mb-4">{selectedRangeComponent}</View>
     </View>
   );
 };
