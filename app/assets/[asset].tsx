@@ -38,10 +38,9 @@ export default function Assets() {
   }
 
   const title = `${capitalise(token.name)}`;
-
   const icon = tokenIcons[token.symbol];
 
-  // Time range options and labels
+  // Time range options and labels for the new graph
   const rangeOptions: GraphRange[] = ['1day', '1week', '1month', '1year'];
   const rangeLabels: Record<GraphRange, string> = {
     '1day': '1D',
@@ -68,11 +67,12 @@ export default function Assets() {
           <DetailsHeader title={title} icon={icon} />
           <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={scrollEnabled}>
             <View className="gap-y-5 pb-24">
-              <Container noPadding>
-                <View
-                  onTouchStart={() => setScrollEnabled(false)}
-                  onTouchEnd={() => setScrollEnabled(true)}
-                  onTouchCancel={() => setScrollEnabled(true)}>
+              {/* New Graph Implementation (kept as is) */}
+              <View
+                onTouchStart={() => setScrollEnabled(false)}
+                onTouchEnd={() => setScrollEnabled(true)}
+                onTouchCancel={() => setScrollEnabled(true)}>
+                <Container noPadding>
                   <Graph
                     data={dataForSelectedRange}
                     selectedRange={selectedRange}
@@ -95,10 +95,35 @@ export default function Assets() {
                       </View>
                     }
                   />
+                </Container>
+              </View>
+
+              {/* Restored Holdings Section */}
+              <Container title="Holdings">
+                <View className="flex flex-row items-center justify-between">
+                  <View>
+                    <FText bold className="!text-2xl">
+                      ${userTokenValue}
+                    </FText>
+                    {!token.is_stablecoin && (
+                      <FText className="!text-base">
+                        {userTokenAmount} {token.symbol}
+                      </FText>
+                    )}
+                  </View>
+                  <FText bold>Total amount</FText>
                 </View>
               </Container>
+
+              {/* Restored About Section */}
+              <View>
+                <FText bold>About {title}</FText>
+                <FText>{token.description}</FText>
+              </View>
             </View>
           </ScrollView>
+          {/* AssetDetailsCTAs moved outside ScrollView */}
+          <AssetDetailsCTAs tokenAddress={token.address} />
         </View>
       </Frame>
     </>
