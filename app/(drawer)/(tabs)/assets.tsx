@@ -103,7 +103,7 @@ export default function Assets() {
               />
             </Container>
           </View>
-          <Container title="Money">
+          <Container title="Money" titleAbove>
             <View className="flex gap-y-4">
               {stableCoins
                 .sort(
@@ -116,7 +116,7 @@ export default function Assets() {
                 ))}
             </View>
           </Container>
-          <Container title="Crypto">
+          <Container title="Crypto" titleAbove>
             <View className="flex gap-y-4">
               {cryptos
                 .sort(
