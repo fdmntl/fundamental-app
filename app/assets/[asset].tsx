@@ -77,16 +77,16 @@ export default function Assets() {
                     data={dataForSelectedRange}
                     selectedRange={selectedRange}
                     selectedRangeComponent={
-                      <View className="mb-2 flex-row justify-around">
+                      <View className="my-1 flex-row justify-around">
                         {rangeOptions.map((range) => (
                           <TouchableOpacity
                             key={range}
                             onPress={() => setSelectedRange(range)}
-                            className={`rounded-xl px-3 py-1 ${
+                            className={`rounded-lg px-3 py-1 ${
                               selectedRange === range ? 'bg-primary' : ''
                             }`}>
                             <FText
-                              className={`${selectedRange === range ? 'text-white' : 'text-text'}`}
+                              className={`${selectedRange === range ? 'text-white' : 'text-text'} !text-sm`}
                               bold>
                               {rangeLabels[range]}
                             </FText>
@@ -97,38 +97,10 @@ export default function Assets() {
                   />
                 </View>
               </Container>
-              <Container title="Holdings">
-                <View className="flex flex-row items-center justify-between">
-                  <View>
-                    <FText bold className="!text-2xl">
-                      ${userTokenValue}
-                    </FText>
-                    {!token.is_stablecoin && (
-                      <FText className="!text-base">
-                        {userTokenAmount} {token.symbol}
-                      </FText>
-                    )}
-                  </View>
-                  <FText bold>Total amount</FText>
-                </View>
-              </Container>
-              <View>
-                <FText bold>About {title}</FText>
-                <FText>{token.description}</FText>
-              </View>
             </View>
           </ScrollView>
-          <AssetDetailsCTAs tokenAddress={token.address} />
         </View>
       </Frame>
     </>
   );
 }
-
-/* <View>
-<FText>Current Route: {navigationState.routes[navigationState.index].name}</FText>
-<FText>All Routes:</FText>
-{navigationState.routes.map((route, index) => (
-  <FText key={index}>{route.name}</FText>
-))}
-</View> */

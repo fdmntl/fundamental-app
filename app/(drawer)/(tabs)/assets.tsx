@@ -68,14 +68,14 @@ export default function Assets() {
                 data={totalData}
                 selectedRange={selectedRange}
                 selectedRangeComponent={
-                  <View className="mb-2 flex-row justify-around">
+                  <View className="my-1 flex-row justify-around">
                     {rangeOptions.map((range) => (
                       <TouchableOpacity
                         key={range}
                         onPress={() => setSelectedRange(range)}
-                        className={`rounded-xl px-3 py-1 ${selectedRange === range ? 'bg-primary' : ''}`}>
+                        className={`rounded-lg px-3 py-1 ${selectedRange === range ? 'bg-primary' : ''}`}>
                         <FText
-                          className={`${selectedRange === range ? 'text-white' : 'text-text'}`}
+                          className={`${selectedRange === range ? 'text-white' : 'text-text'} !text-sm`}
                           bold>
                           {rangeLabels[range]}
                         </FText>

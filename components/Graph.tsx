@@ -15,8 +15,11 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
   const [containerWidth, setContainerWidth] = useState(Dimensions.get('window').width - 32);
   const [pointerXPos, setPointerXPos] = useState<number | null>(null);
 
+  const dateLabelAreaHeight = 20; // Space for the date label at the top
+  const chartDisplayHeight = 100 - dateLabelAreaHeight;
+
   // Calculate clamped bubble position to keep text on screen
-  const bubbleWidth = 100;
+  const bubbleWidth = 110;
   const bubbleLeft =
     pointerXPos !== null
       ? Math.max(0, Math.min(pointerXPos - bubbleWidth / 2, containerWidth - bubbleWidth))
@@ -125,14 +128,14 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
 
       {/* Graph */}
       {filteredData.length > 0 ? (
-        <View className="relative">
+        <View className="relative" style={{ paddingTop: dateLabelAreaHeight }}>
           <LineChart
-            areaChart
+            // areaChart
             hideAxesAndRules
             data={normalizedData}
             maxValue={range}
             yAxisOffset={0}
-            height={200}
+            height={chartDisplayHeight}
             width={containerWidth}
             adjustToWidth
             initialSpacing={0}
@@ -150,7 +153,7 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
             curved
             isAnimated
             pointerConfig={{
-              pointerStripHeight: 200,
+              pointerStripHeight: chartDisplayHeight,
               pointerStripColor: 'rgba(200,200,200,0.5)',
               pointerStripWidth: 1,
               pointerColor: chartColor,
