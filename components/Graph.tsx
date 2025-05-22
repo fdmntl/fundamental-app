@@ -19,7 +19,7 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
   const chartDisplayHeight = 100 - dateLabelAreaHeight;
 
   // Calculate clamped bubble position to keep text on screen
-  const bubbleWidth = 110;
+  const bubbleWidth = 120;
   const bubbleLeft =
     pointerXPos !== null
       ? Math.max(0, Math.min(pointerXPos - bubbleWidth / 2, containerWidth - bubbleWidth))
@@ -81,6 +81,25 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
   const percentChange = firstValue > 0 ? ((lastValue - firstValue) / firstValue) * 100 : 0;
   const isPositive = lastValue > firstValue;
 
+  // Dynamic period label for percent change
+  let periodLabel = '';
+  switch (selectedRange) {
+    case '1day':
+      periodLabel = 'Today';
+      break;
+    case '1week':
+      periodLabel = 'Past Week';
+      break;
+    case '1month':
+      periodLabel = 'Past Month';
+      break;
+    case '1year':
+      periodLabel = 'Past Year';
+      break;
+    default:
+      periodLabel = '';
+  }
+
   // Green for positive, red for negative
   const chartColor = isPositive ? 'rgba(34, 197, 94, 1)' : 'rgba(239, 68, 68, 1)';
   const startFillColor = isPositive ? 'rgba(34, 197, 94, 0.4)' : 'rgba(239, 68, 68, 0.4)';
@@ -122,8 +141,9 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
       </FText>
 
       {/* Percent Change Badge */}
-      <FText className={`${isPositive ? 'text-green-500' : 'text-red-500'} mb-2`}>
-        {percentChange.toFixed(2)}%
+      <FText className={`${isPositive ? '!text-green-500' : '!text-red-500'} mb-2`}>
+        {isPositive ? '+' : ''}
+        {percentChange.toFixed(2)}% {periodLabel}
       </FText>
 
       {/* Graph */}
