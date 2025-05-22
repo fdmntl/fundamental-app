@@ -38,7 +38,7 @@ export default function Assets() {
     const key = graphRangeMap[selectedRange];
     const firstSeries = tokens[0][key] || [];
     const length = firstSeries.length;
-    if (length === 0) return [];
+    if (length === 0) return []; // Return empty if no historical data
     const labels = firstSeries.map((dp) => dp.label);
     const sums = new Array<number>(length).fill(0);
     tokens.forEach((token) => {
@@ -48,7 +48,24 @@ export default function Assets() {
         sums[i] += (series[i]?.value || 0) * amount;
       }
     });
-    return sums.map((value, i) => ({ value, label: labels[i] }));
+
+    // Calculate the combined latest value
+    let combinedLatestValue = 0;
+    tokens.forEach((token) => {
+      if (typeof token.last_value === 'number') {
+        const amount = getUserTokenAmount(token.address, tokens, user);
+        combinedLatestValue += token.last_value * amount;
+      }
+    });
+
+    const historicalData = sums.map((value, i) => ({ value, label: labels[i] }));
+
+    // Add the combined latest value as a new data point
+    const now = new Date();
+    // Format label as ISO string to be consistent with historical data
+    const currentTimeLabel = now.toISOString();
+
+    return [...historicalData, { value: combinedLatestValue, label: currentTimeLabel }];
   }, [tokens, user, selectedRange]);
 
   const stableCoins = tokens.filter((item) => item.is_stablecoin);

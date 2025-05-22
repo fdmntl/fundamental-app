@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { View, ScrollView, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 import { AssetDetailsCTAs } from '~/components/Assets/AssetDetailsCTAs';
 import { DetailsHeader } from '~/components/Assets/DetailsHeader';
@@ -40,7 +40,6 @@ export default function Assets() {
   const title = `${capitalise(token.name)}`;
   const icon = tokenIcons[token.symbol];
 
-  // Time range options and labels for the new graph
   const rangeOptions: GraphRange[] = ['1day', '1week', '1month', '1year'];
   const rangeLabels: Record<GraphRange, string> = {
     '1day': '1D',
@@ -59,6 +58,16 @@ export default function Assets() {
   const userTokenValue = getUserTokenValue(token.address, tokens, user).toFixed(2);
   const userTokenAmount = getUserTokenAmount(token.address, tokens, user);
 
+  const graphDataWithCurrent = useMemo(() => {
+    let processedData = Array.isArray(dataForSelectedRange) ? [...dataForSelectedRange] : [];
+    if (token && typeof token.last_value === 'number') {
+      const now = new Date();
+      const currentTimeLabel = now.toISOString();
+      processedData.push({ value: token.last_value, label: currentTimeLabel });
+    }
+    return processedData;
+  }, [dataForSelectedRange, token]);
+
   return (
     <>
       <Stack.Screen options={{ title, headerShown: false }} />
@@ -67,14 +76,13 @@ export default function Assets() {
           <DetailsHeader title={title} icon={icon} />
           <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={scrollEnabled}>
             <View className="gap-y-5 pb-24">
-              {/* New Graph Implementation (kept as is) */}
               <View
                 onTouchStart={() => setScrollEnabled(false)}
                 onTouchEnd={() => setScrollEnabled(true)}
                 onTouchCancel={() => setScrollEnabled(true)}>
                 <Container noPadding>
                   <Graph
-                    data={dataForSelectedRange}
+                    data={graphDataWithCurrent}
                     selectedRange={selectedRange}
                     selectedRangeComponent={
                       <View className="my-1 flex-row justify-around">
@@ -97,8 +105,6 @@ export default function Assets() {
                   />
                 </Container>
               </View>
-
-              {/* Restored Holdings Section */}
               <Container title="Holdings">
                 <View className="flex flex-row items-center justify-between">
                   <View>
@@ -114,15 +120,12 @@ export default function Assets() {
                   <FText bold>Total amount</FText>
                 </View>
               </Container>
-
-              {/* Restored About Section */}
               <View>
                 <FText bold>About {title}</FText>
                 <FText>{token.description}</FText>
               </View>
             </View>
           </ScrollView>
-          {/* AssetDetailsCTAs moved outside ScrollView */}
           <AssetDetailsCTAs tokenAddress={token.address} />
         </View>
       </Frame>
