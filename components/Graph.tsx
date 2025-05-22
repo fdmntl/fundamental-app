@@ -175,9 +175,9 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
             pointerConfig={{
               pointerStripHeight: chartDisplayHeight,
               pointerStripColor: 'rgba(200,200,200,0.5)',
-              pointerStripWidth: 1,
+              pointerStripWidth: 2,
               pointerColor: chartColor,
-              radius: 4,
+              radius: 5,
               autoAdjustPointerLabelPosition: true,
             }}
             getPointerProps={handlePointer}
