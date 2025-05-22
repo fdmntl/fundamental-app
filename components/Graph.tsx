@@ -3,19 +3,26 @@ import { View, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 
 import { FText } from '~/components/Text/FText';
-import { DataPoint } from '~/types/graph';
+import { DataPoint, GraphRange } from '~/types/graph';
 
 interface GraphProps {
   data: DataPoint[];
   selectedRangeComponent?: React.ReactNode;
+  selectedRange: GraphRange;
 }
 
-const Graph = ({ data, selectedRangeComponent }: GraphProps) => {
+const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
   const [containerWidth, setContainerWidth] = useState(Dimensions.get('window').width - 32);
+  const [pointerXPos, setPointerXPos] = useState<number | null>(null);
 
-  const filteredData = useMemo(() => {
-    return data || [];
-  }, [data]);
+  // Calculate clamped bubble position to keep text on screen
+  const bubbleWidth = 100;
+  const bubbleLeft =
+    pointerXPos !== null
+      ? Math.max(0, Math.min(pointerXPos - bubbleWidth / 2, containerWidth - bubbleWidth))
+      : 0;
+
+  const filteredData = useMemo(() => data || [], [data]);
 
   const lastDataPoint = useMemo(() => filteredData[filteredData.length - 1] || {}, [filteredData]);
   const [currentValue, setCurrentValue] = useState(lastDataPoint?.value || 0);
@@ -25,6 +32,25 @@ const Graph = ({ data, selectedRangeComponent }: GraphProps) => {
     setCurrentValue(lastDataPoint?.value || 0);
     setCurrentDate(new Date(lastDataPoint?.label || ''));
   }, [lastDataPoint]);
+
+  // Format static date label based on selectedRange
+  let formattedDate = '';
+  if (!isNaN(currentDate.getTime())) {
+    switch (selectedRange) {
+      case '1day':
+        formattedDate = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        break;
+      case '1week':
+        formattedDate = `${currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ${currentDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
+        break;
+      default:
+        formattedDate = currentDate.toLocaleDateString(undefined, {
+          month: 'short',
+          day: 'numeric',
+        });
+        break;
+    }
+  }
 
   const handlePointer = ({
     pointerIndex,
@@ -37,16 +63,19 @@ const Graph = ({ data, selectedRangeComponent }: GraphProps) => {
       // Reset to the last data point
       setCurrentValue(lastDataPoint?.value || 0);
       setCurrentDate(new Date(lastDataPoint?.label || ''));
+      setPointerXPos(null);
     } else {
       // Get the data point at the pointer index
       const point = filteredData[pointerIndex];
       setCurrentValue(point?.value || 0);
       setCurrentDate(new Date(point?.label || ''));
+      setPointerXPos(pointerX);
     }
   };
 
   const firstValue = filteredData[0]?.value || 0;
   const lastValue = lastDataPoint.value || 0;
+  const percentChange = firstValue > 0 ? ((lastValue - firstValue) / firstValue) * 100 : 0;
   const isPositive = lastValue > firstValue;
 
   // Green for positive, red for negative
@@ -79,19 +108,17 @@ const Graph = ({ data, selectedRangeComponent }: GraphProps) => {
       style={{ overflow: 'hidden' }}
       onLayout={(event) => {
         const { width } = event.nativeEvent.layout;
-        setContainerWidth(width - 16); // Account for padding inside the frame
+        setContainerWidth(width); // Account for padding inside the frame
       }}>
       {/* Current Price */}
       <FText className="!text-3xl text-text" bold>
         ${currentValue.toFixed(2)}
       </FText>
 
-      {/* Date */}
-      {!isNaN(currentDate.getTime()) && !isNaN(currentDate.getDate()) && (
-        <FText className="mb-4">
-          {currentDate.toLocaleDateString()} at {currentDate.toLocaleTimeString()}
-        </FText>
-      )}
+      {/* Percent Change Badge */}
+      <FText className={`${isPositive ? 'text-green-500' : 'text-red-500'} mb-2`}>
+        {percentChange.toFixed(2)}%
+      </FText>
 
       {/* Graph */}
       {filteredData.length > 0 ? (
@@ -119,25 +146,27 @@ const Graph = ({ data, selectedRangeComponent }: GraphProps) => {
             isAnimated
             pointerConfig={{
               pointerStripHeight: 200,
-              pointerStripColor: 'lightgrey',
+              pointerStripColor: 'rgba(200,200,200,0.5)',
               pointerStripWidth: 1,
-              pointerColor: 'lightgrey',
+              pointerColor: chartColor,
               radius: 4,
               autoAdjustPointerLabelPosition: true,
-              pointerLabelComponent: () => null, // Hide pointer label
             }}
             getPointerProps={handlePointer}
           />
-          <View className="absolute right-4 top-0 rounded-full bg-background px-2">
-            <FText className=" text-base !text-neutral" bold>
-              {maxValue.toFixed(2)}
-            </FText>
-          </View>
-          <View className="absolute bottom-9 right-4 rounded-full bg-background px-2">
-            <FText className=" text-base !text-neutral" bold>
-              {minValue.toFixed(2)}
-            </FText>
-          </View>
+          {/* Date bubble follows pointer */}
+          {pointerXPos !== null && (
+            <View
+              style={{
+                position: 'absolute',
+                left: bubbleLeft,
+                top: 0,
+                width: bubbleWidth,
+                alignItems: 'center',
+              }}>
+              <FText className="!text-base text-white">{formattedDate}</FText>
+            </View>
+          )}
         </View>
       ) : (
         <View className="p-5">

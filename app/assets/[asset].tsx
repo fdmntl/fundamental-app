@@ -38,6 +38,15 @@ export default function Assets() {
 
   const icon = tokenIcons[token.symbol];
 
+  // Time range options and labels
+  const rangeOptions: GraphRange[] = ['1day', '1week', '1month', '1year'];
+  const rangeLabels: Record<GraphRange, string> = {
+    '1day': '1D',
+    '1week': '1W',
+    '1month': '1M',
+    '1year': '1Y',
+  };
+
   const { selectedRange, setSelectedRange, dataForSelectedRange } = useGraphData({
     daily_values: token.daily_values,
     weekly_values: token.weekly_values,
@@ -58,19 +67,20 @@ export default function Assets() {
             <View className="gap-y-5 pb-24">
               <Graph
                 data={dataForSelectedRange}
+                selectedRange={selectedRange}
                 selectedRangeComponent={
                   <View className="mb-2 flex-row justify-around">
-                    {['1day', '1week', '1month', '1year'].map((range) => (
+                    {rangeOptions.map((range) => (
                       <TouchableOpacity
                         key={range}
-                        onPress={() => setSelectedRange(range as GraphRange)}
+                        onPress={() => setSelectedRange(range)}
                         className={`rounded-xl px-3 py-1 ${
                           selectedRange === range ? 'bg-primary' : ''
                         }`}>
                         <FText
                           className={`${selectedRange === range ? 'text-white' : 'text-text'}`}
                           bold>
-                          {range.toUpperCase()}
+                          {rangeLabels[range]}
                         </FText>
                       </TouchableOpacity>
                     ))}

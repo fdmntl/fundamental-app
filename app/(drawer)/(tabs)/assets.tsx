@@ -49,6 +49,7 @@ export default function Assets() {
         <View className="flex gap-y-5">
           <Graph
             data={totalData}
+            selectedRange={selectedRange}
             selectedRangeComponent={
               <View className="mb-2 flex-row justify-around">
                 {['1day', '1week', '1month', '1year'].map((range) => (
