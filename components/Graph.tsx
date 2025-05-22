@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
-import { View, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
 
 import { FText } from '~/components/Text/FText';
-import { DataPoint, GraphRange, graphRangeMap } from '~/types/graph';
+import { DataPoint } from '~/types/graph';
 
 interface GraphProps {
   data: DataPoint[];
@@ -152,11 +152,3 @@ const Graph = ({ data, selectedRangeComponent }: GraphProps) => {
 };
 
 export default Graph;
-
-//* Mock data generation
-// const [allData] = useState<DataPoint[]>(
-//   Array.from({ length: 365 }, (_, i) => ({
-//     value: Math.floor(Math.random() * (2763 - 1000 + 1)) + 1000, // Random price
-//     label: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(), // ISO date
-//   }))
-// );
