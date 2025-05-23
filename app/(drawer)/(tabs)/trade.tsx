@@ -1,7 +1,8 @@
 import { OrderParameters } from '@cowprotocol/cow-sdk';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
+import { Feather } from '@expo/vector-icons';
 
 import { Button } from '~/components/Button';
 import { HeaderBar } from '~/components/HeaderBar';
@@ -25,6 +26,7 @@ export default function Trade() {
   const [selectedGetToken, setSelectedGetToken] = useState<Token | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [quote, setQuote] = useState<OrderParameters | null>(null);
+  const [quoteValue, setQuoteValue] = useState<number>(0);
 
   const toggleConfirmModal = () => {
     setIsConfirmModalOpen((prev) => !prev);
@@ -39,6 +41,43 @@ export default function Trade() {
     : 0;
 
   const isAmountValid = parseFloat(payAmount) > 0 && parseFloat(payAmount) <= selectedTokenBalance;
+
+  const handleSwapTokens = () => {
+    console.log('Swap button pressed');
+
+    // If either token is not selected, don't do anything
+    if (!selectedPayToken || !selectedGetToken) {
+      console.log('Cannot swap - one or both tokens not selected');
+      Toast.show({
+        type: 'info',
+        text1: 'Please select tokens first',
+      });
+      return;
+    }
+
+    // Swap the tokens
+    const tempToken = selectedPayToken;
+    setSelectedPayToken(selectedGetToken);
+    setSelectedGetToken(tempToken);
+
+    // If we have a quote value, update the pay amount to the current quote value
+    if (quoteValue > 0) {
+      console.log(`Setting new pay amount to ${quoteValue}`);
+      setPayAmount(quoteValue.toString());
+    } else {
+      // Otherwise clear the pay amount to trigger a new quote calculation
+      console.log('Clearing pay amount');
+      setPayAmount('');
+    }
+
+    // Clear the quote to force a recalculation
+    setQuote(null);
+
+    Toast.show({
+      type: 'success',
+      text1: 'Tokens swapped',
+    });
+  };
 
   const handleTradePress = async () => {
     if (
@@ -97,6 +136,21 @@ export default function Trade() {
           title="You Pay"
         />
 
+        {/* Swap Button - with more pronounced styling and debugging */}
+        <View className="z-10 my-2 items-center">
+          <TouchableOpacity
+            onPress={handleSwapTokens}
+            className="h-12 w-12 items-center justify-center rounded-full bg-primary shadow-lg"
+            activeOpacity={0.7}>
+            <Feather
+              name="refresh-ccw"
+              size={24}
+              color="white"
+              style={{ transform: [{ rotate: '90deg' }] }}
+            />
+          </TouchableOpacity>
+        </View>
+
         {/* Quote Display */}
         <QuoteDisplay
           tokens={tokens}
@@ -114,7 +168,12 @@ export default function Trade() {
             }
             setSelectedGetToken(token);
           }}
-          onQuote={(quote) => setQuote(quote)}
+          onQuote={(newQuote) => {
+            setQuote(newQuote);
+          }}
+          onQuoteValue={(value) => {
+            setQuoteValue(value);
+          }}
         />
       </View>
       <View className="absolute bottom-[7rem] w-full items-center">
