@@ -5,6 +5,7 @@ import { isAddress } from 'viem';
 import { Button } from '~/components/Button';
 import { HeaderBar, PillMessageBox } from '~/components/HeaderBar';
 import { AmountInput } from '~/components/Send/AmountInput';
+import { ConfirmSendModal } from '~/components/Send/ConfirmSendModal';
 import { RecipientInput } from '~/components/Send/RecipientInput';
 import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
@@ -34,6 +35,12 @@ export default function Send() {
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+  const toggleConfirmModal = () => {
+    setIsConfirmModalOpen((prev) => !prev);
+  };
+
   const possessedTokens = user.balances
     .map((balance) => tokens.find((token) => token.address === balance.address))
     .filter((token) => token !== undefined) as Token[];
@@ -69,6 +76,7 @@ export default function Send() {
         <View>
           <AmountInput
             value={amount}
+            selectedToken={selectedToken}
             onChange={(value) => setAmount(value)}
             tokens={possessedTokens}
             user={user}
@@ -79,12 +87,22 @@ export default function Send() {
         <View className="absolute bottom-[6rem] w-full items-center">
           <Button
             title="Send Funds"
-            onPress={handleSendPress}
+            onPress={toggleConfirmModal}
             className="bg-primary px-[5rem]"
             disabled={!isInputValid}
           />
         </View>
       </View>
+      {recipient && amount && selectedToken && (
+        <ConfirmSendModal
+          isModalOpen={isConfirmModalOpen}
+          toggleModal={toggleConfirmModal}
+          onConfirm={handleSendPress}
+          recipient={recipient}
+          amount={amount}
+          selectedToken={selectedToken}
+        />
+      )}
     </Frame>
   );
 }

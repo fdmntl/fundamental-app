@@ -23,7 +23,11 @@ export default function Login() {
       console.log('Logged in:', session.user);
       await addUserToDB(session.user);
       console.log('**** User added to DB ****');
-    } catch (error) {
+    } catch (error: any) {
+      if (error.message === 'The login flow was closed') {
+        console.log('Login flow was closed by the user.');
+        return;
+      }
       console.error('Login error:', error);
     }
   };
@@ -62,11 +66,7 @@ export default function Login() {
           />
         </View>
         <View className="absolute bottom-16 w-full items-center">
-          <Button
-            title="Take Control Now"
-            className="mt-2 w-1/2 !bg-content"
-            onPress={handleLogin}
-          />
+          <Button title="Take Control Now" className="mt-2 !bg-content" onPress={handleLogin} />
         </View>
       </Frame>
     </>
