@@ -141,7 +141,9 @@ export default function Trade() {
           <TouchableOpacity
             onPress={handleSwapTokens}
             className="h-12 w-12 items-center justify-center rounded-full bg-primary shadow-lg"
-            activeOpacity={0.7}>
+            activeOpacity={0.7}
+            accessibilityLabel="Swap tokens"
+            accessibilityRole="button">
             <Feather
               name="refresh-ccw"
               size={24}
