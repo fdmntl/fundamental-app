@@ -15,7 +15,7 @@ export const Container = ({
   title,
   className,
   children,
-  noPadding,
+  noPadding = false,
   titleAbove = false,
 }: ContainerProps) => {
   return (
