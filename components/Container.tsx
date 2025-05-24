@@ -16,7 +16,7 @@ export const Container = ({
   className,
   children,
   noPadding,
-  titleAbove,
+  titleAbove = false,
 }: ContainerProps) => {
   return (
     <View className={`${className}`}>
