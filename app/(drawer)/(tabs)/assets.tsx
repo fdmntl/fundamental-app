@@ -6,6 +6,7 @@ import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
 import { BalanceRefreshControl } from '~/components/BalanceRefreshControl';
 import { Container } from '~/components/Container';
 import Graph from '~/components/Graph';
+import { GraphRangeSelector } from '~/components/Graph/GraphRangeSelector';
 import { HeaderBar } from '~/components/HeaderBar';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
@@ -85,20 +86,12 @@ export default function Assets() {
                 data={totalData}
                 selectedRange={selectedRange}
                 selectedRangeComponent={
-                  <View className="my-1 flex-row justify-around">
-                    {rangeOptions.map((range) => (
-                      <TouchableOpacity
-                        key={range}
-                        onPress={() => setSelectedRange(range)}
-                        className={`rounded-lg px-4 py-2 ${selectedRange === range ? 'bg-primary' : ''}`}>
-                        <FText
-                          className={`${selectedRange === range ? 'text-white' : 'text-text'} !text-base`}
-                          bold>
-                          {rangeLabels[range]}
-                        </FText>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
+                  <GraphRangeSelector
+                    rangeOptions={rangeOptions}
+                    selectedRange={selectedRange}
+                    onSelectRange={setSelectedRange}
+                    rangeLabels={rangeLabels}
+                  />
                 }
               />
             </Container>
