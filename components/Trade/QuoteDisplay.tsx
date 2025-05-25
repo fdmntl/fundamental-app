@@ -15,10 +15,10 @@ import { getCowQuote } from '~/services/CoW/getCowQuote';
 import { Token, User } from '~/types/supabaseTypes';
 import { debounce } from '~/utils/helpers/debounce';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
-import { roundNumberToDecimal } from '~/utils/helpers/numbers/roundNumberToDecimal';
 import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
 import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
 import { getTokenAmountPrice } from '~/utils/helpers/tokens/getTokenAmountPrice';
+import { printToken } from '~/utils/helpers/tokens/printToken';
 
 interface QuoteDisplayProps {
   tokens: Token[];
@@ -123,7 +123,7 @@ export const QuoteDisplay = ({
           {selectedToken
             ? isLoading
               ? 'Calculating Quote'
-              : `${roundNumberToDecimal(quoteValue)} ${selectedToken?.symbol || ''}`
+              : `${printToken(quoteValue, selectedToken)} ${selectedToken?.symbol || ''}`
             : 'Select a token'}
         </FText>
       </View>

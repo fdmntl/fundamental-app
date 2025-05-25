@@ -1,7 +1,6 @@
 import { OrderParameters, SigningResult } from '@cowprotocol/cow-sdk';
 import { useState, useEffect } from 'react';
 import { TextInput, ScrollView } from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
 
 import { Button } from './Button';
 import { Container } from './Container';
@@ -14,8 +13,8 @@ import { setCowInfiniteAllowance } from '~/services/CoW/setCowInfiniteAllowance'
 import { signCowQuote } from '~/services/CoW/signCowQuote';
 import { submitCowOrder } from '~/services/CoW/submitCowOrder';
 import { getEthersSigner } from '~/services/Ethers/getEthersSigner';
-import { getWalletClient, resolveENS, checkERC20Allowance } from '~/services/viemService';
 import { coinbaseOnramp } from '~/services/Onramp/coinbaseOnramp';
+import { getWalletClient, resolveENS, checkERC20Allowance } from '~/services/viemService';
 
 const TestModule = () => {
   const { user, privy } = useAppData();
@@ -61,16 +60,14 @@ const TestModule = () => {
     }
   };
 
-  const walletClient = getWalletClient(wallet.provider);
-  const signer = getEthersSigner(wallet.provider);
-
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: 200 }}>
       <Container className="" title="Test Module">
         <Button
           className="bg-primary"
           title="Coinbase Onramp Test"
-          onPress={() => coinbaseOnramp(user.wallet_address)}></Button>
+          onPress={() => coinbaseOnramp(user.wallet_address)}
+        />
         <FText className="text-lg text-text">Resolve ENS Domain</FText>
         <TextInput
           className="my-2 rounded border border-gray-300 p-2 text-text"
@@ -153,7 +150,7 @@ const TestModule = () => {
             const orderStatus = await getCowOrderStatus(
               '0x7a43cf815dae479f40b5f9df705efeaffccaa4751a72535ff368edfcf960ffa7df7782a4f5841ef3ae0bf828b4ac89c3018604f66791c8ed'
             );
-            // console.log('Order Status:', orderStatus);
+            console.log('Order Status:', orderStatus);
           }}
         />
       </Container>

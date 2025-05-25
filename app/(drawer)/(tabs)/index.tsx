@@ -11,6 +11,7 @@ import { LogoutButton } from '~/components/LogoutButton';
 import { ProfileModal } from '~/components/Profile/ProfileModal';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
+import { TransactionBookDisplay } from '~/components/Transaction/TradeHistoric';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 
@@ -70,17 +71,8 @@ export default function Home() {
             <DebugButton />
             <LogoutButton />
           </View>
-          <Container title="Hello World" className="mt-4">
-            <View>
-              <FText>
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-                deserunt mollit anim id est laborum."
-              </FText>
-            </View>
+          <Container title="Trade Historic" className="mt-4">
+            <TransactionBookDisplay user={user} />
           </Container>
         </View>
       </ScrollView>

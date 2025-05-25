@@ -16,7 +16,7 @@ import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
 import { getTokenAmountPrice } from '~/utils/helpers/tokens/getTokenAmountPrice';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
-
+import { printToken } from '~/utils/helpers/tokens/printToken';
 interface AmountInputProps {
   onChange: (value: string) => void;
   value: string;
@@ -97,11 +97,16 @@ export const AmountInput = ({
         </FText>
         <View className="flex-row items-center gap-2">
           <FText className="!text-lg text-text" bold>
-            {balanceDisplay.toFixed(2)} {selectedToken?.symbol}
+            {printToken(balanceDisplay, selectedToken ? selectedToken : undefined)}
+            {selectedToken?.symbol}
           </FText>
           <TouchableOpacity
             className="rounded-xl bg-primary px-2"
-            onPress={() => onChange(balanceDisplay.toString())}>
+            onPress={() =>
+              onChange(
+                printToken(balanceDisplay, selectedToken ? selectedToken : undefined).toString()
+              )
+            }>
             <FText className="text-white" bold>
               Max
             </FText>
