@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { View } from 'react-native';
 
 import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
@@ -10,6 +10,7 @@ import { HeaderBar } from '~/components/HeaderBar';
 import { TradeHistoryButton } from '~/components/Transaction/TradeHistoryButton';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { refreshUserBalances } from '~/services/refreshUserBalance';
 import { GraphRange, graphRangeMap } from '~/types/graph';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
@@ -22,7 +23,7 @@ export default function Assets() {
   // Disable scroll when interacting with the chart
   const [scrollEnabled, setScrollEnabled] = useState(true);
 
-  const { tokens, user } = useAppData();
+  const { tokens, user, updateUser } = useAppData();
   // Time range options and labels
   const rangeOptions: GraphRange[] = ['1day', '1week', '1month', '1year'];
   const rangeLabels: Record<GraphRange, string> = {
@@ -71,10 +72,18 @@ export default function Assets() {
   const stableCoins = tokens.filter((item) => item.is_stablecoin);
   const cryptos = tokens.filter((item) => !item.is_stablecoin);
 
+  const onBalanceRefresh = useCallback(async () => {
+    if (!user) {
+      console.warn('no user, skipping');
+      return;
+    }
+    await refreshUserBalances(user, updateUser);
+  }, [user, updateUser]);
+
   return (
     <Frame>
       <HeaderBar title="Assets" />
-      <BalanceRefreshControl scrollEnabled={scrollEnabled}>
+      <BalanceRefreshControl scrollEnabled={scrollEnabled} onRefresh={onBalanceRefresh}>
         <View className="flex gap-y-5">
           <View
             onTouchStart={() => setScrollEnabled(false)}
