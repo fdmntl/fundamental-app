@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react';
-import { View, TouchableOpacity } from 'react-native';
-import { ScrollView } from 'react-native';
+import { View } from 'react-native';
 
 import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
 import { BalanceRefreshControl } from '~/components/BalanceRefreshControl';
@@ -8,12 +7,12 @@ import { Container } from '~/components/Container';
 import Graph from '~/components/Graph';
 import { GraphRangeSelector } from '~/components/Graph/GraphRangeSelector';
 import { HeaderBar } from '~/components/HeaderBar';
+import { TradeHistoryButton } from '~/components/Transaction/TradeHistoryButton';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { GraphRange, graphRangeMap } from '~/types/graph';
-import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
-import { FText } from '~/components/Text/FText';
+import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 
 // TODO: use user balance instead of token list
 
@@ -96,6 +95,7 @@ export default function Assets() {
               />
             </Container>
           </View>
+          <TradeHistoryButton />
           <Container title="Money" titleAbove>
             <View className="flex gap-y-4">
               {stableCoins

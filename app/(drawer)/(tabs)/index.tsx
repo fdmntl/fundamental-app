@@ -71,9 +71,6 @@ export default function Home() {
             <DebugButton />
             <LogoutButton />
           </View>
-          <Container title="Trade Historic" className="mt-4">
-            <TransactionBookDisplay user={user} />
-          </Container>
         </View>
       </ScrollView>
     </Frame>

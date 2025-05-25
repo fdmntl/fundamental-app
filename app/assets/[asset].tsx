@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { useState, useMemo } from 'react';
+import { View, ScrollView } from 'react-native';
 
 import { AssetDetailsCTAs } from '~/components/Assets/AssetDetailsCTAs';
 import { DetailsHeader } from '~/components/Assets/DetailsHeader';
@@ -27,6 +27,34 @@ export default function Assets() {
   const { getToken } = useAppData();
   const token = getToken(asset as string);
 
+  // Prepare hooks and variables for both cases
+  const title = token ? `${capitalise(token.name)}` : '';
+  const icon = token ? tokenIcons[token.symbol] : undefined;
+
+  const rangeOptions: GraphRange[] = ['1day', '1week', '1month', '1year'];
+  const rangeLabels: Record<GraphRange, string> = {
+    '1day': '1D',
+    '1week': '1W',
+    '1month': '1M',
+    '1year': '1Y',
+  };
+
+  const { selectedRange, setSelectedRange, dataForSelectedRange } = useGraphData(token);
+
+  const userTokenValue = token ? getUserTokenValue(token.address, tokens, user).toFixed(2) : '0.00';
+  const userTokenAmount = token ? getUserTokenAmount(token.address, tokens, user) : 0;
+
+  const graphDataWithCurrent = useMemo(() => {
+    if (!token) return [];
+    const processedData = Array.isArray(dataForSelectedRange) ? [...dataForSelectedRange] : [];
+    if (typeof token.last_value === 'number') {
+      const now = new Date();
+      const currentTimeLabel = now.toISOString();
+      processedData.push({ value: token.last_value, label: currentTimeLabel });
+    }
+    return processedData;
+  }, [dataForSelectedRange, token]);
+
   if (!token) {
     return (
       <Frame>
@@ -37,37 +65,6 @@ export default function Assets() {
       </Frame>
     );
   }
-
-  const title = `${capitalise(token.name)}`;
-  const icon = tokenIcons[token.symbol];
-
-  const rangeOptions: GraphRange[] = ['1day', '1week', '1month', '1year'];
-  const rangeLabels: Record<GraphRange, string> = {
-    '1day': '1D',
-    '1week': '1W',
-    '1month': '1M',
-    '1year': '1Y',
-  };
-
-  const { selectedRange, setSelectedRange, dataForSelectedRange } = useGraphData({
-    daily_values: token.daily_values,
-    weekly_values: token.weekly_values,
-    monthly_values: token.monthly_values,
-    yearly_values: token.yearly_values,
-  });
-
-  const userTokenValue = getUserTokenValue(token.address, tokens, user).toFixed(2);
-  const userTokenAmount = getUserTokenAmount(token.address, tokens, user);
-
-  const graphDataWithCurrent = useMemo(() => {
-    let processedData = Array.isArray(dataForSelectedRange) ? [...dataForSelectedRange] : [];
-    if (token && typeof token.last_value === 'number') {
-      const now = new Date();
-      const currentTimeLabel = now.toISOString();
-      processedData.push({ value: token.last_value, label: currentTimeLabel });
-    }
-    return processedData;
-  }, [dataForSelectedRange, token]);
 
   return (
     <>
