@@ -32,7 +32,7 @@ export const ProfileModal = () => {
 
   return (
     <View>
-      <TouchableOpacity onPress={toggleModal} className="w-full rounded p-2 shadow-sm">
+      <TouchableOpacity onPress={toggleModal} className="w-full rounded shadow-sm">
         <Container>
           <View className="flex flex-row gap-4">
             <Feather name="user" size={48} className="text-text" />
@@ -49,48 +49,50 @@ export const ProfileModal = () => {
       <Modal visible={isExpanded} animationType="fade" transparent onRequestClose={toggleModal}>
         <TouchableWithoutFeedback onPress={toggleModal}>
           <View className="flex-1 items-center justify-center bg-[rgba(0,0,0,0.5)]">
-            <ImageBackground
-              source={require('../../assets/fundamental-gradient.png')}
-              className="overflow-hidden rounded-[15px] p-3">
-              <Container className="rounded-lg bg-content px-2">
-                <View className="gap-5">
-                  {hasENS ? (
-                    <View className="gap-1">
-                      <FText className="!text-3xl" bold>
-                        {ensName}
-                      </FText>
-                      <TouchableOpacity onPress={() => copyToClipboard(ensDomain!)}>
-                        <View className="flex flex-row items-center gap-2">
-                          <FText italic>{ensDomain}</FText>
-                          <Feather name="copy" size={14} className="text-text" />
-                        </View>
-                      </TouchableOpacity>
+            <TouchableWithoutFeedback onPress={() => {}}>
+              <ImageBackground
+                source={require('../../assets/fundamental-gradient.png')}
+                className="overflow-hidden rounded-[15px] p-3">
+                <Container className="w-[85%] rounded-lg bg-content px-2">
+                  <View className="gap-5">
+                    {hasENS ? (
+                      <View className="gap-1">
+                        <FText className="!text-3xl" bold>
+                          {ensName}
+                        </FText>
+                        <TouchableOpacity onPress={() => copyToClipboard(ensDomain!)}>
+                          <View className="flex flex-row items-center gap-2">
+                            <FText italic>{ensDomain}</FText>
+                            <Feather name="copy" size={14} className="text-text" />
+                          </View>
+                        </TouchableOpacity>
+                      </View>
+                    ) : (
+                      <RegisterENS />
+                    )}
+
+                    <View className="items-center justify-center self-center rounded-xl bg-white p-3">
+                      <QRCode value={user.wallet_address} size={200} />
                     </View>
-                  ) : (
-                    <RegisterENS />
-                  )}
 
-                  <View className="items-center justify-center self-center rounded-xl bg-white p-3">
-                    <QRCode value={user.wallet_address} size={200} />
+                    <TouchableOpacity
+                      onPress={() => copyToClipboard(user.wallet_address)}
+                      className="w-auto flex-row items-center justify-center gap-2">
+                      <FText className="!text-2xl !text-neutral">{truncatedAddress}</FText>
+                      <Feather name="copy" size={18} className="text-text" />
+                    </TouchableOpacity>
+
+                    <View className="flex items-center justify-center">
+                      <Image
+                        source={require('../../assets/fundamental-text.png')}
+                        style={{ width: 125, height: 22 }}
+                        resizeMode="contain"
+                      />
+                    </View>
                   </View>
-
-                  <TouchableOpacity
-                    onPress={() => copyToClipboard(user.wallet_address)}
-                    className="w-auto flex-row items-center justify-center gap-2">
-                    <FText className="!text-2xl !text-neutral">{truncatedAddress}</FText>
-                    <Feather name="copy" size={18} className="text-text" />
-                  </TouchableOpacity>
-
-                  <View className="flex items-center justify-center">
-                    <Image
-                      source={require('../../assets/fundamental-text.png')}
-                      style={{ width: 125, height: 22 }}
-                      resizeMode="contain"
-                    />
-                  </View>
-                </View>
-              </Container>
-            </ImageBackground>
+                </Container>
+              </ImageBackground>
+            </TouchableWithoutFeedback>
           </View>
         </TouchableWithoutFeedback>
         <Toast topOffset={55} config={toastConfig} />

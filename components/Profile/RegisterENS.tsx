@@ -39,13 +39,13 @@ export const RegisterENS = () => {
   const provider = privy.wallet.provider;
 
   return (
-    <View className="flex gap-4">
+    <View className="flex gap-2">
       <FText className="!text-2xl" bold>
         Register an ENS
       </FText>
       <View className="w-full flex-row items-center gap-2">
         <TextInputField
-          className="w-[200px]"
+          className="w-3/5"
           placeholder="username"
           value={subname}
           onChange={(value) => {
@@ -53,7 +53,7 @@ export const RegisterENS = () => {
           }}
           isValid={isValidSubname(subname)}
         />
-        <FText className="!text-3xl" bold>
+        <FText className="pt-[2px] !text-xl" bold>
           .fdmntl.eth
         </FText>
       </View>
