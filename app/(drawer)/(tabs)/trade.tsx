@@ -1,8 +1,8 @@
 import { OrderParameters } from '@cowprotocol/cow-sdk';
+import { Feather } from '@expo/vector-icons';
 import { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { Feather } from '@expo/vector-icons';
 
 import { Button } from '~/components/Button';
 import { HeaderBar } from '~/components/HeaderBar';
@@ -137,10 +137,10 @@ export default function Trade() {
         />
 
         {/* Swap Button - with more pronounced styling and debugging */}
-        <View className="z-10 my-2 items-center">
+        <View className="z-10 my-[-25px] items-center">
           <TouchableOpacity
             onPress={handleSwapTokens}
-            className="h-12 w-12 items-center justify-center rounded-full bg-primary shadow-lg"
+            className="h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg"
             activeOpacity={0.7}
             accessibilityLabel="Swap tokens"
             accessibilityRole="button">
