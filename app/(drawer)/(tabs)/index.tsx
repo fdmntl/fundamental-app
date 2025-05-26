@@ -17,6 +17,7 @@ import { Frame } from '~/components/Wrappers/Frame';
 import 'fast-text-encoding';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
+import { router } from 'expo-router';
 
 export default function Home() {
   const { privy, user } = useAppData();
@@ -66,7 +67,7 @@ export default function Home() {
               <FText className="text-lg">Your created your account at {user.created_at}</FText>
               <FText className="text-lg">Your ens is {user.ens}</FText>
             </Container>
-            <Button title="Show toast" onPress={showToast} />
+            <Button title="Deposit" onPress={() => router.push('/deposit')} />
             <DebugButton />
             <LogoutButton />
           </View>
