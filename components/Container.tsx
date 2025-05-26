@@ -1,4 +1,3 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { View } from 'react-native';
 
 import { FText } from './Text/FText';
