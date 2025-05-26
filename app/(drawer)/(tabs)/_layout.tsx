@@ -1,10 +1,8 @@
 import { Feather, FontAwesome6 } from '@expo/vector-icons';
-
 import { Tabs } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { View, Platform } from 'react-native';
 
-import { FText } from '~/components/Text/FText';
 import { useTheme } from '~/components/Wrappers/ThemeWrapper';
 
 cssInterop(Feather, {

@@ -1,8 +1,12 @@
+import { Feather, FontAwesome6 } from '@expo/vector-icons';
+import { usePrivy, useEmbeddedWallet } from '@privy-io/expo';
+import { router } from 'expo-router';
 import { useState, useMemo, useEffect } from 'react';
 import { View } from 'react-native';
 
 import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
 import { BalanceRefreshControl } from '~/components/BalanceRefreshControl';
+import { Button } from '~/components/Button';
 import { Container } from '~/components/Container';
 import Graph from '~/components/Graph';
 import { GraphRangeSelector } from '~/components/Graph/GraphRangeSelector';
@@ -11,13 +15,8 @@ import { ProfileDetailModal } from '~/components/Profile/ProfileDetailModal';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { GraphRange, graphRangeMap } from '~/types/graph';
-import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
-import { usePrivy } from '@privy-io/expo';
-import { useEmbeddedWallet } from '@privy-io/expo';
-import { Feather, FontAwesome6 } from '@expo/vector-icons';
-import { router } from 'expo-router';
-import { Button } from '~/components/Button';
+import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 
 export default function Home() {
   const { user, tokens } = useAppData();
@@ -112,25 +111,25 @@ export default function Home() {
               />
             </Container>
           </View>
-          <View className="w-full flex-row justify-between">
+          <View className="h-14 w-full flex-row gap-4">
             <Button
-              icon={<Feather name="send" size={20} className="text-text" />}
+              icon={<Feather name="send" size={24} className="text-text" />}
               disableGradient
-              className="w-24 bg-content"
+              className="flex-1 bg-content"
               onPress={() => {
                 router.push('/send');
               }}
             />
             <Button
-              icon={<FontAwesome6 name="qrcode" size={20} className="text-text" />}
+              icon={<FontAwesome6 name="qrcode" size={22} className="text-text" />}
               disableGradient
-              className="w-24 bg-content"
+              className="flex-1 bg-content"
               onPress={() => setIsProfileDetailModalVisible(true)}
             />
             <Button
               icon={<Feather name="plus" size={20} className="text-white" />}
               title="Deposit"
-              className="w-48"
+              className="flex-[2] bg-content"
               onPress={() => {}}
             />
           </View>
