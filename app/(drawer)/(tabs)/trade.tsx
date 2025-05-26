@@ -124,7 +124,7 @@ export default function Trade() {
           title="You Pay"
         />
 
-        {/* Swap Button - with more pronounced styling and debugging */}
+        {/* Swap Button */}
         <View className="z-10 my-[-25px] items-center">
           <TouchableOpacity
             onPress={handleSwapTokens}
