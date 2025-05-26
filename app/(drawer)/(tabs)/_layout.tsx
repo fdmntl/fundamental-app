@@ -61,24 +61,6 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="assets"
-        options={{
-          title: 'Assets',
-          tabBarIcon: ({ focused }) => (
-            <View className="items-center">
-              <Feather
-                size={28}
-                name="pie-chart"
-                className={`${focused ? 'text-primary' : 'text-text'}`}
-              />
-              <FText bold className={`${focused ? '!text-primary' : '!text-text'}`}>
-                Assets
-              </FText>
-            </View>
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="trade"
         options={{
           title: 'Trade',
@@ -91,24 +73,6 @@ export default function Layout() {
               />
               <FText bold className={`${focused ? '!text-primary' : '!text-text'}`}>
                 Trade
-              </FText>
-            </View>
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="earn"
-        options={{
-          title: 'Earn',
-          tabBarIcon: ({ focused }) => (
-            <View className="items-center">
-              <Feather
-                size={28}
-                name="percent"
-                className={`${focused ? 'text-primary' : 'text-text'}`}
-              />
-              <FText bold className={`${focused ? '!text-primary' : '!text-text'}`}>
-                Earn
               </FText>
             </View>
           ),
