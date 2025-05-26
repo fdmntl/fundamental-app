@@ -29,7 +29,6 @@ interface QuoteDisplayProps {
   youPayValue: number;
   youPayToken: Token;
   onQuote?: (quote: OrderParameters) => void;
-  onQuoteValue?: (value: number) => void;
 }
 
 export const QuoteDisplay = ({
@@ -41,7 +40,6 @@ export const QuoteDisplay = ({
   youPayValue,
   youPayToken,
   onQuote,
-  onQuoteValue,
 }: QuoteDisplayProps) => {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [quoteValue, setQuoteValue] = useState<number>(0);
@@ -68,16 +66,10 @@ export const QuoteDisplay = ({
         selectedToken.address,
         youPayValueConverted.toString()
       );
-
       if (onQuote) onQuote(quote);
 
       const formattedQuote = digitsToAmount(Number(quote.buyAmount), selectedToken);
       setQuoteValue(formattedQuote);
-
-      // Pass the quote value to the parent component if onQuoteValue is provided
-      if (onQuoteValue) {
-        onQuoteValue(formattedQuote);
-      }
     } catch (error) {
       console.error('Error calculating quote:', error);
       alert('Error calculating quote. Please try again.');

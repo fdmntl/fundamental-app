@@ -26,7 +26,6 @@ export default function Trade() {
   const [selectedGetToken, setSelectedGetToken] = useState<Token | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [quote, setQuote] = useState<OrderParameters | null>(null);
-  const [quoteValue, setQuoteValue] = useState<number>(0);
 
   const toggleConfirmModal = () => {
     setIsConfirmModalOpen((prev) => !prev);
@@ -59,18 +58,7 @@ export default function Trade() {
     const tempToken = selectedPayToken;
     setSelectedPayToken(selectedGetToken);
     setSelectedGetToken(tempToken);
-
-    // If we have a quote value, update the pay amount to the current quote value
-    if (quoteValue > 0) {
-      console.log(`Setting new pay amount to ${quoteValue}`);
-      setPayAmount(quoteValue.toString());
-    } else {
-      // Otherwise clear the pay amount to trigger a new quote calculation
-      console.log('Clearing pay amount');
-      setPayAmount('');
-    }
-
-    // Clear the quote to force a recalculation
+    setPayAmount('');
     setQuote(null);
 
     Toast.show({
@@ -172,9 +160,6 @@ export default function Trade() {
           }}
           onQuote={(newQuote) => {
             setQuote(newQuote);
-          }}
-          onQuoteValue={(value) => {
-            setQuoteValue(value);
           }}
         />
       </View>
