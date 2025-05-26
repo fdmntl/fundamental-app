@@ -19,6 +19,7 @@ import { Token } from '~/types/supabaseTypes';
 import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
 import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
 import { getTokenAmountPrice } from '~/utils/helpers/tokens/getTokenAmountPrice';
+import { printToken } from '~/utils/helpers/tokens/printToken';
 
 interface ConfirmTradeModalProps {
   isModalOpen: boolean;
@@ -80,18 +81,24 @@ export const ConfirmTradeModal = ({
                   />
                   <View className="flex-col">
                     <FText className="!text-2xl" bold>
-                      {digitsToAmount(Number(quote.sellAmount), selectedPayToken!) +
-                        digitsToAmount(Number(quote.feeAmount), selectedPayToken!)}{' '}
+                      {printToken(
+                        digitsToAmount(Number(quote.sellAmount), selectedPayToken!) +
+                          digitsToAmount(Number(quote.feeAmount), selectedPayToken!),
+                        selectedPayToken!
+                      )}{' '}
                       {selectedPayToken.symbol}
                     </FText>
                     <FText className="!text-neutral" bold>
                       ≈$
-                      {getTokenAmountPrice(
-                        selectedPayToken.address || '',
-                        digitsToAmount(Number(quote.sellAmount), selectedPayToken!) +
-                          digitsToAmount(Number(quote.feeAmount), selectedPayToken!),
-                        tokens
-                      ).toFixed(2)}
+                      {printToken(
+                        getTokenAmountPrice(
+                          selectedPayToken.address || '',
+                          digitsToAmount(Number(quote.sellAmount), selectedPayToken!) +
+                            digitsToAmount(Number(quote.feeAmount), selectedPayToken!),
+                          tokens
+                        ),
+                        selectedPayToken!
+                      )}
                     </FText>
                   </View>
                 </View>
@@ -107,7 +114,10 @@ export const ConfirmTradeModal = ({
                   />
                   <View className="flex-col">
                     <FText className="!text-2xl" bold>
-                      {digitsToAmount(Number(quote.buyAmount), selectedGetToken!)}{' '}
+                      {printToken(
+                        digitsToAmount(Number(quote.buyAmount), selectedGetToken!),
+                        selectedGetToken!
+                      )}{' '}
                       {selectedGetToken.symbol}
                     </FText>
                     <FText className="!text-neutral" bold>

@@ -11,6 +11,7 @@ import { LogoutButton } from '~/components/LogoutButton';
 import { ProfileModal } from '~/components/Profile/ProfileModal';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
+import { TransactionBookDisplay } from '~/components/Transaction/TradeHistoric';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
@@ -80,6 +81,10 @@ export default function Home() {
                     onPress={() => Toast.show({ type: 'info', text1: 'Feature coming soon!' })}
                   />
                 </View>
+                {/* Trade Historic section */}
+                <Container title="Trade Historic" className="mt-4">
+                  <TransactionBookDisplay user={user} />
+                </Container>
                 {/* Coin section */}
                 <Container title="Money">
                   <View className="flex gap-y-4">
