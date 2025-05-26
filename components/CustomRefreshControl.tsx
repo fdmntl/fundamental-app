@@ -9,7 +9,7 @@ interface BalanceRefreshControlProps {
   onRefresh: () => Promise<void>;
 }
 
-export const BalanceRefreshControl = ({
+export const CustomRefreshControl = ({
   children,
   scrollEnabled = true,
   onRefresh,

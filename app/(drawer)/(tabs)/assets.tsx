@@ -2,8 +2,8 @@ import { useState, useMemo, useCallback } from 'react';
 import { View } from 'react-native';
 
 import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
-import { BalanceRefreshControl } from '~/components/BalanceRefreshControl';
 import { Container } from '~/components/Container';
+import { CustomRefreshControl } from '~/components/CustomRefreshControl';
 import Graph from '~/components/Graph';
 import { GraphRangeSelector } from '~/components/Graph/GraphRangeSelector';
 import { HeaderBar } from '~/components/HeaderBar';
@@ -83,7 +83,7 @@ export default function Assets() {
   return (
     <Frame>
       <HeaderBar title="Assets" />
-      <BalanceRefreshControl scrollEnabled={scrollEnabled} onRefresh={onBalanceRefresh}>
+      <CustomRefreshControl scrollEnabled={scrollEnabled} onRefresh={onBalanceRefresh}>
         <View className="flex gap-y-5">
           <View
             onTouchStart={() => setScrollEnabled(false)}
@@ -132,7 +132,7 @@ export default function Assets() {
             </View>
           </Container>
         </View>
-      </BalanceRefreshControl>
+      </CustomRefreshControl>
     </Frame>
   );
 }

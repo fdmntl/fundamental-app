@@ -1,5 +1,5 @@
 import { DetailsHeader } from '~/components/Assets/DetailsHeader';
-import { BalanceRefreshControl } from '~/components/BalanceRefreshControl';
+import { CustomRefreshControl } from '~/components/CustomRefreshControl';
 import { TradeHistoryListView } from '~/components/Transaction/TradeHistoryListView';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
@@ -10,9 +10,9 @@ export default function TransactionHistory() {
   return (
     <Frame>
       <DetailsHeader title="Transaction History" />
-      <BalanceRefreshControl onRefresh={fetchTradeHistory}>
+      <CustomRefreshControl onRefresh={fetchTradeHistory}>
         <TradeHistoryListView tradeOrders={tradeHistory} isLoading={isTradeHistoryLoading} />
-      </BalanceRefreshControl>
+      </CustomRefreshControl>
     </Frame>
   );
 }
