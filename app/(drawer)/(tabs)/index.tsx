@@ -1,30 +1,27 @@
-import { useEmbeddedWallet, usePrivy } from '@privy-io/expo';
-import { useEffect } from 'react';
-import { View, ScrollView } from 'react-native';
-import Toast from 'react-native-toast-message';
+import { useState, useMemo, useEffect } from 'react';
+import { View, TouchableOpacity } from 'react-native';
+import { ScrollView } from 'react-native';
 
-import { Button } from '~/components/Button';
+import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
+import { BalanceRefreshControl } from '~/components/BalanceRefreshControl';
 import { Container } from '~/components/Container';
-import { DebugButton } from '~/components/DebugButton';
-import { HeaderBar, PillMessageBox } from '~/components/HeaderBar';
-import { LogoutButton } from '~/components/LogoutButton';
-import { ProfileModal } from '~/components/Profile/ProfileModal';
-import { FText } from '~/components/Text/FText';
-import { FTitle } from '~/components/Text/FTitle';
-import { TransactionBookDisplay } from '~/components/Transaction/TradeHistoric';
+import Graph from '~/components/Graph';
+import { GraphRangeSelector } from '~/components/Graph/GraphRangeSelector';
+import { HeaderBar } from '~/components/HeaderBar';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
-
-import 'fast-text-encoding';
-import 'react-native-get-random-values';
-import '@ethersproject/shims';
+import { GraphRange, graphRangeMap } from '~/types/graph';
+import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
+import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
+import { FText } from '~/components/Text/FText';
+import { usePrivy } from '@privy-io/expo';
+import { useEmbeddedWallet } from '@privy-io/expo';
 
 export default function Home() {
-  const { privy, user } = useAppData();
+  const { privy, user, tokens } = useAppData();
   const { user: privyUser } = usePrivy();
   const wallet = useEmbeddedWallet();
   const { updatePrivy } = useAppData();
-
   useEffect(() => {
     const updateUser = async () => {
       await updatePrivy({ user: privyUser!, wallet });
@@ -32,50 +29,111 @@ export default function Home() {
 
     updateUser();
   }, [privyUser, wallet]);
+  // Graph state for selecting timeframe
+  const [selectedRange, setSelectedRange] = useState<GraphRange>('1month');
+  // Disable scroll when interacting with the chart
+  const [scrollEnabled, setScrollEnabled] = useState(true);
 
-  const homePillContent = () => {
-    return (
-      <PillMessageBox>
-        <FText className="!text-2xl" bold>
-          Good Morning!
-        </FText>
-      </PillMessageBox>
-    );
+  // Time range options and labels
+  const rangeOptions: GraphRange[] = ['1day', '1week', '1month', '1year'];
+  const rangeLabels: Record<GraphRange, string> = {
+    '1day': '1D',
+    '1week': '1W',
+    '1month': '1M',
+    '1year': '1Y',
   };
 
-  const showToast = () => {
-    Toast.show({
-      type: 'fundamental',
-      text1: 'Hello',
-      text2: 'This is a toast 👋',
+  // Combine token series into total portfolio value series
+  const totalData = useMemo(() => {
+    if (!tokens.length) return [];
+    const key = graphRangeMap[selectedRange];
+    const firstSeries = tokens[0][key] || [];
+    const length = firstSeries.length;
+    if (length === 0) return []; // Return empty if no historical data
+    const labels = firstSeries.map((dp) => dp.label);
+    const sums = new Array<number>(length).fill(0);
+    tokens.forEach((token) => {
+      const series = token[key] || [];
+      const amount = getUserTokenAmount(token.address, tokens, user);
+      for (let i = 0; i < length; i++) {
+        sums[i] += (series[i]?.value || 0) * amount;
+      }
     });
-  };
+
+    // Calculate the combined latest value
+    let combinedLatestValue = 0;
+    tokens.forEach((token) => {
+      if (typeof token.last_value === 'number') {
+        const amount = getUserTokenAmount(token.address, tokens, user);
+        combinedLatestValue += token.last_value * amount;
+      }
+    });
+
+    const historicalData = sums.map((value, i) => ({ value, label: labels[i] }));
+
+    // Add the combined latest value as a new data point
+    const now = new Date();
+    // Format label as ISO string to be consistent with historical data
+    const currentTimeLabel = now.toISOString();
+
+    return [...historicalData, { value: combinedLatestValue, label: currentTimeLabel }];
+  }, [tokens, user, selectedRange]);
+
+  const stableCoins = tokens.filter((item) => item.is_stablecoin);
+  const cryptos = tokens.filter((item) => !item.is_stablecoin);
 
   return (
     <Frame>
-      <HeaderBar title="Home" pillContent={homePillContent} />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="gap-2 pb-24">
-          <FTitle className="text-4xl">Welcome to Fundamental!</FTitle>
-          <FText className="text-lg">This is Fundamental</FText>
-          <ProfileModal />
-          <View className="gap-4">
-            <Container className="" title="User info">
-              <FText className="text-lg">Your wallet status is {privy.wallet?.status}</FText>
-              <FText className="text-lg">Your address is {privy.wallet?.account?.address}</FText>
-              <FText className="text-lg">Your userId is {user.id}</FText>
-              <FText className="text-lg">Your created your account at {user.created_at}</FText>
-              <FText className="text-lg">Your ens is {user.ens}</FText>
+      <HeaderBar title="" />
+      <BalanceRefreshControl scrollEnabled={scrollEnabled}>
+        <View className="flex gap-y-5">
+          <View
+            onTouchStart={() => setScrollEnabled(false)}
+            onTouchEnd={() => setScrollEnabled(true)}
+            onTouchCancel={() => setScrollEnabled(true)}>
+            <Container noPadding>
+              <Graph
+                data={totalData}
+                selectedRange={selectedRange}
+                selectedRangeComponent={
+                  <GraphRangeSelector
+                    rangeOptions={rangeOptions}
+                    selectedRange={selectedRange}
+                    onSelectRange={setSelectedRange}
+                    rangeLabels={rangeLabels}
+                  />
+                }
+              />
             </Container>
-            <Button title="Show toast" onPress={showToast} />
-            <DebugButton />
-            <LogoutButton />
           </View>
-          <Container title="Trade Historic" className="mt-4">
-            <TransactionBookDisplay user={user} />
+          <Container title="Money" titleAbove>
+            <View className="flex gap-y-4">
+              {stableCoins
+                .sort(
+                  (a, b) =>
+                    getUserTokenValue(b.address, tokens, user) -
+                    getUserTokenValue(a.address, tokens, user)
+                )
+                .map((item) => (
+                  <AssetListDisplay key={item.address} token={item} />
+                ))}
+            </View>
+          </Container>
+          <Container title="Crypto" titleAbove>
+            <View className="flex gap-y-4">
+              {cryptos
+                .sort(
+                  (a, b) =>
+                    getUserTokenValue(b.address, tokens, user) -
+                    getUserTokenValue(a.address, tokens, user)
+                )
+                .map((item) => (
+                  <AssetListDisplay key={item.address} token={item} />
+                ))}
+            </View>
           </Container>
         </View>
-      </ScrollView>
+      </BalanceRefreshControl>
     </Frame>
   );
 }
