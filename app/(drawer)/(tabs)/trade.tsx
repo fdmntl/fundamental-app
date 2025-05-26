@@ -45,12 +45,12 @@ export default function Trade() {
   const handleSwapTokens = () => {
     console.log('Swap button pressed');
 
-    // If either token is not selected, don't do anything
-    if (!selectedPayToken || !selectedGetToken) {
-      console.log('Cannot swap - one or both tokens not selected');
+    // No swap if at least one token is not selected
+    if (!selectedPayToken && !selectedGetToken) {
+      console.log('Cannot swap - no tokens selected');
       Toast.show({
         type: 'info',
-        text1: 'Please select tokens first',
+        text1: 'Please select at least one token',
       });
       return;
     }
