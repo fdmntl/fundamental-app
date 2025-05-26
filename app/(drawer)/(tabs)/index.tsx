@@ -13,16 +13,22 @@ import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
+import { BalanceRefreshControl } from '~/components/BalanceRefreshControl';
+import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
+import QuickAction from '~/components/QuickAction';
 
 import 'fast-text-encoding';
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
 
 export default function Home() {
-  const { privy, user } = useAppData();
+  const { tokens, user } = useAppData();
   const { user: privyUser } = usePrivy();
   const wallet = useEmbeddedWallet();
   const { updatePrivy } = useAppData();
+  const stableCoins = tokens.filter((item) => item.is_stablecoin);
+  const cryptos = tokens.filter((item) => !item.is_stablecoin);
 
   useEffect(() => {
     const updateUser = async () => {
@@ -49,21 +55,60 @@ export default function Home() {
         <View className="gap-2 pb-24">
           <ProfileModal />
           <View className="gap-4">
-            <Container title="User info">
-              <FText className="text-lg">Your wallet is {privy.wallet?.status}!</FText>
-              {/* does he need to know that ? */}
-              <FText className="text-lg">Your address is {privy.wallet?.account?.address}</FText>
-              {/* Find better phrasing imo */}
-              <FText className="text-lg">Your userId is {user.id}</FText>
-              {/* Probably useless no? */}
-              <FText className="text-lg">Your created your account at {user.created_at}</FText>
-              {/* yeah ... */}
-              <FText className="text-lg">Your ens is {user.ens}</FText>
-              {/* show earlier on the page */}
-              {/* probs a general balance of the wallet / biggest move in the coin he owns ? */}
-            </Container>
-            <DebugButton />
-            <LogoutButton />
+            <BalanceRefreshControl>
+              <View className="flex gap-y-5">
+                {/* quick access Section*/}
+                <View className="flex-row justify-between px-2">
+                  <QuickAction
+                    icon="dollar-sign"
+                    label="Top-up"
+                    onPress={() => Toast.show({ type: 'info', text1: 'Feature coming soon!' })}
+                  />
+                  <QuickAction
+                    icon="send"
+                    label="Send"
+                    onPress={() => Toast.show({ type: 'info', text1: 'Feature coming soon!' })}
+                  />
+                  <QuickAction
+                    icon="grid"
+                    label="Receive"
+                    onPress={() => Toast.show({ type: 'info', text1: 'Feature coming soon!' })}
+                  />
+                  <QuickAction
+                    icon="repeat"
+                    label="Trade"
+                    onPress={() => Toast.show({ type: 'info', text1: 'Feature coming soon!' })}
+                  />
+                </View>
+                {/* Coin section */}
+                <Container title="Money">
+                  <View className="flex gap-y-4">
+                    {stableCoins
+                      .sort(
+                        (a, b) =>
+                          getUserTokenValue(b.address, tokens, user) -
+                          getUserTokenValue(a.address, tokens, user)
+                      )
+                      .map((item) => (
+                        <AssetListDisplay key={item.address} token={item} />
+                      ))}
+                  </View>
+                </Container>
+                <Container title="Crypto">
+                  <View className="flex gap-y-4">
+                    {cryptos
+                      .sort(
+                        (a, b) =>
+                          getUserTokenValue(b.address, tokens, user) -
+                          getUserTokenValue(a.address, tokens, user)
+                      )
+                      .map((item) => (
+                        <AssetListDisplay key={item.address} token={item} />
+                      ))}
+                  </View>
+                </Container>
+              </View>
+            </BalanceRefreshControl>
           </View>
         </View>
       </ScrollView>
