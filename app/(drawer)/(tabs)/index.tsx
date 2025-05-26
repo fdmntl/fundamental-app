@@ -88,7 +88,7 @@ export default function Home() {
     <Frame>
       <HeaderBar title="" />
       <BalanceRefreshControl scrollEnabled={scrollEnabled}>
-        <View className="flex gap-y-5">
+        <View className="flex gap-y-4">
           <View
             onTouchStart={() => setScrollEnabled(false)}
             onTouchEnd={() => setScrollEnabled(true)}
@@ -122,9 +122,9 @@ export default function Home() {
               onPress={() => {}}
             />
             <Button
-              icon={<Feather name="plus" size={20} className="text-text" />}
+              icon={<Feather name="plus" size={20} className="text-white" />}
               title="Deposit"
-              className="w-48 bg-text"
+              className="w-48"
               onPress={() => {}}
             />
           </View>
