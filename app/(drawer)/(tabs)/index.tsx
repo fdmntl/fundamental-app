@@ -7,6 +7,7 @@ import { Container } from '~/components/Container';
 import Graph from '~/components/Graph';
 import { GraphRangeSelector } from '~/components/Graph/GraphRangeSelector';
 import { HeaderBar } from '~/components/HeaderBar';
+import { ProfileDetailModal } from '~/components/Profile/ProfileDetailModal';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { GraphRange, graphRangeMap } from '~/types/graph';
@@ -33,6 +34,8 @@ export default function Home() {
   const [selectedRange, setSelectedRange] = useState<GraphRange>('1month');
   // Disable scroll when interacting with the chart
   const [scrollEnabled, setScrollEnabled] = useState(true);
+  // State for ProfileDetailModal visibility
+  const [isProfileDetailModalVisible, setIsProfileDetailModalVisible] = useState(false);
 
   // Time range options and labels
   const rangeOptions: GraphRange[] = ['1day', '1week', '1month', '1year'];
@@ -119,7 +122,7 @@ export default function Home() {
               icon={<FontAwesome6 name="qrcode" size={20} className="text-text" />}
               disableGradient
               className="w-24 bg-content"
-              onPress={() => {}}
+              onPress={() => setIsProfileDetailModalVisible(true)}
             />
             <Button
               icon={<Feather name="plus" size={20} className="text-white" />}
@@ -156,6 +159,10 @@ export default function Home() {
           </Container>
         </View>
       </BalanceRefreshControl>
+      <ProfileDetailModal
+        visible={isProfileDetailModalVisible}
+        onClose={() => setIsProfileDetailModalVisible(false)}
+      />
     </Frame>
   );
 }
