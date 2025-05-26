@@ -11,7 +11,6 @@ import { LogoutButton } from '~/components/LogoutButton';
 import { ProfileModal } from '~/components/Profile/ProfileModal';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
-import { TransactionBookDisplay } from '~/components/Transaction/TradeHistoric';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 
