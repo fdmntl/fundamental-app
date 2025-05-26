@@ -1,6 +1,7 @@
 import { OrderParameters } from '@cowprotocol/cow-sdk';
+import { Feather } from '@expo/vector-icons';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { Button } from '~/components/Button';
@@ -39,6 +40,32 @@ export default function Trade() {
     : 0;
 
   const isAmountValid = parseFloat(payAmount) > 0 && parseFloat(payAmount) <= selectedTokenBalance;
+
+  const handleSwapTokens = () => {
+    console.log('Swap button pressed');
+
+    // No swap if at least one token is not selected
+    if (!selectedPayToken && !selectedGetToken) {
+      console.log('Cannot swap - no tokens selected');
+      Toast.show({
+        type: 'info',
+        text1: 'Please select at least one token',
+      });
+      return;
+    }
+
+    // Swap the tokens
+    const tempToken = selectedPayToken;
+    setSelectedPayToken(selectedGetToken);
+    setSelectedGetToken(tempToken);
+    setPayAmount('');
+    setQuote(null);
+
+    Toast.show({
+      type: 'success',
+      text1: 'Tokens swapped',
+    });
+  };
 
   const handleTradePress = async () => {
     if (
@@ -97,6 +124,23 @@ export default function Trade() {
           title="You Pay"
         />
 
+        {/* Swap Button */}
+        <View className="z-10 my-[-25px] items-center">
+          <TouchableOpacity
+            onPress={handleSwapTokens}
+            className="h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg"
+            activeOpacity={0.7}
+            accessibilityLabel="Swap tokens"
+            accessibilityRole="button">
+            <Feather
+              name="refresh-ccw"
+              size={24}
+              color="white"
+              style={{ transform: [{ rotate: '90deg' }] }}
+            />
+          </TouchableOpacity>
+        </View>
+
         {/* Quote Display */}
         <QuoteDisplay
           tokens={tokens}
@@ -114,7 +158,9 @@ export default function Trade() {
             }
             setSelectedGetToken(token);
           }}
-          onQuote={(quote) => setQuote(quote)}
+          onQuote={(newQuote) => {
+            setQuote(newQuote);
+          }}
         />
       </View>
       <View className="absolute bottom-[7rem] w-full items-center">
