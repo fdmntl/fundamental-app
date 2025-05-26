@@ -68,27 +68,29 @@ export default function Send() {
 
   return (
     <Frame>
-      <HeaderBar title="Send" pillContent={sendPillContent} />
-      <View className="flex-1 gap-4">
-        <View>
-          <RecipientInput value={recipient} onChange={(value) => setRecipient(value)} />
+      <View className="flex-1 justify-between">
+        <HeaderBar title="Send" pillContent={sendPillContent} />
+        <View className="flex-1 gap-8">
+          <View>
+            <RecipientInput value={recipient} onChange={(value) => setRecipient(value)} />
+          </View>
+          <View>
+            <AmountInput
+              value={amount}
+              selectedToken={selectedToken}
+              onChange={(value) => setAmount(value)}
+              tokens={possessedTokens}
+              user={user}
+              selectedTokenBalance={selectedTokenBalance}
+              onTokenChange={(token) => setSelectedToken(token)}
+            />
+          </View>
         </View>
-        <View>
-          <AmountInput
-            value={amount}
-            selectedToken={selectedToken}
-            onChange={(value) => setAmount(value)}
-            tokens={possessedTokens}
-            user={user}
-            selectedTokenBalance={selectedTokenBalance}
-            onTokenChange={(token) => setSelectedToken(token)}
-          />
-        </View>
-        <View className="absolute bottom-[6rem] w-full items-center">
+        <View className="mb-8 w-full items-center p-4">
           <Button
             title="Send Funds"
             onPress={toggleConfirmModal}
-            className="bg-primary px-[5rem]"
+            className="w-[50%] bg-primary"
             disabled={!isInputValid}
           />
         </View>
