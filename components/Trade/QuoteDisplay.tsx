@@ -66,7 +66,6 @@ export const QuoteDisplay = ({
         selectedToken.address,
         youPayValueConverted.toString()
       );
-
       if (onQuote) onQuote(quote);
 
       const formattedQuote = digitsToAmount(Number(quote.buyAmount), selectedToken);

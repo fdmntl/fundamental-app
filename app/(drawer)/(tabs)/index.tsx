@@ -1,25 +1,27 @@
 import { Feather, FontAwesome6 } from '@expo/vector-icons';
 import { usePrivy, useEmbeddedWallet } from '@privy-io/expo';
 import { router } from 'expo-router';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { View } from 'react-native';
 
 import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
-import { BalanceRefreshControl } from '~/components/BalanceRefreshControl';
 import { Button } from '~/components/Button';
 import { Container } from '~/components/Container';
+import { CustomRefreshControl } from '~/components/CustomRefreshControl';
 import Graph from '~/components/Graph';
 import { GraphRangeSelector } from '~/components/Graph/GraphRangeSelector';
 import { HeaderBar } from '~/components/HeaderBar';
 import { ProfileDetailModal } from '~/components/Profile/ProfileDetailModal';
+import { TradeHistoryButton } from '~/components/Transaction/TradeHistoryButton';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { refreshUserBalances } from '~/services/refreshUserBalance';
 import { GraphRange, graphRangeMap } from '~/types/graph';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 
 export default function Home() {
-  const { user, tokens } = useAppData();
+  const { user, tokens, updateUser } = useAppData();
   const { user: privyUser } = usePrivy();
   const wallet = useEmbeddedWallet();
   const { updatePrivy } = useAppData();
@@ -85,10 +87,19 @@ export default function Home() {
   const stableCoins = tokens.filter((item) => item.is_stablecoin);
   const cryptos = tokens.filter((item) => !item.is_stablecoin);
 
+  const onBalanceRefresh = useCallback(async () => {
+    if (!user) {
+      console.warn('no user, skipping');
+      return;
+    }
+    await refreshUserBalances(user, updateUser);
+  }, [user, updateUser]);
+
   return (
     <Frame>
       <HeaderBar title="" />
-      <BalanceRefreshControl
+      <CustomRefreshControl
+        onRefresh={onBalanceRefresh}
         scrollEnabled={scrollEnabled}
         contentContainerStyle={{ paddingBottom: 50 }}>
         <View className="flex gap-y-4">
@@ -133,6 +144,8 @@ export default function Home() {
               onPress={() => {}}
             />
           </View>
+          <TradeHistoryButton />
+
           <Container title="Money">
             <View className="flex gap-y-4">
               {stableCoins
@@ -160,7 +173,7 @@ export default function Home() {
             </View>
           </Container>
         </View>
-      </BalanceRefreshControl>
+      </CustomRefreshControl>
       <ProfileDetailModal
         visible={isProfileDetailModalVisible}
         onClose={() => setIsProfileDetailModalVisible(false)}

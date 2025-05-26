@@ -1,47 +1,46 @@
 import React, { useCallback, useState } from 'react';
 import { ScrollView, RefreshControl, ViewStyle } from 'react-native';
 
-import { refreshUserBalances } from '~/services/refreshUserBalance';
-import { useAppData } from './Wrappers/AppData';
 import { useTheme } from './Wrappers/ThemeWrapper';
 
-interface BalanceRefreshControlProps {
+interface CustomRefreshControlProps {
   children: React.ReactNode;
   scrollEnabled?: boolean;
   contentContainerStyle?: ViewStyle;
+  onRefresh: () => Promise<void>;
 }
 
-export const BalanceRefreshControl = ({
+export const CustomRefreshControl = ({
   children,
   scrollEnabled = true,
   contentContainerStyle,
-}: BalanceRefreshControlProps) => {
+  onRefresh,
+}: CustomRefreshControlProps) => {
   const [refreshing, setRefreshing] = useState(false);
-  const { user, updateUser } = useAppData();
   const { theme } = useTheme();
   const tintColor = theme === 'dark' ? 'white' : 'black';
 
-  const onRefresh = useCallback(async () => {
+  const onRefreshHandler = useCallback(async () => {
     if (!refreshing) {
       setRefreshing(true);
       try {
-        if (!user) {
-          console.warn('User is undefined, skipping refresh.');
-          return;
-        }
-        await refreshUserBalances(user, updateUser);
+        await onRefresh();
       } finally {
         setRefreshing(false);
       }
     }
-  }, [refreshing, user, updateUser]);
+  }, [refreshing, onRefresh]);
 
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
       scrollEnabled={scrollEnabled}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={tintColor} />
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefreshHandler}
+          tintColor={tintColor}
+        />
       }
       contentContainerStyle={contentContainerStyle}>
       {children}
