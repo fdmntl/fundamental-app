@@ -3,6 +3,7 @@ import { View, Image } from 'react-native';
 
 import { ProfileModal } from './Profile/ProfileModal';
 import ThemeToggle from './ThemeToggle';
+import { LogoutButton } from './LogoutButton';
 
 export default function CustomDrawerContent(props: any) {
   return (
@@ -22,6 +23,7 @@ export default function CustomDrawerContent(props: any) {
         <View className="p-5">
           <ThemeToggle />
         </View>
+        <LogoutButton />
       </DrawerContentScrollView>
     </View>
   );
