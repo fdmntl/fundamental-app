@@ -12,14 +12,14 @@ interface ProfilePreviewProps {
 export const ProfilePreview = ({ onPress }: ProfilePreviewProps) => {
   const { user } = useAppData();
 
-  const hasENS = !!user.ens;
-  const ensName = hasENS ? `@${user.ens}` : 'Register your ENS!';
-  const ensDomain = hasENS ? `${user.ens}.fdmntl.eth` : null;
-
   if (!user) {
     // Or some loading indicator
     return null;
   }
+
+  const hasENS = !!user.ens;
+  const ensName = hasENS ? `@${user.ens}` : 'Register your ENS!';
+  const ensDomain = hasENS ? `${user.ens}.fdmntl.eth` : null;
 
   return (
     <TouchableOpacity onPress={onPress} className="w-full rounded shadow-sm">

@@ -26,18 +26,17 @@ interface ProfileDetailModalProps {
 
 export const ProfileDetailModal = ({ visible, onClose }: ProfileDetailModalProps) => {
   const { privy, user } = useAppData();
-  // Ensure privy.wallet and privy.wallet.account are defined before accessing address
-  const userWalletAddress = privy?.wallet?.account?.address || '';
+  if (!user || !privy?.wallet?.account) {
+    // Or some loading indicator, or handle appropriately
+    return null;
+  }
+
+  const userWalletAddress = privy.wallet.account.address;
   const truncatedAddress = trimAddress(userWalletAddress, 6);
 
   const hasENS = !!user.ens;
   const ensName = hasENS ? `@${user.ens}` : 'Register your ENS!';
   const ensDomain = hasENS ? `${user.ens}.fdmntl.eth` : null;
-
-  if (!user) {
-    // Or some loading indicator, or handle appropriately
-    return null;
-  }
 
   return (
     <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
