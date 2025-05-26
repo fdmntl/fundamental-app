@@ -1,19 +1,19 @@
-import { useState, useMemo } from 'react';
-import { View, TouchableOpacity } from 'react-native';
-import { ScrollView } from 'react-native';
+import { useState, useMemo, useCallback } from 'react';
+import { View } from 'react-native';
 
 import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
-import { BalanceRefreshControl } from '~/components/BalanceRefreshControl';
 import { Container } from '~/components/Container';
+import { CustomRefreshControl } from '~/components/CustomRefreshControl';
 import Graph from '~/components/Graph';
 import { GraphRangeSelector } from '~/components/Graph/GraphRangeSelector';
 import { HeaderBar } from '~/components/HeaderBar';
+import { TradeHistoryButton } from '~/components/Transaction/TradeHistoryButton';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { refreshUserBalances } from '~/services/refreshUserBalance';
 import { GraphRange, graphRangeMap } from '~/types/graph';
-import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
-import { FText } from '~/components/Text/FText';
+import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 
 // TODO: use user balance instead of token list
 
@@ -23,7 +23,7 @@ export default function Assets() {
   // Disable scroll when interacting with the chart
   const [scrollEnabled, setScrollEnabled] = useState(true);
 
-  const { tokens, user } = useAppData();
+  const { tokens, user, updateUser } = useAppData();
   // Time range options and labels
   const rangeOptions: GraphRange[] = ['1day', '1week', '1month', '1year'];
   const rangeLabels: Record<GraphRange, string> = {
@@ -72,10 +72,18 @@ export default function Assets() {
   const stableCoins = tokens.filter((item) => item.is_stablecoin);
   const cryptos = tokens.filter((item) => !item.is_stablecoin);
 
+  const onBalanceRefresh = useCallback(async () => {
+    if (!user) {
+      console.warn('no user, skipping');
+      return;
+    }
+    await refreshUserBalances(user, updateUser);
+  }, [user, updateUser]);
+
   return (
     <Frame>
       <HeaderBar title="Assets" />
-      <BalanceRefreshControl scrollEnabled={scrollEnabled}>
+      <CustomRefreshControl scrollEnabled={scrollEnabled} onRefresh={onBalanceRefresh}>
         <View className="flex gap-y-5">
           <View
             onTouchStart={() => setScrollEnabled(false)}
@@ -96,6 +104,7 @@ export default function Assets() {
               />
             </Container>
           </View>
+          <TradeHistoryButton />
           <Container title="Money" titleAbove>
             <View className="flex gap-y-4">
               {stableCoins
@@ -123,7 +132,7 @@ export default function Assets() {
             </View>
           </Container>
         </View>
-      </BalanceRefreshControl>
+      </CustomRefreshControl>
     </Frame>
   );
 }

@@ -1,6 +1,7 @@
 import { View } from 'react-native';
 
 import { FText } from '../Text/FText';
+
 import { TradeOrder } from '~/components/Wrappers/AppData';
 import { Token } from '~/types/supabaseTypes';
 import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
@@ -13,7 +14,7 @@ interface TradeHistoryListViewProps {
 
 // Define a default token structure for unknown tokens, using 'digits'
 const UNKNOWN_TOKEN_FALLBACK = (address: string): Token => ({
-  address: address,
+  address,
   name: 'Unknown Token',
   symbol: '???',
   digits: 18,
