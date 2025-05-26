@@ -1,6 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { View, TouchableOpacity } from 'react-native';
-import { ScrollView } from 'react-native';
+import { View } from 'react-native';
 
 import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
 import { BalanceRefreshControl } from '~/components/BalanceRefreshControl';
@@ -13,14 +12,13 @@ import { Frame } from '~/components/Wrappers/Frame';
 import { GraphRange, graphRangeMap } from '~/types/graph';
 import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
-import { FText } from '~/components/Text/FText';
 import { usePrivy } from '@privy-io/expo';
 import { useEmbeddedWallet } from '@privy-io/expo';
 import { Feather } from '@expo/vector-icons';
 import { Button } from '~/components/Button';
 
 export default function Home() {
-  const { privy, user, tokens } = useAppData();
+  const { user, tokens } = useAppData();
   const { user: privyUser } = usePrivy();
   const wallet = useEmbeddedWallet();
   const { updatePrivy } = useAppData();
@@ -128,7 +126,7 @@ export default function Home() {
               onPress={() => {}}
             />
           </View>
-          <Container title="Money" titleAbove>
+          <Container title="Money">
             <View className="flex gap-y-4">
               {stableCoins
                 .sort(
@@ -141,7 +139,7 @@ export default function Home() {
                 ))}
             </View>
           </Container>
-          <Container title="Crypto" titleAbove>
+          <Container title="Crypto">
             <View className="flex gap-y-4">
               {cryptos
                 .sort(
