@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { ScrollView, RefreshControl } from 'react-native';
+import { ScrollView, RefreshControl, ViewStyle } from 'react-native';
 
 import { refreshUserBalances } from '~/services/refreshUserBalance';
 import { useAppData } from './Wrappers/AppData';
@@ -8,11 +8,13 @@ import { useTheme } from './Wrappers/ThemeWrapper';
 interface BalanceRefreshControlProps {
   children: React.ReactNode;
   scrollEnabled?: boolean;
+  contentContainerStyle?: ViewStyle;
 }
 
 export const BalanceRefreshControl = ({
   children,
   scrollEnabled = true,
+  contentContainerStyle,
 }: BalanceRefreshControlProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const { user, updateUser } = useAppData();
@@ -40,7 +42,8 @@ export const BalanceRefreshControl = ({
       scrollEnabled={scrollEnabled}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={tintColor} />
-      }>
+      }
+      contentContainerStyle={contentContainerStyle}>
       {children}
     </ScrollView>
   );

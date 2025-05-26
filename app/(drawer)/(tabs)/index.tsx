@@ -85,7 +85,9 @@ export default function Home() {
   return (
     <Frame>
       <HeaderBar title="" />
-      <BalanceRefreshControl scrollEnabled={scrollEnabled}>
+      <BalanceRefreshControl
+        scrollEnabled={scrollEnabled}
+        contentContainerStyle={{ paddingBottom: 50 }}>
         <View className="flex gap-y-4">
           <View
             onTouchStart={() => setScrollEnabled(false)}
