@@ -14,7 +14,7 @@ import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 import { usePrivy } from '@privy-io/expo';
 import { useEmbeddedWallet } from '@privy-io/expo';
-import { Feather } from '@expo/vector-icons';
+import { Feather, FontAwesome6 } from '@expo/vector-icons';
 import { Button } from '~/components/Button';
 
 export default function Home() {
@@ -116,7 +116,7 @@ export default function Home() {
               onPress={() => {}}
             />
             <Button
-              icon={<Feather name="send" size={20} className="text-text" />}
+              icon={<FontAwesome6 name="qrcode" size={20} className="text-text" />}
               disableGradient
               className="w-24 bg-content"
               onPress={() => {}}
