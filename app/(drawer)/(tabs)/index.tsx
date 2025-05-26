@@ -16,6 +16,8 @@ import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 import { FText } from '~/components/Text/FText';
 import { usePrivy } from '@privy-io/expo';
 import { useEmbeddedWallet } from '@privy-io/expo';
+import { Feather } from '@expo/vector-icons';
+import { Button } from '~/components/Button';
 
 export default function Home() {
   const { privy, user, tokens } = useAppData();
@@ -105,6 +107,26 @@ export default function Home() {
                 }
               />
             </Container>
+          </View>
+          <View className="w-full flex-row justify-between">
+            <Button
+              icon={<Feather name="send" size={20} className="text-text" />}
+              disableGradient
+              className="w-24 bg-content"
+              onPress={() => {}}
+            />
+            <Button
+              icon={<Feather name="send" size={20} className="text-text" />}
+              disableGradient
+              className="w-24 bg-content"
+              onPress={() => {}}
+            />
+            <Button
+              icon={<Feather name="plus" size={20} className="text-text" />}
+              title="Deposit"
+              className="w-48 bg-text"
+              onPress={() => {}}
+            />
           </View>
           <Container title="Money" titleAbove>
             <View className="flex gap-y-4">
