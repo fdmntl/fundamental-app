@@ -9,6 +9,7 @@ import { HeaderBar } from '~/components/HeaderBar';
 import { AmountInput } from '~/components/Send/AmountInput';
 import { ConfirmTradeModal } from '~/components/Trade/ConfirmTradeModal';
 import { QuoteDisplay } from '~/components/Trade/QuoteDisplay';
+import { TradeHistoryButton } from '~/components/Transaction/TradeHistoryButton';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { checkAndSetCowAllowance } from '~/services/CoW/setCowInfiniteAllowance';
@@ -163,7 +164,9 @@ export default function Trade() {
               setQuote(newQuote);
             }}
           />
+          <TradeHistoryButton />
         </View>
+
         <View className="mb-8 w-full items-center p-4">
           <Button
             title="Trade"
