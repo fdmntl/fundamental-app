@@ -1,7 +1,7 @@
+import { Feather } from '@expo/vector-icons';
 import { usePrivy } from '@privy-io/expo';
 import { Alert } from 'react-native';
 
-import { Button } from './Button';
 import { useAppData } from './Wrappers/AppData';
 
 export const LogoutButton = () => {
@@ -18,5 +18,5 @@ export const LogoutButton = () => {
     }
   };
 
-  return <Button onPress={handleLogout} title="Logout" />;
+  return <Feather name="log-out" size={42} onPress={handleLogout} className="text-text" />;
 };
