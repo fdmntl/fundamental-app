@@ -89,7 +89,7 @@ export const ConfirmTradeModal = ({
                       {selectedPayToken.symbol}
                     </FText>
                     <FText className="!text-neutral" bold>
-                      ≈$
+                      =$
                       {printToken(
                         getTokenAmountPrice(
                           selectedPayToken.address || '',
@@ -121,7 +121,7 @@ export const ConfirmTradeModal = ({
                       {selectedGetToken.symbol}
                     </FText>
                     <FText className="!text-neutral" bold>
-                      ≈$
+                      =$
                       {getTokenAmountPrice(
                         selectedGetToken.address || '',
                         digitsToAmount(Number(quote.buyAmount), selectedGetToken!),
