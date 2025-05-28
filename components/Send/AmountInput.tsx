@@ -227,7 +227,7 @@ export const AmountInput = ({
                 }}
               />
               <TouchableOpacity
-                className="w-full items-center rounded-lg bg-primary py-3"
+                className="w-full items-center rounded-lg"
                 onPress={() => setIsPickerOpen(false)}>
                 <FText className="text-lg text-text" bold>
                   Close
