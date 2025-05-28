@@ -16,7 +16,7 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
   const [pointerXPos, setPointerXPos] = useState<number | null>(null);
 
   const dateLabelAreaHeight = 20;
-  const chartDisplayHeight = 60 - dateLabelAreaHeight;
+  const chartDisplayHeight = 80 - dateLabelAreaHeight;
 
   // Calculate clamped bubble position to keep text on screen
   const bubbleWidth = 120;

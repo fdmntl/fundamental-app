@@ -97,7 +97,7 @@ export default function Home() {
 
   return (
     <Frame>
-      <HeaderBar title="" />
+      <HeaderBar title="Home" />
       <CustomRefreshControl
         onRefresh={onBalanceRefresh}
         scrollEnabled={scrollEnabled}

@@ -7,13 +7,12 @@ import { ProfilePreview } from './ProfilePreview';
 export const ProfileModal = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const openModal = () => setIsModalVisible(true);
-  const closeModal = () => setIsModalVisible(false);
+  const toggleModal = () => setIsModalVisible((prev) => !prev);
 
   return (
     <View>
-      <ProfilePreview onPress={openModal} />
-      <ProfileDetailModal visible={isModalVisible} onClose={closeModal} />
+      <ProfilePreview onPress={toggleModal} />
+      <ProfileDetailModal visible={isModalVisible} onClose={toggleModal} />
     </View>
   );
 };

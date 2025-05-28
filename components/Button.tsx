@@ -26,7 +26,6 @@ export const Button = ({
   disabled,
 }: ButtonProps) => {
   if (!title && !icon) {
-    console.warn('Button requires either a title or an icon');
     return null;
   }
 
@@ -58,20 +57,14 @@ export const Button = ({
           style={StyleSheet.absoluteFillObject} // Ensures full coverage of the gradient
         />
       )}
-      {icon && title ? (
-        <View className="flex-row items-center justify-center gap-x-2">
-          {icon}
+      <View className="flex-row items-center justify-center gap-x-2">
+        {icon}
+        {title && (
           <FText className={`text-lg ${effectiveTextClassName}`} bold>
             {title}
           </FText>
-        </View>
-      ) : icon ? (
-        icon
-      ) : (
-        <FText className={`text-lg ${effectiveTextClassName}`} bold>
-          {title}
-        </FText>
-      )}
+        )}
+      </View>
     </TouchableOpacity>
   );
 };
