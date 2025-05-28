@@ -1,10 +1,8 @@
 import { Feather, FontAwesome6 } from '@expo/vector-icons';
-
 import { Tabs } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { View, Platform } from 'react-native';
 
-import { FText } from '~/components/Text/FText';
 import { useTheme } from '~/components/Wrappers/ThemeWrapper';
 
 cssInterop(Feather, {
@@ -34,12 +32,20 @@ export default function Layout() {
           bottom: 0,
           left: 0,
           right: 0,
-          height: 90,
+          height: 80,
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: theme === 'dark' ? 'rgba(36, 32, 44, 0.9)' : 'rgba(243, 243, 248, 0.9)',
+          backgroundColor: theme === 'dark' ? 'rgba(38, 35, 43, 1)' : 'rgba(243, 243, 248, 1)',
           borderTopWidth: 0,
-          paddingVertical: Platform.OS === 'ios' ? 20 : 0,
+          paddingVertical: Platform.OS === 'ios' ? 10 : 0,
+          shadowColor: '#000000',
+          shadowOffset: {
+            width: 0,
+            height: -4,
+          },
+          shadowOpacity: theme === 'dark' ? 0.4 : 0.2,
+          shadowRadius: 10,
+          elevation: theme === 'dark' ? 10 : 8,
         },
       }}>
       <Tabs.Screen
@@ -53,27 +59,6 @@ export default function Layout() {
                 name="home"
                 className={`${focused ? 'text-primary' : 'text-text'}`}
               />
-              <FText bold className={`${focused ? '!text-primary' : '!text-text'}`}>
-                Home
-              </FText>
-            </View>
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="assets"
-        options={{
-          title: 'Assets',
-          tabBarIcon: ({ focused }) => (
-            <View className="items-center">
-              <Feather
-                size={28}
-                name="pie-chart"
-                className={`${focused ? 'text-primary' : 'text-text'}`}
-              />
-              <FText bold className={`${focused ? '!text-primary' : '!text-text'}`}>
-                Assets
-              </FText>
             </View>
           ),
         }}
@@ -89,31 +74,11 @@ export default function Layout() {
                 name="repeat"
                 className={`${focused ? 'text-primary' : 'text-text'}`}
               />
-              <FText bold className={`${focused ? '!text-primary' : '!text-text'}`}>
-                Trade
-              </FText>
             </View>
           ),
         }}
       />
-      <Tabs.Screen
-        name="earn"
-        options={{
-          title: 'Earn',
-          tabBarIcon: ({ focused }) => (
-            <View className="items-center">
-              <Feather
-                size={28}
-                name="percent"
-                className={`${focused ? 'text-primary' : 'text-text'}`}
-              />
-              <FText bold className={`${focused ? '!text-primary' : '!text-text'}`}>
-                Earn
-              </FText>
-            </View>
-          ),
-        }}
-      />
+
       <Tabs.Screen
         name="send"
         options={{
@@ -125,9 +90,6 @@ export default function Layout() {
                 name="send"
                 className={`${focused ? 'text-primary' : 'text-text'}`}
               />
-              <FText bold className={`${focused ? '!text-primary' : '!text-text'}`}>
-                Send
-              </FText>
             </View>
           ),
         }}
