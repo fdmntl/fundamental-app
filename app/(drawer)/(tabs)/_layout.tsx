@@ -78,7 +78,6 @@ export default function Layout() {
           ),
         }}
       />
-
       <Tabs.Screen
         name="send"
         options={{
@@ -88,6 +87,21 @@ export default function Layout() {
               <Feather
                 size={28}
                 name="send"
+                className={`${focused ? 'text-primary' : 'text-text'}`}
+              />
+            </View>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="earn"
+        options={{
+          title: 'Earn',
+          tabBarIcon: ({ focused }) => (
+            <View className="items-center">
+              <Feather
+                size={28}
+                name="percent"
                 className={`${focused ? 'text-primary' : 'text-text'}`}
               />
             </View>
