@@ -31,7 +31,7 @@ const UNKNOWN_TOKEN_FALLBACK = (address: string): Token => ({
 
 const displayStatus = (status: string) => {
   switch (status.toLowerCase()) {
-    case 'pending':
+    case 'open':
       return <Feather name="clock" size={24} className="text-warning" />;
     case 'fulfilled':
       return <Feather name="check-circle" size={24} className="text-success" />;
