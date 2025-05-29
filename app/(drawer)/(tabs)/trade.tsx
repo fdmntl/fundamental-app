@@ -19,11 +19,13 @@ import { Token } from '~/types/supabaseTypes';
 import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
 
 export default function Trade() {
-  const { user, tokens, privy } = useAppData();
+  const { user, tokens, privy, getToken } = useAppData();
   const wallet = privy.wallet;
 
+  const defaultToken = getToken('0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'); // USDC on Base
+
   const [payAmount, setPayAmount] = useState('');
-  const [selectedPayToken, setSelectedPayToken] = useState<Token | null>(null);
+  const [selectedPayToken, setSelectedPayToken] = useState<Token | null>(defaultToken || null);
   const [selectedGetToken, setSelectedGetToken] = useState<Token | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [quote, setQuote] = useState<OrderParameters | null>(null);
