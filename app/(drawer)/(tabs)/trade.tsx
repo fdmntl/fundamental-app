@@ -9,7 +9,10 @@ import { HeaderBar } from '~/components/HeaderBar';
 import { AmountInput } from '~/components/Send/AmountInput';
 import { ConfirmTradeModal } from '~/components/Trade/ConfirmTradeModal';
 import { QuoteDisplay } from '~/components/Trade/QuoteDisplay';
+import { FText } from '~/components/Text/FText';
 import { TradeHistoryButton } from '~/components/Transaction/TradeHistoryButton';
+import { PendingTradesSection } from '~/components/Trade/PendingTradesSection';
+import { CustomRefreshControl } from '~/components/CustomRefreshControl';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { checkAndSetCowAllowance } from '~/services/CoW/setCowInfiniteAllowance';
@@ -19,7 +22,8 @@ import { Token } from '~/types/supabaseTypes';
 import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
 
 export default function Trade() {
-  const { user, tokens, privy } = useAppData();
+  const { user, tokens, privy, tradeHistory, isTradeHistoryLoading, fetchTradeHistory } =
+    useAppData();
   const wallet = privy.wallet;
 
   const [payAmount, setPayAmount] = useState('');
@@ -45,7 +49,6 @@ export default function Trade() {
   const handleSwapTokens = () => {
     console.log('Swap button pressed');
 
-    // No swap if at least one token is not selected
     if (!selectedPayToken && !selectedGetToken) {
       console.log('Cannot swap - no tokens selected');
       Toast.show({
@@ -55,7 +58,6 @@ export default function Trade() {
       return;
     }
 
-    // Swap the tokens
     const tempToken = selectedPayToken;
     setSelectedPayToken(selectedGetToken);
     setSelectedGetToken(tempToken);
@@ -101,81 +103,85 @@ export default function Trade() {
 
   return (
     <Frame>
-      <View className="flex-1 justify-between">
-        <HeaderBar title="Trade" />
-        <View className="flex-1 gap-4">
-          {/* Amount Input for "You Pay" */}
-          <AmountInput
-            value={payAmount}
-            selectedToken={selectedPayToken}
-            onChange={(value) => setPayAmount(value)}
-            tokens={possessedTokens}
-            user={user}
-            selectedTokenBalance={selectedTokenBalance}
-            onTokenChange={(token) => {
-              if (token && token.address === selectedGetToken?.address) {
-                Toast.show({
-                  type: 'error',
-                  text1: 'You cannot select the same token to pay and receive.',
-                });
-                return;
-              }
-              setPayAmount('');
-              setSelectedPayToken(token);
-            }}
-            title="You Pay"
-          />
+      <HeaderBar title="Trade" />
+      <View className="flex-1">
+        <CustomRefreshControl onRefresh={fetchTradeHistory}>
+          <View className="gap-4 pb-24">
+            <AmountInput
+              value={payAmount}
+              selectedToken={selectedPayToken}
+              onChange={(value) => setPayAmount(value)}
+              tokens={possessedTokens}
+              user={user}
+              selectedTokenBalance={selectedTokenBalance}
+              onTokenChange={(token) => {
+                if (token && token.address === selectedGetToken?.address) {
+                  Toast.show({
+                    type: 'error',
+                    text1: 'You cannot select the same token to pay and receive.',
+                  });
+                  return;
+                }
+                setPayAmount('');
+                setSelectedPayToken(token);
+              }}
+              title="You Pay"
+            />
 
-          {/* Swap Button */}
-          <View className="z-10 my-[-25px] items-center">
-            <TouchableOpacity
-              onPress={handleSwapTokens}
-              className="h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg"
-              activeOpacity={0.7}
-              accessibilityLabel="Swap tokens"
-              accessibilityRole="button">
-              <Feather
-                name="refresh-ccw"
-                size={24}
-                color="white"
-                style={{ transform: [{ rotate: '90deg' }] }}
-              />
-            </TouchableOpacity>
+            {/* Swap Button */}
+            <View className="z-10 my-[-25px] items-center">
+              <TouchableOpacity
+                onPress={handleSwapTokens}
+                className="h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg"
+                activeOpacity={0.7}
+                accessibilityLabel="Swap tokens"
+                accessibilityRole="button">
+                <Feather
+                  name="refresh-ccw"
+                  size={24}
+                  color="white"
+                  style={{ transform: [{ rotate: '90deg' }] }}
+                />
+              </TouchableOpacity>
+            </View>
+
+            {/* Quote Display */}
+            <QuoteDisplay
+              tokens={tokens}
+              user={user}
+              selectedToken={selectedGetToken}
+              youPayValue={parseFloat(payAmount) || 0}
+              youPayToken={selectedPayToken || possessedTokens[0]}
+              onTokenChange={(token) => {
+                if (token && token.address === selectedPayToken?.address) {
+                  Toast.show({
+                    type: 'error',
+                    text1: 'You cannot select the same token to pay and receive.',
+                  });
+                  return;
+                }
+                setSelectedGetToken(token);
+              }}
+              onQuote={(newQuote) => {
+                setQuote(newQuote);
+              }}
+            />
+            <TradeHistoryButton />
+
+            <PendingTradesSection tradeOrders={tradeHistory} isLoading={isTradeHistoryLoading} />
           </View>
-
-          {/* Quote Display */}
-          <QuoteDisplay
-            tokens={tokens}
-            user={user}
-            selectedToken={selectedGetToken}
-            youPayValue={parseFloat(payAmount) || 0}
-            youPayToken={selectedPayToken || possessedTokens[0]}
-            onTokenChange={(token) => {
-              if (token && token.address === selectedPayToken?.address) {
-                Toast.show({
-                  type: 'error',
-                  text1: 'You cannot select the same token to pay and receive.',
-                });
-                return;
-              }
-              setSelectedGetToken(token);
-            }}
-            onQuote={(newQuote) => {
-              setQuote(newQuote);
-            }}
-          />
-          <TradeHistoryButton />
-        </View>
-
-        <View className="mb-8 w-full items-center p-4">
-          <Button
-            title="Trade"
-            onPress={toggleConfirmModal}
-            className="w-[50%] bg-primary"
-            disabled={!isValid}
-          />
-        </View>
+        </CustomRefreshControl>
       </View>
+
+      <View className="absolute bottom-8 z-10 w-full items-center">
+        <Button
+          title="Trade"
+          onPress={toggleConfirmModal}
+          className="w-[50%] bg-primary"
+          disabled={!isValid}
+        />
+      </View>
+
       {selectedGetToken && selectedPayToken && quote ? (
         <ConfirmTradeModal
           isModalOpen={isConfirmModalOpen}
