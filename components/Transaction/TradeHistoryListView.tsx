@@ -3,6 +3,7 @@ import { View, Image, Animated } from 'react-native';
 import React, { useEffect, useRef } from 'react';
 
 import { FText } from '../Text/FText';
+import { TradeOrderItemSkeleton } from './TradeOrderItemSkeleton';
 
 import { TradeOrder } from '~/components/Wrappers/AppData';
 import { Token } from '~/types/supabaseTypes';
@@ -182,7 +183,9 @@ export const TradeHistoryListView = ({ tradeOrders, isLoading }: TradeHistoryLis
   return (
     <View>
       {isLoading ? (
-        <FText className="py-4 text-center text-lg">Loading trade history...</FText>
+        <View>
+          <TradeOrderItemSkeleton />
+        </View>
       ) : hasPendingOrders || hasOtherGroupedOrders ? (
         <>
           {/* Pending Orders Section */}
