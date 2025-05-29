@@ -42,7 +42,7 @@ export default function Earn() {
             <View className="flex-row items-center gap-3">
               <Feather name="shopping-bag" size={24} className="text-text" />
               <FText className="text-left !text-lg" bold>
-                Supply your tokens (e.g. USDC, ETH)
+                Deposit your tokens
               </FText>
             </View>
             <View className="flex-row items-center gap-3">
