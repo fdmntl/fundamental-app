@@ -2,12 +2,12 @@
 name: Poll & Stamp Project Dates
 
 on:
-  # manual trigger for testing
+  # allow manual testing
   workflow_dispatch:
-
-  # scheduled every 5 minutes
+  # run every 5 minutes
   schedule:
     - cron: '*/5 * * * *'
+
 permissions:
   repository-projects: write
 
@@ -22,12 +22,10 @@ jobs:
             const owner         = 'fdmntl';
             const repo          = 'fundamental-app';
             const projectNumber = 4;
+            const START_FIELD_ID = '135076209';  // Start date
+            const END_FIELD_ID   = '135076210';  // End date
 
-            // your field IDs
-            const START_FIELD_ID = '135076209';
-            const END_FIELD_ID   = '135076210';
-
-            // 1) Fetch items + field values
+            // 1) Fetch all items and their fieldValues
             const query = `
             query($owner:String!,$repo:String!,$projNum:Int!) {
               repository(owner:$owner, name:$repo) {
@@ -39,8 +37,16 @@ jobs:
                         nodes {
                           projectField { id name }
                           __typename
-                          ... on ProjectV2ItemFieldDateValue { date }
-                          ... on ProjectV2ItemFieldSingleSelectValue { name }
+
+                          # DATE values
+                          ... on ProjectV2ItemFieldDateValue {
+                            date
+                          }
+
+                          # SINGLE‐SELECT values (for Status)
+                          ... on ProjectV2ItemFieldSingleSelectValue {
+                            name
+                          }
                         }
                       }
                     }
@@ -48,12 +54,15 @@ jobs:
                 }
               }
             }`;
+
             const data = await github.graphql(query, { owner, repo, projNum: projectNumber });
 
+            // 2) Loop items, stamping dates if needed
             for (const item of data.repository.projectV2.items.nodes) {
-              const fv = item.fieldValues.nodes;
-              const byField = fv.reduce((m, n) => { m[n.projectField.id] = n; return m; }, {});
+              const fv      = item.fieldValues.nodes;
+              const byField = fv.reduce((map, n) => (map[n.projectField.id] = n, map), {});
 
+              // find the "Status" single-select value
               const statusFV = fv.find(n =>
                 n.__typename === 'ProjectV2ItemFieldSingleSelectValue' &&
                 n.projectField.name.toLowerCase() === 'status'
@@ -61,10 +70,10 @@ jobs:
               if (!statusFV) continue;
               const status = statusFV.name;
 
-              // Stamp Start date when In Progress
+              // stamp Start date when moved to In Progress
               if (status === 'In Progress') {
-                const startFV = byField[START_FIELD_ID];
-                if (!startFV || !startFV.date) {
+                const start = byField[START_FIELD_ID];
+                if (!start || !start.date) {
                   await github.graphql(
                     `mutation($itemId:ID!,$fieldId:ID!,$now:DateTime!){
                       updateProjectV2ItemFieldValue(input:{
@@ -78,10 +87,10 @@ jobs:
                 }
               }
 
-              // Stamp End date when Done
+              // stamp End date when moved to Done
               if (status === 'Done') {
-                const endFV = byField[END_FIELD_ID];
-                if (!endFV || !endFV.date) {
+                const end = byField[END_FIELD_ID];
+                if (!end || !end.date) {
                   await github.graphql(
                     `mutation($itemId:ID!,$fieldId:ID!,$now:DateTime!){
                       updateProjectV2ItemFieldValue(input:{
