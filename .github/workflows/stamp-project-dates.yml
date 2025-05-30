@@ -1,0 +1,76 @@
+# .github/workflows/stamp-project-dates.yml
+name: Stamp Project V2 Dates
+
+on:
+  project_v2_item:
+    types: [moved_column]
+
+permissions:
+  project: write
+
+jobs:
+  stamp_dates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // ── CONFIG ──
+            const PROJECT_NUMBER   = 4;                          // your projectV2 number
+            const IN_PROGRESS_COL  = "In Progress";              // exact column name
+            const DONE_COL         = "Done";                     // exact column name
+            const START_FIELD_ID   = "135076209";                // Start date field ID
+            const END_FIELD_ID     = "135076210";                // End date field ID
+
+            // payload data
+            const item    = context.payload.project_v2_item;
+            const movedTo = item.dest.columnName;
+            const itemId  = item.node_id; // ProjectV2Item node ID
+
+            // helper: stamp a DATE field only if it's not already set
+            async function stamp(fieldId) {
+              // fetch current values to avoid overwriting
+              const query = `
+                query($itemId: ID!) {
+                  node(id: $itemId) {
+                    ... on ProjectV2Item {
+                      fieldValues(first: 50) {
+                        nodes {
+                          projectField { id }
+                          ... on ProjectV2ItemFieldDateValue { date }
+                        }
+                      }
+                    }
+                  }
+                }
+              `;
+              const result = await github.graphql(query, { itemId });
+              const existing = result.node.fieldValues.nodes
+                                  .find(n => n.projectField.id === fieldId);
+              if (existing && existing.date) return; // already set
+
+              // now stamp it
+              const mutation = `
+                mutation($itemId: ID!, $fieldId: ID!, $now: DateTime!) {
+                  updateProjectV2ItemFieldValue(input:{
+                    itemId: $itemId,
+                    fieldId: $fieldId,
+                    value: { date: $now }
+                  }) { clientMutationId }
+                }
+              `;
+              await github.graphql(mutation, {
+                itemId, fieldId, now: new Date().toISOString()
+              });
+            }
+
+            // only act on your specific project
+            if (item.project_v2_item.project.number !== PROJECT_NUMBER) return;
+
+            if (movedTo === IN_PROGRESS_COL) {
+              await stamp(START_FIELD_ID);
+            }
+            else if (movedTo === DONE_COL) {
+              await stamp(END_FIELD_ID);
+            }
