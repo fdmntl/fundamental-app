@@ -109,7 +109,7 @@ const Layout = () => {
           <ThemeWrapper>
             <AppDataProvider>
               <GestureHandlerRootView className="flex-1">
-                <Stack screenOptions={{ headerShown: false, animation: 'none' }}>
+                <Stack screenOptions={{ headerShown: false, animation: 'default' }}>
                   <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
                   <Stack.Screen
                     name="assets/[asset]"
