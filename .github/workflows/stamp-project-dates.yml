@@ -1,76 +1,95 @@
-# .github/workflows/stamp-project-dates.yml
-name: Stamp Project V2 Dates
+# .github/workflows/poll-stamp-project-dates.yml
+name: Poll & Stamp Project Dates
 
 on:
-  project_v2_item:
-    types: [moved_column]
+  schedule:
+    # every 5 minutes
+    - cron: '*/5 * * * *'
 
 permissions:
-  project: write
+  repository-projects: write
 
 jobs:
-  stamp_dates:
+  poll_and_stamp:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            // ── CONFIG ──
-            const PROJECT_NUMBER   = 4;                          // your projectV2 number
-            const IN_PROGRESS_COL  = "In Progress";              // exact column name
-            const DONE_COL         = "Done";                     // exact column name
-            const START_FIELD_ID   = "135076209";                // Start date field ID
-            const END_FIELD_ID     = "135076210";                // End date field ID
+            const owner         = 'fdmntl';
+            const repo          = 'fundamental-app';
+            const projectNumber = 4;
 
-            // payload data
-            const item    = context.payload.project_v2_item;
-            const movedTo = item.dest.columnName;
-            const itemId  = item.node_id; // ProjectV2Item node ID
+            // your field IDs
+            const START_FIELD_ID = '135076209';
+            const END_FIELD_ID   = '135076210';
 
-            // helper: stamp a DATE field only if it's not already set
-            async function stamp(fieldId) {
-              // fetch current values to avoid overwriting
-              const query = `
-                query($itemId: ID!) {
-                  node(id: $itemId) {
-                    ... on ProjectV2Item {
-                      fieldValues(first: 50) {
+            // 1) Fetch items + field values
+            const query = `
+            query($owner:String!,$repo:String!,$projNum:Int!) {
+              repository(owner:$owner, name:$repo) {
+                projectV2(number:$projNum) {
+                  items(first:100) {
+                    nodes {
+                      id
+                      fieldValues(first:50) {
                         nodes {
-                          projectField { id }
+                          projectField { id name }
+                          __typename
                           ... on ProjectV2ItemFieldDateValue { date }
+                          ... on ProjectV2ItemFieldSingleSelectValue { name }
                         }
                       }
                     }
                   }
                 }
-              `;
-              const result = await github.graphql(query, { itemId });
-              const existing = result.node.fieldValues.nodes
-                                  .find(n => n.projectField.id === fieldId);
-              if (existing && existing.date) return; // already set
+              }
+            }`;
+            const data = await github.graphql(query, { owner, repo, projNum: projectNumber });
 
-              // now stamp it
-              const mutation = `
-                mutation($itemId: ID!, $fieldId: ID!, $now: DateTime!) {
-                  updateProjectV2ItemFieldValue(input:{
-                    itemId: $itemId,
-                    fieldId: $fieldId,
-                    value: { date: $now }
-                  }) { clientMutationId }
+            for (const item of data.repository.projectV2.items.nodes) {
+              const fv = item.fieldValues.nodes;
+              const byField = fv.reduce((m, n) => { m[n.projectField.id] = n; return m; }, {});
+
+              const statusFV = fv.find(n =>
+                n.__typename === 'ProjectV2ItemFieldSingleSelectValue' &&
+                n.projectField.name.toLowerCase() === 'status'
+              );
+              if (!statusFV) continue;
+              const status = statusFV.name;
+
+              // Stamp Start date when In Progress
+              if (status === 'In Progress') {
+                const startFV = byField[START_FIELD_ID];
+                if (!startFV || !startFV.date) {
+                  await github.graphql(
+                    `mutation($itemId:ID!,$fieldId:ID!,$now:DateTime!){
+                      updateProjectV2ItemFieldValue(input:{
+                        itemId:$itemId,
+                        fieldId:$fieldId,
+                        value:{date:$now}
+                      }){clientMutationId}
+                    }`,
+                    { itemId: item.id, fieldId: START_FIELD_ID, now: new Date().toISOString() }
+                  );
                 }
-              `;
-              await github.graphql(mutation, {
-                itemId, fieldId, now: new Date().toISOString()
-              });
-            }
+              }
 
-            // only act on your specific project
-            if (item.project_v2_item.project.number !== PROJECT_NUMBER) return;
-
-            if (movedTo === IN_PROGRESS_COL) {
-              await stamp(START_FIELD_ID);
-            }
-            else if (movedTo === DONE_COL) {
-              await stamp(END_FIELD_ID);
+              // Stamp End date when Done
+              if (status === 'Done') {
+                const endFV = byField[END_FIELD_ID];
+                if (!endFV || !endFV.date) {
+                  await github.graphql(
+                    `mutation($itemId:ID!,$fieldId:ID!,$now:DateTime!){
+                      updateProjectV2ItemFieldValue(input:{
+                        itemId:$itemId,
+                        fieldId:$fieldId,
+                        value:{date:$now}
+                      }){clientMutationId}
+                    }`,
+                    { itemId: item.id, fieldId: END_FIELD_ID, now: new Date().toISOString() }
+                  );
+                }
+              }
             }
