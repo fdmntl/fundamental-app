@@ -49,7 +49,14 @@ export default function Trade() {
     if (prefillTokenAddress) {
       const token = getToken(prefillTokenAddress);
       if (token) {
-        method === 'buy' ? setSelectedGetToken(token) : setSelectedPayToken(token);
+        if (method === 'buy') {
+          setSelectedGetToken(token);
+          if (defaultToken && token.address === defaultToken.address) {
+            setSelectedPayToken(null);
+          }
+        } else {
+          setSelectedPayToken(token);
+        }
       } else {
         console.log(`Token with address ${prefillTokenAddress} not found.`);
         Toast.show({
