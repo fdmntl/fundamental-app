@@ -9,6 +9,7 @@ import {
   Image,
   TouchableWithoutFeedback,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import { FText } from '~/components/Text/FText';
 import { getCowQuote } from '~/services/CoW/getCowQuote';
@@ -71,8 +72,12 @@ export const QuoteDisplay = ({
       const formattedQuote = digitsToAmount(Number(quote.buyAmount), selectedToken);
       setQuoteValue(formattedQuote);
     } catch (error) {
-      console.error('Error calculating quote:', error);
-      alert('Error calculating quote. Please try again.');
+      console.log('Error calculating quote:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error calculating quote',
+        text2: 'Please try again later.',
+      });
     } finally {
       setIsLoading(false);
     }

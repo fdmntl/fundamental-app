@@ -1,6 +1,7 @@
 import { OrderParameters } from '@cowprotocol/cow-sdk';
 import { Feather } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { useState, useEffect } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -21,13 +22,25 @@ import { submitCowOrder } from '~/services/CoW/submitCowOrder';
 import { Token } from '~/types/supabaseTypes';
 import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
 
+type TradeRouteProps = {
+  Trade: {
+    prefillTokenAddress?: string;
+    method?: 'buy' | 'sell';
+  };
+};
+
 export default function Trade() {
-  const { user, tokens, privy, tradeHistory, isTradeHistoryLoading, fetchTradeHistory } =
+  const { user, tokens, privy, tradeHistory, isTradeHistoryLoading, fetchTradeHistory, getToken } =
     useAppData();
   const wallet = privy.wallet;
 
+  const route = useRoute<RouteProp<TradeRouteProps, 'Trade'>>();
+  const { prefillTokenAddress, method } = route.params || {};
+
+  const defaultToken = getToken('0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'); // USDC on Base
+
   const [payAmount, setPayAmount] = useState('');
-  const [selectedPayToken, setSelectedPayToken] = useState<Token | null>(null);
+  const [selectedPayToken, setSelectedPayToken] = useState<Token | null>(defaultToken || null);
   const [selectedGetToken, setSelectedGetToken] = useState<Token | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [quote, setQuote] = useState<OrderParameters | null>(null);
@@ -35,6 +48,29 @@ export default function Trade() {
   const toggleConfirmModal = () => {
     setIsConfirmModalOpen((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (prefillTokenAddress) {
+      const token = getToken(prefillTokenAddress);
+      if (token) {
+        if (method === 'buy') {
+          setSelectedGetToken(token);
+          if (defaultToken && token.address === defaultToken.address) {
+            setSelectedPayToken(null);
+          }
+        } else {
+          setSelectedPayToken(token);
+        }
+      } else {
+        console.log(`Token with address ${prefillTokenAddress} not found.`);
+        Toast.show({
+          type: 'error',
+          text1: 'Token not found',
+          text2: `The token with address ${prefillTokenAddress} could not be found.`,
+        });
+      }
+    }
+  }, [prefillTokenAddress, method]);
 
   const possessedTokens = user.balances
     .map((balance) => tokens.find((token) => token.address === balance.address))

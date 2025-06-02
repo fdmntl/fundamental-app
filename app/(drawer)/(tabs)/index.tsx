@@ -32,11 +32,8 @@ export default function Home() {
 
     updateUser();
   }, [privyUser, wallet]);
-  // Graph state for selecting timeframe
   const [selectedRange, setSelectedRange] = useState<GraphRange>('1month');
-  // Disable scroll when interacting with the chart
   const [scrollEnabled, setScrollEnabled] = useState(true);
-  // State for ProfileDetailModal visibility
   const [isProfileDetailModalVisible, setIsProfileDetailModalVisible] = useState(false);
 
   // Time range options and labels
@@ -52,35 +49,51 @@ export default function Home() {
   const totalData = useMemo(() => {
     if (!tokens.length) return [];
     const key = graphRangeMap[selectedRange];
-    const firstSeries = tokens[0][key] || [];
-    const length = firstSeries.length;
-    if (length === 0) return []; // Return empty if no historical data
-    const labels = firstSeries.map((dp) => dp.label);
-    const sums = new Array<number>(length).fill(0);
+
+    // Determine the minimum length available across all token series for the current range
+    let minLength = Infinity;
+    let seriesForLabels: Array<{ label: string; value: number }> | undefined = undefined;
+
+    for (const token of tokens) {
+      const series = token[key] || [];
+      if (series.length < minLength) {
+        minLength = series.length;
+        seriesForLabels = series; // Keep track of a series that has this minLength for labels
+      }
+    }
+
+    if (minLength === 0 || minLength === Infinity || !seriesForLabels) return [];
+
+    const labels = seriesForLabels.map((dp) => dp.label);
+    const sums = new Array<number>(minLength).fill(0);
+
     tokens.forEach((token) => {
       const series = token[key] || [];
       const amount = getUserTokenAmount(token.address, tokens, user);
-      for (let i = 0; i < length; i++) {
-        sums[i] += (series[i]?.value || 0) * amount;
+
+      for (let i = 0; i < minLength; i++) {
+        const dataPoint = series[i];
+        let pointValue = 0;
+
+        if (dataPoint !== undefined) {
+          pointValue = dataPoint.value;
+        }
+        const valueContribution = (pointValue || 0) * amount;
+        sums[i] += valueContribution;
       }
     });
 
-    // Calculate the combined latest value
     let combinedLatestValue = 0;
     tokens.forEach((token) => {
+      const amount = getUserTokenAmount(token.address, tokens, user);
       if (typeof token.last_value === 'number') {
-        const amount = getUserTokenAmount(token.address, tokens, user);
         combinedLatestValue += token.last_value * amount;
       }
     });
 
     const historicalData = sums.map((value, i) => ({ value, label: labels[i] }));
-
-    // Add the combined latest value as a new data point
     const now = new Date();
-    // Format label as ISO string to be consistent with historical data
     const currentTimeLabel = now.toISOString();
-
     return [...historicalData, { value: combinedLatestValue, label: currentTimeLabel }];
   }, [tokens, user, selectedRange]);
 
