@@ -115,7 +115,7 @@ export const RegisterENS = () => {
       <Button
         title="Register"
         className="mx-auto w-[150px]"
-        disabled={!subname || !isValidSubname(subname) || isAvailable === false || checking}
+        disabled={!subname || !isValidSubname(subname) || isAvailable !== true || checking}
         onPress={async () => {
           if (isValidSubname(subname) && isAvailable) {
             try {
