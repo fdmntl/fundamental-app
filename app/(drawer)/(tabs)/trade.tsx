@@ -10,7 +10,6 @@ import { HeaderBar } from '~/components/HeaderBar';
 import { AmountInput } from '~/components/Send/AmountInput';
 import { ConfirmTradeModal } from '~/components/Trade/ConfirmTradeModal';
 import { QuoteDisplay } from '~/components/Trade/QuoteDisplay';
-import { FText } from '~/components/Text/FText';
 import { TradeHistoryButton } from '~/components/Transaction/TradeHistoryButton';
 import { PendingTradesSection } from '~/components/Trade/PendingTradesSection';
 import { CustomRefreshControl } from '~/components/CustomRefreshControl';
@@ -19,8 +18,10 @@ import { Frame } from '~/components/Wrappers/Frame';
 import { checkAndSetCowAllowance } from '~/services/CoW/setCowInfiniteAllowance';
 import { signCowQuote } from '~/services/CoW/signCowQuote';
 import { submitCowOrder } from '~/services/CoW/submitCowOrder';
+import { getCowOrderStatus } from '~/services/CoW/getCowOrderStatus';
 import { Token } from '~/types/supabaseTypes';
 import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
+import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
 
 type TradeRouteProps = {
   Trade: {
@@ -44,6 +45,7 @@ export default function Trade() {
   const [selectedGetToken, setSelectedGetToken] = useState<Token | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [quote, setQuote] = useState<OrderParameters | null>(null);
+  const [pollingIntervalId, setPollingIntervalId] = useState<NodeJS.Timeout | null>(null);
 
   const toggleConfirmModal = () => {
     setIsConfirmModalOpen((prev) => !prev);
@@ -72,6 +74,85 @@ export default function Trade() {
     }
   }, [prefillTokenAddress, method]);
 
+  useEffect(() => {
+    const openOrders = tradeHistory.filter((order) => order.status.toLowerCase() === 'open');
+
+    if (openOrders.length > 0) {
+      if (pollingIntervalId) {
+        clearInterval(pollingIntervalId);
+      }
+
+      const newIntervalId = setInterval(async () => {
+        let refreshNeeded = false;
+        for (const order of openOrders) {
+          if (!order.uid) {
+            console.warn('Order UID is missing, cannot check status:', order);
+            continue;
+          }
+          try {
+            const statusResult = await getCowOrderStatus(order.uid);
+            if (
+              statusResult &&
+              statusResult.order &&
+              statusResult.order.status.toLowerCase() !== 'open'
+            ) {
+              const orderStatus = statusResult.order.status.toLowerCase();
+              console.log(
+                `Order ${order.uid} status changed to ${statusResult.order.status}. Refreshing history.`
+              );
+              refreshNeeded = true;
+
+              if (orderStatus === 'fulfilled') {
+                const boughtTokenInfo = getToken(statusResult.order.buyToken);
+                if (boughtTokenInfo && statusResult.order.executedBuyAmount) {
+                  const displayAmount = digitsToAmount(
+                    Number(statusResult.order.executedBuyAmount),
+                    boughtTokenInfo
+                  );
+                  const amountStr = displayAmount.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 6,
+                  });
+                  Toast.show({
+                    type: 'success',
+                    text1: 'Trade Completed!',
+                    text2: `+${amountStr} ${boughtTokenInfo.symbol}`,
+                  });
+                }
+              } else {
+                Toast.show({
+                  type: 'error',
+                  text1: 'Trade timed out!',
+                });
+              }
+              break;
+            }
+          } catch (error) {
+            console.log(`Error fetching status for order ${order.uid}:`, error);
+          }
+        }
+
+        if (refreshNeeded) {
+          fetchTradeHistory();
+        }
+      }, 10000); // Poll every 10 seconds
+
+      setPollingIntervalId(newIntervalId);
+    } else {
+      if (pollingIntervalId) {
+        clearInterval(pollingIntervalId);
+        setPollingIntervalId(null);
+      }
+    }
+
+    // Cleanup function for when the component unmounts or dependencies change
+    return () => {
+      if (pollingIntervalId) {
+        clearInterval(pollingIntervalId);
+      }
+    };
+  }, [tradeHistory, fetchTradeHistory]);
+
   const possessedTokens = user.balances
     .map((balance) => tokens.find((token) => token.address === balance.address))
     .filter((token) => token !== undefined) as Token[];
@@ -99,11 +180,6 @@ export default function Trade() {
     setSelectedGetToken(tempToken);
     setPayAmount('');
     setQuote(null);
-
-    Toast.show({
-      type: 'success',
-      text1: 'Tokens swapped',
-    });
   };
 
   const handleTradePress = async () => {
@@ -120,11 +196,13 @@ export default function Trade() {
       try {
         await checkAndSetCowAllowance(provider, selectedPayToken.address, user.wallet_address);
         const signature = await signCowQuote(quote, formattedAmount, user.wallet_address, provider);
-        await submitCowOrder(quote, formattedAmount, signature);
-        Toast.show({
-          type: 'success',
-          text1: 'Trade successful!',
-        });
+        const orderSubmissionResult = await submitCowOrder(quote, formattedAmount, signature);
+
+        if (orderSubmissionResult) {
+          console.log('Order submitted, new UID (if available):', orderSubmissionResult);
+        }
+
+        await fetchTradeHistory();
       } catch (error) {
         console.error('Error signing or submitting quote:', error);
         Toast.show({
