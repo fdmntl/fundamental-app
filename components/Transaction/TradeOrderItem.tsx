@@ -92,22 +92,19 @@ export const TradeOrderItem: React.FC<TradeOrderItemProps> = ({ order }) => {
     };
   }, [order.status, pulseAnimationValue]);
 
-  const animatedStyle =
-    order.status.toLowerCase() === 'open' ? { opacity: pulseAnimationValue } : {};
-
   const displayStatusIcon = () => {
-    switch (order.status.toLowerCase()) {
-      case 'open':
-        return <Feather name="clock" size={24} className="text-warning" />;
-      default:
-        return null;
+    if (order.status.toLowerCase() === 'open') {
+      return (
+        <Animated.View style={{ opacity: pulseAnimationValue }}>
+          <Feather name="clock" size={24} className="text-warning" />
+        </Animated.View>
+      );
     }
+    return null;
   };
 
   return (
-    <Animated.View
-      style={animatedStyle}
-      className="mb-2 flex flex-row items-center justify-between rounded-xl bg-content p-4">
+    <View className="mb-2 flex flex-row items-center justify-between rounded-xl bg-content p-4">
       <View className="flex flex-row items-center">
         <Image
           source={tokenIcons[sellTokenDisplay.symbol]}
@@ -129,6 +126,6 @@ export const TradeOrderItem: React.FC<TradeOrderItemProps> = ({ order }) => {
         </FText>
       </View>
       <View>{displayStatusIcon()}</View>
-    </Animated.View>
+    </View>
   );
 };
