@@ -29,10 +29,10 @@ export const TradeHistoryListView = ({ tradeOrders, isLoading }: TradeHistoryLis
   };
 
   const pendingOrders = tradeOrders.filter((order) => order.status.toLowerCase() === 'open');
-  const otherOrders = tradeOrders.filter((order) => order.status.toLowerCase() !== 'open');
+  const fulfilledOrders = tradeOrders.filter((order) => order.status.toLowerCase() === 'fulfilled');
 
   // Group non-pending orders by their formatted date
-  const groupedOtherOrdersByDate: Record<string, TradeOrder[]> = otherOrders.reduce(
+  const groupedFulfilledOrdersByDate: Record<string, TradeOrder[]> = fulfilledOrders.reduce(
     (groups, order) => {
       const dateKey = formatDate(order.date);
       if (!groups[dateKey]) {
@@ -45,7 +45,7 @@ export const TradeHistoryListView = ({ tradeOrders, isLoading }: TradeHistoryLis
   );
 
   const hasPendingOrders = pendingOrders.length > 0;
-  const hasOtherGroupedOrders = Object.keys(groupedOtherOrdersByDate).length > 0;
+  const hasFulfilledGroupedOrders = Object.keys(groupedFulfilledOrdersByDate).length > 0;
 
   return (
     <View>
@@ -53,7 +53,7 @@ export const TradeHistoryListView = ({ tradeOrders, isLoading }: TradeHistoryLis
         <View>
           <TradeOrderItemSkeleton />
         </View>
-      ) : hasPendingOrders || hasOtherGroupedOrders ? (
+      ) : hasPendingOrders || hasFulfilledGroupedOrders ? (
         <>
           {/* Pending Orders Section */}
           {hasPendingOrders && (
@@ -67,9 +67,9 @@ export const TradeHistoryListView = ({ tradeOrders, isLoading }: TradeHistoryLis
             </View>
           )}
 
-          {/* Completed/Failed Orders Section */}
-          {hasOtherGroupedOrders &&
-            Object.entries(groupedOtherOrdersByDate).map(([date, ordersInGroup]) => (
+          {/* Fulfilled Orders Section */}
+          {hasFulfilledGroupedOrders &&
+            Object.entries(groupedFulfilledOrdersByDate).map(([date, ordersInGroup]) => (
               <View key={date}>
                 <FText className="px-4 py-2" bold>
                   {date}
