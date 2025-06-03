@@ -19,27 +19,41 @@ import { refreshUserBalances } from '~/services/refreshUserBalance';
 import { GraphRange, graphRangeMap } from '~/types/graph';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
+import { setItem, getItem } from '~/utils/Storage/asyncStorage';
+import { hasSeenOnboarding, markOnboardingAsSeen } from '~/utils/Storage/asyncStorage';
+import { OnboardingScreen } from '~/components/OnboardingSceen/OnboardingScreen';
+import { B } from '@privy-io/expo/dist/predicates-a469debb';
 
 export default function Home() {
   const { user, tokens, updateUser } = useAppData();
   const { user: privyUser } = usePrivy();
   const wallet = useEmbeddedWallet();
   const { updatePrivy } = useAppData();
+
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
   useEffect(() => {
     const updateUser = async () => {
       await updatePrivy({ user: privyUser!, wallet });
     };
-
     updateUser();
   }, [privyUser, wallet]);
-  // Graph state for selecting timeframe
+
+  useEffect(() => {
+    const checkOnboardingScreen = async () => {
+      const seen = await hasSeenOnboarding();
+      if (!seen) {
+        await markOnboardingAsSeen();
+        setShowOnboarding(true);
+      }
+    };
+    checkOnboardingScreen();
+  }, []);
+
   const [selectedRange, setSelectedRange] = useState<GraphRange>('1month');
-  // Disable scroll when interacting with the chart
   const [scrollEnabled, setScrollEnabled] = useState(true);
-  // State for ProfileDetailModal visibility
   const [isProfileDetailModalVisible, setIsProfileDetailModalVisible] = useState(false);
 
-  // Time range options and labels
   const rangeOptions: GraphRange[] = ['1day', '1week', '1month', '1year'];
   const rangeLabels: Record<GraphRange, string> = {
     '1day': '1D',
@@ -48,15 +62,16 @@ export default function Home() {
     '1year': '1Y',
   };
 
-  // Combine token series into total portfolio value series
   const totalData = useMemo(() => {
     if (!tokens.length) return [];
     const key = graphRangeMap[selectedRange];
     const firstSeries = tokens[0][key] || [];
     const length = firstSeries.length;
-    if (length === 0) return []; // Return empty if no historical data
+    if (length === 0) return [];
+
     const labels = firstSeries.map((dp) => dp.label);
     const sums = new Array<number>(length).fill(0);
+
     tokens.forEach((token) => {
       const series = token[key] || [];
       const amount = getUserTokenAmount(token.address, tokens, user);
@@ -65,7 +80,6 @@ export default function Home() {
       }
     });
 
-    // Calculate the combined latest value
     let combinedLatestValue = 0;
     tokens.forEach((token) => {
       if (typeof token.last_value === 'number') {
@@ -75,12 +89,7 @@ export default function Home() {
     });
 
     const historicalData = sums.map((value, i) => ({ value, label: labels[i] }));
-
-    // Add the combined latest value as a new data point
-    const now = new Date();
-    // Format label as ISO string to be consistent with historical data
-    const currentTimeLabel = now.toISOString();
-
+    const currentTimeLabel = new Date().toISOString();
     return [...historicalData, { value: combinedLatestValue, label: currentTimeLabel }];
   }, [tokens, user, selectedRange]);
 
@@ -97,6 +106,8 @@ export default function Home() {
 
   return (
     <Frame>
+      <OnboardingScreen visible={showOnboarding} onClose={() => setShowOnboarding(false)} />
+
       <HeaderBar title="Home" />
       <CustomRefreshControl
         onRefresh={onBalanceRefresh}
@@ -122,14 +133,39 @@ export default function Home() {
               />
             </Container>
           </View>
+
+          <View className="flex-row items-center justify-between px-2">
+            <Button
+              title="onboarding screen"
+              disableGradient
+              className="flex-1 bg-content"
+              onPress={() => setShowOnboarding(true)}
+            />
+            <Button
+              title="check value"
+              className="flex-1 bg-content"
+              disableGradient
+              onPress={async () => {
+                const value = await getItem('hasSeenOnboardingScreen');
+                console.log('Value:', value);
+              }}
+            />
+            <Button
+              title="clear storage"
+              className="flex-1 bg-content"
+              disableGradient
+              onPress={async () => {
+                await setItem('hasSeenOnboardingScreen', false);
+                console.log('Storage cleared');
+              }}
+            />
+          </View>
           <View className="h-14 w-full flex-row gap-4">
             <Button
               icon={<Feather name="send" size={24} className="text-text" />}
               disableGradient
               className="flex-1 bg-content"
-              onPress={() => {
-                router.push('/send');
-              }}
+              onPress={() => router.push('/send')}
             />
             <Button
               icon={<FontAwesome6 name="qrcode" size={22} className="text-text" />}
@@ -144,6 +180,7 @@ export default function Home() {
               onPress={() => {}}
             />
           </View>
+
           <TradeHistoryButton />
 
           <Container title="Money">
@@ -159,6 +196,7 @@ export default function Home() {
                 ))}
             </View>
           </Container>
+
           <Container title="Crypto">
             <View className="flex gap-y-4">
               {cryptos
@@ -174,6 +212,7 @@ export default function Home() {
           </Container>
         </View>
       </CustomRefreshControl>
+
       <ProfileDetailModal
         visible={isProfileDetailModalVisible}
         onClose={() => setIsProfileDetailModalVisible(false)}
