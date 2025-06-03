@@ -99,10 +99,8 @@ export const TradeOrderItem: React.FC<TradeOrderItemProps> = ({ order }) => {
     switch (order.status.toLowerCase()) {
       case 'open':
         return <Feather name="clock" size={24} className="text-warning" />;
-      case 'fulfilled':
-        return <Feather name="check-circle" size={24} className="text-success" />;
       default:
-        return <Feather name="x-circle" size={24} className="text-error" />;
+        return null;
     }
   };
 
