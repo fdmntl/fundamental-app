@@ -29,7 +29,6 @@ export const PendingTradesSection: React.FC<PendingTradesSectionProps> = ({
       {isLoading ? (
         <View>
           {/* Show a couple of skeletons if loading, or more if we anticipate many pending orders */}
-          <TradeOrderItemSkeleton />
           {/* We can add a simple heuristic: if tradeOrders has items, maybe it has pending ones */}
           {tradeOrders.length > 1 && <TradeOrderItemSkeleton />}
         </View>
