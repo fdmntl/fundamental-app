@@ -17,7 +17,7 @@ export function GraphRangeSelector({
   rangeLabels,
 }: GraphRangeSelectorProps) {
   return (
-    <View className="my-1 flex-row justify-around">
+    <View className="flex-row justify-around">
       {rangeOptions.map((range) => (
         <TouchableOpacity
           key={range}

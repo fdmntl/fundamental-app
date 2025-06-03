@@ -18,10 +18,7 @@ export default function DepositPage() {
         <DetailsHeader title="Deposit" />
         <View className="gap-2 pb-24">
           <Container title="">
-            <FText className="">Deposit funds to your account</FText>
-            <FText className="">
-              We suggest adding at least $1 of ETH to ensure you can pay for gas fees
-            </FText>
+            <FText className="">Fundamental uses USDC - the digital dollar.</FText>
           </Container>
           <Container title="Methods">
             <View className="gap-4">

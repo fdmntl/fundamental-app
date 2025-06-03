@@ -1,6 +1,7 @@
 import { OrderParameters } from '@cowprotocol/cow-sdk';
 import { Feather } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { useState, useEffect } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -9,6 +10,7 @@ import { HeaderBar } from '~/components/HeaderBar';
 import { AmountInput } from '~/components/Send/AmountInput';
 import { ConfirmTradeModal } from '~/components/Trade/ConfirmTradeModal';
 import { QuoteDisplay } from '~/components/Trade/QuoteDisplay';
+import { TradeHistoryButton } from '~/components/Transaction/TradeHistoryButton';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { checkAndSetCowAllowance } from '~/services/CoW/setCowInfiniteAllowance';
@@ -17,12 +19,24 @@ import { submitCowOrder } from '~/services/CoW/submitCowOrder';
 import { Token } from '~/types/supabaseTypes';
 import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
 
+type TradeRouteProps = {
+  Trade: {
+    prefillTokenAddress?: string;
+    method?: 'buy' | 'sell';
+  };
+};
+
 export default function Trade() {
-  const { user, tokens, privy } = useAppData();
+  const { user, tokens, privy, getToken } = useAppData();
   const wallet = privy.wallet;
 
+  const route = useRoute<RouteProp<TradeRouteProps, 'Trade'>>();
+  const { prefillTokenAddress, method } = route.params || {};
+
+  const defaultToken = getToken('0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'); // USDC on Base
+
   const [payAmount, setPayAmount] = useState('');
-  const [selectedPayToken, setSelectedPayToken] = useState<Token | null>(null);
+  const [selectedPayToken, setSelectedPayToken] = useState<Token | null>(defaultToken || null);
   const [selectedGetToken, setSelectedGetToken] = useState<Token | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [quote, setQuote] = useState<OrderParameters | null>(null);
@@ -30,6 +44,29 @@ export default function Trade() {
   const toggleConfirmModal = () => {
     setIsConfirmModalOpen((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (prefillTokenAddress) {
+      const token = getToken(prefillTokenAddress);
+      if (token) {
+        if (method === 'buy') {
+          setSelectedGetToken(token);
+          if (defaultToken && token.address === defaultToken.address) {
+            setSelectedPayToken(null);
+          }
+        } else {
+          setSelectedPayToken(token);
+        }
+      } else {
+        console.log(`Token with address ${prefillTokenAddress} not found.`);
+        Toast.show({
+          type: 'error',
+          text1: 'Token not found',
+          text2: `The token with address ${prefillTokenAddress} could not be found.`,
+        });
+      }
+    }
+  }, [prefillTokenAddress, method]);
 
   const possessedTokens = user.balances
     .map((balance) => tokens.find((token) => token.address === balance.address))
@@ -100,76 +137,80 @@ export default function Trade() {
 
   return (
     <Frame>
-      <HeaderBar title="Trade" />
-      <View className="flex-1 gap-4">
-        {/* Amount Input for "You Pay" */}
-        <AmountInput
-          value={payAmount}
-          selectedToken={selectedPayToken}
-          onChange={(value) => setPayAmount(value)}
-          tokens={possessedTokens}
-          user={user}
-          selectedTokenBalance={selectedTokenBalance}
-          onTokenChange={(token) => {
-            if (token && token.address === selectedGetToken?.address) {
-              Toast.show({
-                type: 'error',
-                text1: 'You cannot select the same token to pay and receive.',
-              });
-              return;
-            }
-            setPayAmount('');
-            setSelectedPayToken(token);
-          }}
-          title="You Pay"
-        />
+      <View className="flex-1 justify-between">
+        <HeaderBar title="Trade" />
+        <View className="flex-1 gap-4">
+          {/* Amount Input for "You Pay" */}
+          <AmountInput
+            value={payAmount}
+            selectedToken={selectedPayToken}
+            onChange={(value) => setPayAmount(value)}
+            tokens={possessedTokens}
+            user={user}
+            selectedTokenBalance={selectedTokenBalance}
+            onTokenChange={(token) => {
+              if (token && token.address === selectedGetToken?.address) {
+                Toast.show({
+                  type: 'error',
+                  text1: 'You cannot select the same token to pay and receive.',
+                });
+                return;
+              }
+              setPayAmount('');
+              setSelectedPayToken(token);
+            }}
+            title="You Pay"
+          />
 
-        {/* Swap Button */}
-        <View className="z-10 my-[-25px] items-center">
-          <TouchableOpacity
-            onPress={handleSwapTokens}
-            className="h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg"
-            activeOpacity={0.7}
-            accessibilityLabel="Swap tokens"
-            accessibilityRole="button">
-            <Feather
-              name="refresh-ccw"
-              size={24}
-              color="white"
-              style={{ transform: [{ rotate: '90deg' }] }}
-            />
-          </TouchableOpacity>
+          {/* Swap Button */}
+          <View className="z-10 my-[-25px] items-center">
+            <TouchableOpacity
+              onPress={handleSwapTokens}
+              className="h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg"
+              activeOpacity={0.7}
+              accessibilityLabel="Swap tokens"
+              accessibilityRole="button">
+              <Feather
+                name="refresh-ccw"
+                size={24}
+                color="white"
+                style={{ transform: [{ rotate: '90deg' }] }}
+              />
+            </TouchableOpacity>
+          </View>
+
+          {/* Quote Display */}
+          <QuoteDisplay
+            tokens={tokens}
+            user={user}
+            selectedToken={selectedGetToken}
+            youPayValue={parseFloat(payAmount) || 0}
+            youPayToken={selectedPayToken || possessedTokens[0]}
+            onTokenChange={(token) => {
+              if (token && token.address === selectedPayToken?.address) {
+                Toast.show({
+                  type: 'error',
+                  text1: 'You cannot select the same token to pay and receive.',
+                });
+                return;
+              }
+              setSelectedGetToken(token);
+            }}
+            onQuote={(newQuote) => {
+              setQuote(newQuote);
+            }}
+          />
+          <TradeHistoryButton />
         </View>
 
-        {/* Quote Display */}
-        <QuoteDisplay
-          tokens={tokens}
-          user={user}
-          selectedToken={selectedGetToken}
-          youPayValue={parseFloat(payAmount) || 0}
-          youPayToken={selectedPayToken || possessedTokens[0]}
-          onTokenChange={(token) => {
-            if (token && token.address === selectedPayToken?.address) {
-              Toast.show({
-                type: 'error',
-                text1: 'You cannot select the same token to pay and receive.',
-              });
-              return;
-            }
-            setSelectedGetToken(token);
-          }}
-          onQuote={(newQuote) => {
-            setQuote(newQuote);
-          }}
-        />
-      </View>
-      <View className="absolute bottom-[7rem] w-full items-center">
-        <Button
-          title="Trade"
-          onPress={toggleConfirmModal}
-          className="bg-primary px-[5rem]"
-          disabled={!isValid}
-        />
+        <View className="mb-8 w-full items-center p-4">
+          <Button
+            title="Trade"
+            onPress={toggleConfirmModal}
+            className="w-[50%] bg-primary"
+            disabled={!isValid}
+          />
+        </View>
       </View>
       {selectedGetToken && selectedPayToken && quote ? (
         <ConfirmTradeModal

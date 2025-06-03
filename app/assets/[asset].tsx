@@ -108,13 +108,13 @@ export default function Assets() {
                   <FText bold>Total amount</FText>
                 </View>
               </Container>
+              <AssetDetailsCTAs tokenAddress={token.address} />
               <View>
                 <FText bold>About {title}</FText>
                 <FText>{token.description}</FText>
               </View>
             </View>
           </ScrollView>
-          <AssetDetailsCTAs tokenAddress={token.address} />
         </View>
       </Frame>
     </>

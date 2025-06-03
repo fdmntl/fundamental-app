@@ -16,8 +16,8 @@ export const themes = {
   dark: vars({
     '--color-primary': '#8435E0',
     '--color-secondary': '#33FE00',
-    '--color-background': '#18141F',
-    '--color-content': '#24202C',
+    '--color-background': '#14111A',
+    '--color-content': '#26232b',
     '--color-success': '#66BB6A',
     '--color-warning': '#FFA726',
     '--color-error': '#F05E5C',

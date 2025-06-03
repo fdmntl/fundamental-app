@@ -16,7 +16,7 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
   const [pointerXPos, setPointerXPos] = useState<number | null>(null);
 
   const dateLabelAreaHeight = 20;
-  const chartDisplayHeight = 100 - dateLabelAreaHeight;
+  const chartDisplayHeight = 80 - dateLabelAreaHeight;
 
   // Calculate clamped bubble position to keep text on screen
   const bubbleWidth = 120;
@@ -135,7 +135,7 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
         const { width } = event.nativeEvent.layout;
         setContainerWidth(width);
       }}>
-      <View className="p-4">
+      <View className="px-4 pb-2 pt-4">
         {/* Current Price */}
         <FText className="!text-4xl text-text" bold>
           ${currentValue.toFixed(2)}
@@ -206,7 +206,7 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
         </View>
       )}
 
-      <View className="mb-4">{selectedRangeComponent}</View>
+      <View className="mb-2">{selectedRangeComponent}</View>
     </View>
   );
 };
