@@ -1,5 +1,4 @@
-import { View, Animated } from 'react-native';
-import React from 'react';
+import { View } from 'react-native';
 
 import { FText } from '../Text/FText';
 import { TradeOrderItemSkeleton } from './TradeOrderItemSkeleton';
