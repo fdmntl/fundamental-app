@@ -27,11 +27,7 @@ export const PendingTradesSection: React.FC<PendingTradesSectionProps> = ({
         Pending Trades
       </FText>
       {isLoading ? (
-        <View>
-          {/* Show a couple of skeletons if loading, or more if we anticipate many pending orders */}
-          {/* We can add a simple heuristic: if tradeOrders has items, maybe it has pending ones */}
-          {tradeOrders.length > 1 && <TradeOrderItemSkeleton />}
-        </View>
+        <View>{tradeOrders.length > 1 && <TradeOrderItemSkeleton />}</View>
       ) : (
         pendingOrders.map((order, index) => (
           <TradeOrderItem key={`pending-trade-${order.date}-${index}`} order={order} />
