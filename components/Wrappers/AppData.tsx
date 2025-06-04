@@ -16,6 +16,7 @@ export interface TradeOrder {
   sellTokenAddress: string;
   buyToken: Token | { name: string; symbol: string; address: string };
   sellToken: Token | { name: string; symbol: string; address: string };
+  uid: string;
 }
 
 interface ConfigType {
@@ -127,6 +128,7 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
           sellTokenAddress: order.sellToken,
           buyToken: buyTokenDetail,
           sellToken: sellTokenDetail,
+          uid: order.uid,
         };
       });
       setTradeHistory(processedOrders);
