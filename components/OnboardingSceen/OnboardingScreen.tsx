@@ -14,9 +14,9 @@ const slides = [
       "This app makes it easy to manage your digital money. Here's what you can do inside:",
     features: [
       '📈 Follow crypto trends with clear, real-time charts',
-      '💼 See everything you own in the **Assets** page',
-      '📜 Check every transaction in your **History**',
-      '🔄 Swap one coin for another in the **Exchange** tab',
+      '💼 See everything you own in the Assets page',
+      '📜 Check every transaction in your History',
+      '🔄 Swap one coin for another in the Exchange tab',
       '💰 Buy or sell crypto in just a few taps',
       '🌍 Access your wallet anytime, no middlemen needed',
     ],
@@ -24,29 +24,29 @@ const slides = [
   {
     title: 'Track the Market',
     description:
-      'Curious about prices? Open the **Market** tab to explore real-time charts and see how things are moving.',
+      'Curious about prices? Open the Market tab to explore real-time charts and see how things are moving.',
     features: ['💹 Easy-to-read charts that update live'],
   },
   {
     title: 'Manage Your Assets',
-    description: "Go to the **Assets** page to see what you own and what it's worth.",
+    description: "Go to the Assets page to see what you own and what it's worth.",
     features: [
       '📊 View balances in simple lists',
-      '📜 Look through all your past transactions in **History**',
-      '📥 Use the **Receive** page to get crypto from others',
-      '📤 Go to **Send** when you want to transfer funds',
+      '📜 Look through all your past transactions in History',
+      '📥 Use the Receive page to get crypto from others',
+      '📤 Go to Send when you want to transfer funds',
     ],
   },
   {
     title: 'Exchange & Trade',
     description:
-      'Want to switch from one coin to another? Head to the **Exchange** tab for quick and easy swaps.',
+      'Want to switch from one coin to another? Head to the Exchange tab for quick and easy swaps.',
     features: ['🔄 Swap coins instantly', '💸 Buy or sell crypto with your local currency'],
   },
   {
     title: 'Earn While You HODL',
     description:
-      'Put your assets to work! Use the **Earn** page to stake coins and collect rewards over time.',
+      'Put your assets to work! Use the Earn page to stake coins and collect rewards over time.',
     features: ['💰 Start staking with just a few taps', '📈 Earn passive income on your holdings'],
   },
   {
