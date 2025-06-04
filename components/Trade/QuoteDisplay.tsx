@@ -132,7 +132,7 @@ export const QuoteDisplay = ({
         </FText>
       </View>
       <FText className="!text-neutral" bold>
-        ≈${getTokenAmountPrice(selectedToken?.address || '', Number(quoteValue), tokens).toFixed(2)}
+        =${getTokenAmountPrice(selectedToken?.address || '', Number(quoteValue), tokens).toFixed(2)}
       </FText>
       <Modal visible={isPickerOpen} transparent animationType="fade">
         <TouchableWithoutFeedback onPress={() => setIsPickerOpen(false)}>
