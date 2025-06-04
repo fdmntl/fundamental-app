@@ -86,7 +86,7 @@ export default function Send() {
             />
           </View>
         </View>
-        <View className="absolute bottom-8 z-10 w-full items-center">
+        <View className="absolute bottom-12 z-10 w-full items-center">
           <Button
             title="Send Funds"
             onPress={toggleConfirmModal}

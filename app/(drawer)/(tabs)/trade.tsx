@@ -4,7 +4,6 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import { useState, useEffect } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
-
 import { Button } from '~/components/Button';
 import { HeaderBar } from '~/components/HeaderBar';
 import { AmountInput } from '~/components/Send/AmountInput';
@@ -287,7 +286,7 @@ export default function Trade() {
         </CustomRefreshControl>
       </View>
 
-      <View className="absolute bottom-8 z-10 w-full items-center">
+      <View className="absolute bottom-12 z-10 w-full items-center">
         <Button
           title="Trade"
           onPress={toggleConfirmModal}
