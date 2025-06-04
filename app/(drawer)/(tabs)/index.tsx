@@ -52,7 +52,7 @@ export default function Home() {
 
     // Determine the minimum length available across all token series for the current range
     let minLength = Infinity;
-    let seriesForLabels: Array<{ label: string; value: number }> | undefined = undefined;
+    let seriesForLabels: { label: string; value: number }[] | undefined = undefined;
 
     for (const token of tokens) {
       const series = token[key] || [];
@@ -151,10 +151,12 @@ export default function Home() {
               onPress={() => setIsProfileDetailModalVisible(true)}
             />
             <Button
-              icon={<Feather name="plus" size={20} className="text-white" />}
+              icon={<Feather name="plus" size={24} className="text-white" />}
               title="Deposit"
               className="flex-[2] bg-content"
-              onPress={() => {}}
+              onPress={() => {
+                router.push('/deposit');
+              }}
             />
           </View>
           <TradeHistoryButton />

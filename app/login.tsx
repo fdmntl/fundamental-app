@@ -19,7 +19,7 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      const session = await login({ loginMethods: ['email', 'google', 'github'] });
+      const session = await login({ loginMethods: ['email'] });
       console.log('Logged in:', session.user);
       await addUserToDB(session.user);
       console.log('**** User added to DB ****');
