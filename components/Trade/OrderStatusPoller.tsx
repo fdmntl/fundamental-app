@@ -3,6 +3,8 @@ import Toast from 'react-native-toast-message';
 import { getCowOrderStatus } from '~/services/CoW/getCowOrderStatus';
 import { Token } from '~/types/supabaseTypes';
 import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
+import { useAppData } from '~/components/Wrappers/AppData';
+import { refreshUserBalances } from '~/services/refreshUserBalance';
 
 interface PolledOrderInfo {
   uid?: string;
@@ -23,6 +25,7 @@ export const OrderStatusPoller: React.FC<OrderStatusPollerProps> = ({
   const [internalPollingIntervalId, setInternalPollingIntervalId] = useState<NodeJS.Timeout | null>(
     null
   );
+  const { user, updateUser } = useAppData();
 
   useEffect(() => {
     const openOrders = tradeHistory.filter(
@@ -86,6 +89,7 @@ export const OrderStatusPoller: React.FC<OrderStatusPollerProps> = ({
 
         if (refreshNeeded) {
           fetchTradeHistory();
+          refreshUserBalances(user, updateUser);
         }
       }, 10000); // Poll every 10 seconds
 
@@ -102,7 +106,7 @@ export const OrderStatusPoller: React.FC<OrderStatusPollerProps> = ({
         clearInterval(internalPollingIntervalId);
       }
     };
-  }, [tradeHistory, fetchTradeHistory, getToken]);
+  }, [tradeHistory, fetchTradeHistory, getToken, user, updateUser]);
 
   return null;
 };
