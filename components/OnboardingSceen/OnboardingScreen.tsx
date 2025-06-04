@@ -11,50 +11,59 @@ const slides = [
   {
     title: 'Welcome to Your Wallet',
     description:
-      "This app helps you easily access and manage your crypto assets. Here's what you can do:",
+      "This app makes it easy to manage your digital money. Here's what you can do inside:",
     features: [
-      '📈 Check live crypto trends with interactive charts',
-      '💼 View your detailed asset balances',
-      '📜 Browse your full transaction history',
-      '🔄 Exchange assets with ease',
-      '💰 Buy and sell crypto directly',
-      '🌍 Enjoy simple, decentralized access',
+      '📈 Follow crypto trends with clear, real-time charts',
+      '💼 See everything you own in the **Assets** page',
+      '📜 Check every transaction in your **History**',
+      '🔄 Swap one coin for another in the **Exchange** tab',
+      '💰 Buy or sell crypto in just a few taps',
+      '🌍 Access your wallet anytime, no middlemen needed',
     ],
   },
   {
     title: 'Track the Market',
-    description: 'Stay up to date with real-time charts and trends.',
-    features: ['💹 Interactive candle charts'],
+    description:
+      'Curious about prices? Open the **Market** tab to explore real-time charts and see how things are moving.',
+    features: ['💹 Easy-to-read charts that update live'],
   },
   {
     title: 'Manage Your Assets',
-    description: 'View your balances and transaction history at a glance.',
+    description: "Go to the **Assets** page to see what you own and what it's worth.",
     features: [
-      '📊 Detailed asset balances',
-      '📜 Full transaction history',
-      '📥 Receive tokens',
-      '📤 Send tokens',
+      '📊 View balances in simple lists',
+      '📜 Look through all your past transactions in **History**',
+      '📥 Use the **Receive** page to get crypto from others',
+      '📤 Go to **Send** when you want to transfer funds',
     ],
   },
   {
     title: 'Exchange & Trade',
-    description: 'Easily exchange assets or buy/sell crypto directly.',
-    features: ['🔄 Simple asset exchange', '💸 Buy and sell crypto'],
+    description:
+      'Want to switch from one coin to another? Head to the **Exchange** tab for quick and easy swaps.',
+    features: ['🔄 Swap coins instantly', '💸 Buy or sell crypto with your local currency'],
   },
   {
-    title: 'Earn Passive Income',
-    description: 'Stake your assets to earn rewards.',
-    features: ['💰 Staking options', '📈 Earn rewards on your holdings'],
+    title: 'Earn While You HODL',
+    description:
+      'Put your assets to work! Use the **Earn** page to stake coins and collect rewards over time.',
+    features: ['💰 Start staking with just a few taps', '📈 Earn passive income on your holdings'],
   },
   {
-    title: 'Decentralized Access',
-    description: 'Your assets, your control. No intermediaries.',
-    features: ['🌐 Decentralized wallet access', '🔗 Direct blockchain interaction'],
+    title: 'You’re in Control',
+    description: 'This is your wallet — only you can access it. No banks, no third parties.',
+    features: [
+      '🌐 Use your wallet from anywhere, anytime',
+      '🔗 Interact directly with blockchain apps',
+    ],
   },
   {
-    title: 'Secure & Private',
-    description: 'Your assets are yours. No custodians, no compromises on privacy.',
-    features: ['🔐 Encrypted private key storage', '🚫 No third-party access'],
+    title: 'Private & Secure',
+    description: 'We never store your keys. Your data stays with you.',
+    features: [
+      '🔐 Your private keys are encrypted and stored on your device',
+      '🚫 No one else can see your wallet — not even us',
+    ],
   },
 ];
 
