@@ -1,9 +1,9 @@
-import { Modal, View, FlatList, Dimensions } from 'react-native';
 import { useRef, useState } from 'react';
+import { Modal, View, FlatList, Dimensions } from 'react-native';
+
+import { Button } from '~/components/Button';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
-import { useTheme } from '~/components/Wrappers/ThemeWrapper';
-import { Button } from '~/components/Button';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -78,7 +78,6 @@ export const OnboardingScreen = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
-  const { theme } = useTheme();
 
   const handleNext = () => {
     if (currentIndex < slides.length - 1) {
@@ -125,7 +124,7 @@ export const OnboardingScreen = ({
             height: Math.min(screenHeight * 0.75, 600),
             maxHeight: screenHeight * 0.85,
           }}
-          className="overflow-hidden rounded-2xl bg-white shadow-xl dark:bg-zinc-900">
+          className="overflow-hidden rounded-2xl bg-background shadow-xl">
           <View className="flex-1">
             <FlatList
               ref={flatListRef}
@@ -154,7 +153,7 @@ export const OnboardingScreen = ({
                 <View
                   key={i}
                   className={`mx-1.5 h-2.5 w-2.5 rounded-full ${
-                    i === currentIndex ? 'bg-primary' : 'bg-gray-300 dark:bg-zinc-600'
+                    i === currentIndex ? 'bg-primary' : 'bg-content'
                   }`}
                 />
               ))}
