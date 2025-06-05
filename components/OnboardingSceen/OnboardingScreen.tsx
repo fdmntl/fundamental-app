@@ -21,12 +21,13 @@ const slides = [
       '🌍 Access your wallet anytime, no middlemen needed',
     ],
   },
-  {
-    title: 'Track the Market',
-    description:
-      'Curious about prices? Open the Market tab to explore real-time charts and see how things are moving.',
-    features: ['💹 Easy-to-read charts that update live'],
-  },
+  // Uncomment this section when the Market feature is ready
+  // {
+  //   title: 'Track the Market',
+  //   description:
+  //     'Curious about prices? Open the Market tab to explore real-time charts and see how things are moving.',
+  //   features: ['💹 Easy-to-read charts that update live'],
+  // },
   {
     title: 'Manage Your Assets',
     description: "Go to the Assets page to see what you own and what it's worth.",
@@ -43,12 +44,13 @@ const slides = [
       'Want to switch from one coin to another? Head to the Exchange tab for quick and easy swaps.',
     features: ['🔄 Swap coins instantly', '💸 Buy or sell crypto with your local currency'],
   },
-  {
-    title: 'Earn While You HODL',
-    description:
-      'Put your assets to work! Use the Earn page to stake coins and collect rewards over time.',
-    features: ['💰 Start staking with just a few taps', '📈 Earn passive income on your holdings'],
-  },
+  // Uncomment this section when the Earn feature is ready
+  // {
+  //   title: 'Earn While You Hold',
+  //   description:
+  //     'Put your assets to work! Use the Earn page to stake coins and collect rewards over time.',
+  //   features: ['💰 Start staking with just a few taps', '📈 Earn passive income on your holdings'],
+  // },
   {
     title: "You're in Control",
     description: 'This is your wallet — only you can access it. No banks, no third parties.',
