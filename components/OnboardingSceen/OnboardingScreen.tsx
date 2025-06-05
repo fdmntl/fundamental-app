@@ -1,4 +1,4 @@
-import { Modal, View, TouchableOpacity, FlatList, Dimensions } from 'react-native';
+import { Modal, View, FlatList, Dimensions } from 'react-native';
 import { useRef, useState } from 'react';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
@@ -98,66 +98,17 @@ export const OnboardingScreen = ({
 
   const modalWidth = Math.min(screenWidth * 0.9, 380);
 
-  const getThemeStyles = () => {
-    const isDark = theme === 'dark';
-    return {
-      modalBackground: isDark ? '#1a1a1a' : 'white',
-      titleColor: isDark ? '#ffffff' : '#1a1a1a',
-      descriptionColor: isDark ? '#cccccc' : '#666666',
-      featureColor: isDark ? '#e0e0e0' : '#333333',
-      overlayColor: 'rgba(0,0,0,0.7)',
-      shadowColor: isDark ? '#000000' : '#000000',
-      buttonBackground: '#8435E0',
-      buttonText: '#ffffff',
-      skipButtonColor: '#8435E0',
-      inactiveDotColor: isDark ? '#444444' : '#E0E0E0',
-      activeDotColor: '#8435E0',
-    };
-  };
-
-  const themeStyles = getThemeStyles();
-
   const renderItem = ({ item }: { item: (typeof slides)[0] }) => (
-    <View
-      style={{
-        width: modalWidth,
-        paddingHorizontal: 16,
-        paddingVertical: 20,
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-      }}>
-      <View
-        style={{
-          marginBottom: 16,
-          alignItems: 'center',
-        }}>
-        <FTitle className="text-center text-3xl">{item.title}</FTitle>
-      </View>
-      <View
-        style={{
-          marginBottom: 24,
-          paddingHorizontal: 4,
-          alignItems: 'center',
-        }}>
-        <FText className="text-m text-center leading-6" justify>
-          {item.description}
-        </FText>
-      </View>
-      <View style={{ width: '100%', alignItems: 'flex-start', paddingHorizontal: 0 }}>
+    <View style={{ width: modalWidth }} className="items-center justify-start px-4 py-5">
+      <FTitle className="mb-4 text-center text-3xl text-primary">{item.title}</FTitle>
+      <FText className="text-muted mb-6 px-2 text-center text-base leading-6">
+        {item.description}
+      </FText>
+      <View className="w-full items-start space-y-3 px-2">
         {item.features.map((feature, idx) => (
-          <View
-            key={idx}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'flex-start',
-              marginBottom: 12,
-              paddingHorizontal: 4,
-              width: '100%',
-            }}>
-            <View style={{ flex: 1 }}>
-              <FText className="text-l text-left leading-6">{feature}</FText>
-            </View>
-          </View>
+          <FText key={idx} className="text-left text-base leading-6">
+            {feature}
+          </FText>
         ))}
       </View>
     </View>
@@ -165,29 +116,15 @@ export const OnboardingScreen = ({
 
   return (
     <Modal visible={visible} transparent animationType="fade">
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: themeStyles.overlayColor,
-          justifyContent: 'center',
-          alignItems: 'center',
-          paddingHorizontal: 20,
-        }}>
+      <View className="flex-1 items-center justify-center bg-black/70 px-5">
         <View
           style={{
-            backgroundColor: themeStyles.modalBackground,
-            borderRadius: 20,
             width: modalWidth,
             height: Math.min(screenHeight * 0.75, 600),
             maxHeight: screenHeight * 0.85,
-            overflow: 'hidden',
-            shadowColor: themeStyles.shadowColor,
-            shadowOffset: { width: 0, height: 10 },
-            shadowOpacity: 0.25,
-            shadowRadius: 20,
-            elevation: 10,
-          }}>
-          <View style={{ flex: 1 }}>
+          }}
+          className="overflow-hidden rounded-2xl bg-white shadow-xl dark:bg-zinc-900">
+          <View className="flex-1">
             <FlatList
               ref={flatListRef}
               data={slides}
@@ -205,61 +142,34 @@ export const OnboardingScreen = ({
               })}
               snapToInterval={modalWidth}
               decelerationRate="fast"
-              contentContainerStyle={{
-                alignItems: 'center',
-              }}
+              contentContainerStyle={{ alignItems: 'center' }}
             />
           </View>
 
-          <View
-            style={{
-              paddingHorizontal: 16,
-              paddingBottom: 24,
-              paddingTop: 16,
-              backgroundColor: themeStyles.modalBackground,
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginBottom: 20,
-              }}>
+          <View className="px-4 pb-6 pt-4">
+            <View className="mb-5 flex-row items-center justify-center">
               {slides.map((_, i) => (
                 <View
                   key={i}
-                  style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: 5,
-                    backgroundColor:
-                      i === currentIndex
-                        ? themeStyles.activeDotColor
-                        : themeStyles.inactiveDotColor,
-                    marginHorizontal: 5,
-                  }}
+                  className={`mx-1.5 h-2.5 w-2.5 rounded-full ${
+                    i === currentIndex ? 'bg-primary' : 'bg-gray-300 dark:bg-zinc-600'
+                  }`}
                 />
               ))}
             </View>
 
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
+            <View className="flex-row items-center justify-between">
               {currentIndex < slides.length - 1 ? (
                 <Button
                   title="Skip"
                   onPress={handleSkip}
-                  disableGradient={true}
+                  disableGradient
                   textClassName="text-base"
                   className="px-4 py-3"
                 />
               ) : (
-                <View />
+                <View className="w-[80px]" />
               )}
-
               <Button
                 title={currentIndex === slides.length - 1 ? 'Get Started' : 'Next'}
                 onPress={handleNext}
