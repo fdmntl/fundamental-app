@@ -153,32 +153,6 @@ export default function Home() {
             </Container>
           </View>
 
-          <View className="flex-row items-center justify-between px-2">
-            <Button
-              title="onboarding screen"
-              disableGradient
-              className="flex-1 bg-content"
-              onPress={() => setShowOnboarding(true)}
-            />
-            <Button
-              title="check value"
-              className="flex-1 bg-content"
-              disableGradient
-              onPress={async () => {
-                const value = await getItem('hasSeenOnboardingScreen');
-                console.log('Value:', value);
-              }}
-            />
-            <Button
-              title="clear storage"
-              className="flex-1 bg-content"
-              disableGradient
-              onPress={async () => {
-                await setItem('hasSeenOnboardingScreen', false);
-                console.log('Storage cleared');
-              }}
-            />
-          </View>
           <View className="h-14 w-full flex-row gap-4">
             <Button
               icon={<Feather name="send" size={24} className="text-text" />}
