@@ -3,30 +3,16 @@ import { View } from 'react-native';
 import { isAddress } from 'viem';
 
 import { Button } from '~/components/Button';
-import { HeaderBar, PillMessageBox } from '~/components/HeaderBar';
+import { HeaderBar } from '~/components/HeaderBar';
 import { AmountInput } from '~/components/Send/AmountInput';
 import { ConfirmSendModal } from '~/components/Send/ConfirmSendModal';
 import { RecipientInput } from '~/components/Send/RecipientInput';
-import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { useSendTokenCallback } from '~/services/Send/useSendTokenCallback';
 import { Token } from '~/types/supabaseTypes';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
-
-const sendPillContent = () => {
-  return (
-    <PillMessageBox>
-      <FText className="mb-4 !text-lg" bold>
-        Here you can quickly and securely send cryptocurrency to any recipient with a valid address.
-      </FText>
-      <FText className="!text-lg" bold>
-        Just enter the recipient’s address, username or ens domain, specify the amount, and confirm
-        the transaction to transfer funds instantly.
-      </FText>
-    </PillMessageBox>
-  );
-};
+import { DelayedBalanceRefresher } from '~/components/Send/DelayedBalanceRefresher';
 
 export default function Send() {
   const { user, tokens, privy } = useAppData();
@@ -36,6 +22,7 @@ export default function Send() {
   const [amount, setAmount] = useState('');
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [refreshTriggerKey, setRefreshTriggerKey] = useState(0);
 
   const toggleConfirmModal = () => {
     setIsConfirmModalOpen((prev) => !prev);
@@ -62,14 +49,21 @@ export default function Send() {
     isInputValid,
   });
 
-  const handleSendPress = () => {
-    handleSendTokenCallback();
+  const handleSendPress = async () => {
+    if (!isInputValid) return;
+
+    try {
+      await handleSendTokenCallback();
+      setRefreshTriggerKey((prevKey) => prevKey + 1);
+    } catch (error) {
+      console.log('Error during send token operation:', error);
+    }
   };
 
   return (
     <Frame>
       <View className="flex-1 justify-between">
-        <HeaderBar title="Send" pillContent={sendPillContent} />
+        <HeaderBar title="Send" />
         <View className="flex-1 gap-8">
           <View>
             <RecipientInput value={recipient} onChange={(value) => setRecipient(value)} />
@@ -86,7 +80,7 @@ export default function Send() {
             />
           </View>
         </View>
-        <View className="mb-8 w-full items-center p-4">
+        <View className="absolute bottom-12 z-10 w-full items-center">
           <Button
             title="Send Funds"
             onPress={toggleConfirmModal}
@@ -105,6 +99,7 @@ export default function Send() {
           selectedToken={selectedToken}
         />
       )}
+      <DelayedBalanceRefresher key={refreshTriggerKey} delay={3000} />
     </Frame>
   );
 }

@@ -311,3 +311,20 @@ export const resolveENS = async (ensName: string) => {
     throw new Error('Failed to resolve ENS domain');
   }
 };
+
+// Checks if an ENS name is available (not taken)
+export const isENSNameAvailable = async (ensName: string): Promise<boolean> => {
+  try {
+    const publicClient = createPublicClient({
+      chain: mainnet,
+      transport: http(),
+    });
+    const address = await publicClient.getEnsAddress({ name: ensName });
+    // If address is null, the ENS name is available
+    return address === null;
+  } catch (error) {
+    console.error('Error checking ENS name availability:', error);
+    // If there's an error, assume not available to be safe
+    return false;
+  }
+};

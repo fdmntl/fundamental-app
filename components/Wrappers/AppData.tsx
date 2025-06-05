@@ -14,9 +14,9 @@ export interface TradeOrder {
   date: string;
   buyTokenAddress: string;
   sellTokenAddress: string;
-  buyToken: Token | { name: string; symbol: string; address: string }; // Updated to be more specific
-  sellToken: Token | { name: string; symbol: string; address: string }; // Updated to be more specific
-  // Add any other relevant fields from the original component's processing
+  buyToken: Token | { name: string; symbol: string; address: string };
+  sellToken: Token | { name: string; symbol: string; address: string };
+  uid: string;
 }
 
 interface ConfigType {
@@ -30,9 +30,9 @@ interface ConfigType {
   addToken: (token: Token) => void;
   updateToken: (address: string, updates: Partial<Token>) => void;
   getToken: (address: string) => Token | undefined;
-  tradeHistory: TradeOrder[]; // Added trade history
-  isTradeHistoryLoading: boolean; // Added loading state for trade history
-  fetchTradeHistory: () => Promise<void>; // Added function to trigger fetch
+  tradeHistory: TradeOrder[];
+  isTradeHistoryLoading: boolean;
+  fetchTradeHistory: () => Promise<void>;
   resetAppData: () => void;
 }
 
@@ -61,7 +61,9 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
   const tokenData: Token[] = useSupabaseSubscription({ table: 'token_list' });
 
   useEffect(() => {
-    if (!tokenData.length) return;
+    if (!tokenData || tokenData.length === 0) {
+      return;
+    }
 
     setTokens((prevTokens) => {
       const prevTokensMap = new Map(
@@ -72,15 +74,21 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
         const address = newToken.address.toLowerCase();
         const existingToken = prevTokensMap.get(address);
 
+        const daily_values = newToken.daily_values ?? existingToken?.daily_values ?? [];
+        const weekly_values = newToken.weekly_values ?? existingToken?.weekly_values ?? [];
+        const monthly_values = newToken.monthly_values ?? existingToken?.monthly_values ?? [];
+        const yearly_values = newToken.yearly_values ?? existingToken?.yearly_values ?? [];
+        const last_value = newToken.last_value ?? existingToken?.last_value ?? 0;
+
         return {
           ...existingToken,
           ...newToken,
           address,
-          daily_values: newToken.daily_values ?? existingToken?.daily_values ?? [],
-          weekly_values: newToken.weekly_values ?? existingToken?.weekly_values ?? [],
-          monthly_values: newToken.monthly_values ?? existingToken?.monthly_values ?? [],
-          yearly_values: newToken.yearly_values ?? existingToken?.yearly_values ?? [],
-          last_value: newToken.last_value ?? existingToken?.last_value ?? 0,
+          daily_values,
+          weekly_values,
+          monthly_values,
+          yearly_values,
+          last_value,
         };
       });
 
@@ -90,7 +98,6 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
 
   const fetchTradeHistory = async () => {
     if (!user.wallet_address || tokens.length === 0) {
-      // Don't fetch if no wallet address or if tokens aren't loaded yet
       setTradeHistory([]);
       setIsTradeHistoryLoading(false);
       return;
@@ -105,7 +112,6 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
       }
 
       const processedOrders = orderBook.map((order: any) => {
-        // Consider typing the raw order if possible
         const buyTokenDetail = tokens.find(
           (token) => token.address.toLowerCase() === order.buyToken.toLowerCase()
         ) || { name: 'Unknown Token', symbol: '???', address: order.buyToken };
@@ -117,23 +123,23 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
           status: order.status,
           buyAmount: order.buyAmount,
           sellAmount: order.sellAmount,
-          date: order.creationDate, // Store the original creationDate string
+          date: order.creationDate,
           buyTokenAddress: order.buyToken,
           sellTokenAddress: order.sellToken,
           buyToken: buyTokenDetail,
           sellToken: sellTokenDetail,
+          uid: order.uid,
         };
       });
       setTradeHistory(processedOrders);
     } catch (error) {
       console.error('Error fetching order Book:', error);
-      setTradeHistory([]); // Clear history on error
+      setTradeHistory([]);
     } finally {
       setIsTradeHistoryLoading(false);
     }
   };
 
-  // Fetch trade history when wallet address or tokens change
   useEffect(() => {
     fetchTradeHistory();
   }, [user.wallet_address, tokens]);
@@ -160,7 +166,7 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
   };
 
   const getToken = (address: string): Token | undefined => {
-    return tokens.find((token) => token.address.toLowerCase() === address.toLowerCase()); // Ensure case-insensitivity
+    return tokens.find((token) => token.address.toLowerCase() === address.toLowerCase());
   };
 
   const resetAppData = () => {
@@ -173,8 +179,8 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
     });
     setPrivy({});
     setTokens([]);
-    setTradeHistory([]); // Reset trade history
-    setIsTradeHistoryLoading(true); // Reset loading state
+    setTradeHistory([]);
+    setIsTradeHistoryLoading(true);
   };
 
   return (
@@ -190,9 +196,9 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
         addToken,
         updateToken,
         getToken,
-        tradeHistory, // Expose trade history
-        isTradeHistoryLoading, // Expose loading state
-        fetchTradeHistory, // Expose fetch function
+        tradeHistory,
+        isTradeHistoryLoading,
+        fetchTradeHistory,
         resetAppData,
       }}>
       {children}
