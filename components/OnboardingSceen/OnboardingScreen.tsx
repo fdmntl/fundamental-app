@@ -44,7 +44,7 @@ const slides = [
     features: ['🔄 Swap coins instantly', '💸 Buy or sell crypto with your local currency'],
   },
   {
-    title: 'Earn While You HODL',
+    title: 'Earn While You Hold',
     description:
       'Put your assets to work! Use the Earn page to stake coins and collect rewards over time.',
     features: ['💰 Start staking with just a few taps', '📈 Earn passive income on your holdings'],
@@ -101,7 +101,7 @@ export const OnboardingScreen = ({
   const renderItem = ({ item }: { item: (typeof slides)[0] }) => (
     <View style={{ width: modalWidth }} className="items-center justify-start px-4 py-5">
       <FTitle className="mb-4 text-center text-3xl text-primary">{item.title}</FTitle>
-      <FText className="text-muted mb-6 px-2 text-center text-base leading-6">
+      <FText className="text-muted mb-6 justify-center px-2 text-center text-base leading-6">
         {item.description}
       </FText>
       <View className="w-full items-start space-y-3 px-2">
