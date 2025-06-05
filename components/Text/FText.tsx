@@ -6,13 +6,25 @@ interface TitleProps {
   italic?: boolean;
   medium?: boolean;
   bold?: boolean;
+  justify?: boolean;
 }
 
-export const FText = ({ children, className, italic, medium, bold, ...props }: TitleProps) => {
+export const FText = ({
+  children,
+  className,
+  italic,
+  medium,
+  bold,
+  justify,
+  ...props
+}: TitleProps) => {
   let font = 'DMSans_400Regular';
   if (medium) font = 'DMSans_500Medium';
   if (bold) font = 'DMSans_700Bold';
   if (italic) font += '_Italic';
+  if (justify) {
+    className = `${className} text-justify`;
+  }
 
   return (
     <Text className={`${className} text-xl text-text`} style={{ fontFamily: font }} {...props}>

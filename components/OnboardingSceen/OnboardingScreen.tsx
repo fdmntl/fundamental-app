@@ -139,7 +139,9 @@ export const OnboardingScreen = ({
           paddingHorizontal: 4,
           alignItems: 'center',
         }}>
-        <FText className="text-m text-center leading-6">{item.description}</FText>
+        <FText className="text-m text-center leading-6" justify>
+          {item.description}
+        </FText>
       </View>
       <View style={{ width: '100%', alignItems: 'flex-start', paddingHorizontal: 0 }}>
         {item.features.map((feature, idx) => (
@@ -153,7 +155,7 @@ export const OnboardingScreen = ({
               width: '100%',
             }}>
             <View style={{ flex: 1 }}>
-              <FText className="text-left text-base leading-6">{feature}</FText>
+              <FText className="text-l text-left leading-6">{feature}</FText>
             </View>
           </View>
         ))}
