@@ -2,8 +2,8 @@ import { Modal, View, TouchableOpacity, FlatList, Dimensions } from 'react-nativ
 import { useRef, useState } from 'react';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
-import { Frame } from '~/components/Wrappers/Frame';
 import { useTheme } from '~/components/Wrappers/ThemeWrapper';
+import { Button } from '~/components/Button';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -50,7 +50,7 @@ const slides = [
     features: ['💰 Start staking with just a few taps', '📈 Earn passive income on your holdings'],
   },
   {
-    title: 'You’re in Control',
+    title: "You're in Control",
     description: 'This is your wallet — only you can access it. No banks, no third parties.',
     features: [
       '🌐 Use your wallet from anywhere, anytime',
@@ -249,34 +249,23 @@ export const OnboardingScreen = ({
                 alignItems: 'center',
               }}>
               {currentIndex < slides.length - 1 ? (
-                <TouchableOpacity
+                <Button
+                  title="Skip"
                   onPress={handleSkip}
-                  style={{
-                    paddingVertical: 12,
-                    paddingHorizontal: 16,
-                  }}>
-                  <FText medium className="text-base">
-                    Skip
-                  </FText>
-                </TouchableOpacity>
+                  disableGradient={true}
+                  textClassName="text-base"
+                  className="px-4 py-3"
+                />
               ) : (
                 <View />
               )}
 
-              <TouchableOpacity
+              <Button
+                title={currentIndex === slides.length - 1 ? 'Get Started' : 'Next'}
                 onPress={handleNext}
-                style={{
-                  backgroundColor: themeStyles.buttonBackground,
-                  paddingVertical: 12,
-                  paddingHorizontal: 24,
-                  borderRadius: 25,
-                  minWidth: 100,
-                  alignItems: 'center',
-                }}>
-                <FText medium className="text-base">
-                  {currentIndex === slides.length - 1 ? 'Get Started' : 'Next'}
-                </FText>
-              </TouchableOpacity>
+                textClassName="text-base text-white"
+                className="min-w-[100px]"
+              />
             </View>
           </View>
         </View>
