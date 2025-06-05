@@ -22,6 +22,12 @@ const slides = [
     ],
   },
   {
+    title: 'Track the Market',
+    description:
+      'Curious about prices? Open the Market tab to explore real-time charts and see how things are moving.',
+    features: ['💹 Easy-to-read charts that update live'],
+  },
+  {
     title: 'Manage Your Assets',
     description: "Go to the Assets page to see what you own and what it's worth.",
     features: [
@@ -36,6 +42,12 @@ const slides = [
     description:
       'Want to switch from one coin to another? Head to the Exchange tab for quick and easy swaps.',
     features: ['🔄 Swap coins instantly', '💸 Buy or sell crypto with your local currency'],
+  },
+  {
+    title: 'Earn While You HODL',
+    description:
+      'Put your assets to work! Use the Earn page to stake coins and collect rewards over time.',
+    features: ['💰 Start staking with just a few taps', '📈 Earn passive income on your holdings'],
   },
   {
     title: "You're in Control",
@@ -89,14 +101,14 @@ export const OnboardingScreen = ({
   const renderItem = ({ item }: { item: (typeof slides)[0] }) => (
     <View style={{ width: modalWidth }} className="items-center justify-start px-4 py-5">
       <FTitle className="mb-4 text-center text-3xl text-primary">{item.title}</FTitle>
-      <FText className="text-muted mb-6 justify-center px-2 text-center text-base leading-6">
+      <FText className="text-muted mb-6 px-2 text-center text-base leading-6">
         {item.description}
       </FText>
-      <View className="w-full items-start space-y-3 px-2">
+      <View className="w-full items-start px-2">
         {item.features.map((feature, idx) => (
-          <FText key={idx} className="text-left text-base leading-6">
-            {feature}
-          </FText>
+          <View key={idx} style={{ marginBottom: idx === item.features.length - 1 ? 0 : 12 }}>
+            <FText className="text-left text-base leading-6">{feature}</FText>
+          </View>
         ))}
       </View>
     </View>
