@@ -10,52 +10,21 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const slides = [
   {
     title: 'Welcome to Your Wallet',
-    description:
-      "This app makes it easy to manage your digital money. Here's what you can do inside:",
+    description: 'Fundamental makes crypto easy!',
     features: [
-      '📈 Follow crypto trends with clear, real-time charts',
-      '💼 See everything you own in the Assets page',
-      '📜 Check every transaction in your History',
-      '🔄 Swap one coin for another in the Exchange tab',
+      '🌍 Safely access your wallet anytime',
       '💰 Buy or sell crypto in just a few taps',
-      '🌍 Access your wallet anytime, no middlemen needed',
+      '📲 Send or receive payments easily',
+      '🔄 Swap assets with the lowest fees in the market',
+      '📈 Follow crypto trends with clear, real-time charts',
     ],
   },
-  // Uncomment this section when the Market feature is ready
-  // {
-  //   title: 'Track the Market',
-  //   description:
-  //     'Curious about prices? Open the Market tab to explore real-time charts and see how things are moving.',
-  //   features: ['💹 Easy-to-read charts that update live'],
-  // },
-  {
-    title: 'Manage Your Assets',
-    description: "Go to the Assets page to see what you own and what it's worth.",
-    features: [
-      '📊 View balances in simple lists',
-      '📜 Look through all your past transactions in History',
-      '📥 Use the Receive page to get crypto from others',
-      '📤 Go to Send when you want to transfer funds',
-    ],
-  },
-  {
-    title: 'Exchange & Trade',
-    description:
-      'Want to switch from one coin to another? Head to the Exchange tab for quick and easy swaps.',
-    features: ['🔄 Swap coins instantly', '💸 Buy or sell crypto with your local currency'],
-  },
-  // Uncomment this section when the Earn feature is ready
-  // {
-  //   title: 'Earn While You Hold',
-  //   description:
-  //     'Put your assets to work! Use the Earn page to stake coins and collect rewards over time.',
-  //   features: ['💰 Start staking with just a few taps', '📈 Earn passive income on your holdings'],
-  // },
   {
     title: "You're in Control",
-    description: 'This is your wallet — only you can access it. No banks, no third parties.',
+    description: 'This is your wallet - no banks, no third parties.',
     features: [
-      '🌐 Use your wallet from anywhere, anytime',
+      '🌍 Use your wallet from anywhere, anytime',
+      '🌐 Participate in a new global economy',
       '🔗 Interact directly with blockchain apps',
     ],
   },
@@ -63,8 +32,17 @@ const slides = [
     title: 'Private & Secure',
     description: 'We never store your keys. Your data stays with you.',
     features: [
-      '🔐 Your private keys are encrypted and stored on your device',
+      '🔐 Your private key is encrypted and never shared with anyone',
       '🚫 No one else can see your wallet — not even us',
+    ],
+  },
+  {
+    title: 'USDC',
+    description: 'The digital dollar',
+    features: [
+      'Fundamental uses USDC, the digital dollar',
+      'USDC is a stablecoin that is pegged to the US dollar',
+      '1 USDC will always equal $1',
     ],
   },
 ];
