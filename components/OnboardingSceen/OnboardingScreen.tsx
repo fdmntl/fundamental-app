@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Modal, View, FlatList, Dimensions } from 'react-native';
+import { Modal, View, FlatList, Dimensions, Image } from 'react-native';
 
 import { Button } from '~/components/Button';
 import { FText } from '~/components/Text/FText';
@@ -79,6 +79,11 @@ export const OnboardingScreen = ({
 
   const renderItem = ({ item }: { item: (typeof slides)[0] }) => (
     <View style={{ width: modalWidth }} className="items-center justify-start px-4 py-5">
+      <Image
+        source={require('../../assets/fundamental-text.png')}
+        style={{ height: 60, width: 300 }}
+        resizeMode="contain"
+      />
       <FTitle className="mb-4 text-center text-3xl text-primary">{item.title}</FTitle>
       <FText className="text-muted mb-6 px-2 text-center text-base leading-6">
         {item.description}
