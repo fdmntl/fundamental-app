@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { useState, useEffect } from 'react';
 import { View } from 'react-native';
 import { isAddress } from 'viem';
 
@@ -6,16 +7,25 @@ import { Button } from '~/components/Button';
 import { HeaderBar } from '~/components/HeaderBar';
 import { AmountInput } from '~/components/Send/AmountInput';
 import { ConfirmSendModal } from '~/components/Send/ConfirmSendModal';
+import { DelayedBalanceRefresher } from '~/components/Send/DelayedBalanceRefresher';
 import { RecipientInput } from '~/components/Send/RecipientInput';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { useSendTokenCallback } from '~/services/Send/useSendTokenCallback';
 import { Token } from '~/types/supabaseTypes';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
-import { DelayedBalanceRefresher } from '~/components/Send/DelayedBalanceRefresher';
+
+type SendRouteProps = {
+  Send: {
+    prefillTokenAddress?: string;
+  };
+};
 
 export default function Send() {
-  const { user, tokens, privy } = useAppData();
+  const { user, tokens, privy, getToken } = useAppData();
+
+  const route = useRoute<RouteProp<SendRouteProps, 'Send'>>();
+  const { prefillTokenAddress } = route.params || {};
 
   const wallet = privy.wallet;
   const [recipient, setRecipient] = useState('');
@@ -60,10 +70,19 @@ export default function Send() {
     }
   };
 
+  useEffect(() => {
+    if (prefillTokenAddress) {
+      const token = getToken(prefillTokenAddress);
+      token && setSelectedToken(token);
+    }
+  }, [prefillTokenAddress]);
+
+  const title = selectedToken ? `Send ${selectedToken.symbol}` : 'Send';
+
   return (
     <Frame>
       <View className="flex-1 justify-between">
-        <HeaderBar title="Send" />
+        <HeaderBar title={title} />
         <View className="flex-1 gap-8">
           <View>
             <RecipientInput value={recipient} onChange={(value) => setRecipient(value)} />
