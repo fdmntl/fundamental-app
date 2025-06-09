@@ -1,8 +1,8 @@
 import { Feather, FontAwesome6 } from '@expo/vector-icons';
 import { usePrivy, useEmbeddedWallet } from '@privy-io/expo';
 import { router } from 'expo-router';
-import { useState, useMemo, useEffect, useCallback } from 'react';
-import { View } from 'react-native';
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
+import { View, LayoutRectangle } from 'react-native';
 
 import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
 import { Button } from '~/components/Button';
@@ -10,8 +10,11 @@ import { Container } from '~/components/Container';
 import { CustomRefreshControl } from '~/components/CustomRefreshControl';
 import Graph from '~/components/Graph';
 import { GraphRangeSelector } from '~/components/Graph/GraphRangeSelector';
+import { GuideTour, GuideStep } from '~/components/Guide/GuideTour';
 import { HeaderBar } from '~/components/HeaderBar';
+import { HomeInfo } from '~/components/Info/HomeInfo';
 import { ProfileDetailModal } from '~/components/Profile/ProfileDetailModal';
+import { FText } from '~/components/Text/FText';
 import { TradeHistoryButton } from '~/components/Transaction/TradeHistoryButton';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
@@ -35,6 +38,53 @@ export default function Home() {
   const [selectedRange, setSelectedRange] = useState<GraphRange>('1month');
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [isProfileDetailModalVisible, setIsProfileDetailModalVisible] = useState(false);
+  const [isGuideVisible, setIsGuideVisible] = useState(false);
+  const [guideSteps, setGuideSteps] = useState<GuideStep[]>([]);
+
+  const graphRef = useRef<View>(null);
+  const actionsRef = useRef<View>(null);
+  const assetsRef = useRef<View>(null);
+
+  const measure = (ref: React.RefObject<View>): Promise<LayoutRectangle> => {
+    return new Promise((resolve) => {
+      ref.current?.measure((_x, _y, width, height, pageX, pageY) => {
+        resolve({ x: pageX, y: pageY, width, height });
+      });
+    });
+  };
+
+  const startGuide = async () => {
+    const graphView = graphRef.current;
+    const actionsView = actionsRef.current;
+    const assetsView = assetsRef.current;
+
+    if (graphView && actionsView && assetsView) {
+      const [graphLayout, actionsLayout, assetsLayout] = await Promise.all([
+        measure(graphRef),
+        measure(actionsRef),
+        measure(assetsRef),
+      ]);
+
+      setGuideSteps([
+        {
+          name: 'graph',
+          text: 'This graph displays the historical value of your portfolio. Tap on the time ranges (1D, 1W, 1M, 1Y) to see how your assets have performed over different periods.',
+          target: graphLayout,
+        },
+        {
+          name: 'actions',
+          text: 'The buttons below the graph allow you to quickly send assets, show your QR to receive payments, or deposit funds into your account.',
+          target: actionsLayout,
+        },
+        {
+          name: 'assets',
+          text: "Your assets are grouped into 'Money' (stablecoins pegged to currencies like the US Dollar) and 'Crypto' (other cryptocurrencies).",
+          target: assetsLayout,
+        },
+      ]);
+      setIsGuideVisible(true);
+    }
+  };
 
   // Time range options and labels
   const rangeOptions: GraphRange[] = ['1day', '1week', '1month', '1year'];
@@ -110,13 +160,15 @@ export default function Home() {
 
   return (
     <Frame>
-      <HeaderBar title="Home" />
+      <HeaderBar title="Home" onInfoPress={startGuide} />
       <CustomRefreshControl
         onRefresh={onBalanceRefresh}
         scrollEnabled={scrollEnabled}
         contentContainerStyle={{ paddingBottom: 50 }}>
         <View className="flex gap-y-4">
           <View
+            ref={graphRef}
+            onLayout={() => {}}
             onTouchStart={() => setScrollEnabled(false)}
             onTouchEnd={() => setScrollEnabled(true)}
             onTouchCancel={() => setScrollEnabled(true)}>
@@ -135,7 +187,7 @@ export default function Home() {
               />
             </Container>
           </View>
-          <View className="h-14 w-full flex-row gap-4">
+          <View ref={actionsRef} onLayout={() => {}} className="h-14 w-full flex-row gap-4">
             <Button
               icon={<Feather name="send" size={24} className="text-text" />}
               disableGradient
@@ -160,38 +212,44 @@ export default function Home() {
             />
           </View>
           <TradeHistoryButton />
-
-          <Container title="Money">
-            <View className="flex gap-y-4">
-              {stableCoins
-                .sort(
-                  (a, b) =>
-                    getUserTokenValue(b.address, tokens, user) -
-                    getUserTokenValue(a.address, tokens, user)
-                )
-                .map((item) => (
-                  <AssetListDisplay key={item.address} token={item} />
-                ))}
-            </View>
-          </Container>
-          <Container title="Crypto">
-            <View className="flex gap-y-4">
-              {cryptos
-                .sort(
-                  (a, b) =>
-                    getUserTokenValue(b.address, tokens, user) -
-                    getUserTokenValue(a.address, tokens, user)
-                )
-                .map((item) => (
-                  <AssetListDisplay key={item.address} token={item} />
-                ))}
-            </View>
-          </Container>
+          <View ref={assetsRef} onLayout={() => {}}>
+            <Container title="Money">
+              <View className="flex gap-y-4">
+                {stableCoins
+                  .sort(
+                    (a, b) =>
+                      getUserTokenValue(b.address, tokens, user) -
+                      getUserTokenValue(a.address, tokens, user)
+                  )
+                  .map((item) => (
+                    <AssetListDisplay key={item.address} token={item} />
+                  ))}
+              </View>
+            </Container>
+            <Container title="Crypto">
+              <View className="flex gap-y-4">
+                {cryptos
+                  .sort(
+                    (a, b) =>
+                      getUserTokenValue(b.address, tokens, user) -
+                      getUserTokenValue(a.address, tokens, user)
+                  )
+                  .map((item) => (
+                    <AssetListDisplay key={item.address} token={item} />
+                  ))}
+              </View>
+            </Container>
+          </View>
         </View>
       </CustomRefreshControl>
       <ProfileDetailModal
         visible={isProfileDetailModalVisible}
         onClose={() => setIsProfileDetailModalVisible(false)}
+      />
+      <GuideTour
+        visible={isGuideVisible}
+        steps={guideSteps}
+        onClose={() => setIsGuideVisible(false)}
       />
     </Frame>
   );
