@@ -116,10 +116,6 @@ const Layout = () => {
                     options={{ title: 'Asset Details', animation: 'default' }}
                   />
                   <Stack.Screen
-                    name="send/[address]"
-                    options={{ title: 'Send Details', animation: 'default' }}
-                  />
-                  <Stack.Screen
                     name="details"
                     options={{ title: 'Details', animation: 'default' }}
                   />
