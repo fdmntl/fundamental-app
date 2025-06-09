@@ -79,11 +79,6 @@ export const OnboardingScreen = ({
 
   const renderItem = ({ item }: { item: (typeof slides)[0] }) => (
     <View style={{ width: modalWidth }} className="items-center justify-start px-4 py-5">
-      <Image
-        source={require('../../assets/fundamental-text.png')}
-        style={{ height: 60, width: 300 }}
-        resizeMode="contain"
-      />
       <FTitle className="mb-4 text-center text-3xl text-primary">{item.title}</FTitle>
       <FText className="text-muted mb-6 px-2 text-center text-base leading-6">
         {item.description}
@@ -108,6 +103,13 @@ export const OnboardingScreen = ({
             maxHeight: screenHeight * 0.85,
           }}
           className="overflow-hidden rounded-2xl bg-background shadow-xl">
+          <View className="items-center justify-center py-5">
+            <Image
+              source={require('../../assets/fundamental-text.png')}
+              style={{ height: 40, width: 250 }}
+              resizeMode="contain"
+            />
+          </View>
           <View className="flex-1">
             <FlatList
               ref={flatListRef}
