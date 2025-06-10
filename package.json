@@ -22,6 +22,7 @@
     "@expo/vector-icons": "^14.0.0",
     "@privy-io/expo": "^0.44.0",
     "@privy-io/expo-native-extensions": "^0.0.3",
+    "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-navigation/drawer": "^6.7.2",
     "@react-navigation/native": "^6.1.7",
     "@supabase/supabase-js": "^2.47.8",
