@@ -1,13 +1,14 @@
 import { OrderParameters } from '@cowprotocol/cow-sdk';
 import { Feather } from '@expo/vector-icons';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { useState, useEffect } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, TouchableOpacity, LayoutRectangle } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { Button } from '~/components/Button';
 import { HeaderBar } from '~/components/HeaderBar';
 import { AmountInput } from '~/components/Send/AmountInput';
 import { ConfirmTradeModal } from '~/components/Trade/ConfirmTradeModal';
+import { GuideTour, GuideStep } from '~/components/Guide/GuideTour';
 import { QuoteDisplay } from '~/components/Trade/QuoteDisplay';
 import { TradeHistoryButton } from '~/components/Transaction/TradeHistoryButton';
 import { PendingTradesSection } from '~/components/Trade/PendingTradesSection';
@@ -43,6 +44,71 @@ export default function Trade() {
   const [selectedGetToken, setSelectedGetToken] = useState<Token | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [quote, setQuote] = useState<OrderParameters | null>(null);
+
+  // Guide Tour
+  const [isGuideVisible, setIsGuideVisible] = useState(false);
+  const [guideSteps, setGuideSteps] = useState<GuideStep[]>([]);
+
+  const amountInputRef = useRef<View>(null);
+  const swapButtonContainerRef = useRef<View>(null);
+  const swapButtonRef = useRef<TouchableOpacity>(null);
+  const tradeButtonRef = useRef<View>(null);
+  const quoteDisplayRef = useRef<View>(null);
+
+  const measure = (ref: React.RefObject<View>): Promise<LayoutRectangle> => {
+    return new Promise((resolve) => {
+      ref.current?.measure((_x, _y, width, height, pageX, pageY) => {
+        resolve({ x: pageX, y: pageY, width, height });
+      });
+    });
+  };
+
+  const startGuide = async () => {
+    const amountView = amountInputRef.current;
+    const swapView = swapButtonRef.current;
+    const tradeView = tradeButtonRef.current;
+    const quoteDisplayView = quoteDisplayRef.current;
+
+    if (amountView && swapView && tradeView && quoteDisplayView) {
+      const [amountLayout, swapLayout, tradeLayout, quoteDisplayLayout] = await Promise.all([
+        measure(amountInputRef),
+        measure(swapButtonRef),
+        measure(tradeButtonRef),
+        measure(quoteDisplayRef),
+      ]);
+
+      setGuideSteps([
+        {
+          name: 'amount-input',
+          text: 'Enter the token and amount you want to spend',
+          target: amountLayout,
+          shape: 'rounded-rectangle',
+          borderRadius: 12,
+        },
+        {
+          name: 'swap-button',
+          text: 'Swap the Pay and Get tokens',
+          target: swapLayout,
+          shape: 'circle',
+        },
+        {
+          name: 'quote-display',
+          text: 'Pick the token you want to buy',
+          target: quoteDisplayLayout,
+          shape: 'rounded-rectangle',
+          borderRadius: 12,
+        },
+        {
+          name: 'trade-button',
+          text: 'Press Trade to open the confirmation screen',
+          target: tradeLayout,
+          shape: 'rounded-rectangle',
+          borderRadius: 12,
+        },
+      ]);
+      setIsGuideVisible(true);
+    }
+  };
 
   const toggleConfirmModal = () => {
     setIsConfirmModalOpen((prev) => !prev);
@@ -135,7 +201,7 @@ export default function Trade() {
 
   return (
     <Frame>
-      <HeaderBar title="Trade" />
+      <HeaderBar title="Trade" onInfoPress={startGuide} />
       <OrderStatusPoller
         tradeHistory={tradeHistory}
         fetchTradeHistory={fetchTradeHistory}
@@ -144,30 +210,36 @@ export default function Trade() {
       <View className="flex-1">
         <CustomRefreshControl onRefresh={fetchTradeHistory}>
           <View className="gap-4 pb-24">
-            <AmountInput
-              value={payAmount}
-              selectedToken={selectedPayToken}
-              onChange={(value) => setPayAmount(value)}
-              tokens={possessedTokens}
-              user={user}
-              selectedTokenBalance={selectedTokenBalance}
-              onTokenChange={(token) => {
-                if (token && token.address === selectedGetToken?.address) {
-                  Toast.show({
-                    type: 'error',
-                    text1: 'You cannot select the same token to pay and receive.',
-                  });
-                  return;
-                }
-                setPayAmount('');
-                setSelectedPayToken(token);
-              }}
-              title="You Pay"
-            />
+            <View ref={amountInputRef} onLayout={() => {}}>
+              <AmountInput
+                value={payAmount}
+                selectedToken={selectedPayToken}
+                onChange={(value) => setPayAmount(value)}
+                tokens={possessedTokens}
+                user={user}
+                selectedTokenBalance={selectedTokenBalance}
+                onTokenChange={(token) => {
+                  if (token && token.address === selectedGetToken?.address) {
+                    Toast.show({
+                      type: 'error',
+                      text1: 'You cannot select the same token to pay and receive.',
+                    });
+                    return;
+                  }
+                  setPayAmount('');
+                  setSelectedPayToken(token);
+                }}
+                title="You Pay"
+              />
+            </View>
 
             {/* Swap Button */}
-            <View className="z-10 my-[-25px] items-center">
+            <View
+              className="z-10 my-[-25px] items-center"
+              ref={swapButtonContainerRef}
+              onLayout={() => {}}>
               <TouchableOpacity
+                ref={swapButtonRef}
                 onPress={handleSwapTokens}
                 className="h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg"
                 activeOpacity={0.7}
@@ -183,26 +255,28 @@ export default function Trade() {
             </View>
 
             {/* Quote Display */}
-            <QuoteDisplay
-              tokens={tokens}
-              user={user}
-              selectedToken={selectedGetToken}
-              youPayValue={parseFloat(payAmount) || 0}
-              youPayToken={selectedPayToken || possessedTokens[0]}
-              onTokenChange={(token) => {
-                if (token && token.address === selectedPayToken?.address) {
-                  Toast.show({
-                    type: 'error',
-                    text1: 'You cannot select the same token to pay and receive.',
-                  });
-                  return;
-                }
-                setSelectedGetToken(token);
-              }}
-              onQuote={(newQuote) => {
-                setQuote(newQuote);
-              }}
-            />
+            <View ref={quoteDisplayRef} onLayout={() => {}}>
+              <QuoteDisplay
+                tokens={tokens}
+                user={user}
+                selectedToken={selectedGetToken}
+                youPayValue={parseFloat(payAmount) || 0}
+                youPayToken={selectedPayToken || possessedTokens[0]}
+                onTokenChange={(token) => {
+                  if (token && token.address === selectedPayToken?.address) {
+                    Toast.show({
+                      type: 'error',
+                      text1: 'You cannot select the same token to pay and receive.',
+                    });
+                    return;
+                  }
+                  setSelectedGetToken(token);
+                }}
+                onQuote={(newQuote) => {
+                  setQuote(newQuote);
+                }}
+              />
+            </View>
             <TradeHistoryButton />
 
             <PendingTradesSection tradeOrders={tradeHistory} isLoading={isTradeHistoryLoading} />
@@ -210,13 +284,17 @@ export default function Trade() {
         </CustomRefreshControl>
       </View>
 
+      {/* Trade button container (full width) */}
       <View className="absolute bottom-12 z-10 w-full items-center">
-        <Button
-          title="Trade"
-          onPress={toggleConfirmModal}
-          className="w-[50%] bg-primary"
-          disabled={!isValid}
-        />
+        {/* Measured wrapper matching button size */}
+        <View ref={tradeButtonRef} onLayout={() => {}} className="w-[50%]">
+          <Button
+            title="Trade"
+            onPress={toggleConfirmModal}
+            className="w-full bg-primary"
+            disabled={!isValid}
+          />
+        </View>
       </View>
 
       {selectedGetToken && selectedPayToken && quote ? (
@@ -229,6 +307,13 @@ export default function Trade() {
           selectedGetToken={selectedGetToken}
         />
       ) : null}
+
+      {/* Guide Tour Overlay */}
+      <GuideTour
+        visible={isGuideVisible}
+        steps={guideSteps}
+        onClose={() => setIsGuideVisible(false)}
+      />
     </Frame>
   );
 }
