@@ -44,7 +44,7 @@ export default function Home() {
   const graphRef = useRef<View>(null);
   const actionsRef = useRef<View>(null);
   const assetsRef = useRef<View>(null);
-
+  const tradeHistoryRef = useRef<View>(null);
   const measure = (ref: React.RefObject<View>): Promise<LayoutRectangle> => {
     return new Promise((resolve) => {
       ref.current?.measure((_x, _y, width, height, pageX, pageY) => {
@@ -57,26 +57,35 @@ export default function Home() {
     const graphView = graphRef.current;
     const actionsView = actionsRef.current;
     const assetsView = assetsRef.current;
+    const tradeHistoryView = tradeHistoryRef.current;
 
-    if (graphView && actionsView && assetsView) {
-      const [graphLayout, actionsLayout, assetsLayout] = await Promise.all([
+    if (graphView && actionsView && assetsView && tradeHistoryView) {
+      const [graphLayout, actionsLayout, assetsLayout, tradeHistoryLayout] = await Promise.all([
         measure(graphRef),
         measure(actionsRef),
         measure(assetsRef),
+        measure(tradeHistoryRef),
       ]);
 
       setGuideSteps([
         {
           name: 'graph',
-          text: 'The graph shows the evolution of your portfolio over time.',
+          text: 'The Graph shows the evolution of your portfolio over time.',
           target: graphLayout,
           shape: 'rounded-rectangle',
           borderRadius: 12,
         },
         {
           name: 'actions',
-          text: 'Use the send, receive, and deposit buttons to quickly manage your assets.',
+          text: 'Use the Send, Receive, and Deposit buttons to quickly manage your assets.',
           target: actionsLayout,
+          shape: 'rounded-rectangle',
+          borderRadius: 12,
+        },
+        {
+          name: 'tradeHistory',
+          text: 'History displays your past transactions at a glance.',
+          target: tradeHistoryLayout,
           shape: 'rounded-rectangle',
           borderRadius: 12,
         },
@@ -217,7 +226,9 @@ export default function Home() {
               }}
             />
           </View>
-          <TradeHistoryButton />
+          <View ref={tradeHistoryRef} onLayout={() => {}}>
+            <TradeHistoryButton />
+          </View>
           <View ref={assetsRef} onLayout={() => {}}>
             <Container title="Money">
               <View className="flex gap-y-4">
