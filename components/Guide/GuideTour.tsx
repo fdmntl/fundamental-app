@@ -1,6 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import React, { useState, useEffect } from 'react';
 import { View, Modal, TouchableOpacity, LayoutRectangle, Dimensions } from 'react-native';
+import Svg, { Defs, Mask, Rect, Circle } from 'react-native-svg';
 
 import { Button } from '../Button';
 import { FText } from '../Text/FText';
@@ -9,7 +10,11 @@ export interface GuideStep {
   name: string;
   text: string;
   target: LayoutRectangle;
+  shape?: GuideShape;
+  borderRadius?: number;
 }
+
+export type GuideShape = 'rectangle' | 'rounded-rectangle' | 'circle';
 
 interface GuideTourProps {
   visible: boolean;
@@ -62,46 +67,50 @@ export const GuideTour = ({ visible, steps, onClose }: GuideTourProps) => {
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={{ flex: 1 }}>
-        <View
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: SCREEN_WIDTH,
-            height: y,
-            backgroundColor: 'rgba(0,0,0,0.8)',
-          }}
-        />
-        <View
-          style={{
-            position: 'absolute',
-            top: y,
-            left: 0,
-            width: x,
-            height,
-            backgroundColor: 'rgba(0,0,0,0.8)',
-          }}
-        />
-        <View
-          style={{
-            position: 'absolute',
-            top: y,
-            left: x + width,
-            width: SCREEN_WIDTH - (x + width),
-            height,
-            backgroundColor: 'rgba(0,0,0,0.8)',
-          }}
-        />
-        <View
-          style={{
-            position: 'absolute',
-            top: y + height,
-            left: 0,
-            width: SCREEN_WIDTH,
-            height: SCREEN_HEIGHT - (y + height),
-            backgroundColor: 'rgba(0,0,0,0.8)',
-          }}
-        />
+        {/* Dimmed overlay with shape cut-out */}
+        <Svg
+          width={SCREEN_WIDTH}
+          height={SCREEN_HEIGHT}
+          style={{ position: 'absolute', top: 0, left: 0 }}
+          pointerEvents="none">
+          <Defs>
+            <Mask id="guide_mask" x="0" y="0" width="100%" height="100%">
+              {/* Mask base: everything visible */}
+              <Rect x="0" y="0" width={SCREEN_WIDTH} height={SCREEN_HEIGHT} fill="white" />
+              {/* Cut-out */}
+              {currentStep.shape === 'circle' ? (
+                <Circle
+                  cx={x + width / 2}
+                  cy={y + height / 2}
+                  r={Math.max(width, height) / 2}
+                  fill="black"
+                />
+              ) : (
+                <Rect
+                  x={x}
+                  y={y}
+                  width={width}
+                  height={height}
+                  rx={
+                    currentStep.shape === 'rounded-rectangle' ? currentStep.borderRadius || 12 : 0
+                  }
+                  ry={
+                    currentStep.shape === 'rounded-rectangle' ? currentStep.borderRadius || 12 : 0
+                  }
+                  fill="black"
+                />
+              )}
+            </Mask>
+          </Defs>
+          <Rect
+            x="0"
+            y="0"
+            width={SCREEN_WIDTH}
+            height={SCREEN_HEIGHT}
+            fill="rgba(0,0,0,0.8)"
+            mask="url(#guide_mask)"
+          />
+        </Svg>
         <View style={infoBoxStyle} className="rounded-lg bg-background p-4">
           <TouchableOpacity
             onPress={onClose}
