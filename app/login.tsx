@@ -19,10 +19,7 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      const session = await login({ loginMethods: ['email'] });
-      console.log('Logged in:', session.user);
-      await addUserToDB(session.user);
-      console.log('**** User added to DB ****');
+      await login({ loginMethods: ['email'] });
     } catch (error: any) {
       if (error.message === 'The login flow was closed') {
         console.log('Login flow was closed by the user.');
@@ -33,12 +30,16 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (user && wallet && wallet.status === 'connected') {
-      updatePrivy({ user, wallet });
-      console.log('**** User and wallet updated in Privy ****');
-      console.log('**** Navigating to tabs ****');
-      router.navigate('/(tabs)');
-    }
+    const setupUser = async () => {
+      if (user && wallet && wallet.status === 'connected') {
+        await addUserToDB(user);
+        updatePrivy({ user, wallet });
+        console.log('**** User and wallet updated in Privy ****');
+        console.log('**** Navigating to tabs ****');
+        router.navigate('/(tabs)');
+      }
+    };
+    setupUser();
   }, [user, wallet, wallet.status]);
 
   useEffect(() => {
