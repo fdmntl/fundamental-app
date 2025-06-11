@@ -1,5 +1,5 @@
 {
-  "name": "fundamental-app",
+  "name": "Fundamental",
   "version": "1.4.0",
   "main": "./index.ts",
   "scripts": {
