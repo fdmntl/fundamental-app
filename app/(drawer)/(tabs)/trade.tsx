@@ -4,14 +4,16 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import { useState, useEffect } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
+
 import { Button } from '~/components/Button';
+import { CustomRefreshControl } from '~/components/CustomRefreshControl';
 import { HeaderBar } from '~/components/HeaderBar';
 import { AmountInput } from '~/components/Send/AmountInput';
 import { ConfirmTradeModal } from '~/components/Trade/ConfirmTradeModal';
+import { OrderStatusPoller } from '~/components/Trade/OrderStatusPoller';
+import { PendingTradesSection } from '~/components/Trade/PendingTradesSection';
 import { QuoteDisplay } from '~/components/Trade/QuoteDisplay';
 import { TradeHistoryButton } from '~/components/Transaction/TradeHistoryButton';
-import { PendingTradesSection } from '~/components/Trade/PendingTradesSection';
-import { CustomRefreshControl } from '~/components/CustomRefreshControl';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { checkAndSetCowAllowance } from '~/services/CoW/setCowInfiniteAllowance';
@@ -19,7 +21,6 @@ import { signCowQuote } from '~/services/CoW/signCowQuote';
 import { submitCowOrder } from '~/services/CoW/submitCowOrder';
 import { Token } from '~/types/supabaseTypes';
 import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
-import { OrderStatusPoller } from '~/components/Trade/OrderStatusPoller';
 
 type TradeRouteProps = {
   Trade: {

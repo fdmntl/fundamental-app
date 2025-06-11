@@ -19,7 +19,6 @@ import { refreshUserBalances } from '~/services/refreshUserBalance';
 import { GraphRange, graphRangeMap } from '~/types/graph';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
-import { setItem, getItem } from '~/utils/Storage/asyncStorage';
 import { hasSeenOnboarding, markOnboardingAsSeen } from '~/utils/Storage/asyncStorage';
 import { OnboardingScreen } from '~/components/OnboardingSceen/OnboardingScreen';
 

@@ -16,7 +16,12 @@ export const AssetDetailsCTAs = ({ tokenAddress }: { tokenAddress: string }) => 
         className="flex-[2] bg-content"
         onPress={() => {
           if (tokenAddress) {
-            router.push(`/send/${tokenAddress}`);
+            router.push({
+              pathname: '/send',
+              params: {
+                prefillTokenAddress: tokenAddress,
+              },
+            });
           } else {
             console.log('Token address is undefined');
             Toast.show({
