@@ -1,6 +1,7 @@
 import { Feather } from '@expo/vector-icons';
-import React, { useState, useEffect } from 'react';
-import { View, Modal, TouchableOpacity, LayoutRectangle, Dimensions } from 'react-native';
+import { useState, useEffect } from 'react';
+import { View, Modal, TouchableOpacity, LayoutRectangle, Dimensions, Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, Mask, Rect, Circle } from 'react-native-svg';
 
 import { Button } from '../Button';
@@ -22,10 +23,14 @@ interface GuideTourProps {
   onClose: () => void;
 }
 
-const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
+const windowDimensions = Dimensions.get('window');
+const SCREEN_HEIGHT = windowDimensions.height;
+const SCREEN_WIDTH = windowDimensions.width;
 
 export const GuideTour = ({ visible, steps, onClose }: GuideTourProps) => {
   const [stepIndex, setStepIndex] = useState(0);
+  const insets = useSafeAreaInsets();
+  console.log('insets: ', insets);
 
   useEffect(() => {
     if (visible) {
@@ -56,12 +61,17 @@ export const GuideTour = ({ visible, steps, onClose }: GuideTourProps) => {
 
   const isLastStep = stepIndex === steps.length - 1;
 
+  // Note: Adjust y position for Android notch, its using the insets from react-native-safe-area-context
+  const adjustedY = Platform.OS === 'android' ? y - insets.top : y;
+
   const isTargetInTopHalf = y + height / 2 < SCREEN_HEIGHT / 2;
   const infoBoxStyle: View['props']['style'] = {
     position: 'absolute',
     left: 20,
     right: 20,
-    ...(isTargetInTopHalf ? { top: y + height + 20 } : { bottom: SCREEN_HEIGHT - y + 20 }),
+    ...(isTargetInTopHalf
+      ? { top: adjustedY + height + 20 }
+      : { bottom: SCREEN_HEIGHT - adjustedY + 20 }),
   };
 
   return (
@@ -81,14 +91,14 @@ export const GuideTour = ({ visible, steps, onClose }: GuideTourProps) => {
               {currentStep.shape === 'circle' ? (
                 <Circle
                   cx={x + width / 2}
-                  cy={y + height / 2}
+                  cy={adjustedY + height / 2}
                   r={Math.max(width, height) / 2}
                   fill="black"
                 />
               ) : (
                 <Rect
                   x={x}
-                  y={y}
+                  y={adjustedY}
                   width={width}
                   height={height}
                   rx={
