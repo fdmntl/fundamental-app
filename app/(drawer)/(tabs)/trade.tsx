@@ -1,13 +1,14 @@
 import { OrderParameters } from '@cowprotocol/cow-sdk';
 import { Feather } from '@expo/vector-icons';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { useState, useEffect } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { useState, useEffect, useRef } from 'react';
+import { View, TouchableOpacity, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { Button } from '~/components/Button';
 import { CustomRefreshControl } from '~/components/CustomRefreshControl';
 import { HeaderBar } from '~/components/HeaderBar';
+import { TradePageGuide, TradePageGuideHandle } from '~/components/Help/TradePageGuide';
 import { AmountInput } from '~/components/Send/AmountInput';
 import { ConfirmTradeModal } from '~/components/Trade/ConfirmTradeModal';
 import { OrderStatusPoller } from '~/components/Trade/OrderStatusPoller';
@@ -44,6 +45,14 @@ export default function Trade() {
   const [selectedGetToken, setSelectedGetToken] = useState<Token | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [quote, setQuote] = useState<OrderParameters | null>(null);
+
+  const amountInputRef = useRef<View>(null);
+  const swapButtonContainerRef = useRef<View>(null);
+  const swapButtonRef = useRef<TouchableOpacity>(null);
+  const tradeButtonRef = useRef<View>(null);
+  const quoteDisplayRef = useRef<View>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
+  const guideRef = useRef<TradePageGuideHandle>(null);
 
   const toggleConfirmModal = () => {
     setIsConfirmModalOpen((prev) => !prev);
@@ -136,39 +145,45 @@ export default function Trade() {
 
   return (
     <Frame>
-      <HeaderBar title="Trade" />
+      <HeaderBar title="Trade" onInfoPress={() => guideRef.current?.startGuide()} />
       <OrderStatusPoller
         tradeHistory={tradeHistory}
         fetchTradeHistory={fetchTradeHistory}
         getToken={getToken}
       />
       <View className="flex-1">
-        <CustomRefreshControl onRefresh={fetchTradeHistory}>
+        <CustomRefreshControl ref={scrollViewRef} onRefresh={fetchTradeHistory}>
           <View className="gap-4 pb-24">
-            <AmountInput
-              value={payAmount}
-              selectedToken={selectedPayToken}
-              onChange={(value) => setPayAmount(value)}
-              tokens={possessedTokens}
-              user={user}
-              selectedTokenBalance={selectedTokenBalance}
-              onTokenChange={(token) => {
-                if (token && token.address === selectedGetToken?.address) {
-                  Toast.show({
-                    type: 'error',
-                    text1: 'You cannot select the same token to pay and receive.',
-                  });
-                  return;
-                }
-                setPayAmount('');
-                setSelectedPayToken(token);
-              }}
-              title="You Pay"
-            />
+            <View ref={amountInputRef} onLayout={() => {}}>
+              <AmountInput
+                value={payAmount}
+                selectedToken={selectedPayToken}
+                onChange={(value) => setPayAmount(value)}
+                tokens={possessedTokens}
+                user={user}
+                selectedTokenBalance={selectedTokenBalance}
+                onTokenChange={(token) => {
+                  if (token && token.address === selectedGetToken?.address) {
+                    Toast.show({
+                      type: 'error',
+                      text1: 'You cannot select the same token to pay and receive.',
+                    });
+                    return;
+                  }
+                  setPayAmount('');
+                  setSelectedPayToken(token);
+                }}
+                title="You Pay"
+              />
+            </View>
 
             {/* Swap Button */}
-            <View className="z-10 my-[-25px] items-center">
+            <View
+              className="z-10 my-[-25px] items-center"
+              ref={swapButtonContainerRef}
+              onLayout={() => {}}>
               <TouchableOpacity
+                ref={swapButtonRef}
                 onPress={handleSwapTokens}
                 className="h-14 w-14 items-center justify-center rounded-full bg-primary shadow-lg"
                 activeOpacity={0.7}
@@ -184,26 +199,28 @@ export default function Trade() {
             </View>
 
             {/* Quote Display */}
-            <QuoteDisplay
-              tokens={tokens}
-              user={user}
-              selectedToken={selectedGetToken}
-              youPayValue={parseFloat(payAmount) || 0}
-              youPayToken={selectedPayToken || possessedTokens[0]}
-              onTokenChange={(token) => {
-                if (token && token.address === selectedPayToken?.address) {
-                  Toast.show({
-                    type: 'error',
-                    text1: 'You cannot select the same token to pay and receive.',
-                  });
-                  return;
-                }
-                setSelectedGetToken(token);
-              }}
-              onQuote={(newQuote) => {
-                setQuote(newQuote);
-              }}
-            />
+            <View ref={quoteDisplayRef} onLayout={() => {}}>
+              <QuoteDisplay
+                tokens={tokens}
+                user={user}
+                selectedToken={selectedGetToken}
+                youPayValue={parseFloat(payAmount) || 0}
+                youPayToken={selectedPayToken || possessedTokens[0]}
+                onTokenChange={(token) => {
+                  if (token && token.address === selectedPayToken?.address) {
+                    Toast.show({
+                      type: 'error',
+                      text1: 'You cannot select the same token to pay and receive.',
+                    });
+                    return;
+                  }
+                  setSelectedGetToken(token);
+                }}
+                onQuote={(newQuote) => {
+                  setQuote(newQuote);
+                }}
+              />
+            </View>
             <TradeHistoryButton />
 
             <PendingTradesSection tradeOrders={tradeHistory} isLoading={isTradeHistoryLoading} />
@@ -211,13 +228,17 @@ export default function Trade() {
         </CustomRefreshControl>
       </View>
 
+      {/* Trade button container (full width) */}
       <View className="absolute bottom-12 z-10 w-full items-center">
-        <Button
-          title="Trade"
-          onPress={toggleConfirmModal}
-          className="w-[50%] bg-primary"
-          disabled={!isValid}
-        />
+        {/* Measured wrapper matching button size */}
+        <View ref={tradeButtonRef} onLayout={() => {}} className="w-[50%]">
+          <Button
+            title="Trade"
+            onPress={toggleConfirmModal}
+            className="w-full bg-primary"
+            disabled={!isValid}
+          />
+        </View>
       </View>
 
       {selectedGetToken && selectedPayToken && quote ? (
@@ -230,6 +251,15 @@ export default function Trade() {
           selectedGetToken={selectedGetToken}
         />
       ) : null}
+
+      <TradePageGuide
+        ref={guideRef}
+        amountInputRef={amountInputRef}
+        swapButtonRef={swapButtonRef}
+        tradeButtonRef={tradeButtonRef}
+        quoteDisplayRef={quoteDisplayRef}
+        scrollViewRef={scrollViewRef}
+      />
     </Frame>
   );
 }
