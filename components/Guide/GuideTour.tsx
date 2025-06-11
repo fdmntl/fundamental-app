@@ -111,14 +111,14 @@ export const GuideTour = ({ visible, steps, onClose }: GuideTourProps) => {
             mask="url(#guide_mask)"
           />
         </Svg>
-        <View style={infoBoxStyle} className="rounded-lg bg-background p-4">
+        <View style={infoBoxStyle} className="rounded-lg bg-background p-4 pr-12">
           <TouchableOpacity
             onPress={onClose}
             className="absolute right-3 top-3 z-10 h-6 w-6 items-center justify-center">
             <Feather name="x" size={24} className="text-text" />
           </TouchableOpacity>
           <FText className="mb-4 text-text">{currentStep.text}</FText>
-          <View className="flex-row items-center justify-between">
+          <View className="-mr-8 flex-row items-center justify-between">
             <FText className="text-text/60">
               {stepIndex + 1} / {steps.length}
             </FText>
@@ -136,7 +136,7 @@ export const GuideTour = ({ visible, steps, onClose }: GuideTourProps) => {
                 title={isLastStep ? 'Done' : 'Next'}
                 onPress={handleNext}
                 className="px-4 py-2"
-                textClassName="text-sm"
+                textClassName="text-sm text-white"
               />
             </View>
           </View>
