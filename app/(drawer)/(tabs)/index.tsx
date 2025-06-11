@@ -2,7 +2,7 @@ import { Feather, FontAwesome6 } from '@expo/vector-icons';
 import { usePrivy, useEmbeddedWallet } from '@privy-io/expo';
 import { router } from 'expo-router';
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import { View, LayoutRectangle } from 'react-native';
+import { View, LayoutRectangle, ScrollView } from 'react-native';
 
 import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
 import { Button } from '~/components/Button';
@@ -44,6 +44,7 @@ export default function Home() {
   const graphRef = useRef<View>(null);
   const actionsRef = useRef<View>(null);
   const assetsRef = useRef<View>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
   const tradeHistoryRef = useRef<View>(null);
   const measure = (ref: React.RefObject<View>): Promise<LayoutRectangle> => {
     return new Promise((resolve) => {
@@ -54,6 +55,8 @@ export default function Home() {
   };
 
   const startGuide = async () => {
+    scrollViewRef.current?.scrollTo({ y: 0, animated: false });
+
     const graphView = graphRef.current;
     const actionsView = actionsRef.current;
     const assetsView = assetsRef.current;
@@ -177,6 +180,7 @@ export default function Home() {
     <Frame>
       <HeaderBar title="Home" onInfoPress={startGuide} />
       <CustomRefreshControl
+        ref={scrollViewRef}
         onRefresh={onBalanceRefresh}
         scrollEnabled={scrollEnabled}
         contentContainerStyle={{ paddingBottom: 50 }}>
