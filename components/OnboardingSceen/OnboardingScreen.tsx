@@ -15,7 +15,6 @@ const slides = [
       '🚀 At Fundamental, we believe crypto should be easy to use',
       '🔐 We are building a wallet that is simple, secure, and powerful',
       '🌍 Our goal is to bring the power of a new financial system to everyone',
-      '👥 Whether you are a beginner or an experienced user, Fundamental is designed to meet your needs',
     ],
   },
   {
@@ -70,7 +69,7 @@ export const OnboardingScreen = ({
   }).current;
 
   const modalWidth = Math.min(screenWidth * 0.9, 380);
-  const modalHeight = Math.min(screenHeight * 0.65, 520);
+  const modalHeight = Math.min(screenHeight * 0.55, 540);
 
   const logoSectionHeight = 80;
   const buttonSectionHeight = 100;

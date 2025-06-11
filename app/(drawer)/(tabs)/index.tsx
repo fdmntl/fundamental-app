@@ -28,7 +28,7 @@ export default function Home() {
   const wallet = useEmbeddedWallet();
   const { updatePrivy } = useAppData();
 
-  const [showOnboarding, setShowOnboarding] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
     const updateUser = async () => {
