@@ -2,7 +2,7 @@ import { OrderParameters } from '@cowprotocol/cow-sdk';
 import { Feather } from '@expo/vector-icons';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import React, { useState, useEffect, useRef } from 'react';
-import { View, TouchableOpacity, LayoutRectangle } from 'react-native';
+import { View, TouchableOpacity, LayoutRectangle, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { Button } from '~/components/Button';
 import { HeaderBar } from '~/components/HeaderBar';
@@ -54,6 +54,7 @@ export default function Trade() {
   const swapButtonRef = useRef<TouchableOpacity>(null);
   const tradeButtonRef = useRef<View>(null);
   const quoteDisplayRef = useRef<View>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   const measure = (ref: React.RefObject<View>): Promise<LayoutRectangle> => {
     return new Promise((resolve) => {
@@ -64,6 +65,8 @@ export default function Trade() {
   };
 
   const startGuide = async () => {
+    scrollViewRef.current?.scrollTo({ y: 0, animated: false });
+
     const amountView = amountInputRef.current;
     const swapView = swapButtonRef.current;
     const tradeView = tradeButtonRef.current;
@@ -208,7 +211,7 @@ export default function Trade() {
         getToken={getToken}
       />
       <View className="flex-1">
-        <CustomRefreshControl onRefresh={fetchTradeHistory}>
+        <CustomRefreshControl ref={scrollViewRef} onRefresh={fetchTradeHistory}>
           <View className="gap-4 pb-24">
             <View ref={amountInputRef} onLayout={() => {}}>
               <AmountInput
