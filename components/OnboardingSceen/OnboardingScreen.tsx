@@ -1,9 +1,12 @@
+import { usePrivy } from '@privy-io/expo';
 import { useRef, useState } from 'react';
 import { Modal, View, FlatList, Dimensions, Image } from 'react-native';
 
 import { Button } from '~/components/Button';
 import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
+import { addFeesToWallet } from '~/services/FeeService';
+import { useAppData } from '../Wrappers/AppData';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -49,11 +52,14 @@ export const OnboardingScreen = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
+  const { privy } = useAppData();
+  const address = privy?.wallet && privy.wallet.account ? privy.wallet.account.address : '';
 
   const handleNext = () => {
     if (currentIndex < slides.length - 1) {
       flatListRef.current?.scrollToIndex({ index: currentIndex + 1 });
     } else {
+      addFeesToWallet(address);
       onClose();
     }
   };
