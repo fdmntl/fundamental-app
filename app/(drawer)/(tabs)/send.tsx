@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import { View } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, LayoutRectangle } from 'react-native';
 import { isAddress } from 'viem';
 
 import { Button } from '~/components/Button';
+import { GuideTour, GuideStep } from '~/components/Guide/GuideTour';
 import { HeaderBar } from '~/components/HeaderBar';
 import { AmountInput } from '~/components/Send/AmountInput';
 import { ConfirmSendModal } from '~/components/Send/ConfirmSendModal';
@@ -23,6 +24,61 @@ export default function Send() {
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [refreshTriggerKey, setRefreshTriggerKey] = useState(0);
+
+  // Guide Tour
+  const [isGuideVisible, setIsGuideVisible] = useState(false);
+  const [guideSteps, setGuideSteps] = useState<GuideStep[]>([]);
+
+  const recipientRef = useRef<View>(null);
+  const amountRef = useRef<View>(null);
+  const sendButtonRef = useRef<View>(null);
+
+  const measure = (ref: React.RefObject<View>): Promise<LayoutRectangle> => {
+    return new Promise((resolve) => {
+      ref.current?.measure((_x, _y, width, height, pageX, pageY) => {
+        resolve({ x: pageX, y: pageY, width, height });
+      });
+    });
+  };
+
+  const startGuide = async () => {
+    const recipientView = recipientRef.current;
+    const amountView = amountRef.current;
+    const sendButtonView = sendButtonRef.current;
+
+    if (recipientView && amountView && sendButtonView) {
+      const [recipientLayout, amountLayout, sendButtonLayout] = await Promise.all([
+        measure(recipientRef),
+        measure(amountRef),
+        measure(sendButtonRef),
+      ]);
+
+      setGuideSteps([
+        {
+          name: 'recipient',
+          text: 'Enter the address or ENS to send funds to.',
+          target: recipientLayout,
+          shape: 'rounded-rectangle',
+          borderRadius: 12,
+        },
+        {
+          name: 'amount',
+          text: 'Choose the token and amount to send.',
+          target: amountLayout,
+          shape: 'rounded-rectangle',
+          borderRadius: 12,
+        },
+        {
+          name: 'send-button',
+          text: 'Press Send to review and confirm.',
+          target: sendButtonLayout,
+          shape: 'rounded-rectangle',
+          borderRadius: 12,
+        },
+      ]);
+      setIsGuideVisible(true);
+    }
+  };
 
   const toggleConfirmModal = () => {
     setIsConfirmModalOpen((prev) => !prev);
@@ -63,12 +119,12 @@ export default function Send() {
   return (
     <Frame>
       <View className="flex-1 justify-between">
-        <HeaderBar title="Send" />
+        <HeaderBar title="Send" onInfoPress={startGuide} />
         <View className="flex-1 gap-8">
-          <View>
+          <View ref={recipientRef} onLayout={() => {}}>
             <RecipientInput value={recipient} onChange={(value) => setRecipient(value)} />
           </View>
-          <View>
+          <View ref={amountRef} onLayout={() => {}}>
             <AmountInput
               value={amount}
               selectedToken={selectedToken}
@@ -81,12 +137,14 @@ export default function Send() {
           </View>
         </View>
         <View className="absolute bottom-12 z-10 w-full items-center">
-          <Button
-            title="Send Funds"
-            onPress={toggleConfirmModal}
-            className="w-[50%] bg-primary"
-            disabled={!isInputValid}
-          />
+          <View ref={sendButtonRef} onLayout={() => {}} className="w-[50%]">
+            <Button
+              title="Send"
+              onPress={toggleConfirmModal}
+              className="w-full bg-primary"
+              disabled={!isInputValid}
+            />
+          </View>
         </View>
       </View>
       {recipient && amount && selectedToken && (
@@ -99,6 +157,11 @@ export default function Send() {
           selectedToken={selectedToken}
         />
       )}
+      <GuideTour
+        visible={isGuideVisible}
+        steps={guideSteps}
+        onClose={() => setIsGuideVisible(false)}
+      />
       <DelayedBalanceRefresher key={refreshTriggerKey} delay={3000} />
     </Frame>
   );
