@@ -30,7 +30,6 @@ const SCREEN_WIDTH = windowDimensions.width;
 export const GuideTour = ({ visible, steps, onClose }: GuideTourProps) => {
   const [stepIndex, setStepIndex] = useState(0);
   const insets = useSafeAreaInsets();
-  console.log('insets: ', insets);
 
   useEffect(() => {
     if (visible) {
