@@ -80,7 +80,7 @@ export default function Home() {
           text: 'Use the Send, Receive, and Deposit buttons to quickly manage your assets.',
           target: actionsLayout,
           shape: 'rounded-rectangle',
-          borderRadius: 12,
+          borderRadius: 16,
         },
         {
           name: 'tradeHistory',
