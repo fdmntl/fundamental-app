@@ -58,7 +58,7 @@ jobs:
         run: |
           echo "Build completed successfully!"
             echo "Checking for APK file..."
-            if [ -f android/app/build/outputs/apk/release/app-release.apk ]; then
+            if [ -f android/app/build/outputs/apk/release/Fundamental.apk ]; then
               echo "APK file found!"
             else
               echo "❌ APK file not found!"
@@ -66,5 +66,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          path: android/app/build/outputs/apk/release/app-release.apk
-          name: app-release.apk
+          path: android/app/build/outputs/apk/release/Fundamental.apk
+          name: Fundamental.apk
