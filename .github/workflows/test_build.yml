@@ -4,7 +4,7 @@ on:
     branches:
       - main
       - dev
-
+  workflow_dispatch:
 env:
   KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
   KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
