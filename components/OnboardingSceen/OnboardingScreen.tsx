@@ -13,20 +13,20 @@ const slides = [
     description: 'Fundamental makes crypto easy!',
     features: [
       '🚀 At Fundamental, we believe crypto should be easy to use',
-      '🔐 We are building a wallet that is simple, secure, and user-friendly',
-      '🌍 Our goal is to make crypto accessible to everyone, regardless of their technical background',
+      '🔐 We are building a wallet that is simple, secure, and powerful',
+      '🌍 Our goal is to bring the power of a new financial system to everyone',
       '👥 Whether you are a beginner or an experienced user, Fundamental is designed to meet your needs',
     ],
   },
   {
-    title: 'Fundamental Wallet Features',
+    title: 'Fundamental Features',
     description: 'Your gateway to the crypto world',
     features: [
       '🌍 Safely access your wallet anytime',
       '📲 Send or receive payments easily',
       '🔄 Swap assets with the lowest fees',
-      '📈 Follow crypto trends with clear, real-time charts',
-      '🔒 Securely store your crypto assets',
+      '📈 Follow trends with clear, real-time charts',
+      '🔒 Securely store your assets',
     ],
   },
   {
