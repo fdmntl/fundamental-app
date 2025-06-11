@@ -63,7 +63,7 @@ export const SendFeedbackButton = () => {
   return (
     <>
       <View className="absolute bottom-[7.5rem] right-6">
-        <TouchableOpacity onPress={toggleModal} className="rounded-3xl bg-gray-800 p-4 opacity-80">
+        <TouchableOpacity onPress={toggleModal} className="rounded-3xl bg-content p-4 opacity-80">
           <Feather name="message-circle" size={28} color="#8435E0" />
         </TouchableOpacity>
       </View>

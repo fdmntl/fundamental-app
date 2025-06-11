@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, forwardRef } from 'react';
 import { ScrollView, RefreshControl, ViewStyle } from 'react-native';
 
 import { useTheme } from './Wrappers/ThemeWrapper';
@@ -10,40 +10,38 @@ interface CustomRefreshControlProps {
   onRefresh: () => Promise<void>;
 }
 
-export const CustomRefreshControl = ({
-  children,
-  scrollEnabled = true,
-  contentContainerStyle,
-  onRefresh,
-}: CustomRefreshControlProps) => {
-  const [refreshing, setRefreshing] = useState(false);
-  const { theme } = useTheme();
-  const tintColor = theme === 'dark' ? 'white' : 'black';
+export const CustomRefreshControl = forwardRef<ScrollView, CustomRefreshControlProps>(
+  ({ children, scrollEnabled = true, contentContainerStyle, onRefresh }, ref) => {
+    const [refreshing, setRefreshing] = useState(false);
+    const { theme } = useTheme();
+    const tintColor = theme === 'dark' ? 'white' : 'black';
 
-  const onRefreshHandler = useCallback(async () => {
-    if (!refreshing) {
-      setRefreshing(true);
-      try {
-        await onRefresh();
-      } finally {
-        setRefreshing(false);
+    const onRefreshHandler = useCallback(async () => {
+      if (!refreshing) {
+        setRefreshing(true);
+        try {
+          await onRefresh();
+        } finally {
+          setRefreshing(false);
+        }
       }
-    }
-  }, [refreshing, onRefresh]);
+    }, [refreshing, onRefresh]);
 
-  return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      scrollEnabled={scrollEnabled}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefreshHandler}
-          tintColor={tintColor}
-        />
-      }
-      contentContainerStyle={contentContainerStyle}>
-      {children}
-    </ScrollView>
-  );
-};
+    return (
+      <ScrollView
+        ref={ref}
+        showsVerticalScrollIndicator={false}
+        scrollEnabled={scrollEnabled}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefreshHandler}
+            tintColor={tintColor}
+          />
+        }
+        contentContainerStyle={contentContainerStyle}>
+        {children}
+      </ScrollView>
+    );
+  }
+);
