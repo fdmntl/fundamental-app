@@ -19,24 +19,39 @@ import { refreshUserBalances } from '~/services/refreshUserBalance';
 import { GraphRange, graphRangeMap } from '~/types/graph';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
+import { hasSeenOnboarding, markOnboardingAsSeen } from '~/utils/Storage/asyncStorage';
+import { OnboardingScreen } from '~/components/OnboardingSceen/OnboardingScreen';
 
 export default function Home() {
   const { user, tokens, updateUser } = useAppData();
   const { user: privyUser } = usePrivy();
   const wallet = useEmbeddedWallet();
   const { updatePrivy } = useAppData();
+
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
   useEffect(() => {
     const updateUser = async () => {
       await updatePrivy({ user: privyUser!, wallet });
     };
-
     updateUser();
   }, [privyUser, wallet]);
+
+  useEffect(() => {
+    const checkOnboardingScreen = async () => {
+      const seen = await hasSeenOnboarding();
+      if (!seen) {
+        await markOnboardingAsSeen();
+        setShowOnboarding(true);
+      }
+    };
+    checkOnboardingScreen();
+  }, []);
+
   const [selectedRange, setSelectedRange] = useState<GraphRange>('1month');
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [isProfileDetailModalVisible, setIsProfileDetailModalVisible] = useState(false);
 
-  // Time range options and labels
   const rangeOptions: GraphRange[] = ['1day', '1week', '1month', '1year'];
   const rangeLabels: Record<GraphRange, string> = {
     '1day': '1D',
@@ -45,7 +60,6 @@ export default function Home() {
     '1year': '1Y',
   };
 
-  // Combine token series into total portfolio value series
   const totalData = useMemo(() => {
     if (!tokens.length) return [];
     const key = graphRangeMap[selectedRange];
@@ -110,6 +124,8 @@ export default function Home() {
 
   return (
     <Frame>
+      <OnboardingScreen visible={showOnboarding} onClose={() => setShowOnboarding(false)} />
+
       <HeaderBar title="Home" />
       <CustomRefreshControl
         onRefresh={onBalanceRefresh}
@@ -135,14 +151,13 @@ export default function Home() {
               />
             </Container>
           </View>
+
           <View className="h-14 w-full flex-row gap-4">
             <Button
               icon={<Feather name="send" size={24} className="text-text" />}
               disableGradient
               className="flex-1 bg-content"
-              onPress={() => {
-                router.push('/send');
-              }}
+              onPress={() => router.push('/send')}
             />
             <Button
               icon={<FontAwesome6 name="qrcode" size={22} className="text-text" />}
@@ -159,6 +174,7 @@ export default function Home() {
               }}
             />
           </View>
+
           <TradeHistoryButton />
 
           <Container title="Money">
@@ -174,6 +190,7 @@ export default function Home() {
                 ))}
             </View>
           </Container>
+
           <Container title="Crypto">
             <View className="flex gap-y-4">
               {cryptos
@@ -189,6 +206,7 @@ export default function Home() {
           </Container>
         </View>
       </CustomRefreshControl>
+
       <ProfileDetailModal
         visible={isProfileDetailModalVisible}
         onClose={() => setIsProfileDetailModalVisible(false)}
