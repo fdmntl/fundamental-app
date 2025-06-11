@@ -1,0 +1,43 @@
+.env
+*.log
+node_modules/
+.expo/
+dist/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+.vscode/
+.idea/
+*.keystore
+android/local.properties
+android/app/src/main/assets/*
+android/app/src/main/res/raw/*
+android/app/src/main/res/drawable-*
+*.base64
+*.apk
+
+
+# expo router
+expo-env.d.ts
+
+ios
+
+
+# macOS
+.DS_Store
+
+# Temporary files created by Metro to check the health of the file watcher
+.metro-health-check*
+
+# Documentation
+docs/
+.env
+
+eas.json
+eas.json
+eas.json
