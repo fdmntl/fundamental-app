@@ -1,6 +1,6 @@
 {
   "cesVersion": "2.11.0",
-  "projectName": "fundamental-app",
+  "projectName": "Fundamental",
   "packages": [
     {
       "name": "expo-router",
