@@ -4,9 +4,6 @@ name: Poll & Stamp Project Dates
 on:
   # allow manual testing
   workflow_dispatch:
-  # run every 5 minutes
-  schedule:
-    - cron: '*/5 * * * *'
 
 permissions:
   repository-projects: write
