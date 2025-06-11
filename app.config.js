@@ -2,10 +2,10 @@ import 'dotenv/config';
 
 export default {
   expo: {
-    name: 'fundamental-app',
-    slug: 'fundamental',
-    version: '1.0.0',
-    scheme: 'fundamental-app',
+    name: 'Fundamental',
+    slug: 'Fundamental',
+    version: '1.4.0',
+    scheme: 'Fundamental',
     web: {
       bundler: 'metro',
       output: 'static',
