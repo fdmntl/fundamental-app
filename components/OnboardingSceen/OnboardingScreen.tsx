@@ -12,37 +12,31 @@ const slides = [
     title: 'Welcome to Your Wallet',
     description: 'Fundamental makes crypto easy!',
     features: [
+      '🚀 At Fundamental, we believe crypto should be easy to use',
+      '🔐 We are building a wallet that is simple, secure, and user-friendly',
+      '🌍 Our goal is to make crypto accessible to everyone, regardless of their technical background',
+      '👥 Whether you are a beginner or an experienced user, Fundamental is designed to meet your needs',
+    ],
+  },
+  {
+    title: 'Fundamental Wallet Features',
+    description: 'Your gateway to the crypto world',
+    features: [
       '🌍 Safely access your wallet anytime',
-      '💰 Buy or sell crypto in just a few taps',
       '📲 Send or receive payments easily',
-      '🔄 Swap assets with the lowest fees in the market',
+      '🔄 Swap assets with the lowest fees',
       '📈 Follow crypto trends with clear, real-time charts',
-    ],
-  },
-  {
-    title: "You're in Control",
-    description: 'This is your wallet - no banks, no third parties.',
-    features: [
-      '🌍 Use your wallet from anywhere, anytime',
-      '🌐 Participate in a new global economy',
-      '🔗 Interact directly with blockchain apps',
-    ],
-  },
-  {
-    title: 'Private & Secure',
-    description: 'We never store your keys. Your data stays with you.',
-    features: [
-      '🔐 Your private key is encrypted and never shared with anyone',
-      '🚫 No one else can see your wallet — not even us',
+      '🔒 Securely store your crypto assets',
     ],
   },
   {
     title: 'USDC',
     description: 'The digital dollar',
     features: [
-      'Fundamental uses USDC, the digital dollar',
-      'USDC is a stablecoin that is pegged to the US dollar',
-      '1 USDC will always equal $1',
+      '💵 Fundamental uses USDC, the digital dollar',
+      '🪙 USDC is a stablecoin that is pegged to the US dollar',
+      '⚖️ 1 USDC will always equal $1',
+      '🏦 USDC is fully backed by US dollars held in reserve',
     ],
   },
 ];
@@ -76,17 +70,22 @@ export const OnboardingScreen = ({
   }).current;
 
   const modalWidth = Math.min(screenWidth * 0.9, 380);
+  const modalHeight = Math.min(screenHeight * 0.65, 520);
+
+  const logoSectionHeight = 60;
+  const buttonSectionHeight = 100;
+  const flatListContainerHeight = modalHeight - logoSectionHeight - buttonSectionHeight;
 
   const renderItem = ({ item }: { item: (typeof slides)[0] }) => (
-    <View style={{ width: modalWidth }} className="items-center justify-start px-4 py-5">
-      <FTitle className="mb-4 text-center text-3xl text-primary">{item.title}</FTitle>
-      <FText className="text-muted mb-6 px-2 text-center text-base leading-6">
+    <View style={{ width: modalWidth }} className="items-center justify-start px-4 pb-4 pt-2">
+      <FTitle className="mb-3 text-center text-3xl text-primary">{item.title}</FTitle>
+      <FText className="text-muted mb-4 px-2 text-center text-base leading-6">
         {item.description}
       </FText>
       <View className="w-full items-start px-2">
         {item.features.map((feature, idx) => (
-          <View key={idx} style={{ marginBottom: idx === item.features.length - 1 ? 0 : 12 }}>
-            <FText className="text-left text-base leading-6">{feature}</FText>
+          <View key={idx} style={{ marginBottom: idx === item.features.length - 1 ? 0 : 8 }}>
+            <FText className="text-s text-left text-base leading-6">{feature}</FText>
           </View>
         ))}
       </View>
@@ -99,18 +98,19 @@ export const OnboardingScreen = ({
         <View
           style={{
             width: modalWidth,
-            height: Math.min(screenHeight * 0.75, 600),
+            height: modalHeight,
             maxHeight: screenHeight * 0.85,
           }}
           className="overflow-hidden rounded-2xl bg-background shadow-xl">
-          <View className="items-center justify-center py-5">
+          <View style={{ height: logoSectionHeight }} className="items-center justify-center py-2">
             <Image
               source={require('../../assets/fundamental-text.png')}
               style={{ height: 40, width: 250 }}
               resizeMode="contain"
             />
           </View>
-          <View className="flex-1">
+
+          <View style={{ height: flatListContainerHeight }}>
             <FlatList
               ref={flatListRef}
               data={slides}
