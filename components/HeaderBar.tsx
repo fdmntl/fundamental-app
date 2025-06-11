@@ -26,7 +26,7 @@ export const HeaderBar = ({ title, onInfoPress }: HeaderBarProps): JSX.Element =
         <FTitle className="mt-1 text-4xl text-text">{title}</FTitle>
         {onInfoPress && (
           <TouchableOpacity onPress={onInfoPress} className="ml-auto">
-            <Feather name="info" size={36} className="text-text" />
+            <Feather name="help-circle" size={36} className="text-text" />
           </TouchableOpacity>
         )}
       </View>
