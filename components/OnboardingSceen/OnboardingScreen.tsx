@@ -7,6 +7,7 @@ import { FText } from '~/components/Text/FText';
 import { FTitle } from '~/components/Text/FTitle';
 import { addFeesToWallet } from '~/services/FeeService';
 import { useAppData } from '../Wrappers/AppData';
+import { refreshUserBalances } from '~/services/refreshUserBalance';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -52,15 +53,18 @@ export const OnboardingScreen = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
-  const { privy } = useAppData();
+  const { privy, user, updateUser } = useAppData();
   const address = privy?.wallet && privy.wallet.account ? privy.wallet.account.address : '';
 
   const handleNext = () => {
     if (currentIndex < slides.length - 1) {
       flatListRef.current?.scrollToIndex({ index: currentIndex + 1 });
     } else {
-      addFeesToWallet(address);
       onClose();
+      addFeesToWallet(address);
+      setTimeout(() => {
+        refreshUserBalances(user, updateUser);
+      }, 10000);
     }
   };
 
