@@ -72,7 +72,7 @@ export const OnboardingScreen = ({
   const modalWidth = Math.min(screenWidth * 0.9, 380);
   const modalHeight = Math.min(screenHeight * 0.65, 520);
 
-  const logoSectionHeight = 60;
+  const logoSectionHeight = 80;
   const buttonSectionHeight = 100;
   const flatListContainerHeight = modalHeight - logoSectionHeight - buttonSectionHeight;
 
