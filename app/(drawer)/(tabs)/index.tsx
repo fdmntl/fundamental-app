@@ -68,21 +68,21 @@ export default function Home() {
       setGuideSteps([
         {
           name: 'graph',
-          text: 'This graph displays the historical value of your portfolio. Tap on the time ranges (1D, 1W, 1M, 1Y) to see how your assets have performed over different periods.',
+          text: 'The graph shows the evolution of your portfolio over time.',
           target: graphLayout,
           shape: 'rounded-rectangle',
           borderRadius: 12,
         },
         {
           name: 'actions',
-          text: 'The buttons below the graph allow you to quickly send assets, show your QR to receive payments, or deposit funds into your account.',
+          text: 'Use the send, receive, and deposit buttons to quickly manage your assets.',
           target: actionsLayout,
           shape: 'rounded-rectangle',
           borderRadius: 12,
         },
         {
           name: 'assets',
-          text: "Your assets are grouped into 'Money' (stablecoins pegged to currencies like the US Dollar) and 'Crypto' (other cryptocurrencies).",
+          text: "Your money and crypto's value is displayed here. Tap an asset to learn more.",
           target: assetsLayout,
           shape: 'rounded-rectangle',
           borderRadius: 12,
