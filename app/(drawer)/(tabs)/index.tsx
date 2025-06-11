@@ -2,7 +2,7 @@ import { Feather, FontAwesome6 } from '@expo/vector-icons';
 import { usePrivy, useEmbeddedWallet } from '@privy-io/expo';
 import { router } from 'expo-router';
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
-import { View, LayoutRectangle, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 
 import { AssetListDisplay } from '~/components/Assets/AssetListDisplay';
 import { Button } from '~/components/Button';
@@ -10,11 +10,9 @@ import { Container } from '~/components/Container';
 import { CustomRefreshControl } from '~/components/CustomRefreshControl';
 import Graph from '~/components/Graph';
 import { GraphRangeSelector } from '~/components/Graph/GraphRangeSelector';
-import { GuideTour, GuideStep } from '~/components/Guide/GuideTour';
+import { HomePageGuide, HomePageGuideHandle } from '~/components/Help/HomePageGuide';
 import { HeaderBar } from '~/components/HeaderBar';
-import { HomeInfo } from '~/components/Info/HomeInfo';
 import { ProfileDetailModal } from '~/components/Profile/ProfileDetailModal';
-import { FText } from '~/components/Text/FText';
 import { TradeHistoryButton } from '~/components/Transaction/TradeHistoryButton';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
@@ -38,71 +36,13 @@ export default function Home() {
   const [selectedRange, setSelectedRange] = useState<GraphRange>('1month');
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [isProfileDetailModalVisible, setIsProfileDetailModalVisible] = useState(false);
-  const [isGuideVisible, setIsGuideVisible] = useState(false);
-  const [guideSteps, setGuideSteps] = useState<GuideStep[]>([]);
+  const guideRef = useRef<HomePageGuideHandle>(null);
 
   const graphRef = useRef<View>(null);
   const actionsRef = useRef<View>(null);
   const assetsRef = useRef<View>(null);
   const scrollViewRef = useRef<ScrollView>(null);
   const tradeHistoryRef = useRef<View>(null);
-  const measure = (ref: React.RefObject<View>): Promise<LayoutRectangle> => {
-    return new Promise((resolve) => {
-      ref.current?.measure((_x, _y, width, height, pageX, pageY) => {
-        resolve({ x: pageX, y: pageY, width, height });
-      });
-    });
-  };
-
-  const startGuide = async () => {
-    scrollViewRef.current?.scrollTo({ y: 0, animated: false });
-
-    const graphView = graphRef.current;
-    const actionsView = actionsRef.current;
-    const assetsView = assetsRef.current;
-    const tradeHistoryView = tradeHistoryRef.current;
-
-    if (graphView && actionsView && assetsView && tradeHistoryView) {
-      const [graphLayout, actionsLayout, assetsLayout, tradeHistoryLayout] = await Promise.all([
-        measure(graphRef),
-        measure(actionsRef),
-        measure(assetsRef),
-        measure(tradeHistoryRef),
-      ]);
-
-      setGuideSteps([
-        {
-          name: 'graph',
-          text: 'The Graph shows the evolution of your portfolio over time.',
-          target: graphLayout,
-          shape: 'rounded-rectangle',
-          borderRadius: 12,
-        },
-        {
-          name: 'actions',
-          text: 'Use the Send, Receive, and Deposit buttons to quickly manage your assets.',
-          target: actionsLayout,
-          shape: 'rounded-rectangle',
-          borderRadius: 16,
-        },
-        {
-          name: 'tradeHistory',
-          text: 'History displays your past transactions at a glance.',
-          target: tradeHistoryLayout,
-          shape: 'rounded-rectangle',
-          borderRadius: 12,
-        },
-        {
-          name: 'assets',
-          text: "Your money and crypto's value is displayed here. Tap an asset to learn more.",
-          target: assetsLayout,
-          shape: 'rounded-rectangle',
-          borderRadius: 12,
-        },
-      ]);
-      setIsGuideVisible(true);
-    }
-  };
 
   // Time range options and labels
   const rangeOptions: GraphRange[] = ['1day', '1week', '1month', '1year'];
@@ -178,7 +118,7 @@ export default function Home() {
 
   return (
     <Frame>
-      <HeaderBar title="Home" onInfoPress={startGuide} />
+      <HeaderBar title="Home" onInfoPress={() => guideRef.current?.startGuide()} />
       <CustomRefreshControl
         ref={scrollViewRef}
         onRefresh={onBalanceRefresh}
@@ -267,10 +207,13 @@ export default function Home() {
         visible={isProfileDetailModalVisible}
         onClose={() => setIsProfileDetailModalVisible(false)}
       />
-      <GuideTour
-        visible={isGuideVisible}
-        steps={guideSteps}
-        onClose={() => setIsGuideVisible(false)}
+      <HomePageGuide
+        ref={guideRef}
+        graphRef={graphRef}
+        actionsRef={actionsRef}
+        assetsRef={assetsRef}
+        tradeHistoryRef={tradeHistoryRef}
+        scrollViewRef={scrollViewRef}
       />
     </Frame>
   );

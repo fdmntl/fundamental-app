@@ -1,9 +1,8 @@
-import React, { useState, useRef } from 'react';
-import { View, LayoutRectangle } from 'react-native';
+import { useState, useRef } from 'react';
+import { View } from 'react-native';
 import { isAddress } from 'viem';
 
 import { Button } from '~/components/Button';
-import { GuideTour, GuideStep } from '~/components/Guide/GuideTour';
 import { HeaderBar } from '~/components/HeaderBar';
 import { AmountInput } from '~/components/Send/AmountInput';
 import { ConfirmSendModal } from '~/components/Send/ConfirmSendModal';
@@ -14,6 +13,7 @@ import { useSendTokenCallback } from '~/services/Send/useSendTokenCallback';
 import { Token } from '~/types/supabaseTypes';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 import { DelayedBalanceRefresher } from '~/components/Send/DelayedBalanceRefresher';
+import { SendPageGuide, SendPageGuideHandle } from '~/components/Help/SendPageGuide';
 
 export default function Send() {
   const { user, tokens, privy } = useAppData();
@@ -25,64 +25,10 @@ export default function Send() {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [refreshTriggerKey, setRefreshTriggerKey] = useState(0);
 
-  // Guide Tour
-  const [isGuideVisible, setIsGuideVisible] = useState(false);
-  const [guideSteps, setGuideSteps] = useState<GuideStep[]>([]);
-
   const recipientRef = useRef<View>(null);
   const amountRef = useRef<View>(null);
   const sendButtonRef = useRef<View>(null);
-
-  const measure = (ref: React.RefObject<View>): Promise<LayoutRectangle> => {
-    return new Promise((resolve) => {
-      ref.current?.measure((_x, _y, width, height, pageX, pageY) => {
-        resolve({ x: pageX, y: pageY, width, height });
-      });
-    });
-  };
-
-  const startGuide = async () => {
-    const recipientView = recipientRef.current;
-    const amountView = amountRef.current;
-    const sendButtonView = sendButtonRef.current;
-
-    if (recipientView && amountView && sendButtonView) {
-      const [recipientLayout, amountLayout, sendButtonLayout] = await Promise.all([
-        measure(recipientRef),
-        measure(amountRef),
-        measure(sendButtonRef),
-      ]);
-
-      setGuideSteps([
-        {
-          name: 'recipient',
-          text: 'Enter the address or ENS to send funds to.',
-          target: recipientLayout,
-          shape: 'rounded-rectangle',
-          borderRadius: 12,
-        },
-        {
-          name: 'amount',
-          text: 'Choose the token and amount to send.',
-          target: amountLayout,
-          shape: 'rounded-rectangle',
-          borderRadius: 12,
-        },
-        {
-          name: 'send-button',
-          text: 'Press Send to review and confirm.',
-          target: sendButtonLayout,
-          shape: 'rounded-rectangle',
-          borderRadius: 12,
-        },
-      ]);
-      setIsGuideVisible(true);
-    }
-  };
-
-  const toggleConfirmModal = () => {
-    setIsConfirmModalOpen((prev) => !prev);
-  };
+  const guideRef = useRef<SendPageGuideHandle>(null);
 
   const possessedTokens = user.balances
     .map((balance) => tokens.find((token) => token.address === balance.address))
@@ -119,7 +65,7 @@ export default function Send() {
   return (
     <Frame>
       <View className="flex-1 justify-between">
-        <HeaderBar title="Send" onInfoPress={startGuide} />
+        <HeaderBar title="Send" onInfoPress={() => guideRef.current?.startGuide()} />
         <View className="flex-1 gap-8">
           <View ref={recipientRef} onLayout={() => {}}>
             <RecipientInput value={recipient} onChange={(value) => setRecipient(value)} />
@@ -140,7 +86,9 @@ export default function Send() {
           <View ref={sendButtonRef} onLayout={() => {}} className="w-[50%]">
             <Button
               title="Send"
-              onPress={toggleConfirmModal}
+              onPress={() => {
+                setIsConfirmModalOpen(true);
+              }}
               className="w-full bg-primary"
               disabled={!isInputValid}
             />
@@ -150,17 +98,18 @@ export default function Send() {
       {recipient && amount && selectedToken && (
         <ConfirmSendModal
           isModalOpen={isConfirmModalOpen}
-          toggleModal={toggleConfirmModal}
+          toggleModal={() => setIsConfirmModalOpen(false)}
           onConfirm={handleSendPress}
           recipient={recipient}
           amount={amount}
           selectedToken={selectedToken}
         />
       )}
-      <GuideTour
-        visible={isGuideVisible}
-        steps={guideSteps}
-        onClose={() => setIsGuideVisible(false)}
+      <SendPageGuide
+        ref={guideRef}
+        recipientRef={recipientRef}
+        amountRef={amountRef}
+        sendButtonRef={sendButtonRef}
       />
       <DelayedBalanceRefresher key={refreshTriggerKey} delay={3000} />
     </Frame>

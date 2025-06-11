@@ -1,14 +1,14 @@
 import { OrderParameters } from '@cowprotocol/cow-sdk';
 import { Feather } from '@expo/vector-icons';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import React, { useState, useEffect, useRef } from 'react';
-import { View, TouchableOpacity, LayoutRectangle, ScrollView } from 'react-native';
+import { useState, useEffect, useRef } from 'react';
+import { View, TouchableOpacity, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { Button } from '~/components/Button';
 import { HeaderBar } from '~/components/HeaderBar';
 import { AmountInput } from '~/components/Send/AmountInput';
 import { ConfirmTradeModal } from '~/components/Trade/ConfirmTradeModal';
-import { GuideTour, GuideStep } from '~/components/Guide/GuideTour';
+import { TradePageGuide, TradePageGuideHandle } from '~/components/Help/TradePageGuide';
 import { QuoteDisplay } from '~/components/Trade/QuoteDisplay';
 import { TradeHistoryButton } from '~/components/Transaction/TradeHistoryButton';
 import { PendingTradesSection } from '~/components/Trade/PendingTradesSection';
@@ -45,73 +45,13 @@ export default function Trade() {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [quote, setQuote] = useState<OrderParameters | null>(null);
 
-  // Guide Tour
-  const [isGuideVisible, setIsGuideVisible] = useState(false);
-  const [guideSteps, setGuideSteps] = useState<GuideStep[]>([]);
-
   const amountInputRef = useRef<View>(null);
   const swapButtonContainerRef = useRef<View>(null);
   const swapButtonRef = useRef<TouchableOpacity>(null);
   const tradeButtonRef = useRef<View>(null);
   const quoteDisplayRef = useRef<View>(null);
   const scrollViewRef = useRef<ScrollView>(null);
-
-  const measure = (ref: React.RefObject<View>): Promise<LayoutRectangle> => {
-    return new Promise((resolve) => {
-      ref.current?.measure((_x, _y, width, height, pageX, pageY) => {
-        resolve({ x: pageX, y: pageY, width, height });
-      });
-    });
-  };
-
-  const startGuide = async () => {
-    scrollViewRef.current?.scrollTo({ y: 0, animated: false });
-
-    const amountView = amountInputRef.current;
-    const swapView = swapButtonRef.current;
-    const tradeView = tradeButtonRef.current;
-    const quoteDisplayView = quoteDisplayRef.current;
-
-    if (amountView && swapView && tradeView && quoteDisplayView) {
-      const [amountLayout, swapLayout, tradeLayout, quoteDisplayLayout] = await Promise.all([
-        measure(amountInputRef),
-        measure(swapButtonRef),
-        measure(tradeButtonRef),
-        measure(quoteDisplayRef),
-      ]);
-
-      setGuideSteps([
-        {
-          name: 'amount-input',
-          text: 'Enter the token and amount you want to spend',
-          target: amountLayout,
-          shape: 'rounded-rectangle',
-          borderRadius: 12,
-        },
-        {
-          name: 'swap-button',
-          text: 'Swap the Pay and Get tokens',
-          target: swapLayout,
-          shape: 'circle',
-        },
-        {
-          name: 'quote-display',
-          text: 'Pick the token you want to buy',
-          target: quoteDisplayLayout,
-          shape: 'rounded-rectangle',
-          borderRadius: 12,
-        },
-        {
-          name: 'trade-button',
-          text: 'Press Trade to open the confirmation screen',
-          target: tradeLayout,
-          shape: 'rounded-rectangle',
-          borderRadius: 12,
-        },
-      ]);
-      setIsGuideVisible(true);
-    }
-  };
+  const guideRef = useRef<TradePageGuideHandle>(null);
 
   const toggleConfirmModal = () => {
     setIsConfirmModalOpen((prev) => !prev);
@@ -204,7 +144,7 @@ export default function Trade() {
 
   return (
     <Frame>
-      <HeaderBar title="Trade" onInfoPress={startGuide} />
+      <HeaderBar title="Trade" onInfoPress={() => guideRef.current?.startGuide()} />
       <OrderStatusPoller
         tradeHistory={tradeHistory}
         fetchTradeHistory={fetchTradeHistory}
@@ -311,11 +251,13 @@ export default function Trade() {
         />
       ) : null}
 
-      {/* Guide Tour Overlay */}
-      <GuideTour
-        visible={isGuideVisible}
-        steps={guideSteps}
-        onClose={() => setIsGuideVisible(false)}
+      <TradePageGuide
+        ref={guideRef}
+        amountInputRef={amountInputRef}
+        swapButtonRef={swapButtonRef}
+        tradeButtonRef={tradeButtonRef}
+        quoteDisplayRef={quoteDisplayRef}
+        scrollViewRef={scrollViewRef}
       />
     </Frame>
   );
