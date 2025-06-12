@@ -1,6 +1,6 @@
 import { Feather } from '@expo/vector-icons';
 import { View, Image, Linking } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 
 import { Container } from '~/components/Container';
 import { HeaderBar } from '~/components/HeaderBar';
@@ -29,7 +29,7 @@ export default function Earn() {
           </FText>
         </View>
         <HeaderBar title="Earn" />
-        <View className="flex-1 gap-8">
+        <ScrollView className="flex-1 gap-8">
           <View className="items-center gap-4 pt-4">
             <FText className="text-center !text-4xl" bold>
               Earn passive income with your Tokens!
@@ -90,7 +90,7 @@ export default function Earn() {
               </TouchableOpacity>
             </View>
           </Container>
-        </View>
+        </ScrollView>
       </View>
     </Frame>
   );

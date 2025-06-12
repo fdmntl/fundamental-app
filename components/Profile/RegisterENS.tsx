@@ -9,8 +9,8 @@ import { useAppData } from '../Wrappers/AppData';
 
 import { updateENS } from '~/services/Supabase/updateENS';
 import { registerName, isENSNameAvailable } from '~/services/viemService';
-import { toastConfig } from '~/utils/toastConfig';
 import { debounce } from '~/utils/helpers/debounce';
+import { toastConfig } from '~/utils/toastConfig';
 
 // Check if the subname is valid and available
 // TODO: Check if the subname is available
@@ -32,6 +32,15 @@ export const RegisterENS = () => {
   const [hasInteracted, setHasInteracted] = useState(false);
   const address = privy.wallet?.account?.address || '';
 
+  // Watch subname changes
+  useEffect(() => {
+    if (subname.trim()) {
+      checkAvailability(subname);
+    } else {
+      setIsAvailable(null);
+    }
+  }, [subname]);
+
   if (!privy.wallet || privy.wallet.status !== 'connected') {
     return (
       <FText className="!text-2xl" bold>
@@ -49,7 +58,7 @@ export const RegisterENS = () => {
       try {
         const available = await isENSNameAvailable(`${name}.fdmntl.eth`);
         setIsAvailable(available);
-      } catch (error) {
+      } catch {
         setIsAvailable(null);
       }
     } else {
@@ -57,15 +66,6 @@ export const RegisterENS = () => {
     }
     setChecking(false);
   }, 500);
-
-  // Watch subname changes
-  useEffect(() => {
-    if (subname.trim()) {
-      checkAvailability(subname);
-    } else {
-      setIsAvailable(null);
-    }
-  }, [subname]);
 
   return (
     <View className="flex gap-2">

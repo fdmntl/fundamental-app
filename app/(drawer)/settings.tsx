@@ -10,7 +10,7 @@ import { Frame } from '~/components/Wrappers/Frame';
 
 const Settings = () => {
   return (
-    <Frame>
+    <Frame disableBottomPadding>
       <DetailsHeader title="Settings" />
       <Container>
         <FTitle className="text-3xl">Socials</FTitle>
