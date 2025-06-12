@@ -24,8 +24,8 @@ export const ProfilePreview = ({ onPress }: ProfilePreviewProps) => {
   return (
     <TouchableOpacity onPress={onPress} className="w-full rounded shadow-sm">
       <Container>
-        <View className="flex flex-row gap-4">
-          <Feather name="user" size={48} className="text-text" />
+        <View className="flex flex-row gap-2">
+          {!hasENS && <Feather name="user" size={24} className="text-text" />}
           <View className="flex flex-col justify-center">
             <FText className="!text-2xl" bold>
               {ensName}

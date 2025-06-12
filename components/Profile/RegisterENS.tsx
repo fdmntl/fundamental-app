@@ -9,8 +9,8 @@ import { useAppData } from '../Wrappers/AppData';
 
 import { updateENS } from '~/services/Supabase/updateENS';
 import { registerName, isENSNameAvailable } from '~/services/viemService';
-import { toastConfig } from '~/utils/toastConfig';
 import { debounce } from '~/utils/helpers/debounce';
+import { toastConfig } from '~/utils/toastConfig';
 
 // Check if the subname is valid and available
 // TODO: Check if the subname is available

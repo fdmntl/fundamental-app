@@ -4,6 +4,8 @@ import { Alert } from 'react-native';
 
 import { useAppData } from './Wrappers/AppData';
 
+import { resetOnboardingSeen } from '~/utils/Storage/asyncStorage';
+
 export const LogoutButton = () => {
   const { logout } = usePrivy();
   const { resetAppData } = useAppData();
@@ -11,6 +13,7 @@ export const LogoutButton = () => {
   const handleLogout = async () => {
     try {
       await logout();
+      resetOnboardingSeen();
       Alert.alert('Success', 'Logout successful!');
       resetAppData();
     } catch (error: any) {
