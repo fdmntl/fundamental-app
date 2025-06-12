@@ -69,7 +69,7 @@ export default function Assets() {
   return (
     <>
       <Stack.Screen options={{ title, headerShown: false }} />
-      <Frame>
+      <Frame disableBottomPadding>
         <View className="flex-1">
           <DetailsHeader title={title} icon={icon} />
           <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={scrollEnabled}>

@@ -22,7 +22,7 @@ const Profile = () => {
   const ensDomain = hasENS ? `${user.ens}.fdmntl.eth` : null;
 
   return (
-    <Frame>
+    <Frame disableBottomPadding>
       <DetailsHeader title="Profile" />
       <View className="mt-32 flex-1 items-center">
         <ImageBackground
