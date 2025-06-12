@@ -13,7 +13,7 @@ export const LogoutButton = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      resetOnboardingSeen();
+      await resetOnboardingSeen();
       Alert.alert('Success', 'Logout successful!');
       resetAppData();
     } catch (error: any) {
