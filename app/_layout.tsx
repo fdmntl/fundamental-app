@@ -23,6 +23,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
 import { SendFeedbackButton } from '~/components/Feedback/sendFeedbackButton';
+import { UpdateChecker } from '~/components/Update/UpdateChecker';
 import { AppDataProvider } from '~/components/Wrappers/AppData';
 import { AuthProvider } from '~/components/Wrappers/AuthProvider';
 import { ThemeWrapper } from '~/components/Wrappers/ThemeWrapper';
@@ -130,6 +131,7 @@ const Layout = () => {
           <PrivyElements />
         </AuthProvider>
       </PrivyProvider>
+      <UpdateChecker />
     </PostHogProvider>
   );
 };
