@@ -124,6 +124,7 @@ const Layout = () => {
                   <Stack.Screen name="+not-found" options={{ title: 'Not Found' }} />
                 </Stack>
                 <SendFeedbackButton />
+                <UpdateChecker />
               </GestureHandlerRootView>
             </AppDataProvider>
           </ThemeWrapper>
@@ -131,7 +132,6 @@ const Layout = () => {
           <PrivyElements />
         </AuthProvider>
       </PrivyProvider>
-      <UpdateChecker />
     </PostHogProvider>
   );
 };
