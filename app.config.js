@@ -4,7 +4,7 @@ export default {
   expo: {
     name: 'Fundamental',
     slug: 'Fundamental',
-    version: '1.4.0',
+    version: '1.4.1',
     scheme: 'Fundamental',
     web: {
       bundler: 'metro',
@@ -31,7 +31,7 @@ export default {
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
       },
-      buildNumber: '1',
+      buildNumber: '3',
     },
     android: {
       adaptiveIcon: {
@@ -40,7 +40,7 @@ export default {
       },
       package: 'com.fundamental.fundamentalapp',
       minSdkVersion: 26,
-      versionCode: 1,
+      versionCode: 3,
     },
     extra: {
       privyAppId: 'clxd5oc5m007jrpv8y8clt6z7',
