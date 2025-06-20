@@ -9,8 +9,6 @@ interface AppUpdateInfo {
   versionName: string;
   updateUrl: string;
   currentVersionName: string;
-  currentBuildNumber: number;
-  latestBuildNumber: number;
 }
 
 interface AppUpdateState {
@@ -63,8 +61,6 @@ export const useAppUpdate = (): AppUpdateState => {
               versionName: data.build_name,
               updateUrl: data.url,
               currentVersionName: currentVersionName,
-              currentBuildNumber: currentBuildNumber,
-              latestBuildNumber: latestBuildNumber,
             });
           } else {
             console.log('[AppUpdate] No update necessary.');

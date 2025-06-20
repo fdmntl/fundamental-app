@@ -1,6 +1,6 @@
 {
   "name": "Fundamental",
-  "version": "1.4.4",
+  "version": "1.4.3",
   "main": "./index.ts",
   "scripts": {
     "android": "expo run:android",
