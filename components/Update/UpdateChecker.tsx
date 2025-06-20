@@ -21,6 +21,8 @@ export const UpdateChecker: React.FC = () => {
       versionName={updateInfo.versionName}
       updateUrl={updateInfo.updateUrl}
       currentVersionName={updateInfo.currentVersionName}
+      currentBuildNumber={updateInfo.currentBuildNumber}
+      latestBuildNumber={updateInfo.latestBuildNumber}
       onClose={() => setUpdateModalVisible(false)}
     />
   );
