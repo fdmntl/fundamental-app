@@ -4,7 +4,7 @@ export default {
   expo: {
     name: 'Fundamental',
     slug: 'Fundamental',
-    version: '1.4.0',
+    version: '1.4.1',
     scheme: 'Fundamental',
     web: {
       bundler: 'metro',
@@ -31,6 +31,7 @@ export default {
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
       },
+      buildNumber: '5',
     },
     android: {
       adaptiveIcon: {
@@ -39,6 +40,7 @@ export default {
       },
       package: 'com.fundamental.fundamentalapp',
       minSdkVersion: 26,
+      versionCode: 5,
     },
     extra: {
       privyAppId: 'clxd5oc5m007jrpv8y8clt6z7',
@@ -51,6 +53,7 @@ export default {
       },
       supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL,
       supabaseKey: process.env.EXPO_PUBLIC_SUPABASE_KEY,
+      ignoreUpdates: process.env.EXPO_PUBLIC_IGNORE_UPDATES === 'true',
     },
     owner: 'fundamental',
   },
