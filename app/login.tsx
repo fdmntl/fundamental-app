@@ -31,6 +31,10 @@ export default function Login() {
 
   useEffect(() => {
     const setupUser = async () => {
+      console.log('🔍 useEffect fired');
+      console.log('🧑 user:', user);
+      console.log('👛 wallet:', wallet);
+      console.log('📶 wallet.status:', wallet?.status);
       if (user && wallet && wallet.status === 'connected') {
         await addUserToDB(user);
         updatePrivy({ user, wallet });
