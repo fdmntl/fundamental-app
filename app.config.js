@@ -53,6 +53,7 @@ export default {
       },
       supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL,
       supabaseKey: process.env.EXPO_PUBLIC_SUPABASE_KEY,
+      ignoreUpdates: process.env.EXPO_PUBLIC_IGNORE_UPDATES === 'true',
     },
     owner: 'fundamental',
   },

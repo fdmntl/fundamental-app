@@ -1,5 +1,6 @@
 import React from 'react';
 import { Linking, Modal, Pressable, View } from 'react-native';
+import Constants from 'expo-constants';
 
 import { Button } from '~/components/Button';
 import { Container } from '~/components/Container';
@@ -19,6 +20,10 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
   currentVersionName,
   onClose,
 }) => {
+  if (Constants.expoConfig?.extra?.ignoreUpdates) {
+    return null;
+  }
+
   const handleUpdate = () => {
     if (updateUrl) {
       Linking.openURL(updateUrl);
