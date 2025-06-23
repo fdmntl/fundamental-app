@@ -43,7 +43,7 @@ export default {
         {
           action: 'VIEW',
           data: {
-            scheme: 'Fundamental',
+            scheme: 'fundamental',
             host: 'auth',
             pathPrefix: '/redirect',
           },
