@@ -3,7 +3,6 @@ import { InsertSupabaseData } from './Supabase/insertData';
 import { supabase } from '~/supabaseConfig';
 
 export async function addUserToDB(user: any) {
-  // console.log('User: ', user);
   // This serves to get rid of the did:privy: prefix
   const user_id = user.id.slice(10);
   console.log('Checking user in Supabase:', user_id);
@@ -20,8 +19,6 @@ export async function addUserToDB(user: any) {
     .select('id')
     .eq('wallet_address', wallet.address)
     .single();
-  console.log('existingUser: ', existingUser);
-  console.log('fetchError: ', fetchError);
 
   if (fetchError && fetchError.code !== 'PGRST116') {
     console.error('❌ Supabase fetch error:', fetchError);
