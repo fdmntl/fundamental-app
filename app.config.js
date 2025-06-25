@@ -49,6 +49,22 @@ export default {
           },
           category: ['BROWSABLE', 'DEFAULT'],
         },
+        {
+          action: 'VIEW',
+          data: {
+            scheme: 'https',
+            host: 'auth.privy.io',
+            pathPrefix: '/redirect',
+          },
+          category: ['BROWSABLE', 'DEFAULT'],
+        },
+        {
+          action: 'VIEW',
+          data: {
+            scheme: 'com.fundamental.fundamentalapp',
+          },
+          category: ['BROWSABLE', 'DEFAULT'],
+        },
       ],
     },
     extra: {
