@@ -1,3 +1,4 @@
+import { usePrivy } from '@privy-io/expo';
 import { useRef, useState } from 'react';
 import { Modal, View, FlatList, Dimensions, Image, PixelRatio } from 'react-native';
 
@@ -83,6 +84,7 @@ export const OnboardingScreen = ({
   const isSmallScreen = screenHeight < 700;
   const modalWidth = Math.min(screenWidth * 0.9, 380);
 
+  // Dynamic spacing based on screen size and font scale
   const verticalPadding = isSmallScreen || isLargeFontScale ? 16 : 24;
   const logoHeight = isSmallScreen || isLargeFontScale ? 35 : 40;
   const logoWidth = isSmallScreen || isLargeFontScale ? 220 : 250;
@@ -93,19 +95,17 @@ export const OnboardingScreen = ({
   const adjustedMinHeight = Math.min(baseMinHeight + fontScaleAdjustment, 0.85);
 
   const renderItem = ({ item }: { item: (typeof slides)[0] }) => (
-    <View style={{ width: modalWidth }} className="items-center justify-start px-4 pb-4 pt-2">
+    <View style={{ width: modalWidth }} className="items-center justify-start px-4 pt-2">
       <FTitle
         className={`mb-3 text-center text-primary ${
           isSmallScreen || isLargeFontScale ? 'text-2xl' : 'text-3xl'
-        }`}
-        allowFontScaling={false}>
+        }`}>
         {item.title}
       </FTitle>
       <FText
-        className={`text-muted mb-4 px-2 text-center leading-6 ${
+        className={`text-muted mb-3 px-2 text-left leading-6 ${
           isSmallScreen || isLargeFontScale ? 'text-sm' : 'text-base'
-        }`}
-        allowFontScaling={false}>
+        }`}>
         {item.description}
       </FText>
       <View className="w-full items-start px-2">
@@ -119,8 +119,7 @@ export const OnboardingScreen = ({
             <FText
               className={`text-s text-left leading-6 ${
                 isSmallScreen || isLargeFontScale ? 'text-sm' : 'text-base'
-              }`}
-              allowFontScaling={false}>
+              }`}>
               {feature}
             </FText>
           </View>
@@ -135,7 +134,6 @@ export const OnboardingScreen = ({
         <View
           style={{
             width: modalWidth,
-            minHeight: screenHeight * adjustedMinHeight,
             maxHeight: screenHeight * 0.9,
             maxWidth: screenWidth * 0.95,
           }}
@@ -153,13 +151,12 @@ export const OnboardingScreen = ({
               resizeMode="contain"
             />
           </View>
-
-          {/* Content Section - Give it specific height */}
+          {/* Content Section*/}
           <View
             style={{
-              flex: 1,
-              minHeight: isSmallScreen || isLargeFontScale ? 350 : 380,
-            }}>
+              flexShrink: 1,
+            }}
+            className="justify-start">
             <FlatList
               ref={flatListRef}
               data={slides}
@@ -178,21 +175,21 @@ export const OnboardingScreen = ({
               snapToInterval={modalWidth}
               decelerationRate="fast"
               contentContainerStyle={{
-                alignItems: 'flex-start',
+                flexGrow: 1,
+                justifyContent: 'flex-start',
               }}
-              style={{ flex: 1 }}
             />
           </View>
 
           {/* Button Section with responsive padding */}
           <View
-            className="px-4 pb-6"
+            className="px-4"
             style={{
               paddingTop: verticalPadding * 0.5,
-              height: isSmallScreen ? 90 : 110,
+              paddingBottom: isSmallScreen || isLargeFontScale ? 12 : 16,
             }}>
             {/* Pagination Dots */}
-            <View className="mb-5 flex-row items-center justify-center">
+            <View className="mb-4 flex-row items-center justify-center">
               {slides.map((_, i) => (
                 <View
                   key={i}
@@ -200,13 +197,12 @@ export const OnboardingScreen = ({
                     i === currentIndex ? 'bg-primary' : 'bg-content'
                   }`}
                   style={{
-                    height: isSmallScreen ? 8 : 10,
-                    width: isSmallScreen ? 8 : 10,
+                    height: isSmallScreen || isLargeFontScale ? 8 : 10,
+                    width: isSmallScreen || isLargeFontScale ? 8 : 10,
                   }}
                 />
               ))}
             </View>
-
             {/* Action Buttons */}
             <View className="flex-row items-center justify-between">
               {currentIndex < slides.length - 1 ? (
@@ -214,8 +210,8 @@ export const OnboardingScreen = ({
                   title="Skip"
                   onPress={handleSkip}
                   disableGradient
-                  textClassName={isSmallScreen ? 'text-sm' : 'text-base'}
-                  className={`px-4 ${isSmallScreen ? 'py-2' : 'py-3'}`}
+                  textClassName={isSmallScreen || isLargeFontScale ? 'text-sm' : 'text-base'}
+                  className={`px-4 ${isSmallScreen || isLargeFontScale ? 'py-2' : 'py-3'}`}
                 />
               ) : (
                 <View className="w-[80px]" />
@@ -223,8 +219,8 @@ export const OnboardingScreen = ({
               <Button
                 title={currentIndex === slides.length - 1 ? 'Get Started' : 'Next'}
                 onPress={handleNext}
-                textClassName={`text-white ${isSmallScreen ? 'text-sm' : 'text-base'}`}
-                className={`min-w-[100px] ${isSmallScreen ? 'py-2' : ''}`}
+                textClassName={`text-white ${isSmallScreen || isLargeFontScale ? 'text-sm' : 'text-base'}`}
+                className={`min-w-[100px] ${isSmallScreen || isLargeFontScale ? 'py-2' : ''}`}
               />
             </View>
           </View>
