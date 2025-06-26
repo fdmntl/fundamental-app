@@ -19,24 +19,18 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      console.log('⚡️ Starting login flow...');
       await login({ loginMethods: ['email', 'google'] });
-      console.log('✅ Login completed');
     } catch (error: any) {
       if (error.message === 'The login flow was closed') {
-        console.log('🛑 Login flow was closed by the user.');
+        console.log('Login flow was closed by the user.');
         return;
       }
-      console.error('❌ Login error:', error);
+      console.error('Login error:', error);
     }
   };
 
   useEffect(() => {
     const setupUser = async () => {
-      console.log('🔍 useEffect fired');
-      console.log('🧑 user:', user);
-      console.log('👛 wallet:', wallet);
-      console.log('📶 wallet.status:', wallet?.status);
       if (user && wallet && wallet.status === 'connected') {
         await addUserToDB(user);
         updatePrivy({ user, wallet });
