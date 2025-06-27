@@ -98,6 +98,13 @@ export const QuoteDisplay = ({
     }
   }, [youPayValue, youPayToken, selectedToken, user.wallet_address, debouncedCalculateQuote]);
 
+  // Reset quote value when youPayValue becomes 0
+  useEffect(() => {
+    if (youPayValue === 0) {
+      setQuoteValue(0);
+    }
+  }, [youPayValue]);
+
   return (
     <View className="h-fit w-full gap-2 rounded-xl bg-content p-4 pb-6 pl-6">
       <View className="flex-row items-center justify-between">

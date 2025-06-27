@@ -11,11 +11,20 @@ import { trimAddress } from '~/utils/helpers/strings/trimAddress';
 interface RecipientInputProps {
   value: string;
   onChange: (value: string) => void;
+  resetValue?: boolean;
 }
 
-export const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
+export const RecipientInput = ({ value, onChange, resetValue = false }: RecipientInputProps) => {
   const [resolvedAddress, setResolvedAddress] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState(value);
+
+  useEffect(() => {
+    if (resetValue && inputValue !== '') {
+      setInputValue('');
+      onChange('');
+      setResolvedAddress(null);
+    }
+  }, [resetValue, inputValue, onChange]);
 
   const handleResolveENS = useCallback(async (recipient: string) => {
     setResolvedAddress(null);

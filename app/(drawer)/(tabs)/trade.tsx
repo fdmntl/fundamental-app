@@ -246,6 +246,8 @@ export default function Trade() {
           isModalOpen={isConfirmModalOpen}
           toggleModal={toggleConfirmModal}
           onConfirm={handleTradePress}
+          onClearAmount={() => setPayAmount('')}
+          onClearQuote={() => setQuote(null)}
           quote={quote}
           selectedPayToken={selectedPayToken}
           selectedGetToken={selectedGetToken}

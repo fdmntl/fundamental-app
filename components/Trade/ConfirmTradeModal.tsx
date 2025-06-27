@@ -25,6 +25,8 @@ interface ConfirmTradeModalProps {
   isModalOpen: boolean;
   toggleModal: () => void;
   onConfirm: () => void;
+  onClearAmount?: () => void;
+  onClearQuote?: () => void;
   quote: OrderParameters;
   selectedPayToken: Token;
   selectedGetToken: Token;
@@ -34,6 +36,8 @@ export const ConfirmTradeModal = ({
   isModalOpen,
   toggleModal,
   onConfirm,
+  onClearAmount,
+  onClearQuote,
   quote,
   selectedPayToken,
   selectedGetToken,
@@ -187,6 +191,8 @@ export const ConfirmTradeModal = ({
                 size={40}
                 color="#4ade80"
                 onPress={() => {
+                  onClearAmount?.();
+                  onClearQuote?.();
                   onConfirm();
                   toggleModal();
                 }}

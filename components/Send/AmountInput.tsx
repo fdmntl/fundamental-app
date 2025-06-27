@@ -1,5 +1,5 @@
 import { Feather } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View,
   TextInput,
@@ -17,6 +17,7 @@ import { getTokenAmountPrice } from '~/utils/helpers/tokens/getTokenAmountPrice'
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 import { printToken } from '~/utils/helpers/tokens/printToken';
+
 interface AmountInputProps {
   onChange: (value: string) => void;
   value: string;
@@ -26,6 +27,7 @@ interface AmountInputProps {
   selectedTokenBalance: number;
   onTokenChange?: (token: Token) => void;
   title?: string;
+  resetValue?: boolean;
 }
 
 export const AmountInput = ({
@@ -37,12 +39,19 @@ export const AmountInput = ({
   selectedTokenBalance,
   onTokenChange,
   title = 'Amount',
+  resetValue = false,
 }: AmountInputProps) => {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
 
   const handleInputChange = (value: string) => {
     onChange(value.replace(/[^0-9.]/g, ''));
   };
+
+  useEffect(() => {
+    if (resetValue && value !== '') {
+      onChange('');
+    }
+  }, [resetValue, value, onChange]);
 
   const balanceDisplay =
     selectedToken && selectedTokenBalance
