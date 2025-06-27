@@ -5,7 +5,7 @@ export default {
     name: 'Fundamental',
     slug: 'Fundamental',
     version: '1.4.1',
-    scheme: 'Fundamental',
+    scheme: 'com.fundamental.fundamentalapp', // Changed from 'Fundamental' to use bundle identifier
     web: {
       bundler: 'metro',
       output: 'static',
@@ -40,6 +40,17 @@ export default {
       },
       package: 'com.fundamental.fundamentalapp',
       minSdkVersion: 26,
+      intentFilters: [
+        {
+          action: 'VIEW',
+          data: [
+            {
+              scheme: 'com.fundamental.fundamentalapp',
+            },
+          ],
+          category: ['BROWSABLE', 'DEFAULT'],
+        },
+      ],
       versionCode: 5,
     },
     extra: {

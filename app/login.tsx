@@ -19,7 +19,7 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      await login({ loginMethods: ['email'] });
+      await login({ loginMethods: ['email', 'google'] });
     } catch (error: any) {
       if (error.message === 'The login flow was closed') {
         console.log('Login flow was closed by the user.');
