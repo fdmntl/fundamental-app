@@ -74,7 +74,7 @@ export const AmountInput = ({
           ) : (
             <Feather name="globe" size={26} className="mr-2 text-neutral" />
           )}
-          <FText className="text-info" bold>
+          <FText className="" bold>
             {selectedToken?.symbol || 'Select Token'}
           </FText>
           {tokens.length > 1 && <Feather name="chevron-down" size={28} className="text-neutral" />}
