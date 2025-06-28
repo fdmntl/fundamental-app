@@ -31,6 +31,7 @@ import { ThemeWrapper } from '~/components/Wrappers/ThemeWrapper';
 import { useSurveyManager } from '~/hooks/useSurveyManager';
 import { trackEvent } from '~/services/PostHog/trackEvent';
 import { posthog } from '~/utils/postHogClient';
+import { getItem, setItem } from '~/utils/Storage/asyncStorage';
 import { toastConfig } from '~/utils/toastConfig';
 
 const Layout = () => {
@@ -54,6 +55,11 @@ const Layout = () => {
   // Track app opened event
   useEffect(() => {
     trackEvent('app_opened');
+    const incrementAppLaunchCount = async () => {
+      const currentCount = (await getItem('app_launch_count')) || 0;
+      await setItem('app_launch_count', currentCount + 1);
+    };
+    incrementAppLaunchCount();
   }, []);
 
   // Track screen views
@@ -98,6 +104,9 @@ const Layout = () => {
             return params;
           },
         },
+      }}
+      options={{
+        enableSessionReplay: true,
       }}>
       <PostHogSurveyProvider>
         <PrivyProvider
