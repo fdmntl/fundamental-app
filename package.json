@@ -28,6 +28,7 @@
     "@supabase/supabase-js": "^2.47.8",
     "@tabler/icons-react-native": "^3.7.0",
     "axios": "^1.7.7",
+    "clsx": "^2.1.1",
     "ethers": "^5.7.2",
     "expo": "~51.0.39",
     "expo-apple-authentication": "~6.4.2",
@@ -74,6 +75,7 @@
     "react-native-toast-message": "^2.2.1",
     "react-native-web": "~0.19.10",
     "react-native-webview": "13.8.6",
+    "tailwind-merge": "^3.3.1",
     "viem": "^2.21.28"
   },
   "devDependencies": {

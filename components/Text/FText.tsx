@@ -1,5 +1,7 @@
 import { Text } from 'react-native';
 
+import { cn } from '~/utils/cn';
+
 interface TitleProps {
   children: React.ReactNode;
   className?: string;
@@ -25,7 +27,7 @@ export const FText = ({
 
   return (
     <Text
-      className={`${className} text-xl text-text`}
+      className={cn('text-text', className)}
       style={{ fontFamily: font }}
       allowFontScaling={allowFontScaling}
       {...props}>
