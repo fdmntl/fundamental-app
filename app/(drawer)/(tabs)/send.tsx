@@ -12,6 +12,7 @@ import { DelayedBalanceRefresher } from '~/components/Send/DelayedBalanceRefresh
 import { RecipientInput } from '~/components/Send/RecipientInput';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { trackEvent } from '~/services/PostHog/trackEvent';
 import { useSendTokenCallback } from '~/services/Send/useSendTokenCallback';
 import { Token } from '~/types/supabaseTypes';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
@@ -84,7 +85,15 @@ export default function Send() {
   return (
     <Frame>
       <View className="flex-1 justify-between">
-        <HeaderBar title={title} onInfoPress={() => guideRef.current?.startGuide()} />
+        <HeaderBar
+          title={title}
+          onInfoPress={() => {
+            guideRef.current?.startGuide();
+            trackEvent('guide_started', {
+              guide_type: 'send_page',
+            });
+          }}
+        />
         <View className="flex-1 gap-8">
           <View ref={recipientRef} onLayout={() => {}}>
             <RecipientInput value={recipient} onChange={(value) => setRecipient(value)} />

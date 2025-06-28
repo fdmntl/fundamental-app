@@ -20,6 +20,7 @@ import { Frame } from '~/components/Wrappers/Frame';
 import { checkAndSetCowAllowance } from '~/services/CoW/setCowInfiniteAllowance';
 import { signCowQuote } from '~/services/CoW/signCowQuote';
 import { submitCowOrder } from '~/services/CoW/submitCowOrder';
+import { trackEvent } from '~/services/PostHog/trackEvent';
 import { Token } from '~/types/supabaseTypes';
 import { amountToDigits } from '~/utils/helpers/tokens/amountToDigits';
 
@@ -145,7 +146,15 @@ export default function Trade() {
 
   return (
     <Frame>
-      <HeaderBar title="Trade" onInfoPress={() => guideRef.current?.startGuide()} />
+      <HeaderBar
+        title="Trade"
+        onInfoPress={() => {
+          guideRef.current?.startGuide();
+          trackEvent('guide_started', {
+            guide_type: 'trade_page',
+          });
+        }}
+      />
       <OrderStatusPoller
         tradeHistory={tradeHistory}
         fetchTradeHistory={fetchTradeHistory}

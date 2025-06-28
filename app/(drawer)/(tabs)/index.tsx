@@ -22,6 +22,7 @@ import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 import { hasSeenOnboarding, markOnboardingAsSeen } from '~/utils/Storage/asyncStorage';
 import { OnboardingScreen } from '~/components/OnboardingSceen/OnboardingScreen';
+import { trackEvent } from '~/services/PostHog/trackEvent';
 
 export default function Home() {
   const { user, tokens, updateUser } = useAppData();
@@ -133,7 +134,15 @@ export default function Home() {
   return (
     <Frame>
       <OnboardingScreen visible={showOnboarding} onClose={() => setShowOnboarding(false)} />
-      <HeaderBar title="Home" onInfoPress={() => guideRef.current?.startGuide()} />
+      <HeaderBar
+        title="Home"
+        onInfoPress={() => {
+          guideRef.current?.startGuide();
+          trackEvent('guide_started', {
+            guide_type: 'home_page',
+          });
+        }}
+      />
 
       <CustomRefreshControl
         ref={scrollViewRef}
