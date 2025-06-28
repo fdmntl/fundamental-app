@@ -28,7 +28,6 @@ export const useSurveyManager = (surveyName: keyof typeof surveyMap) => {
       switch (trigger.type) {
         case 'app_launch': {
           const launchCount = (await getItem(APP_LAUNCH_COUNT_KEY)) || 0;
-          console.log('launchCount', launchCount, 'trigger:', trigger.count);
           if (launchCount >= trigger.count) {
             setSurveyVisible(true);
           }
