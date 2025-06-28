@@ -1,8 +1,8 @@
 import { Question } from '~/components/Survey/QuestionCard';
 
-type SurveyTrigger = { type: 'app_launch'; count: number } | { type: 'immediate' };
+export type SurveyTrigger = { type: 'app_launch'; count: number } | { type: 'immediate' };
 
-interface Survey {
+export interface Survey {
   name: string;
   questions: Question[];
   trigger: SurveyTrigger;
@@ -25,11 +25,11 @@ export const USER_SATISFACTION_SURVEY: Survey = {
       text: 'What is the main reason for your score?',
       type: 'free_text',
       data: {
-        placeholder: 'Your feedback is valuable to us!',
+        placeholder: 'Your feedback helps us improve!',
       },
     },
   ],
-  trigger: { type: 'app_launch', count: 1500 },
+  trigger: { type: 'app_launch', count: 2 },
 };
 
 export const NPS_SURVEY: Survey = {
@@ -53,5 +53,5 @@ export const NPS_SURVEY: Survey = {
       },
     },
   ],
-  trigger: { type: 'app_launch', count: 1 },
+  trigger: { type: 'app_launch', count: 4 },
 };

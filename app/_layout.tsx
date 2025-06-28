@@ -22,13 +22,11 @@ import { useEffect, useRef } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
-import { SurveyModal } from '~/components/Survey/SurveyModal';
 import { SendFeedbackButton } from '~/components/Feedback/sendFeedbackButton';
 import { UpdateChecker } from '~/components/Update/UpdateChecker';
 import { AppDataProvider } from '~/components/Wrappers/AppData';
 import { AuthProvider } from '~/components/Wrappers/AuthProvider';
 import { ThemeWrapper } from '~/components/Wrappers/ThemeWrapper';
-import { useSurveyManager } from '~/hooks/useSurveyManager';
 import { trackEvent } from '~/services/PostHog/trackEvent';
 import { posthog } from '~/utils/postHogClient';
 import { getItem, setItem } from '~/utils/Storage/asyncStorage';
@@ -37,7 +35,6 @@ import { toastConfig } from '~/utils/toastConfig';
 const Layout = () => {
   const navRef = useNavigationContainerRef();
   const routeNameRef = useRef<string | null>(null);
-  const { isSurveyVisible, survey, handleCloseSurvey } = useSurveyManager('nps');
 
   const [fontsLoaded] = useFonts({
     DMSans_400Regular,
@@ -141,14 +138,6 @@ const Layout = () => {
                   </Stack>
                   <SendFeedbackButton />
                   <UpdateChecker />
-                  {survey && (
-                    <SurveyModal
-                      surveyName={survey.name}
-                      questions={survey.questions}
-                      isVisible={isSurveyVisible}
-                      onClose={handleCloseSurvey}
-                    />
-                  )}
                 </GestureHandlerRootView>
               </AppDataProvider>
             </ThemeWrapper>

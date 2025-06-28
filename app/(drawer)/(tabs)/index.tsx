@@ -13,6 +13,7 @@ import { GraphRangeSelector } from '~/components/Graph/GraphRangeSelector';
 import { HomePageGuide, HomePageGuideHandle } from '~/components/Help/HomePageGuide';
 import { HeaderBar } from '~/components/HeaderBar';
 import { ProfileDetailModal } from '~/components/Profile/ProfileDetailModal';
+import { SurveyModal } from '~/components/Survey/SurveyModal';
 import { TradeHistoryButton } from '~/components/Transaction/TradeHistoryButton';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
@@ -23,12 +24,14 @@ import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
 import { hasSeenOnboarding, markOnboardingAsSeen } from '~/utils/Storage/asyncStorage';
 import { OnboardingScreen } from '~/components/OnboardingSceen/OnboardingScreen';
 import { trackEvent } from '~/services/PostHog/trackEvent';
+import { useSurveyManager } from '~/hooks/useSurveyManager';
 
 export default function Home() {
   const { user, tokens, updateUser } = useAppData();
   const { user: privyUser } = usePrivy();
   const wallet = useEmbeddedWallet();
   const { updatePrivy } = useAppData();
+  const { isSurveyVisible, survey, handleCloseSurvey } = useSurveyManager();
 
   const [showOnboarding, setShowOnboarding] = useState(false);
 
@@ -239,6 +242,14 @@ export default function Home() {
         tradeHistoryRef={tradeHistoryRef}
         scrollViewRef={scrollViewRef}
       />
+      {survey && (
+        <SurveyModal
+          surveyName={survey.name}
+          questions={survey.questions}
+          isVisible={isSurveyVisible}
+          onClose={handleCloseSurvey}
+        />
+      )}
     </Frame>
   );
 }

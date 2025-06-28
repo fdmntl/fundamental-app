@@ -1,58 +1,66 @@
 import { useState, useEffect } from 'react';
 
-import { USER_SATISFACTION_SURVEY, NPS_SURVEY } from '~/services/Survey/surveyDefinitions';
+import { NPS_SURVEY, USER_SATISFACTION_SURVEY, Survey } from '~/services/Survey/surveyDefinitions';
 import { getItem, setItem } from '~/utils/Storage/asyncStorage';
 
 const SURVEY_COMPLETED_KEY = 'survey_completed_';
 const APP_LAUNCH_COUNT_KEY = 'app_launch_count';
 
-const surveyMap = {
-  user_satisfaction: USER_SATISFACTION_SURVEY,
-  nps: NPS_SURVEY,
-};
+// The order of this array determines priority.
+// The first survey whose trigger conditions are met will be shown.
+const surveys = [NPS_SURVEY, USER_SATISFACTION_SURVEY];
 
-export const useSurveyManager = (surveyName: keyof typeof surveyMap) => {
+export const useSurveyManager = () => {
+  const [activeSurvey, setActiveSurvey] = useState<Survey | null>(null);
   const [isSurveyVisible, setSurveyVisible] = useState(false);
-  const survey = surveyMap[surveyName] || null;
 
   useEffect(() => {
-    if (!survey) return;
+    const findActiveSurvey = async () => {
+      for (const survey of surveys) {
+        const surveyCompleted = await getItem(SURVEY_COMPLETED_KEY + survey.name);
+        if (surveyCompleted) {
+          continue; // Already completed, check next survey
+        }
 
-    const checkSurveyStatus = async () => {
-      const surveyCompleted = await getItem(SURVEY_COMPLETED_KEY + surveyName);
-      if (surveyCompleted) {
-        return;
-      }
-
-      const { trigger } = survey;
-      switch (trigger.type) {
-        case 'app_launch': {
-          const launchCount = (await getItem(APP_LAUNCH_COUNT_KEY)) || 0;
-          if (launchCount >= trigger.count) {
-            setSurveyVisible(true);
+        const { trigger } = survey;
+        let triggerMet = false;
+        switch (trigger.type) {
+          case 'app_launch': {
+            const launchCount = (await getItem(APP_LAUNCH_COUNT_KEY)) || 0;
+            if (launchCount >= trigger.count) {
+              triggerMet = true;
+            }
+            break;
           }
-          break;
+          case 'immediate': {
+            triggerMet = true;
+            break;
+          }
+          default:
+            break;
         }
-        case 'immediate': {
+
+        if (triggerMet) {
+          setActiveSurvey(survey);
           setSurveyVisible(true);
-          break;
+          return; // Stop after finding the first survey to show
         }
-        default:
-          break;
       }
     };
 
-    checkSurveyStatus();
-  }, [survey]);
+    findActiveSurvey();
+  }, []);
 
   const handleCloseSurvey = async () => {
-    setSurveyVisible(false);
-    await setItem(SURVEY_COMPLETED_KEY + surveyName, true);
+    if (activeSurvey) {
+      setSurveyVisible(false);
+      await setItem(SURVEY_COMPLETED_KEY + activeSurvey.name, true);
+    }
   };
 
   return {
     isSurveyVisible,
-    survey,
+    survey: activeSurvey,
     handleCloseSurvey,
   };
 };
