@@ -28,17 +28,30 @@ export const SurveyModal = ({ surveyName, questions, isVisible, onClose }: Surve
   };
 
   const handleSubmit = () => {
-    const currentQuestion = questions[currentQuestionIndex];
-    const finalAnswer = { ...answers, [currentQuestion.id]: answers[currentQuestion.id] };
+    const payload: {
+      survey_name: string;
+      survey_answer?: number;
+      survey_feedback?: string;
+    } = {
+      survey_name: surveyName,
+    };
 
-    // Track each answer as a separate event
-    Object.keys(finalAnswer).forEach((questionId) => {
-      trackEvent('survey_answer', {
-        survey_name: surveyName,
-        question_id: questionId,
-        survey_answer: finalAnswer[questionId],
-      });
-    });
+    for (const questionId in answers) {
+      if (Object.prototype.hasOwnProperty.call(answers, questionId)) {
+        const question = questions.find((q) => q.id === questionId);
+        if (question) {
+          if (question.type === 'free_text') {
+            payload.survey_feedback = answers[questionId];
+          } else {
+            payload.survey_answer = answers[questionId];
+          }
+        }
+      }
+    }
+
+    if (payload.survey_answer || payload.survey_feedback) {
+      trackEvent('survey_answer', payload);
+    }
 
     onClose();
   };

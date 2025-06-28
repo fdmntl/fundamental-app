@@ -1,11 +1,19 @@
 import { Question } from '~/components/Survey/QuestionCard';
 
-export const USER_SATISFACTION_SURVEY = {
+type SurveyTrigger = { type: 'app_launch'; count: number } | { type: 'immediate' };
+
+interface Survey {
+  name: string;
+  questions: Question[];
+  trigger: SurveyTrigger;
+}
+
+export const USER_SATISFACTION_SURVEY: Survey = {
   name: 'user_satisfaction',
   questions: [
     {
       id: 'satisfaction_rating',
-      text: 'How satisfied are you with the app?',
+      text: 'How satisfied are you with Fundamental?',
       type: 'number_range',
       data: {
         from: 1,
@@ -20,10 +28,11 @@ export const USER_SATISFACTION_SURVEY = {
         placeholder: 'Your feedback is valuable to us!',
       },
     },
-  ] as Question[],
+  ],
+  trigger: { type: 'app_launch', count: 1500 },
 };
 
-export const NPS_SURVEY = {
+export const NPS_SURVEY: Survey = {
   name: 'nps',
   questions: [
     {
@@ -35,5 +44,14 @@ export const NPS_SURVEY = {
         to: 10,
       },
     },
-  ] as Question[],
+    {
+      id: 'nps_feedback',
+      text: 'What is the primary reason for your score?',
+      type: 'free_text',
+      data: {
+        placeholder: 'Your feedback helps us improve.',
+      },
+    },
+  ],
+  trigger: { type: 'app_launch', count: 1 },
 };

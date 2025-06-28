@@ -4,6 +4,7 @@ import { USER_SATISFACTION_SURVEY, NPS_SURVEY } from '~/services/Survey/surveyDe
 import { getItem, setItem } from '~/utils/Storage/asyncStorage';
 
 const SURVEY_COMPLETED_KEY = 'survey_completed_';
+const APP_LAUNCH_COUNT_KEY = 'app_launch_count';
 
 const surveyMap = {
   user_satisfaction: USER_SATISFACTION_SURVEY,
@@ -12,38 +13,47 @@ const surveyMap = {
 
 export const useSurveyManager = (surveyName: keyof typeof surveyMap) => {
   const [isSurveyVisible, setSurveyVisible] = useState(false);
-  const [hasCompletedSurvey, setHasCompletedSurvey] = useState(true);
+  const survey = surveyMap[surveyName] || null;
 
   useEffect(() => {
+    if (!survey) return;
+
     const checkSurveyStatus = async () => {
-      // const surveyCompleted = await getItem(SURVEY_COMPLETED_KEY + surveyName);
-      // if (surveyCompleted === 'true') {
-      //   setHasCompletedSurvey(true);
-      // } else {
-      setHasCompletedSurvey(false);
-      // For now, we will trigger the survey to be visible as soon as the app loads
-      // and the user has not completed it.
-      // In the future, we can add more complex logic here to determine when to show the survey.
-      setSurveyVisible(true);
-      // }
+      const surveyCompleted = await getItem(SURVEY_COMPLETED_KEY + surveyName);
+      if (surveyCompleted) {
+        return;
+      }
+
+      const { trigger } = survey;
+      switch (trigger.type) {
+        case 'app_launch': {
+          const launchCount = (await getItem(APP_LAUNCH_COUNT_KEY)) || 0;
+          console.log('launchCount', launchCount, 'trigger:', trigger.count);
+          if (launchCount >= trigger.count) {
+            setSurveyVisible(true);
+          }
+          break;
+        }
+        case 'immediate': {
+          setSurveyVisible(true);
+          break;
+        }
+        default:
+          break;
+      }
     };
 
     checkSurveyStatus();
-  }, [surveyName]);
+  }, [survey]);
 
   const handleCloseSurvey = async () => {
     setSurveyVisible(false);
-    // When the survey is closed, we mark it as completed for the user.
-    // await setItem(SURVEY_COMPLETED_KEY + surveyName, 'true');
-    setHasCompletedSurvey(true);
+    await setItem(SURVEY_COMPLETED_KEY + surveyName, true);
   };
-
-  const survey = surveyMap[surveyName] || null;
 
   return {
     isSurveyVisible,
     survey,
     handleCloseSurvey,
-    hasCompletedSurvey,
   };
 };
