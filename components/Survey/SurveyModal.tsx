@@ -78,7 +78,12 @@ export const SurveyModal = ({ surveyName, questions, isVisible, onClose }: Surve
             ) : (
               <Button title="Next" onPress={handleNext} />
             )}
-            <Button title="Close" onPress={onClose} disableGradient textClassName="text-text" />
+            <Button
+              title="Close"
+              onPress={onClose}
+              disableGradient
+              textClassName="text-text text-xs"
+            />
           </View>
         </View>
       </SafeAreaView>

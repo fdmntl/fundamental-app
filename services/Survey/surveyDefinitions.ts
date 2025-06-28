@@ -49,7 +49,7 @@ export const NPS_SURVEY: Survey = {
       text: 'What is the primary reason for your score?',
       type: 'free_text',
       data: {
-        placeholder: 'Your feedback helps us improve.',
+        placeholder: 'Your feedback helps us improve!',
       },
     },
   ],

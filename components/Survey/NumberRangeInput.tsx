@@ -23,7 +23,7 @@ export const NumberRangeInput = ({
       {numbers.map((number, index) => (
         <TouchableOpacity
           key={number}
-          className={`h-16 w-10 items-center justify-center rounded-md border ${
+          className={`h-16 w-11 items-center justify-center rounded-md border ${
             index > 0 ? '-ml-px' : ''
           } ${selectedValue === number ? 'z-10 border-primary bg-primary' : 'border-gray-400'}`}
           onPress={() => onValueChange(number)}>

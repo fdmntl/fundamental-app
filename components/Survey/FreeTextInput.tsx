@@ -1,6 +1,4 @@
-import { View } from 'react-native';
-
-import { TextInputField } from '~/components/TextInputField';
+import { TextInput, View } from 'react-native';
 
 interface FreeTextInputProps {
   value: string;
@@ -11,10 +9,14 @@ interface FreeTextInputProps {
 export const FreeTextInput = ({ value, onChange, placeholder }: FreeTextInputProps) => {
   return (
     <View>
-      <TextInputField
+      <TextInput
         value={value}
-        onChange={onChange}
+        onChangeText={onChange}
         placeholder={placeholder || 'Type your answer here...'}
+        placeholderTextColor="#9CA3AF" // gray-400
+        multiline
+        className="h-32 rounded-lg border border-gray-400 bg-background p-4 text-lg text-text"
+        textAlignVertical="top"
       />
     </View>
   );
