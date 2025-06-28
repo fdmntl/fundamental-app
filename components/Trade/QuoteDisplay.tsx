@@ -114,9 +114,7 @@ export const QuoteDisplay = ({
           ) : (
             <Feather name="globe" size={26} className="mr-2 text-neutral" />
           )}
-          <FText className="text-info" bold>
-            {selectedToken?.symbol || 'Select Token'}
-          </FText>
+          <FText bold>{selectedToken?.symbol || 'Select Token'}</FText>
           {tokens.length > 1 && <Feather name="chevron-down" size={28} className="text-neutral" />}
         </TouchableOpacity>
       </View>

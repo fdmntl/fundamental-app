@@ -41,8 +41,8 @@ const Settings = () => {
     <Frame disableBottomPadding>
       <DetailsHeader title="Settings" />
       <Container>
-        <FTitle className="text-3xl">Socials</FTitle>
-        <FText className="mt-1 !text-2xl !text-neutral">
+        <FTitle className="text-2xl">Socials</FTitle>
+        <FText className="mt-1 text-neutral">
           Follow us on our social media platforms to stay updated with the latest news and
           developments.
         </FText>
@@ -50,7 +50,7 @@ const Settings = () => {
           <Link href="https://www.linkedin.com/company/fundamentalwallet/" target="_blank">
             <View className="flex flex-col items-center gap-1">
               <FontAwesome6 name="linkedin" size={48} className="text-text" />
-              <FText className="!text-2xl !text-neutral">LinkedIn</FText>
+              <FText className="text-xl text-info">LinkedIn</FText>
             </View>
           </Link>
           <Link
@@ -58,7 +58,7 @@ const Settings = () => {
             target="_blank">
             <View className="flex flex-col items-center gap-1">
               <FontAwesome6 name="instagram" size={48} className="text-text" />
-              <FText className="!text-2xl !text-neutral">Instagram</FText>
+              <FText className="text-xl text-info">Instagram</FText>
             </View>
           </Link>
         </View>
@@ -66,13 +66,13 @@ const Settings = () => {
           <Link href="https://x.com/fundamental_wlt" target="_blank">
             <View className="flex flex-col items-center gap-1">
               <FontAwesome6 name="x-twitter" size={48} className="text-text" />
-              <FText className="!text-2xl !text-neutral">X</FText>
+              <FText className="text-xl text-info">𝕏</FText>
             </View>
           </Link>
           <Link href="https://discord.gg/kFdCH2PgZd" target="_blank">
             <View className="flex flex-col items-center gap-1">
               <FontAwesome6 name="discord" size={48} className="text-text" />
-              <FText className="!text-2xl !text-neutral">Discord</FText>
+              <FText className="text-xl text-info">Discord</FText>
             </View>
           </Link>
         </View>
@@ -80,7 +80,7 @@ const Settings = () => {
 
       <Container className="mt-4">
         <FTitle className="text-3xl">Developer</FTitle>
-        <FText className="mt-1 !text-2xl !text-neutral">
+        <FText className="mt-1 text-xl text-neutral">
           These are tools for development and debugging.
         </FText>
         <Button

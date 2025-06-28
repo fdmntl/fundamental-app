@@ -128,7 +128,7 @@ export const GuideTour = ({ visible, steps, onClose }: GuideTourProps) => {
           </TouchableOpacity>
           <FText className="mb-4 text-text">{currentStep.text}</FText>
           <View className="-mr-8 flex-row items-center justify-between">
-            <FText className="text-text/60">
+            <FText>
               {stepIndex + 1} / {steps.length}
             </FText>
             <View className="flex-row gap-x-2">
