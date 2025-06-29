@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useAppData } from '~/components/Wrappers/AppData';
 
 import { NPS_SURVEY, USER_SATISFACTION_SURVEY, Survey } from '~/services/Survey/surveyDefinitions';
 import { getItem, setItem } from '~/utils/Storage/asyncStorage';
@@ -9,12 +8,11 @@ const APP_LAUNCH_COUNT_KEY = 'app_launch_count';
 
 // The order of this array determines priority.
 // The first survey whose trigger conditions are met will be shown.
-const surveys = [NPS_SURVEY, USER_SATISFACTION_SURVEY];
+const surveys = [USER_SATISFACTION_SURVEY, NPS_SURVEY];
 
 export const useSurveyManager = () => {
   const [activeSurvey, setActiveSurvey] = useState<Survey | null>(null);
   const [isSurveyVisible, setSurveyVisible] = useState(false);
-  const { isUpdateLoading, updateInfo, updateModalDismissed } = useAppData();
 
   useEffect(() => {
     const findActiveSurvey = async () => {
@@ -49,10 +47,8 @@ export const useSurveyManager = () => {
         }
       }
     };
-    if (!isUpdateLoading && (!updateInfo || updateModalDismissed)) {
-      findActiveSurvey();
-    }
-  }, [isUpdateLoading, updateInfo, updateModalDismissed]);
+    findActiveSurvey();
+  }, []);
 
   const handleCloseSurvey = async () => {
     if (activeSurvey) {

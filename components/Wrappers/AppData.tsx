@@ -36,9 +36,6 @@ interface ConfigType {
   fetchTradeHistory: () => Promise<void>;
   resetAppData: () => void;
   updateInfo: AppUpdateInfo | null;
-  isUpdateLoading: boolean;
-  updateModalDismissed: boolean;
-  setUpdateModalDismissed: (dismissed: boolean) => void;
 }
 
 const AppContext = createContext<ConfigType | undefined>(undefined);
@@ -55,9 +52,8 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
   const [tokens, setTokens] = useState<Token[]>([]);
   const [tradeHistory, setTradeHistory] = useState<TradeOrder[]>([]); // State for trade history
   const [isTradeHistoryLoading, setIsTradeHistoryLoading] = useState(true); // Loading state
-  const [updateModalDismissed, setUpdateModalDismissed] = useState(false);
 
-  const { updateInfo, loading: isUpdateLoading, error: updateError } = useAppUpdate();
+  const { updateInfo, error: updateError } = useAppUpdate();
 
   const currentUser = useSupabaseUser({ address: privy.wallet?.account?.address || '' });
 
@@ -209,9 +205,6 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
         fetchTradeHistory,
         resetAppData,
         updateInfo,
-        isUpdateLoading,
-        updateModalDismissed,
-        setUpdateModalDismissed,
       }}>
       {children}
     </AppContext.Provider>

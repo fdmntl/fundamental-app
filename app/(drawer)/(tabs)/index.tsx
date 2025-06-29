@@ -15,6 +15,7 @@ import { HeaderBar } from '~/components/HeaderBar';
 import { ProfileDetailModal } from '~/components/Profile/ProfileDetailModal';
 import { SurveyModal } from '~/components/Survey/SurveyModal';
 import { TradeHistoryButton } from '~/components/Transaction/TradeHistoryButton';
+import { UpdateCard } from '~/components/Update/UpdateCard';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { refreshUserBalances } from '~/services/refreshUserBalance';
@@ -153,6 +154,7 @@ export default function Home() {
         scrollEnabled={scrollEnabled}
         contentContainerStyle={{ paddingBottom: 50 }}>
         <View className="flex gap-y-4">
+          <UpdateCard />
           <View
             ref={graphRef}
             onLayout={() => {}}
