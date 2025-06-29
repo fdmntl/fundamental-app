@@ -81,7 +81,7 @@ const Settings = () => {
       <View className="mt-4 rounded-2xl border-[3px] border-dashed border-neutral bg-background p-4">
         <FTitle className="text-3xl">Developer</FTitle>
         <FText className="mt-1 text-xl text-neutral">
-          These are tools for development and debugging.
+          These are tools for development and debugging (use at your own risk!).
         </FText>
         <Button
           title="Clear AsyncStorage"
