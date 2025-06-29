@@ -27,7 +27,7 @@ export const ProfilePreview = ({ onPress }: ProfilePreviewProps) => {
         <View className="flex flex-row gap-2">
           {!hasENS && <Feather name="user" size={24} className="text-text" />}
           <View className="flex flex-col justify-center">
-            <FText className="!text-2xl" bold>
+            <FText className="text-2xl" bold>
               {ensName}
             </FText>
             {hasENS && <FText italic>{ensDomain}</FText>}

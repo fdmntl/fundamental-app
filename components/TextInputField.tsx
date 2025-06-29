@@ -25,7 +25,7 @@ export const TextInputField = ({
   return (
     <View className={`gap-2 ${className}`}>
       {label && (
-        <FText className="!text-2xl" bold>
+        <FText className="text-2xl" bold>
           {label}
         </FText>
       )}
@@ -43,7 +43,7 @@ export const TextInputField = ({
       {!isValid && value && errorMessage && (
         <View className="-mt-2 flex-row items-center gap-2">
           <Feather name="info" size={20} className="text-neutral" />
-          <FText className="!text-neutral" bold>
+          <FText className="text-neutral" bold>
             {errorMessage}
           </FText>
         </View>

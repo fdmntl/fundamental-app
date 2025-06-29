@@ -11,7 +11,7 @@ export const TradeHistoryButton = () => {
       <View className="flex-row items-center p-2">
         <View className="flex-row items-center gap-x-2">
           <Feather name="clock" size={22} className="text-neutral" />
-          <FText className="!text-2xl !text-neutral" bold>
+          <FText className="text-2xl text-neutral" bold>
             See Transaction History
           </FText>
         </View>
