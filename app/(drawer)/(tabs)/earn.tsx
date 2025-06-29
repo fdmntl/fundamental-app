@@ -31,27 +31,27 @@ export default function Earn() {
         <HeaderBar title="Earn" />
         <ScrollView className="flex-1 gap-8">
           <View className="items-center gap-4 pt-4">
-            <FText className="text-center !text-4xl" bold>
+            <FText className="text-center text-4xl" bold>
               Earn passive income with your Tokens!
             </FText>
-            <FText className="text-left text-lg !text-neutral">
+            <FText className="text-left text-lg text-neutral">
               Soon, your tokens won't just sit, they'll work for you.
             </FText>
           </View>
           <View className="w-full gap-4">
             <View className="flex-row items-center gap-3">
               <Feather name="shopping-bag" size={24} className="text-text" />
-              <FText className="text-left !text-lg" bold>
+              <FText className="text-left text-lg" bold>
                 Deposit your tokens
               </FText>
             </View>
             <View className="flex-row items-center gap-3">
               <Feather name="trending-up" size={24} className="text-text" />
               <View className="flex-shrink flex-row flex-wrap items-center gap-1">
-                <FText className="flex-shrink text-left !text-lg" bold>
+                <FText className="flex-shrink text-left text-lg" bold>
                   Your assets are lent out securely via
                 </FText>
-                <FText className="flex-shrink text-left !text-lg" bold>
+                <FText className="flex-shrink text-left text-lg" bold>
                   Compound
                 </FText>
                 <Image source={require('~/assets/compound-logo.png')} className="h-5 w-5" />
@@ -59,7 +59,7 @@ export default function Earn() {
             </View>
             <View className="flex-row items-center gap-3">
               <Feather name="percent" size={24} className="text-text" />
-              <FText className="text-left !text-lg" bold>
+              <FText className="text-left text-lg" bold>
                 You earn interest automatically, every block
               </FText>
             </View>
@@ -73,7 +73,7 @@ export default function Earn() {
                   className="h-10 w-24"
                 />
               </View>
-              <FText className="mt-10 text-left !text-base !text-text">
+              <FText className="mt-10 text-left text-base text-text">
                 Built on Compound Finance, the protocol trusted by millions for decentralized
                 lending and earning. Transparent. Secure. Non-custodial.
               </FText>
@@ -84,7 +84,7 @@ export default function Earn() {
               />
               <TouchableOpacity onPress={() => Linking.openURL('https://compound.finance/')}>
                 <View className="mt-2 flex-row items-center gap-1">
-                  <FText className="text-sm !text-neutral">Learn more about Compound</FText>
+                  <FText className="text-sm text-neutral">Learn more about Compound</FText>
                   <Feather name="external-link" size={12} className="text-neutral" />
                 </View>
               </TouchableOpacity>

@@ -32,7 +32,7 @@ const Profile = () => {
             <View className="gap-5">
               {hasENS ? (
                 <View className="gap-1">
-                  <FText className="!text-3xl" bold>
+                  <FText className="text-3xl" bold>
                     {ensName}
                   </FText>
                   <TouchableOpacity onPress={() => copyToClipboard(ensDomain!)}>
@@ -53,7 +53,7 @@ const Profile = () => {
               <TouchableOpacity
                 onPress={() => copyToClipboard(user.wallet_address)}
                 className="w-auto flex-row items-center justify-center gap-2">
-                <FText className="!text-2xl !text-neutral">{truncatedAddress}</FText>
+                <FText className="text-2xl text-neutral">{truncatedAddress}</FText>
                 <Feather name="copy" size={18} className="text-text" />
               </TouchableOpacity>
 

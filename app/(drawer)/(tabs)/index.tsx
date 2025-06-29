@@ -187,7 +187,7 @@ export default function Home() {
           <View ref={tradeHistoryRef} onLayout={() => {}}>
             <TradeHistoryButton />
           </View>
-          <View ref={assetsRef} onLayout={() => {}}>
+          <View ref={assetsRef} onLayout={() => {}} className="gap-y-4">
             <Container title="Money">
               <View className="flex gap-y-4">
                 {stableCoins

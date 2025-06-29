@@ -57,8 +57,8 @@ export default function Login() {
             style={{ height: 55, width: 312.5 }}
             resizeMode="contain"
           />
-          <FText className="mb-2 text-left !text-2xl !text-neutral" bold>
-            The easiest wallet in the world.
+          <FText className="mb-2 text-left text-2xl text-neutral" bold>
+            The easiest wallet in the world!
           </FText>
           <Image
             source={require('../assets/app-icon.png')}
