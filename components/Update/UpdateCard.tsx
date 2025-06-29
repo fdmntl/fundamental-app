@@ -20,7 +20,7 @@ export const UpdateCard = () => {
   };
 
   return (
-    <Container>
+    <Container className="" useGradient>
       <Pressable onPress={handleUpdatePress}>
         <View className="flex-row items-center justify-between">
           <View className="">
@@ -29,7 +29,7 @@ export const UpdateCard = () => {
               Update from {updateInfo.currentVersionName} to {updateInfo.versionName}
             </FText>
           </View>
-          <Feather name="download" size={24} className="text-text" />
+          <Feather name="download" size={28} className="text-text" />
         </View>
       </Pressable>
     </Container>
