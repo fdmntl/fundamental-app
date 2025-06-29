@@ -24,7 +24,7 @@ export function GraphRangeSelector({
           onPress={() => onSelectRange(range)}
           className={`rounded-lg px-4 py-2 ${selectedRange === range ? 'bg-primary' : ''}`}>
           <FText
-            className={`${selectedRange === range ? 'text-white' : 'text-text'} !text-base`}
+            className={`${selectedRange === range ? 'text-white' : 'text-text'} text-base`}
             bold>
             {rangeLabels[range]}
           </FText>

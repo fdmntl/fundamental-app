@@ -71,12 +71,12 @@ export const SendFeedbackButton = () => {
       <Modal visible={isModalVisible} transparent animationType="fade">
         <View className="flex-1 items-center justify-center bg-black/50">
           <View className="w-11/12 gap-4 rounded-xl bg-white p-6">
-            <FText className=" text-2xl font-bold !text-black" bold>
+            <FText className=" text-2xl font-bold text-black" bold>
               Give us feedback on your experience!
             </FText>
 
             <View className={`${Platform.OS === 'ios' && 'z-50'} gap-2`}>
-              <FText className="text-lg font-bold !text-black">Feedback Type</FText>
+              <FText className="text-lg font-bold text-black">Feedback Type</FText>
               <DropDownPicker
                 open={typeModalOpen}
                 setOpen={setTypeModalOpen}
@@ -93,7 +93,7 @@ export const SendFeedbackButton = () => {
             </View>
 
             <View className={`${Platform.OS === 'ios' && 'z-40'} gap-2`}>
-              <FText className="text-lg font-bold !text-black">Screen Name</FText>
+              <FText className="text-lg font-bold text-black">Screen Name</FText>
               <DropDownPicker
                 open={screenModalOpen}
                 setOpen={setScreenModalOpen}
@@ -111,7 +111,7 @@ export const SendFeedbackButton = () => {
 
             {/* Feedback Text Input */}
             <View className="gap-2">
-              <FText className="text-lg font-bold !text-black">Your Feedback</FText>
+              <FText className="text-lg font-bold text-black">Your Feedback</FText>
               <TextInput
                 placeholder="Describe your feedback..."
                 value={feedbackText}
@@ -124,7 +124,7 @@ export const SendFeedbackButton = () => {
             {/* Buttons */}
             <View className="flex-row justify-between">
               <TouchableOpacity onPress={toggleModal}>
-                <FText className="p-4 text-lg font-bold !text-black">Cancel</FText>
+                <FText className="p-4 text-lg font-bold text-black">Cancel</FText>
               </TouchableOpacity>
               <Button title="Submit" onPress={handleSubmit} disabled={isDisabled} />
             </View>

@@ -68,10 +68,10 @@ export const ConfirmTradeModal = ({
       <TouchableWithoutFeedback onPress={toggleModal}>
         <View className="flex-1 items-center justify-center bg-[rgba(0,0,0,0.5)]">
           <View className="w-full max-w-md gap-5 rounded-2xl bg-background p-5">
-            <FTitle className="!text-3xl">Confirm Trade</FTitle>
+            <FTitle className="text-3xl">Confirm Trade</FTitle>
             <View className="gap-2">
               <View className="rounded-t-2xl bg-content px-3 py-2">
-                <FText className="!text-2xl !text-neutral" bold>
+                <FText className="text-2xl text-neutral" bold>
                   You will pay
                 </FText>
                 <View className="flex-row items-center gap-2 p-2">
@@ -80,7 +80,7 @@ export const ConfirmTradeModal = ({
                     className="h-12 w-12"
                   />
                   <View className="flex-col">
-                    <FText className="!text-2xl" bold>
+                    <FText className="text-2xl" bold>
                       {printToken(
                         digitsToAmount(Number(quote.sellAmount), selectedPayToken!) +
                           digitsToAmount(Number(quote.feeAmount), selectedPayToken!),
@@ -88,7 +88,7 @@ export const ConfirmTradeModal = ({
                       )}{' '}
                       {selectedPayToken.symbol}
                     </FText>
-                    <FText className="!text-neutral" bold>
+                    <FText className="text-neutral" bold>
                       ≈$
                       {printToken(
                         getTokenAmountPrice(
@@ -104,7 +104,7 @@ export const ConfirmTradeModal = ({
                 </View>
               </View>
               <View className="rounded-b-2xl bg-content px-3 py-2">
-                <FText className="!text-2xl !text-neutral" bold>
+                <FText className="text-2xl text-neutral" bold>
                   You will receive
                 </FText>
                 <View className="flex-row items-center gap-2 p-2">
@@ -113,14 +113,14 @@ export const ConfirmTradeModal = ({
                     className="h-12 w-12"
                   />
                   <View className="flex-col">
-                    <FText className="!text-2xl" bold>
+                    <FText className="text-2xl" bold>
                       {printToken(
                         digitsToAmount(Number(quote.buyAmount), selectedGetToken!),
                         selectedGetToken!
                       )}{' '}
                       {selectedGetToken.symbol}
                     </FText>
-                    <FText className="!text-neutral" bold>
+                    <FText className="text-neutral" bold>
                       ≈$
                       {getTokenAmountPrice(
                         selectedGetToken.address || '',
@@ -136,10 +136,10 @@ export const ConfirmTradeModal = ({
               <View className="flex-row items-center gap-2">
                 <Feather name="compass" size={24} color="#7CA7FF" />
                 <View className="flex-row items-center gap-1">
-                  <FText className="!text-xl !text-neutral" bold>
+                  <FText className="text-xl text-neutral" bold>
                     Fees:
                   </FText>
-                  <FText className="!text-xl" bold>
+                  <FText className="text-xl" bold>
                     {digitsToAmount(Number(totalFee), selectedPayToken)} {selectedPayToken.symbol}
                   </FText>
                 </View>
@@ -154,26 +154,26 @@ export const ConfirmTradeModal = ({
               {isDropdownOpen && (
                 <View className="mt-4 rounded-xl border border-dashed border-neutral p-2">
                   <View className="flex-row items-center justify-between">
-                    <FText className="!text-lg !text-neutral" bold>
+                    <FText className="text-lg text-neutral" bold>
                       CoW Fee:
                     </FText>
-                    <FText className="!text-lg" bold>
+                    <FText className="text-lg" bold>
                       {digitsToAmount(Number(CoWFee), selectedPayToken)} {selectedPayToken.symbol}
                     </FText>
                   </View>
                   <View className="flex-row items-center justify-between">
-                    <FText className="!text-lg !text-neutral" bold>
+                    <FText className="text-lg text-neutral" bold>
                       Gas Fee:
                     </FText>
-                    <FText className="!text-lg" bold>
+                    <FText className="text-lg" bold>
                       {gasFee} {selectedPayToken.symbol}
                     </FText>
                   </View>
                   <View className="flex-row items-center justify-between">
-                    <FText className="!text-lg !text-neutral" bold>
+                    <FText className="text-lg text-neutral" bold>
                       Fundamental Fee:
                     </FText>
-                    <FText className="!text-lg" bold>
+                    <FText className="text-lg" bold>
                       {fundamentalFee} {selectedPayToken.symbol}
                     </FText>
                   </View>
