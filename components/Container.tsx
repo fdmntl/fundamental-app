@@ -7,16 +7,9 @@ interface ContainerProps {
   className?: string;
   children: React.ReactNode;
   noPadding?: boolean;
-  outline?: boolean;
 }
 
-export const Container = ({
-  title,
-  className,
-  children,
-  noPadding = false,
-  outline = false,
-}: ContainerProps) => {
+export const Container = ({ title, className, children, noPadding = false }: ContainerProps) => {
   return (
     <View className={`${className}`}>
       {title && (
@@ -24,10 +17,7 @@ export const Container = ({
           {title}
         </FText>
       )}
-      <View
-        className={`rounded-xl bg-content ${noPadding ? '' : 'p-0'} ${
-          outline ? 'border-2 border-primary' : ''
-        }`}>
+      <View className={`rounded-xl bg-content ${noPadding ? '' : 'p-0'}`}>
         <View className={noPadding ? '' : 'p-4'}>{children}</View>
       </View>
     </View>
