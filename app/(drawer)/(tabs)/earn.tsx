@@ -54,23 +54,27 @@ export default function Earn() {
             <View className="flex-row items-center gap-3">
               <Feather name="percent" size={24} className="text-text" />
               <FText className="flex-shrink flex-wrap" bold>
-                Earn interest every block
+                Earn interest automatically every block
               </FText>
             </View>
           </View>
           <Container>
-            <View className="relative">
+            <View className="relative gap-2">
+              <Image
+                source={require('~/assets/aave-splash.png')}
+                className="h-[9rem] w-full rounded-xl"
+              />
+              <Image
+                source={require('~/assets/Aave-logo.png')}
+                className="absolute left-3 top-3 h-8 w-32"
+                resizeMode="contain"
+              />
               <FText className="text-base">
                 Built on Aave - the protocol trusted by millions for decentralized lending and
                 earning.
               </FText>
-              <Image
-                source={require('~/assets/Aave-logo.png')}
-                className="h-28 w-full"
-                resizeMode="contain"
-              />
               <TouchableOpacity onPress={() => Linking.openURL('https://aave.com/')}>
-                <View className="mt-2 flex-row items-center gap-1">
+                <View className="flex-row items-center gap-1">
                   <FText className="text-sm text-neutral">Learn more</FText>
                   <Feather name="external-link" size={12} className="text-neutral" />
                 </View>
