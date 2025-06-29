@@ -41,7 +41,7 @@ const Settings = () => {
     <Frame disableBottomPadding>
       <DetailsHeader title="Settings" />
       <Container>
-        <FTitle className="text-2xl">Socials</FTitle>
+        <FTitle className="text-3xl">Socials</FTitle>
         <FText className="mt-1 text-neutral">
           Follow us on our social media platforms to stay updated with the latest news and
           developments.
@@ -78,7 +78,7 @@ const Settings = () => {
         </View>
       </Container>
 
-      <Container className="mt-4">
+      <View className="mt-4 rounded-2xl border-[3px] border-dashed border-neutral bg-background p-4">
         <FTitle className="text-3xl">Developer</FTitle>
         <FText className="mt-1 text-xl text-neutral">
           These are tools for development and debugging.
@@ -86,10 +86,10 @@ const Settings = () => {
         <Button
           title="Clear AsyncStorage"
           onPress={handleClearStorage}
-          className="mt-4"
+          className="mt-4 bg-content"
           disableGradient
         />
-      </Container>
+      </View>
     </Frame>
   );
 };
