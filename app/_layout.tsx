@@ -23,12 +23,12 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
 import { SendFeedbackButton } from '~/components/Feedback/sendFeedbackButton';
-import { UpdateChecker } from '~/components/Update/UpdateChecker';
 import { AppDataProvider } from '~/components/Wrappers/AppData';
 import { AuthProvider } from '~/components/Wrappers/AuthProvider';
 import { ThemeWrapper } from '~/components/Wrappers/ThemeWrapper';
 import { trackEvent } from '~/services/PostHog/trackEvent';
 import { posthog } from '~/utils/postHogClient';
+import { getItem, setItem } from '~/utils/Storage/asyncStorage';
 import { toastConfig } from '~/utils/toastConfig';
 
 const Layout = () => {
@@ -51,6 +51,11 @@ const Layout = () => {
   // Track app opened event
   useEffect(() => {
     trackEvent('app_opened');
+    const incrementAppLaunchCount = async () => {
+      const currentCount = (await getItem('app_launch_count')) || 0;
+      await setItem('app_launch_count', currentCount + 1);
+    };
+    incrementAppLaunchCount();
   }, []);
 
   // Track screen views
@@ -95,6 +100,9 @@ const Layout = () => {
             return params;
           },
         },
+      }}
+      options={{
+        enableSessionReplay: true,
       }}>
       <PrivyProvider
         appId="clxd5oc5m007jrpv8y8clt6z7"
@@ -124,7 +132,6 @@ const Layout = () => {
                   <Stack.Screen name="+not-found" options={{ title: 'Not Found' }} />
                 </Stack>
                 <SendFeedbackButton />
-                <UpdateChecker />
               </GestureHandlerRootView>
             </AppDataProvider>
           </ThemeWrapper>
