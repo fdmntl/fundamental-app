@@ -9,7 +9,7 @@ export default function TransactionHistory() {
 
   return (
     <Frame>
-      <DetailsHeader title="Transaction History" />
+      <DetailsHeader title="History" />
       <CustomRefreshControl onRefresh={fetchTradeHistory}>
         <TradeHistoryListView tradeOrders={tradeHistory} isLoading={isTradeHistoryLoading} />
       </CustomRefreshControl>

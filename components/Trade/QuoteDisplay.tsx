@@ -101,7 +101,7 @@ export const QuoteDisplay = ({
   return (
     <View className="h-fit w-full gap-2 rounded-xl bg-content p-4 pb-6 pl-6">
       <View className="flex-row items-center justify-between">
-        <FText className="!text-2xl text-text" bold>
+        <FText className="text-2xl text-text" bold>
           {title}
         </FText>
         <TouchableOpacity
@@ -120,7 +120,7 @@ export const QuoteDisplay = ({
       </View>
       <View className="flex-row items-center">
         <FText
-          className={`flex-1 rounded-md bg-content !text-4xl font-semibold ${quoteValue && !isLoading ? '!text-text' : '!text-neutral'}`}
+          className={`flex-1 rounded-md bg-content text-4xl font-semibold ${quoteValue && !isLoading ? 'text-text' : 'text-neutral'}`}
           bold>
           {selectedToken
             ? isLoading
@@ -129,7 +129,7 @@ export const QuoteDisplay = ({
             : 'Select a token'}
         </FText>
       </View>
-      <FText className="!text-neutral" bold>
+      <FText className="text-neutral" bold>
         ≈${getTokenAmountPrice(selectedToken?.address || '', Number(quoteValue), tokens).toFixed(2)}
       </FText>
       <Modal visible={isPickerOpen} transparent animationType="fade">
@@ -137,7 +137,7 @@ export const QuoteDisplay = ({
           <View className="flex-1 items-center justify-center">
             <View className="absolute h-full w-full bg-background opacity-50" />
             <View className="w-11/12 max-w-md gap-6 rounded-2xl bg-content p-6">
-              <FText className="!text-2xl text-text" bold>
+              <FText className="text-2xl text-text" bold>
                 Select a token
               </FText>
               <FlatList

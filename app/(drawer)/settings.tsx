@@ -50,7 +50,7 @@ const Settings = () => {
           <Link href="https://www.linkedin.com/company/fundamentalwallet/" target="_blank">
             <View className="flex flex-col items-center gap-1">
               <FontAwesome6 name="linkedin" size={48} className="text-text" />
-              <FText className="text-xl text-info">LinkedIn</FText>
+              <FText className="text-xl">LinkedIn</FText>
             </View>
           </Link>
           <Link
@@ -58,7 +58,7 @@ const Settings = () => {
             target="_blank">
             <View className="flex flex-col items-center gap-1">
               <FontAwesome6 name="instagram" size={48} className="text-text" />
-              <FText className="text-xl text-info">Instagram</FText>
+              <FText className="text-xl">Instagram</FText>
             </View>
           </Link>
         </View>
@@ -66,13 +66,13 @@ const Settings = () => {
           <Link href="https://x.com/fundamental_wlt" target="_blank">
             <View className="flex flex-col items-center gap-1">
               <FontAwesome6 name="x-twitter" size={48} className="text-text" />
-              <FText className="text-xl text-info">𝕏</FText>
+              <FText className="text-xl">X</FText>
             </View>
           </Link>
           <Link href="https://discord.gg/kFdCH2PgZd" target="_blank">
             <View className="flex flex-col items-center gap-1">
               <FontAwesome6 name="discord" size={48} className="text-text" />
-              <FText className="text-xl text-info">Discord</FText>
+              <FText className="text-xl">Discord</FText>
             </View>
           </Link>
         </View>
@@ -81,7 +81,7 @@ const Settings = () => {
       <View className="mt-4 rounded-2xl border-[3px] border-dashed border-neutral bg-background p-4">
         <FTitle className="text-3xl">Developer</FTitle>
         <FText className="mt-1 text-xl text-neutral">
-          These are tools for development and debugging.
+          These are tools for development and debugging (use at your own risk!).
         </FText>
         <Button
           title="Clear AsyncStorage"

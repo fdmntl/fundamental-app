@@ -54,7 +54,7 @@ export const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
   return (
     <View className="h-fit w-full gap-4 rounded-xl bg-content p-6">
       <View className="flex-row items-center">
-        <FText className="!text-2xl" bold>
+        <FText className="text-2xl" bold>
           Recipient
         </FText>
       </View>
@@ -72,11 +72,11 @@ export const RecipientInput = ({ value, onChange }: RecipientInputProps) => {
       <View className="-mt-2 flex-row items-center gap-2">
         <Feather name="info" size={20} className="text-neutral" />
         {resolvedAddress ? (
-          <FText className="!text-neutral" bold>
+          <FText className="text-neutral" bold>
             {trimAddress(resolvedAddress)}
           </FText>
         ) : (
-          <FText className="!text-neutral" bold>
+          <FText className="text-neutral" bold>
             {inputValue ? 'Invalid Address' : 'Please enter an address or ens'}
           </FText>
         )}
