@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAppData } from '~/components/Wrappers/AppData';
 
 import { NPS_SURVEY, USER_SATISFACTION_SURVEY, Survey } from '~/services/Survey/surveyDefinitions';
 import { getItem, setItem } from '~/utils/Storage/asyncStorage';
@@ -13,6 +14,7 @@ const surveys = [NPS_SURVEY, USER_SATISFACTION_SURVEY];
 export const useSurveyManager = () => {
   const [activeSurvey, setActiveSurvey] = useState<Survey | null>(null);
   const [isSurveyVisible, setSurveyVisible] = useState(false);
+  const { isUpdateLoading, updateInfo, updateModalDismissed } = useAppData();
 
   useEffect(() => {
     const findActiveSurvey = async () => {
@@ -47,9 +49,10 @@ export const useSurveyManager = () => {
         }
       }
     };
-
-    findActiveSurvey();
-  }, []);
+    if (!isUpdateLoading && (!updateInfo || updateModalDismissed)) {
+      findActiveSurvey();
+    }
+  }, [isUpdateLoading, updateInfo, updateModalDismissed]);
 
   const handleCloseSurvey = async () => {
     if (activeSurvey) {

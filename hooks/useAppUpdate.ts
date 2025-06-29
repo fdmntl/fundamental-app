@@ -5,7 +5,7 @@ import Constants from 'expo-constants';
 
 import { supabase } from '~/supabaseConfig';
 
-interface AppUpdateInfo {
+export interface AppUpdateInfo {
   versionName: string;
   updateUrl: string;
   currentVersionName: string;

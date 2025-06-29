@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useAppData } from '../Wrappers/AppData';
 
 import { UpdateModal } from './UpdateModal';
-import { useAppUpdate } from '~/hooks/useAppUpdate';
 
 export const UpdateChecker: React.FC = () => {
-  const { updateInfo } = useAppUpdate();
+  const { updateInfo, setUpdateModalDismissed } = useAppData();
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
 
   useEffect(() => {
@@ -15,13 +15,18 @@ export const UpdateChecker: React.FC = () => {
 
   if (!updateInfo) return null;
 
+  const handleClose = () => {
+    setUpdateModalVisible(false);
+    setUpdateModalDismissed(true);
+  };
+
   return (
     <UpdateModal
       visible={isUpdateModalVisible}
       versionName={updateInfo.versionName}
       updateUrl={updateInfo.updateUrl}
       currentVersionName={updateInfo.currentVersionName}
-      onClose={() => setUpdateModalVisible(false)}
+      onClose={handleClose}
     />
   );
 };
