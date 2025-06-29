@@ -19,7 +19,7 @@ export default function DepositPage() {
         <View className="gap-2 pb-24">
           <View className="flex-row items-center gap-2 rounded-lg px-2 pb-2">
             <Feather name="info" size={22} className="text-neutral" />
-            <FText className="flex-1 !text-neutral" italic>
+            <FText className="flex-1 text-neutral" italic>
               Fundamental uses USDC, the digital dollar.
             </FText>
           </View>
@@ -35,7 +35,7 @@ export default function DepositPage() {
             }}
           />
 
-          <FText className="mt-5 text-center !text-neutral" italic>
+          <FText className="mt-5 text-center text-neutral" italic>
             Coming Soon:
           </FText>
 

@@ -43,7 +43,7 @@ export const RegisterENS = () => {
 
   if (!privy.wallet || privy.wallet.status !== 'connected') {
     return (
-      <FText className="!text-2xl" bold>
+      <FText className="text-2xl" bold>
         Privy wallet error: not connected
       </FText>
     );
@@ -69,7 +69,7 @@ export const RegisterENS = () => {
 
   return (
     <View className="flex gap-2">
-      <FText className="!text-2xl" bold>
+      <FText className="text-2xl" bold>
         Register an ENS
       </FText>
       <View className="w-full flex-row items-center gap-2">
@@ -83,7 +83,7 @@ export const RegisterENS = () => {
           }}
           isValid={isValidSubname(subname) && isAvailable !== false}
         />
-        <FText className="pt-[2px] !text-xl" bold>
+        <FText className="pt-[2px] text-xl" bold>
           .fdmntl.eth
         </FText>
       </View>
@@ -91,23 +91,23 @@ export const RegisterENS = () => {
       <View className="min-h-[24px] flex-row items-center gap-2">
         {hasInteracted &&
           (checking ? (
-            <FText className="!text-neutral" bold>
+            <FText className="text-neutral" bold>
               Checking availability...
             </FText>
           ) : !subname ? (
-            <FText className="!text-error" bold>
+            <FText className="text-error" bold>
               ENS cannot be empty
             </FText>
           ) : !isValidSubname(subname) ? (
-            <FText className="!text-error" bold>
+            <FText className="text-error" bold>
               Enter a valid ENS name
             </FText>
           ) : isAvailable === false ? (
-            <FText className="!text-error" bold>
+            <FText className="text-error" bold>
               Name is already taken
             </FText>
           ) : isAvailable === true ? (
-            <FText className="!text-success" bold>
+            <FText className="text-success" bold>
               Name is available
             </FText>
           ) : null)}

@@ -96,11 +96,11 @@ export default function Assets() {
               <Container title="Holdings">
                 <View className="flex flex-row items-center justify-between">
                   <View>
-                    <FText bold className="!text-2xl">
+                    <FText bold className="text-2xl">
                       ${userTokenValue}
                     </FText>
                     {!token.is_stablecoin && (
-                      <FText className="!text-base">
+                      <FText className="text-base">
                         {userTokenAmount} {token.symbol}
                       </FText>
                     )}

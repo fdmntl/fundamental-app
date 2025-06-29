@@ -97,15 +97,12 @@ export const OnboardingScreen = ({
   const renderItem = ({ item }: { item: (typeof slides)[0] }) => (
     <View style={{ width: modalWidth }} className="items-center justify-start px-4 pt-2">
       <FTitle
-        className={`mb-3 text-center text-primary ${
+        className={`mb-3 text-center ${
           isSmallScreen || isLargeFontScale ? 'text-2xl' : 'text-3xl'
         }`}>
         {item.title}
       </FTitle>
-      <FText
-        className={`text-muted mb-3 px-2 text-left leading-6 ${
-          isSmallScreen || isLargeFontScale ? 'text-sm' : 'text-base'
-        }`}>
+      <FText className={`mb-3 px-2 ${isSmallScreen || isLargeFontScale ? 'text-sm' : 'text-base'}`}>
         {item.description}
       </FText>
       <View className="w-full items-start px-2">
@@ -116,10 +113,7 @@ export const OnboardingScreen = ({
               marginBottom:
                 idx === item.features.length - 1 ? 0 : isSmallScreen || isLargeFontScale ? 6 : 8,
             }}>
-            <FText
-              className={`text-s text-left leading-6 ${
-                isSmallScreen || isLargeFontScale ? 'text-sm' : 'text-base'
-              }`}>
+            <FText className={`${isSmallScreen || isLargeFontScale ? 'text-sm' : 'text-base'}`}>
               {feature}
             </FText>
           </View>

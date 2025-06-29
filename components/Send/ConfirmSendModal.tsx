@@ -28,26 +28,26 @@ export const ConfirmSendModal = ({
       <View className="flex-1 items-center justify-center bg-[rgba(0,0,0,0.5)]">
         <TouchableWithoutFeedback onPress={() => {}}>
           <View className="w-[85%] gap-2 rounded-2xl bg-background p-5">
-            <FTitle className="!text-3xl">Confirm Send</FTitle>
+            <FTitle className="text-3xl">Confirm Send</FTitle>
             <View className="gap-2">
               <View className="rounded-2xl bg-content p-2 px-3">
-                <FText className="!text-xl !text-neutral" bold>
+                <FText className="text-xl text-neutral" bold>
                   You are about to send funds to another wallet
                 </FText>
               </View>
               <View className="flex-col">
-                <FText className="!text-xl !text-neutral" bold>
+                <FText className="text-xl text-neutral" bold>
                   Amount:
                 </FText>
-                <FText className="!text-2xl" bold>
+                <FText className="text-2xl" bold>
                   {amount} {selectedToken.symbol}
                 </FText>
               </View>
               <View className="flex-col">
-                <FText className="!text-xl !text-neutral" bold>
+                <FText className="text-xl text-neutral" bold>
                   Recipient:
                 </FText>
-                <FText className="!text-2xl" bold>
+                <FText className="text-2xl" bold>
                   {recipient}
                 </FText>
               </View>

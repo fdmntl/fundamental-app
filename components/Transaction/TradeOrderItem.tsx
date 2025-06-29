@@ -118,10 +118,10 @@ export const TradeOrderItem: React.FC<TradeOrderItemProps> = ({ order }) => {
       <View className="flex flex-1 flex-col items-start px-4">
         <FText
           bold
-          className={`${order.status.toLowerCase() === 'fulfilled' ? '!text-success' : ''}`}>
+          className={`${order.status.toLowerCase() === 'fulfilled' ? 'text-success' : ''}`}>
           {`${buyAmountNum > 0 ? '+' : ''}${buyAmountFormatted} ${buyTokenDisplay.symbol}`}
         </FText>
-        <FText className="!text-neutral">
+        <FText className="text-neutral">
           {`${sellAmountNum > 0 ? '-' : ''}${sellAmountFormatted} ${sellTokenDisplay.symbol}`}
         </FText>
       </View>

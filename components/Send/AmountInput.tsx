@@ -61,7 +61,7 @@ export const AmountInput = ({
   return (
     <View className="h-fit w-full gap-2 rounded-xl bg-content p-4 pb-6 pl-6">
       <View className="flex-row items-center justify-between">
-        <FText className="!text-2xl text-text" bold>
+        <FText className="text-2xl text-text" bold>
           {title}
         </FText>
         <TouchableOpacity
@@ -74,7 +74,7 @@ export const AmountInput = ({
           ) : (
             <Feather name="globe" size={26} className="mr-2 text-neutral" />
           )}
-          <FText className="text-info" bold>
+          <FText className="" bold>
             {selectedToken?.symbol || 'Select Token'}
           </FText>
           {tokens.length > 1 && <Feather name="chevron-down" size={28} className="text-neutral" />}
@@ -92,11 +92,11 @@ export const AmountInput = ({
         />
       </View>
       <View className="flex-row items-center justify-between">
-        <FText className="!text-neutral" bold>
+        <FText className="text-neutral" bold>
           ≈${getTokenAmountPrice(selectedToken?.address || '', Number(value), tokens).toFixed(2)}
         </FText>
         <View className="flex-row items-center gap-2">
-          <FText className="!text-lg text-text" bold>
+          <FText className="text-lg text-text" bold>
             {printToken(balanceDisplay, selectedToken ? selectedToken : undefined)}
             {selectedToken?.symbol}
           </FText>
@@ -118,7 +118,7 @@ export const AmountInput = ({
           <View className="flex-1 items-center justify-center">
             <View className="absolute h-full w-full bg-background opacity-50" />
             <View className="w-11/12 max-w-md gap-6 rounded-2xl bg-content p-6">
-              <FText className="!text-2xl text-text" bold>
+              <FText className="text-2xl text-text" bold>
                 Select a token
               </FText>
               <FlatList

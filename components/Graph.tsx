@@ -137,11 +137,11 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
       }}>
       <View className="px-4 pb-2 pt-4">
         {/* Current Price */}
-        <FText className="!text-4xl text-text" bold>
+        <FText className="text-4xl text-text" bold>
           ${currentValue.toFixed(2)}
         </FText>
         {/* Percent Change Badge */}
-        <FText className={`${isPositive ? '!text-green-500' : '!text-red-500'} text-xl`}>
+        <FText className={`${isPositive ? 'text-green-500' : 'text-red-500'} text-xl`}>
           {isPositive ? '+' : ''}
           {percentChange.toFixed(2)}% {periodLabel}
         </FText>
@@ -196,7 +196,7 @@ const Graph = ({ data, selectedRangeComponent, selectedRange }: GraphProps) => {
                 width: bubbleWidth,
                 alignItems: 'center',
               }}>
-              <FText className="!text-base text-white">{formattedDate}</FText>
+              <FText className="text-base text-white">{formattedDate}</FText>
             </View>
           )}
         </View>
