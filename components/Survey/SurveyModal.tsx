@@ -21,38 +21,43 @@ export const SurveyModal = ({ surveyName, questions, isVisible, onClose }: Surve
     setAnswers({ ...answers, [currentQuestion.id]: answer });
   };
 
+  const submitAnswer = () => {
+    const currentQuestion = questions[currentQuestionIndex];
+    const answer = answers[currentQuestion.id];
+
+    if (answer === undefined || answer === null || answer === '') {
+      return;
+    }
+
+    const payload: {
+      survey_name: string;
+      question_id: string;
+      question_index: number;
+      survey_answer?: any;
+      survey_feedback?: string;
+    } = {
+      survey_name: surveyName,
+      question_id: currentQuestion.id,
+      question_index: currentQuestionIndex,
+    };
+
+    if (currentQuestion.type === 'free_text') {
+      payload.survey_feedback = answer;
+    } else {
+      payload.survey_answer = answer;
+    }
+    trackEvent('survey_answer', payload);
+  };
+
   const handleNext = () => {
+    submitAnswer();
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     }
   };
 
   const handleSubmit = () => {
-    const payload: {
-      survey_name: string;
-      survey_answer?: number;
-      survey_feedback?: string;
-    } = {
-      survey_name: surveyName,
-    };
-
-    for (const questionId in answers) {
-      if (Object.prototype.hasOwnProperty.call(answers, questionId)) {
-        const question = questions.find((q) => q.id === questionId);
-        if (question) {
-          if (question.type === 'free_text') {
-            payload.survey_feedback = answers[questionId];
-          } else {
-            payload.survey_answer = answers[questionId];
-          }
-        }
-      }
-    }
-
-    if (payload.survey_answer || payload.survey_feedback) {
-      trackEvent('survey_answer', payload);
-    }
-
+    submitAnswer();
     onClose();
   };
 
@@ -78,12 +83,7 @@ export const SurveyModal = ({ surveyName, questions, isVisible, onClose }: Surve
             ) : (
               <Button title="Next" onPress={handleNext} />
             )}
-            <Button
-              title="Close"
-              onPress={onClose}
-              disableGradient
-              textClassName="text-text text-xs"
-            />
+            <Button title="Close" onPress={onClose} disableGradient textClassName="text-xs" />
           </View>
         </View>
       </SafeAreaView>
