@@ -1,7 +1,15 @@
 import { OrderParameters } from '@cowprotocol/cow-sdk';
 import { Feather } from '@expo/vector-icons';
 import { useState, useEffect, useCallback } from 'react';
-import { View, TouchableOpacity, Modal, FlatList, Image } from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  Modal,
+  FlatList,
+  Image,
+  TouchableWithoutFeedback,
+} from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import { FText } from '~/components/Text/FText';
 import { getCowQuote } from '~/services/CoW/getCowQuote';
@@ -12,11 +20,12 @@ import { roundNumberToDecimal } from '~/utils/helpers/numbers/roundNumberToDecim
 import { amountToDigits, printableAmountToDigits } from '~/utils/helpers/tokens/amountToDigits';
 import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
 import { getTokenAmountPrice } from '~/utils/helpers/tokens/getTokenAmountPrice';
+import { printToken } from '~/utils/helpers/tokens/printToken';
 
 interface QuoteDisplayProps {
   tokens: Token[];
   user: User;
-  defaultToken?: Token;
+  selectedToken: Token | null;
   onTokenChange?: (token: Token) => void;
   title?: string;
   youPayValue: number;
@@ -27,7 +36,7 @@ interface QuoteDisplayProps {
 export const QuoteDisplay = ({
   tokens,
   user,
-  defaultToken = undefined,
+  selectedToken,
   onTokenChange,
   title = 'You Get',
   youPayValue,
@@ -35,12 +44,10 @@ export const QuoteDisplay = ({
   onQuote,
 }: QuoteDisplayProps) => {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
-  const [selectedToken, setSelectedToken] = useState<Token | undefined>(defaultToken);
   const [quoteValue, setQuoteValue] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleTokenSelect = (token: Token) => {
-    setSelectedToken(token);
     setIsPickerOpen(false);
     if (onTokenChange) onTokenChange(token);
   };
@@ -61,14 +68,17 @@ export const QuoteDisplay = ({
         selectedToken.address,
         youPayValueConverted.toString()
       );
-
       if (onQuote) onQuote(quote);
 
       const formattedQuote = digitsToAmount(Number(quote.buyAmount), selectedToken);
       setQuoteValue(formattedQuote);
     } catch (error) {
-      console.error('Error calculating quote:', error);
-      alert('Error calculating quote. Please try again.');
+      console.log('Error calculating quote:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error calculating quote',
+        text2: 'Please try again later.',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -92,7 +102,7 @@ export const QuoteDisplay = ({
   return (
     <View className="h-fit w-full gap-2 rounded-xl bg-content p-4 pb-6 pl-6">
       <View className="flex-row items-center justify-between">
-        <FText className="!text-2xl text-text" bold>
+        <FText className="text-2xl text-text" bold>
           {title}
         </FText>
         <TouchableOpacity
@@ -105,15 +115,13 @@ export const QuoteDisplay = ({
           ) : (
             <Feather name="globe" size={26} className="mr-2 text-neutral" />
           )}
-          <FText className="text-info" bold>
-            {selectedToken?.symbol || 'Select Token'}
-          </FText>
+          <FText bold>{selectedToken?.symbol || 'Select Token'}</FText>
           {tokens.length > 1 && <Feather name="chevron-down" size={28} className="text-neutral" />}
         </TouchableOpacity>
       </View>
       <View className="flex-row items-center">
         <FText
-          className={`flex-1 rounded-md bg-content !text-4xl font-semibold ${quoteValue && !isLoading ? '!text-text' : '!text-neutral'}`}
+          className={`flex-1 rounded-md bg-content text-4xl font-semibold ${quoteValue && !isLoading ? 'text-text' : 'text-neutral'}`}
           bold>
           {selectedToken
             ? isLoading
@@ -122,45 +130,47 @@ export const QuoteDisplay = ({
             : 'Select a token'}
         </FText>
       </View>
-      <FText className="!text-neutral" bold>
+      <FText className="text-neutral" bold>
         ≈${getTokenAmountPrice(selectedToken?.address || '', Number(quoteValue), tokens).toFixed(2)}
       </FText>
       <Modal visible={isPickerOpen} transparent animationType="fade">
-        <View className="flex-1 items-center justify-center">
-          <View className="absolute h-full w-full bg-background opacity-50" />
-          <View className="w-11/12 max-w-md gap-6 rounded-2xl bg-content p-6">
-            <FText className="!text-2xl text-text" bold>
-              Select a token
-            </FText>
-            <FlatList
-              data={tokens}
-              keyExtractor={(item) => item.address + item.symbol}
-              ItemSeparatorComponent={() => <View className="h-4" />}
-              renderItem={({ item }) => {
-                const icon = tokenIcons[item.symbol] || tokenIcons.default;
-                const isSelected = selectedToken?.address === item.address;
-                return (
-                  <TouchableOpacity
-                    className="flex-row items-center gap-4 rounded-2xl bg-background p-4"
-                    onPress={() => handleTokenSelect(item)}>
-                    <Image source={icon} className="h-12 w-12" />
-                    <FText className="text-lg text-text" bold>
-                      {item.symbol}
-                    </FText>
-                    {isSelected && <Feather name="check" size={32} className="text-success" />}
-                  </TouchableOpacity>
-                );
-              }}
-            />
-            <TouchableOpacity
-              className="w-full items-center rounded-lg"
-              onPress={() => setIsPickerOpen(false)}>
-              <FText className="text-lg text-text" bold>
-                Close
+        <TouchableWithoutFeedback onPress={() => setIsPickerOpen(false)}>
+          <View className="flex-1 items-center justify-center">
+            <View className="absolute h-full w-full bg-background opacity-50" />
+            <View className="w-11/12 max-w-md gap-6 rounded-2xl bg-content p-6">
+              <FText className="text-2xl text-text" bold>
+                Select a token
               </FText>
-            </TouchableOpacity>
+              <FlatList
+                data={tokens}
+                keyExtractor={(item) => item.address + item.symbol}
+                ItemSeparatorComponent={() => <View className="h-4" />}
+                renderItem={({ item }) => {
+                  const icon = tokenIcons[item.symbol] || tokenIcons.default;
+                  const isSelected = selectedToken?.address === item.address;
+                  return (
+                    <TouchableOpacity
+                      className="flex-row items-center gap-4 rounded-2xl bg-background p-4"
+                      onPress={() => handleTokenSelect(item)}>
+                      <Image source={icon} className="h-12 w-12" />
+                      <FText className="text-lg text-text" bold>
+                        {item.symbol}
+                      </FText>
+                      {isSelected && <Feather name="check" size={32} className="text-success" />}
+                    </TouchableOpacity>
+                  );
+                }}
+              />
+              <TouchableOpacity
+                className="w-full items-center rounded-lg"
+                onPress={() => setIsPickerOpen(false)}>
+                <FText className="text-lg text-text" bold>
+                  Close
+                </FText>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );

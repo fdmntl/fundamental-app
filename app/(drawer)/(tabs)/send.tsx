@@ -1,39 +1,46 @@
-import { useState } from 'react';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { useState, useRef, useEffect } from 'react';
 import { View } from 'react-native';
 import { isAddress } from 'viem';
 
 import { Button } from '~/components/Button';
-import { HeaderBar, PillMessageBox } from '~/components/HeaderBar';
+import { HeaderBar } from '~/components/HeaderBar';
+import { SendPageGuide, SendPageGuideHandle } from '~/components/Help/SendPageGuide';
 import { AmountInput } from '~/components/Send/AmountInput';
+import { ConfirmSendModal } from '~/components/Send/ConfirmSendModal';
+import { DelayedBalanceRefresher } from '~/components/Send/DelayedBalanceRefresher';
 import { RecipientInput } from '~/components/Send/RecipientInput';
-import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { trackEvent } from '~/services/PostHog/trackEvent';
 import { useSendTokenCallback } from '~/services/Send/useSendTokenCallback';
 import { Token } from '~/types/supabaseTypes';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 
-const sendPillContent = () => {
-  return (
-    <PillMessageBox>
-      <FText className="mb-4 !text-lg" bold>
-        Here you can quickly and securely send cryptocurrency to any recipient with a valid address.
-      </FText>
-      <FText className="!text-lg" bold>
-        Just enter the recipient’s address, username or ens domain, specify the amount, and confirm
-        the transaction to transfer funds instantly.
-      </FText>
-    </PillMessageBox>
-  );
+type SendRouteProps = {
+  Send: {
+    prefillTokenAddress?: string;
+  };
 };
 
 export default function Send() {
-  const { user, tokens, privy } = useAppData();
+  const { user, tokens, privy, getToken } = useAppData();
+
+  const route = useRoute<RouteProp<SendRouteProps, 'Send'>>();
+  const { prefillTokenAddress } = route.params || {};
 
   const wallet = privy.wallet;
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [refreshTriggerKey, setRefreshTriggerKey] = useState(0);
+
+  const recipientRef = useRef<View>(null);
+  const amountRef = useRef<View>(null);
+  const sendButtonRef = useRef<View>(null);
+  const guideRef = useRef<SendPageGuideHandle>(null);
+
   const possessedTokens = user.balances
     .map((balance) => tokens.find((token) => token.address === balance.address))
     .filter((token) => token !== undefined) as Token[];
@@ -55,36 +62,84 @@ export default function Send() {
     isInputValid,
   });
 
-  const handleSendPress = () => {
-    handleSendTokenCallback();
+  const handleSendPress = async () => {
+    if (!isInputValid) return;
+
+    try {
+      await handleSendTokenCallback();
+      setRefreshTriggerKey((prevKey) => prevKey + 1);
+    } catch (error) {
+      console.log('Error during send token operation:', error);
+    }
   };
+
+  useEffect(() => {
+    if (prefillTokenAddress) {
+      const token = getToken(prefillTokenAddress);
+      token && setSelectedToken(token);
+    }
+  }, [prefillTokenAddress]);
+
+  const title = selectedToken ? `Send ${selectedToken.symbol}` : 'Send';
 
   return (
     <Frame>
-      <HeaderBar title="Send" pillContent={sendPillContent} />
-      <View className="flex-1 gap-4">
-        <View>
-          <RecipientInput value={recipient} onChange={(value) => setRecipient(value)} />
+      <View className="flex-1 justify-between">
+        <HeaderBar
+          title={title}
+          onInfoPress={() => {
+            guideRef.current?.startGuide();
+            trackEvent('guide_started', {
+              guide_type: 'send_page',
+            });
+          }}
+        />
+        <View className="flex-1 gap-8">
+          <View ref={recipientRef} onLayout={() => {}}>
+            <RecipientInput value={recipient} onChange={(value) => setRecipient(value)} />
+          </View>
+          <View ref={amountRef} onLayout={() => {}}>
+            <AmountInput
+              value={amount}
+              selectedToken={selectedToken}
+              onChange={(value) => setAmount(value)}
+              tokens={possessedTokens}
+              user={user}
+              selectedTokenBalance={selectedTokenBalance}
+              onTokenChange={(token) => setSelectedToken(token)}
+            />
+          </View>
         </View>
-        <View>
-          <AmountInput
-            value={amount}
-            onChange={(value) => setAmount(value)}
-            tokens={possessedTokens}
-            user={user}
-            selectedTokenBalance={selectedTokenBalance}
-            onTokenChange={(token) => setSelectedToken(token)}
-          />
-        </View>
-        <View className="absolute bottom-[6rem] w-full items-center">
-          <Button
-            title="Send Funds"
-            onPress={handleSendPress}
-            className="bg-primary px-20"
-            disabled={!isInputValid}
-          />
+        <View className="absolute bottom-12 z-10 w-full items-center">
+          <View ref={sendButtonRef} onLayout={() => {}} className="w-[50%]">
+            <Button
+              title="Send"
+              onPress={() => {
+                setIsConfirmModalOpen(true);
+              }}
+              className="w-full bg-primary"
+              disabled={!isInputValid}
+            />
+          </View>
         </View>
       </View>
+      {recipient && amount && selectedToken && (
+        <ConfirmSendModal
+          isModalOpen={isConfirmModalOpen}
+          toggleModal={() => setIsConfirmModalOpen(false)}
+          onConfirm={handleSendPress}
+          recipient={recipient}
+          amount={amount}
+          selectedToken={selectedToken}
+        />
+      )}
+      <SendPageGuide
+        ref={guideRef}
+        recipientRef={recipientRef}
+        amountRef={amountRef}
+        sendButtonRef={sendButtonRef}
+      />
+      <DelayedBalanceRefresher key={refreshTriggerKey} delay={3000} />
     </Frame>
   );
 }

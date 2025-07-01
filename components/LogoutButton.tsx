@@ -1,8 +1,10 @@
+import { Feather } from '@expo/vector-icons';
 import { usePrivy } from '@privy-io/expo';
 import { Alert } from 'react-native';
 
-import { Button } from './Button';
 import { useAppData } from './Wrappers/AppData';
+
+import { resetOnboardingSeen } from '~/utils/Storage/asyncStorage';
 
 export const LogoutButton = () => {
   const { logout } = usePrivy();
@@ -11,6 +13,7 @@ export const LogoutButton = () => {
   const handleLogout = async () => {
     try {
       await logout();
+      await resetOnboardingSeen();
       Alert.alert('Success', 'Logout successful!');
       resetAppData();
     } catch (error: any) {
@@ -18,5 +21,5 @@ export const LogoutButton = () => {
     }
   };
 
-  return <Button onPress={handleLogout} title="Logout" />;
+  return <Feather name="log-out" size={42} onPress={handleLogout} className="text-text" />;
 };

@@ -19,22 +19,27 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      const session = await login({ loginMethods: ['email', 'google', 'github'] });
-      console.log('Logged in:', session.user);
-      await addUserToDB(session.user);
-      console.log('**** User added to DB ****');
-    } catch (error) {
+      await login({ loginMethods: ['email', 'google'] });
+    } catch (error: any) {
+      if (error.message === 'The login flow was closed') {
+        console.log('Login flow was closed by the user.');
+        return;
+      }
       console.error('Login error:', error);
     }
   };
 
   useEffect(() => {
-    if (user && wallet && wallet.status === 'connected') {
-      updatePrivy({ user, wallet });
-      console.log('**** User and wallet updated in Privy ****');
-      console.log('**** Navigating to tabs ****');
-      router.navigate('/(tabs)');
-    }
+    const setupUser = async () => {
+      if (user && wallet && wallet.status === 'connected') {
+        await addUserToDB(user);
+        updatePrivy({ user, wallet });
+        console.log('**** User and wallet updated in Privy ****');
+        console.log('**** Navigating to tabs ****');
+        router.navigate('/(tabs)');
+      }
+    };
+    setupUser();
   }, [user, wallet, wallet.status]);
 
   useEffect(() => {
@@ -52,8 +57,8 @@ export default function Login() {
             style={{ height: 55, width: 312.5 }}
             resizeMode="contain"
           />
-          <FText className="mb-2 text-left !text-2xl !text-neutral" bold>
-            The easiest wallet in the world.
+          <FText className="mb-2 text-left text-2xl text-neutral" bold>
+            The easiest wallet in the world!
           </FText>
           <Image
             source={require('../assets/app-icon.png')}
@@ -62,11 +67,7 @@ export default function Login() {
           />
         </View>
         <View className="absolute bottom-16 w-full items-center">
-          <Button
-            title="Take Control Now"
-            className="mt-2 w-1/2 !bg-content"
-            onPress={handleLogin}
-          />
+          <Button title="Take Control Now" className="mt-2 !bg-content" onPress={handleLogin} />
         </View>
       </Frame>
     </>

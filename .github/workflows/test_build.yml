@@ -1,0 +1,70 @@
+name: CI/CD Pipeline
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+env:
+  KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+  KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+  KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+  KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+  EXPO_PUBLIC_ALCHEMY_API_KEY: ${{ secrets.EXPO_PUBLIC_ALCHEMY_API_KEY }}
+  EXPO_PUBLIC_SUPABASE_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_KEY }}
+  EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+  EXPO_PUBLIC_POSTHOG_KEY: ${{ secrets.EXPO_PUBLIC_POSTHOG_KEY }}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm install
+      - name: Set executable permissions for gradlew
+        run: chmod +x android/gradlew
+      - name: Decode and save keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | tr -d '\n' | base64 --decode > android/fundamental.jks
+      - name: ls -l
+        run: |
+          ls -l android/fundamental.jks
+          file android/fundamental.jks
+          echo "Keystore file created successfully!"
+      - name: Set permissions for keystore
+        run: chmod 600 android/fundamental.jks
+      - name: Debug environment variables
+        run: |
+          if [ -z "$KEYSTORE_PASSWORD" ]; then echo "❌ KEYSTORE_PASSWORD is missing"; fi
+          if [ -z "$KEY_ALIAS" ]; then echo "❌ KEY_ALIAS is missing"; fi
+          if [ -z "$KEY_PASSWORD" ]; then echo "❌ KEY_PASSWORD is missing"; fi
+      - name: bundle project
+        run: |
+          mkdir -p android/app/src/main/assets
+          mkdir -p android/app/src/main/res
+          npx react-native bundle --platform android --dev false --entry-file index.ts --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res --reset-cache
+
+      - name: Build project
+        run: |
+          cd android
+          ./gradlew clean
+          ./gradlew assembleRelease
+      - name: Confirm build
+        run: |
+          echo "Build completed successfully!"
+            echo "Checking for APK file..."
+            if [ -f android/app/build/outputs/apk/release/app-release.apk ]; then
+              echo "APK file found!"
+            else
+              echo "❌ APK file not found!"
+            fi
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          path: android/app/build/outputs/apk/release/app-release.apk
+          name: app-release.apk

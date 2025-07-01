@@ -1,4 +1,3 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { View } from 'react-native';
 
 import { FText } from './Text/FText';
@@ -7,26 +6,20 @@ interface ContainerProps {
   title?: string;
   className?: string;
   children: React.ReactNode;
+  noPadding?: boolean;
 }
 
-export const Container = ({ title, className, children }: ContainerProps) => {
+export const Container = ({ title, className, children, noPadding = false }: ContainerProps) => {
   return (
-    <View className={`${className} rounded-xl bg-content`}>
+    <View className={`${className}`}>
       {title && (
-        <View>
-          <FText className="px-4 py-2 text-xl" bold>
-            {title}
-          </FText>
-
-          <LinearGradient
-            colors={['#741AD9', '#8720FE', '#A250F5']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={{ height: 3, width: '100%', borderRadius: 1 }}
-          />
-        </View>
+        <FText className="mb-2 text-2xl text-text" bold>
+          {title}
+        </FText>
       )}
-      <View className="p-4">{children}</View>
+      <View className={`rounded-xl bg-content ${noPadding ? '' : 'p-0'}`}>
+        <View className={noPadding ? '' : 'p-4'}>{children}</View>
+      </View>
     </View>
   );
 };

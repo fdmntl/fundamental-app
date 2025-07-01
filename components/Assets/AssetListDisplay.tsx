@@ -29,14 +29,14 @@ export const AssetListDisplay = ({ token }: AssetListDisplayProps) => {
           <View>
             <FText bold>{token.name}</FText>
             {!token.is_stablecoin && (
-              <FText className="!text-sm">
+              <FText className="text-sm">
                 {roundNumberToDecimal(userTokenAmount)} {token.symbol}
               </FText>
             )}
           </View>
         </View>
         <View className="flex items-end justify-center gap-2">
-          <FText bold className="!text-2xl">
+          <FText bold className="text-2xl">
             ${userTokenValue}
           </FText>
         </View>

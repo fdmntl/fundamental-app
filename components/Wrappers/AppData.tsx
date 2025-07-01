@@ -1,9 +1,24 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useAppUpdate, AppUpdateInfo } from '~/hooks/useAppUpdate';
 
+import { getCowOrderBook } from '~/services/CoW/getCowOrderBook';
 import { useSupabaseSubscription } from '~/services/Supabase/useSupabaseSubscription';
 import { useSupabaseUser } from '~/services/Supabase/useSupabaseUser';
 import { Privy } from '~/types/privy';
 import { Token, User } from '~/types/supabaseTypes';
+
+// Define the structure of a processed trade order
+export interface TradeOrder {
+  status: string;
+  buyAmount: string;
+  sellAmount: string;
+  date: string;
+  buyTokenAddress: string;
+  sellTokenAddress: string;
+  buyToken: Token | { name: string; symbol: string; address: string };
+  sellToken: Token | { name: string; symbol: string; address: string };
+  uid: string;
+}
 
 interface ConfigType {
   user: User;
@@ -16,7 +31,11 @@ interface ConfigType {
   addToken: (token: Token) => void;
   updateToken: (address: string, updates: Partial<Token>) => void;
   getToken: (address: string) => Token | undefined;
+  tradeHistory: TradeOrder[];
+  isTradeHistoryLoading: boolean;
+  fetchTradeHistory: () => Promise<void>;
   resetAppData: () => void;
+  updateInfo: AppUpdateInfo | null;
 }
 
 const AppContext = createContext<ConfigType | undefined>(undefined);
@@ -31,6 +50,10 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
   });
   const [privy, setPrivy] = useState<Privy>({});
   const [tokens, setTokens] = useState<Token[]>([]);
+  const [tradeHistory, setTradeHistory] = useState<TradeOrder[]>([]); // State for trade history
+  const [isTradeHistoryLoading, setIsTradeHistoryLoading] = useState(true); // Loading state
+
+  const { updateInfo, error: updateError } = useAppUpdate();
 
   const currentUser = useSupabaseUser({ address: privy.wallet?.account?.address || '' });
 
@@ -42,10 +65,11 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
   const tokenData: Token[] = useSupabaseSubscription({ table: 'token_list' });
 
   useEffect(() => {
-    if (!tokenData.length) return;
+    if (!tokenData || tokenData.length === 0) {
+      return;
+    }
 
     setTokens((prevTokens) => {
-      // Create a map of previous tokens for quick lookup (reducing O(n²) to O(n))
       const prevTokensMap = new Map(
         prevTokens.map((token) => [token.address.toLowerCase(), token])
       );
@@ -54,21 +78,75 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
         const address = newToken.address.toLowerCase();
         const existingToken = prevTokensMap.get(address);
 
+        const daily_values = newToken.daily_values ?? existingToken?.daily_values ?? [];
+        const weekly_values = newToken.weekly_values ?? existingToken?.weekly_values ?? [];
+        const monthly_values = newToken.monthly_values ?? existingToken?.monthly_values ?? [];
+        const yearly_values = newToken.yearly_values ?? existingToken?.yearly_values ?? [];
+        const last_value = newToken.last_value ?? existingToken?.last_value ?? 0;
+
         return {
           ...existingToken,
           ...newToken,
           address,
-          daily_values: newToken.daily_values ?? existingToken?.daily_values ?? [],
-          weekly_values: newToken.weekly_values ?? existingToken?.weekly_values ?? [],
-          monthly_values: newToken.monthly_values ?? existingToken?.monthly_values ?? [],
-          yearly_values: newToken.yearly_values ?? existingToken?.yearly_values ?? [],
-          last_value: newToken.last_value ?? existingToken?.last_value ?? 0,
+          daily_values,
+          weekly_values,
+          monthly_values,
+          yearly_values,
+          last_value,
         };
       });
 
       return updatedTokens;
     });
   }, [tokenData]);
+
+  const fetchTradeHistory = async () => {
+    if (!user.wallet_address || tokens.length === 0) {
+      setTradeHistory([]);
+      setIsTradeHistoryLoading(false);
+      return;
+    }
+
+    setIsTradeHistoryLoading(true);
+    try {
+      const orderBook = await getCowOrderBook(user.wallet_address);
+      if (!orderBook) {
+        setTradeHistory([]);
+        return;
+      }
+
+      const processedOrders = orderBook.map((order: any) => {
+        const buyTokenDetail = tokens.find(
+          (token) => token.address.toLowerCase() === order.buyToken.toLowerCase()
+        ) || { name: 'Unknown Token', symbol: '???', address: order.buyToken };
+        const sellTokenDetail = tokens.find(
+          (token) => token.address.toLowerCase() === order.sellToken.toLowerCase()
+        ) || { name: 'Unknown Token', symbol: '???', address: order.sellToken };
+
+        return {
+          status: order.status,
+          buyAmount: order.buyAmount,
+          sellAmount: order.sellAmount,
+          date: order.creationDate,
+          buyTokenAddress: order.buyToken,
+          sellTokenAddress: order.sellToken,
+          buyToken: buyTokenDetail,
+          sellToken: sellTokenDetail,
+          uid: order.uid,
+        };
+      });
+      setTradeHistory(processedOrders);
+    } catch (error) {
+      console.error('Error fetching order Book:', error);
+      setTradeHistory([]);
+    } finally {
+      setIsTradeHistoryLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTradeHistory();
+  }, [user.wallet_address, tokens]);
 
   const updateUser = (updates: Partial<User>) => {
     setUser((prevUser) => ({ ...prevUser, ...updates }));
@@ -92,7 +170,7 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
   };
 
   const getToken = (address: string): Token | undefined => {
-    return tokens.find((token) => token.address === address);
+    return tokens.find((token) => token.address.toLowerCase() === address.toLowerCase());
   };
 
   const resetAppData = () => {
@@ -105,6 +183,8 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
     });
     setPrivy({});
     setTokens([]);
+    setTradeHistory([]);
+    setIsTradeHistoryLoading(true);
   };
 
   return (
@@ -120,7 +200,11 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
         addToken,
         updateToken,
         getToken,
+        tradeHistory,
+        isTradeHistoryLoading,
+        fetchTradeHistory,
         resetAppData,
+        updateInfo,
       }}>
       {children}
     </AppContext.Provider>

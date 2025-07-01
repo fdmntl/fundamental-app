@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -8,7 +8,8 @@ import { TextInputField } from '../TextInputField';
 import { useAppData } from '../Wrappers/AppData';
 
 import { updateENS } from '~/services/Supabase/updateENS';
-import { registerName } from '~/services/viemService';
+import { registerName, isENSNameAvailable } from '~/services/viemService';
+import { debounce } from '~/utils/helpers/debounce';
 import { toastConfig } from '~/utils/toastConfig';
 
 // Check if the subname is valid and available
@@ -26,11 +27,23 @@ const isValidSubname = (subname: string) => {
 export const RegisterENS = () => {
   const { privy, user } = useAppData();
   const [subname, setSubname] = useState('');
+  const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
+  const [checking, setChecking] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
   const address = privy.wallet?.account?.address || '';
+
+  // Watch subname changes
+  useEffect(() => {
+    if (subname.trim()) {
+      checkAvailability(subname);
+    } else {
+      setIsAvailable(null);
+    }
+  }, [subname]);
 
   if (!privy.wallet || privy.wallet.status !== 'connected') {
     return (
-      <FText className="!text-2xl" bold>
+      <FText className="text-2xl" bold>
         Privy wallet error: not connected
       </FText>
     );
@@ -38,30 +51,73 @@ export const RegisterENS = () => {
 
   const provider = privy.wallet.provider;
 
+  // Debounced ENS availability check
+  const checkAvailability = debounce(async (name: string) => {
+    setChecking(true);
+    if (isValidSubname(name)) {
+      try {
+        const available = await isENSNameAvailable(`${name}.fdmntl.eth`);
+        setIsAvailable(available);
+      } catch {
+        setIsAvailable(null);
+      }
+    } else {
+      setIsAvailable(null);
+    }
+    setChecking(false);
+  }, 500);
+
   return (
-    <View className="flex gap-4">
-      <FText className="!text-2xl" bold>
+    <View className="flex gap-2">
+      <FText className="text-2xl" bold>
         Register an ENS
       </FText>
       <View className="w-full flex-row items-center gap-2">
         <TextInputField
-          className="w-[200px]"
+          className="w-3/5"
           placeholder="username"
           value={subname}
           onChange={(value) => {
             setSubname(value);
+            if (!hasInteracted) setHasInteracted(true);
           }}
-          isValid={isValidSubname(subname)}
+          isValid={isValidSubname(subname) && isAvailable !== false}
         />
-        <FText className="!text-3xl" bold>
+        <FText className="pt-[2px] text-xl" bold>
           .fdmntl.eth
         </FText>
+      </View>
+      {/* ENS availability feedback */}
+      <View className="min-h-[24px] flex-row items-center gap-2">
+        {hasInteracted &&
+          (checking ? (
+            <FText className="text-neutral" bold>
+              Checking availability...
+            </FText>
+          ) : !subname ? (
+            <FText className="text-error" bold>
+              ENS cannot be empty
+            </FText>
+          ) : !isValidSubname(subname) ? (
+            <FText className="text-error" bold>
+              Enter a valid ENS name
+            </FText>
+          ) : isAvailable === false ? (
+            <FText className="text-error" bold>
+              Name is already taken
+            </FText>
+          ) : isAvailable === true ? (
+            <FText className="text-success" bold>
+              Name is available
+            </FText>
+          ) : null)}
       </View>
       <Button
         title="Register"
         className="mx-auto w-[150px]"
+        disabled={!subname || !isValidSubname(subname) || isAvailable !== true || checking}
         onPress={async () => {
-          if (isValidSubname(subname)) {
+          if (isValidSubname(subname) && isAvailable) {
             try {
               await registerName(provider, subname, address as `0x${string}`);
               updateENS(user.id, subname);
@@ -84,7 +140,8 @@ export const RegisterENS = () => {
             Toast.show({
               type: 'error',
               text1: 'Invalid ENS',
-              text2: 'Please enter a valid ENS name.',
+              text2:
+                isAvailable === false ? 'Name is already taken.' : 'Please enter a valid ENS name.',
               ...toastConfig,
             });
           }
