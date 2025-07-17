@@ -68,6 +68,13 @@ export const ProfileDetailModal = ({ visible, onClose }: ProfileDetailModalProps
                     <QRCode value={user.wallet_address} size={200} />
                   </View>
 
+                  <View className="flex-row items-center justify-center gap-2">
+                    <FText className="text-center text-warning">
+                      Only send supported Base assets!
+                    </FText>
+                    <Feather name="info" size={18} className="text-text" />
+                  </View>
+
                   <TouchableOpacity
                     onPress={() => copyToClipboard(user.wallet_address)}
                     className="w-auto flex-row items-center justify-center gap-2">
