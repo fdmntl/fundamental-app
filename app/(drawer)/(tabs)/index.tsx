@@ -244,14 +244,14 @@ export default function Home() {
         tradeHistoryRef={tradeHistoryRef}
         scrollViewRef={scrollViewRef}
       />
-      {survey && (
+      {/* {survey && (
         <SurveyModal
           surveyName={survey.name}
           questions={survey.questions}
           isVisible={isSurveyVisible}
           onClose={handleCloseSurvey}
         />
-      )}
+      )} */}
     </Frame>
   );
 }
