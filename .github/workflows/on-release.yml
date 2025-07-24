@@ -26,11 +26,12 @@ jobs:
       - name: Download APK artifact
         uses: actions/download-artifact@v4
         with:
-          name: app-release.apk/app-release.apk
+          path: app-release.apk/
+          name: app-release.apk
 
       - name: Upload APK to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: app-release.apk/app-release.apk
+          files: app-release.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
