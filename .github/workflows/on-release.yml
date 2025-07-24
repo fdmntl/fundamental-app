@@ -1,6 +1,7 @@
 name: Release Builder
 
 on:
+  workflow_dispatch:
   release:
     types: [created]
 
