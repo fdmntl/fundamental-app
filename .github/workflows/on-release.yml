@@ -3,7 +3,7 @@ name: Release Builder
 on:
   workflow_dispatch:
   release:
-    types: [created]
+    types: [created, published, edited] # Trigger on release creation, publication, or edit
 
 jobs:
   call-build:
