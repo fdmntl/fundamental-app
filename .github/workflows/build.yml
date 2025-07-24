@@ -1,5 +1,6 @@
-name: CI/CD Pipeline
+name: Build
 on:
+  workflow_call:
   pull_request:
     branches:
       - main
