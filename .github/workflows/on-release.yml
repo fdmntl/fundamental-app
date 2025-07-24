@@ -23,10 +23,13 @@ jobs:
     needs: call-build
     runs-on: ubuntu-latest
     steps:
+      - name: check repo
+        run:  |
+        ls -l
       - name: Download APK artifact
-        uses: actions/download-artifact@v4
+
+      uses: actions/download-artifact@v4
         with:
-          path: app-release.apk/
           name: app-release.apk
 
       - name: Upload APK to GitHub Release
