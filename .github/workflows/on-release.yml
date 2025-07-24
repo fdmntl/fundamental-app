@@ -1,0 +1,29 @@
+name: Release Builder
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  call-build:
+    uses: ./.github/workflows/build.yml
+    secrets: inherit  # Reuse all secrets from parent
+    permissions:
+      contents: write  # Needed for upload to release
+
+  upload-apk:
+    name: Upload to GitHub Release
+    needs: call-build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-release.apk
+
+      - name: Upload APK to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: app-release.apk/android/app/build/outputs/apk/release/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
