@@ -1,0 +1,16 @@
+{
+  "branches": ["main"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/changelog",
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "node scripts/update-version.js ${nextRelease.version}"
+      }
+    ],
+    "@semantic-release/github"
+  ],
+  "tagFormat": "v${version}"
+}
