@@ -1,10 +1,11 @@
-name: CI/CD Pipeline
+name: Build
 on:
+  workflow_call:
+  workflow_dispatch:
   pull_request:
     branches:
       - main
       - dev
-  workflow_dispatch:
 env:
   KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
   KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -68,3 +69,5 @@ jobs:
         with:
           path: android/app/build/outputs/apk/release/app-release.apk
           name: app-release.apk
+          if-no-files-found: error
+          retention-days: 5
