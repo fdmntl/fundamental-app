@@ -23,9 +23,6 @@ jobs:
     needs: call-build
     runs-on: ubuntu-latest
     steps:
-      - name: check repo
-        run:  |
-          ls -l
       - name: Download APK artifact
         uses: actions/download-artifact@v4
         with:
