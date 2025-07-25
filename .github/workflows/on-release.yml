@@ -25,10 +25,9 @@ jobs:
     steps:
       - name: check repo
         run:  |
-        ls -l
+          ls -l
       - name: Download APK artifact
-
-      uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4
         with:
           name: app-release.apk
 
