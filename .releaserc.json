@@ -1,5 +1,5 @@
 {
-  "branches": ["+([0-9A-Za-z-])?(.)*"],
+  "branches": ["main", "dev", "311-auto-increment-the-version-on-release"],
   "tagFormat": "v${version}",
   "plugins": [
     [

@@ -3,8 +3,9 @@ on:
   push:
     branches:
       - main
+      - dev
       - 311-auto-increment-the-version-on-release
-
+  workflow_dispatch:
 permissions:
   contents: write
   issues: write
