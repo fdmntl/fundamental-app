@@ -43,3 +43,5 @@ jobs:
         with:
           name: release-preview
           path: release-preview.txt
+      - name: preview-version
+        run: node scripts/preview-version.js

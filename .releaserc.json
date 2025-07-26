@@ -1,5 +1,5 @@
 {
-  "branches": ["+([0-9a-zA-Z-])**"],
+  "branches": ["+([0-9A-Za-z-])?(.)*"],
   "tagFormat": "v${version}",
   "plugins": [
     [
