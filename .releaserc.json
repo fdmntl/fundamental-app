@@ -1,5 +1,5 @@
 {
-  "branches": ["main", "dev", "311-auto-increment-the-version-on-release"],
+  "branches": ["main", "dev"],
   "plugins": [
     [
       "@semantic-release/commit-analyzer",
@@ -7,6 +7,7 @@
         "preset": "conventionalcommits",
         "releaseRules": [
           { "type": "add", "release": "minor" },
+          { "type": "feat", "release": "minor" },
           { "type": "fix", "release": "patch" },
           { "type": "docs", "release": false },
           { "type": "style", "release": false },
