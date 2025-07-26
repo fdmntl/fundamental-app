@@ -22,7 +22,7 @@ jobs:
 
       - name: Semantic release dry-run
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           echo "--- DRY RUN ---" > release-preview.txt
           npx semantic-release --dry-run --no-ci >> release-preview.txt || true
