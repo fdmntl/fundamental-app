@@ -24,7 +24,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npx semantic-release --dry-run --no-ci > release-preview.txt
+          echo "--- DRY RUN ---" > release-preview.txt
+          npx semantic-release --dry-run --no-ci >> release-preview.txt || true
           cat release-preview.txt
 
       - name: Upload changelog preview
