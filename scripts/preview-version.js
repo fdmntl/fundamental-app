@@ -1,32 +1,29 @@
-const semanticRelease = require('semantic-release');
+const fs = require('fs');
 
-(async () => {
-  const result = await semanticRelease({
-    dryRun: true,
-    noCi: true,
-    branches: ['+([0-9A-Za-z-])?(.)*'],
-    plugins: [
-      ['@semantic-release/commit-analyzer', {
-        preset: 'conventionalcommits',
-        releaseRules: [
-          { type: 'add', release: 'minor' },
-          { type: 'feat', release: 'minor' },
-          { type: 'fix', release: 'patch' },
-          { type: 'docs', release: false },
-          { type: 'style', release: false },
-          { type: 'refactor', release: false },
-          { type: 'perf', release: false },
-          { type: 'test', release: false },
-          { breaking: true, release: 'major' }
-        ]
-      }],
-      '@semantic-release/release-notes-generator'
-    ]
-  });
+const releasePreviewPath = 'release-preview.txt';
 
-  if (result) {
-    console.log(result.nextRelease.version);
+function extractVersionChange(text) {
+  const current = text.match(/The last release was ".*?" on branch .* with a git tag of "v?(.*?)"/);
+  const next = text.match(/The next release version is (\d+\.\d+\.\d+(-\w+\.\d+)*)/);
+
+  if (next) {
+    const currentVersion = current?.[1] || 'none';
+    const nextVersion = next[1];
+    return `${currentVersion} --> ${nextVersion}`;
   } else {
-    console.log('No version will be released.');
+    return 'No version bump suggested.';
   }
-})();
+}
+
+function main() {
+  try {
+    const output = fs.readFileSync(releasePreviewPath, 'utf-8');
+    const result = extractVersionChange(output);
+    console.log(result);
+  } catch (err) {
+    console.error('Failed to read release-preview.txt:', err.message);
+    process.exit(1);
+  }
+}
+
+main();
