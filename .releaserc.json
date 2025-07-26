@@ -1,5 +1,5 @@
 {
-  "branches": ["main"],
+  "branches": ["main", "311-auto-increment-the-version-on-release"],
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
