@@ -1,5 +1,6 @@
 {
-  "branches": ["main", "dev", "311-auto-increment-the-version-on-release"],
+  "branches": ["+([0-9a-zA-Z-])**"],
+  "tagFormat": "v${version}",
   "plugins": [
     [
       "@semantic-release/commit-analyzer",
@@ -27,6 +28,5 @@
       }
     ],
     "@semantic-release/github"
-  ],
-  "tagFormat": "v${version}"
+  ]
 }

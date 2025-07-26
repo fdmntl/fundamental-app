@@ -36,7 +36,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           echo "--- DRY RUN ---" >> release-preview.txt
-          npx semantic-release --dry-run --no-ci --debug >> release-preview.txt 2>&1 || true
+          npx semantic-release --dry-run --no-ci >> release-preview.txt 2>&1 || true
           cat release-preview.txt
       - name: Upload changelog preview
         uses: actions/upload-artifact@v4
