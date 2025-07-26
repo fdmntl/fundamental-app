@@ -29,7 +29,4 @@ const semanticRelease = require('semantic-release');
   } else {
     console.log('No version will be released.');
   }
-}).catch(error => {
-      console.error('Error during semantic release:', error);
-      process.exit(1);
-    });
+})();
