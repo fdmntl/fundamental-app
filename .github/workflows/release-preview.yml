@@ -1,33 +1,43 @@
 name: Preview Release Notes
-
 on:
   push:
     branches:
       - main
       - 311-auto-increment-the-version-on-release
 
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  actions: read
+
 jobs:
   preview:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          fetch-depth: 0
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: latest
-
       - name: Install dependencies
         run: npm ci
-
+      - name: Debug Git Config
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git config --list | grep -E "(user|remote)"
+          git remote -v
       - name: Semantic release dry-run
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           echo "--- DRY RUN ---" >> release-preview.txt
-          npx semantic-release --dry-run --no-ci >> release-preview.txt || true
+          npx semantic-release --dry-run --no-ci --debug >> release-preview.txt 2>&1 || true
           cat release-preview.txt
-
       - name: Upload changelog preview
         uses: actions/upload-artifact@v4
         with:
