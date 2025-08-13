@@ -10,6 +10,8 @@ interface ConfirmSendModalProps {
   isModalOpen: boolean;
   toggleModal: () => void;
   onConfirm: () => void;
+  onClearRecipient?: () => void;
+  onClearAmount?: () => void;
   recipient: string;
   amount: string;
   selectedToken: Token;
@@ -19,6 +21,8 @@ export const ConfirmSendModal = ({
   isModalOpen,
   toggleModal,
   onConfirm,
+  onClearRecipient,
+  onClearAmount,
   recipient,
   amount,
   selectedToken,
@@ -59,6 +63,8 @@ export const ConfirmSendModal = ({
                 size={40}
                 color="#4ade80"
                 onPress={() => {
+                  onClearRecipient?.();
+                  onClearAmount?.();
                   onConfirm();
                   toggleModal();
                 }}

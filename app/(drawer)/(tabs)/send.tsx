@@ -35,6 +35,8 @@ export default function Send() {
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [refreshTriggerKey, setRefreshTriggerKey] = useState(0);
+  const [resetRecipient, setResetRecipient] = useState(false);
+  const [resetAmount, setResetAmount] = useState(false);
 
   const recipientRef = useRef<View>(null);
   const amountRef = useRef<View>(null);
@@ -96,7 +98,11 @@ export default function Send() {
         />
         <View className="flex-1 gap-8">
           <View ref={recipientRef} onLayout={() => {}}>
-            <RecipientInput value={recipient} onChange={(value) => setRecipient(value)} />
+            <RecipientInput
+              value={recipient}
+              onChange={(value) => setRecipient(value)}
+              resetValue={resetRecipient}
+            />
           </View>
           <View ref={amountRef} onLayout={() => {}}>
             <AmountInput
@@ -107,6 +113,7 @@ export default function Send() {
               user={user}
               selectedTokenBalance={selectedTokenBalance}
               onTokenChange={(token) => setSelectedToken(token)}
+              resetValue={resetAmount}
             />
           </View>
         </View>
@@ -128,6 +135,14 @@ export default function Send() {
           isModalOpen={isConfirmModalOpen}
           toggleModal={() => setIsConfirmModalOpen(false)}
           onConfirm={handleSendPress}
+          onClearRecipient={() => {
+            setResetRecipient(true);
+            setTimeout(() => setResetRecipient(false), 100);
+          }}
+          onClearAmount={() => {
+            setResetAmount(true);
+            setTimeout(() => setResetAmount(false), 100);
+          }}
           recipient={recipient}
           amount={amount}
           selectedToken={selectedToken}
