@@ -54,7 +54,7 @@ jobs:
         run: |
           cd android
           ./gradlew clean
-          ./gradlew assembleRelease
+          ./gradlew assembleRelease --scan
       - name: Confirm build
         run: |
           echo "Build completed successfully!"
