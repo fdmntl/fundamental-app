@@ -8,7 +8,6 @@ import { Token, User } from '~/types/supabaseTypes';
  * @returns 100 (token amount)
  */
 export const getUserTokenAmount = (address: string, tokens: Token[], user: User): number => {
-  if (!user || !user.balances || user.balances.length === 0) return 0;
   const balanceObj = user.balances.find((b) => b.address === address);
   const digits = tokens.find((token) => token.address === address)?.digits;
 
