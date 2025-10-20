@@ -13,7 +13,7 @@ export default function Login() {
   const { user } = usePrivy();
   const wallet = useEmbeddedWallet();
 
-  const { updatePrivy } = useAppData();
+  const { updatePrivy, isReady } = useAppData();
 
   const { login } = useLogin();
 
@@ -34,13 +34,18 @@ export default function Login() {
       if (user && wallet && wallet.status === 'connected') {
         await addUserToDB(user);
         updatePrivy({ user, wallet });
-        console.log('**** User and wallet updated in Privy ****');
-        console.log('**** Navigating to tabs ****');
-        router.navigate('/(tabs)');
+        console.log('**** User and wallet updated in AppData ****');
       }
     };
     setupUser();
-  }, [user, wallet, wallet.status]);
+  }, [user, wallet]);
+
+  useEffect(() => {
+    if (isReady) {
+      console.log('**** App is ready, navigating to tabs ****');
+      router.navigate('/(tabs)');
+    }
+  }, [isReady]);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);

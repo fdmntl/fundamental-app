@@ -35,6 +35,7 @@ interface ConfigType {
   isTradeHistoryLoading: boolean;
   fetchTradeHistory: () => Promise<void>;
   resetAppData: () => void;
+  isReady: boolean;
   updateInfo: AppUpdateInfo | null;
 }
 
@@ -52,6 +53,7 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
   const [tokens, setTokens] = useState<Token[]>([]);
   const [tradeHistory, setTradeHistory] = useState<TradeOrder[]>([]); // State for trade history
   const [isTradeHistoryLoading, setIsTradeHistoryLoading] = useState(true); // Loading state
+  const [isReady, setIsReady] = useState(false);
 
   const { updateInfo, error: updateError } = useAppUpdate();
 
@@ -61,6 +63,14 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
     if (!currentUser) return;
     setUser(currentUser);
   }, [currentUser]);
+
+  useEffect(() => {
+    if (user?.wallet_address && privy.wallet?.status === 'connected') {
+      setIsReady(true);
+    } else {
+      setIsReady(false);
+    }
+  }, [user, privy]);
 
   const tokenData: Token[] = useSupabaseSubscription({ table: 'token_list' });
 
@@ -185,6 +195,7 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
     setTokens([]);
     setTradeHistory([]);
     setIsTradeHistoryLoading(true);
+    setIsReady(false);
   };
 
   return (
@@ -204,6 +215,7 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
         isTradeHistoryLoading,
         fetchTradeHistory,
         resetAppData,
+        isReady,
         updateInfo,
       }}>
       {children}
