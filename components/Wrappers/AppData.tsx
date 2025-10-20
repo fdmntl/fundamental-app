@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useAppUpdate, AppUpdateInfo } from '~/hooks/useAppUpdate';
 
+import { useAppUpdate, AppUpdateInfo } from '~/hooks/useAppUpdate';
 import { getCowOrderBook } from '~/services/CoW/getCowOrderBook';
 import { useSupabaseSubscription } from '~/services/Supabase/useSupabaseSubscription';
 import { useSupabaseUser } from '~/services/Supabase/useSupabaseUser';
@@ -59,7 +59,9 @@ export const AppDataProvider: React.FC<React.PropsWithChildren<object>> = ({ chi
 
   useEffect(() => {
     if (!currentUser) return;
-    setUser(currentUser);
+    setUser((prevUser) => {
+      return { ...prevUser, ...currentUser };
+    });
   }, [currentUser]);
 
   const tokenData: Token[] = useSupabaseSubscription({ table: 'token_list' });

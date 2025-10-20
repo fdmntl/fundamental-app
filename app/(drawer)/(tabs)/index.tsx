@@ -10,22 +10,22 @@ import { Container } from '~/components/Container';
 import { CustomRefreshControl } from '~/components/CustomRefreshControl';
 import Graph from '~/components/Graph';
 import { GraphRangeSelector } from '~/components/Graph/GraphRangeSelector';
-import { HomePageGuide, HomePageGuideHandle } from '~/components/Help/HomePageGuide';
 import { HeaderBar } from '~/components/HeaderBar';
+import { HomePageGuide, HomePageGuideHandle } from '~/components/Help/HomePageGuide';
+import { OnboardingScreen } from '~/components/OnboardingSceen/OnboardingScreen';
 import { ProfileDetailModal } from '~/components/Profile/ProfileDetailModal';
 import { SurveyModal } from '~/components/Survey/SurveyModal';
 import { TradeHistoryButton } from '~/components/Transaction/TradeHistoryButton';
 import { UpdateCard } from '~/components/Update/UpdateCard';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { useSurveyManager } from '~/hooks/useSurveyManager';
+import { trackEvent } from '~/services/PostHog/trackEvent';
 import { refreshUserBalances } from '~/services/refreshUserBalance';
 import { GraphRange, graphRangeMap } from '~/types/graph';
+import { hasSeenOnboarding, markOnboardingAsSeen } from '~/utils/Storage/asyncStorage';
 import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 import { getUserTokenValue } from '~/utils/helpers/tokens/getUserTokenValue';
-import { hasSeenOnboarding, markOnboardingAsSeen } from '~/utils/Storage/asyncStorage';
-import { OnboardingScreen } from '~/components/OnboardingSceen/OnboardingScreen';
-import { trackEvent } from '~/services/PostHog/trackEvent';
-import { useSurveyManager } from '~/hooks/useSurveyManager';
 
 export default function Home() {
   const { user, tokens, updateUser } = useAppData();
