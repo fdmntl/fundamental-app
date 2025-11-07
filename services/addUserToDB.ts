@@ -43,6 +43,11 @@ export async function addUserToDB(user: any) {
     });
     console.log('✅ User added:', insertedUsers);
   } catch (error: any) {
+    const message = typeof error?.message === 'string' ? error.message : String(error);
+    if (message.includes('duplicate key value')) {
+      console.log('User already exists in Supabase, skipping creation');
+      return;
+    }
     console.error('❌ Failed to add user:', error);
   }
 }
