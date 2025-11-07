@@ -10,7 +10,7 @@ import { Frame } from '~/components/Wrappers/Frame';
 import { addUserToDB } from '~/services/addUserToDB';
 
 export default function Login() {
-  const { user } = usePrivy();
+  const { user, authenticated } = usePrivy();
   const wallet = useEmbeddedWallet();
 
   const { updatePrivy, isReady } = useAppData();
@@ -41,11 +41,11 @@ export default function Login() {
   }, [user, wallet]);
 
   useEffect(() => {
-    if (isReady) {
+    if (isReady && authenticated) {
       console.log('**** App is ready, navigating to tabs ****');
       router.navigate('/(tabs)');
     }
-  }, [isReady]);
+  }, [isReady, authenticated]);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
