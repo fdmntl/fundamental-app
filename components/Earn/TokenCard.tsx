@@ -1,6 +1,7 @@
 import { View, TouchableOpacity } from 'react-native';
 import { FText } from '~/components/Text/FText';
 import { EarnToken } from '~/types/earn';
+import { User } from '~/types/supabaseTypes';
 import { formatTokenAmount } from '~/utils/earn.utils';
 
 type TokenCardProps = {
@@ -55,7 +56,7 @@ export const TokenCard = ({ token, onStake, onUnstake }: TokenCardProps) => {
         <View className="flex-row justify-between">
           <FText className="text-neutral">Value</FText>
           <FText bold>
-            ${(token.balance * token.last_value).toFixed(2)}
+            ${token.value.toFixed(2)}
           </FText>
         </View>
         {token.staked > 0 && (

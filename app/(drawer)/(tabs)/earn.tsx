@@ -104,7 +104,7 @@ export default function Earn() {
           averageAPY={averageAPY}
         />
         <SortButtons sortBy={sortBy} onSortChange={setSortBy} />
-        <TokenList tokens={sortedTokens} onStake={handleStake} onUnstake={handleUnstake} />
+        <TokenList tokens={sortedTokens} user={user} onStake={handleStake} onUnstake={handleUnstake} />
         <AaveInfo />
       </ScrollView>
 

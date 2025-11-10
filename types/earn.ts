@@ -4,6 +4,7 @@ export type SortType = 'balance' | 'apy';
 
 export type EarnToken = Token & {
   balance: number; // Balance disponible de l'utilisateur
+  value: number; // Valeur USD de la balance disponible
   staked: number; // Montant staké par l'utilisateur
   stakedValue: number; // Valeur USD du montant staké
   gains: number; // Gains en % depuis le stake

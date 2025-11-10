@@ -1,5 +1,6 @@
 import { EarnToken } from '~/types/earn';
 import { Token, User } from '~/types/supabaseTypes';
+import { digitsToAmount } from './helpers/tokens/digitsToAmount';
 
 export const calculateTotalStakedUSD = (tokens: EarnToken[]): number => {
   return tokens.reduce((sum, token) => sum + token.stakedValue, 0);
@@ -76,9 +77,10 @@ export const calculateEstimatedYearlyEarnings = (
   return (usdValue * token.apy) / 100;
 };
 
-export const getUserTokenBalance = (user: User, tokenAddress: string): number => {
+export const getUserTokenBalance = (user: User, tokenAddress: string, token: Token): number => {
   const balance = user.balances.find(b => b.address.toLowerCase() === tokenAddress.toLowerCase());
-  return balance?.balance || 0;
+  if (!balance) return 0;
+  return digitsToAmount(balance.balance, token) || 0;
 };
 
 export const getUserTokenValue = (user: User, tokenAddress: string): number => {
@@ -93,7 +95,8 @@ export const mapTokensToEarnTokens = (
   stakedData: { [address: string]: { staked: number; gains: number } }
 ): EarnToken[] => {
   return tokens.map(token => {
-    const balance = user ? getUserTokenBalance(user, token.address) : 0;
+    const balance = user ? getUserTokenBalance(user, token.address, token) : 0;
+    const value = user ? getUserTokenValue(user, token.address) : 0;
     const staked = stakedData[token.address]?.staked || 0;
     const gains = stakedData[token.address]?.gains || 0;
     const stakedValue = staked * token.last_value;
@@ -102,6 +105,7 @@ export const mapTokensToEarnTokens = (
     return {
       ...token,
       balance,
+      value,
       staked,
       stakedValue,
       gains,
