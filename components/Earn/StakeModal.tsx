@@ -50,7 +50,7 @@ export const StakeModal = ({
               <FText className="text-success" bold>{token.apy.toFixed(1)}%</FText>
             </View>
             <View className="flex-row justify-between">
-              <FText className="text-neutral">Available Balance</FText>
+              <FText className="text-neutral">Available</FText>
               <FText bold>
                 {formatTokenAmount(token.balance, token)} {token.symbol}
               </FText>
@@ -80,8 +80,12 @@ export const StakeModal = ({
               />
               <TouchableOpacity
                 onPress={onToggleCurrency}
-                className="mr-4 rounded-lg bg-primary/20 px-3 py-2">
+                className="border rounded-lg p-4 bg-primary/20">
                 <FText className="text-primary" bold>{useUSD ? 'USD' : token.symbol}</FText>
+              </TouchableOpacity>
+              {/* Bouton Max */}
+              <TouchableOpacity onPress={onMax} className='border rounded-lg p-4 bg-primary/20 ml-2 mr-1'>
+                <FText className="text-primary" bold>Max</FText>
               </TouchableOpacity>
             </View>
             {converted && (
@@ -89,10 +93,7 @@ export const StakeModal = ({
             )}
           </View>
 
-          {/* Bouton Max */}
-          <TouchableOpacity onPress={onMax} className="mb-6 self-end">
-            <FText className="text-primary" bold>Use Max</FText>
-          </TouchableOpacity>
+          
 
           {/* Résumé */}
           {amount && display && (
@@ -114,20 +115,14 @@ export const StakeModal = ({
           )}
 
           {/* Boutons */}
-          <View className="flex-row gap-3">
-            <TouchableOpacity
-              onPress={onClose}
-              className="flex-1 rounded-xl border-2 border-neutral/20 py-4">
-              <FText className="text-center" bold>Cancel</FText>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={onConfirm}
-              disabled={!amount || parseFloat(amount) === 0}
-              className={`flex-1 rounded-xl py-4 ${
-                !amount || parseFloat(amount) === 0 ? 'bg-neutral/20' : 'bg-primary'
-              }`}>
-              <FText className="text-center text-white" bold>Confirm Stake</FText>
-            </TouchableOpacity>
+          <View className="flex-row justify-center items-center gap-40">
+              <Feather name="x" size={40} color="#f87171" onPress={onClose}/>
+              <Feather
+                name="check"
+                size={40}
+                color="#4ade80"
+                onPress={onConfirm}
+              />
           </View>
         </View>
       </View>

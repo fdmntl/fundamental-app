@@ -24,7 +24,7 @@ export const calculateAverageAPY = (tokens: EarnToken[]): number => {
 export const sortTokens = (tokens: EarnToken[], sortBy: 'balance' | 'apy'): EarnToken[] => {
   return [...tokens].sort((a, b) => {
     if (sortBy === 'balance') {
-      return b.stakedValue - a.stakedValue;
+      return b.value - a.value;
     }
     return b.apy - a.apy;
   });
