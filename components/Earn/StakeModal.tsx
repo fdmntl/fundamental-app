@@ -1,6 +1,5 @@
 import { Feather } from '@expo/vector-icons';
-import { View, Modal, TextInput } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Modal, TextInput, TouchableOpacity } from 'react-native';
 import { FText } from '~/components/Text/FText';
 import { EarnToken } from '~/types/earn';
 import { convertAmount, calculateEstimatedYearlyEarnings, formatTokenAmount } from '~/utils/earn.utils';

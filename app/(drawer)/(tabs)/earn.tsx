@@ -95,7 +95,8 @@ export default function Earn() {
   return (
     <Container>
       <HeaderBar title="Earn" />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 330 }}>
         <EarnStats
           totalStakedUSD={totalStakedUSD}
           totalGainsUSD={totalGainsUSD}

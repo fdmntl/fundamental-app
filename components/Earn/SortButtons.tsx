@@ -14,7 +14,7 @@ export const SortButtons = ({ sortBy, onSortChange }: SortButtonsProps) => {
   };
 
   return (
-    <View className="flex-row gap-8 px-6 mb-4">
+    <View className="flex-row gap-8 px-2 mb-6 mt-4">
       <TouchableOpacity
         activeOpacity={0.7}
         onPress={() => handleSortChange('balance')}

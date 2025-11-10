@@ -1,5 +1,4 @@
-import { View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { View, TouchableOpacity } from 'react-native';
 import { FText } from '~/components/Text/FText';
 import { EarnToken } from '~/types/earn';
 import { formatTokenAmount } from '~/utils/earn.utils';
