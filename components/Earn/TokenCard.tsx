@@ -25,7 +25,7 @@ export const TokenCard = ({ token, onStake, onUnstake }: TokenCardProps) => {
   };
 
   return (
-    <View className="rounded-xl border border-neutral/20 bg-background p-4">
+    <View className="rounded-xl bg-content p-4">
       {/* En-tête du token */}
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center gap-3">

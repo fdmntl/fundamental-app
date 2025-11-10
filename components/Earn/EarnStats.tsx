@@ -9,7 +9,7 @@ type EarnStatsProps = {
 
 export const EarnStats = ({ totalStakedUSD, totalGainsUSD, averageAPY }: EarnStatsProps) => {
   return (
-    <View className="border rounded-xl bg-background p-4 gap-4">
+    <View className="rounded-xl bg-content p-4 gap-4">
       <View>
         <FText className="text-sm text-neutral">Total Staked Value</FText>
         <FText className="text-3xl" bold>${totalStakedUSD.toFixed(2)}</FText>

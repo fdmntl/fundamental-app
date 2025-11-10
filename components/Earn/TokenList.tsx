@@ -10,7 +10,7 @@ type TokenListProps = {
 
 export const TokenList = ({ tokens, onStake, onUnstake }: TokenListProps) => {
   return (
-    <View className="px-4 pb-8 gap-3">
+    <View className="gap-5">
     {tokens.map((token) => (
         token.apy > 0 && (
         <TokenCard

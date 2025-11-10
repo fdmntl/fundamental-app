@@ -19,6 +19,7 @@ import {
   calculateAverageAPY
 } from '~/utils/earn.utils';
 import { useAppData } from '~/components/Wrappers/AppData';
+import { Frame } from '~/components/Wrappers/Frame';
 
 export default function Earn() {
   const { user, tokens, privy, getToken } = useAppData();
@@ -93,10 +94,10 @@ export default function Earn() {
   }
 
   return (
-    <Container>
+    <Frame>
       <HeaderBar title="Earn" />
       <ScrollView showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 330 }}>
+        contentContainerStyle={{ paddingBottom: 20 }}>
         <EarnStats
           totalStakedUSD={totalStakedUSD}
           totalGainsUSD={totalGainsUSD}
@@ -138,6 +139,6 @@ export default function Earn() {
           setStakeAmount(selectedToken.staked.toString());
         }}
       />
-    </Container>
+    </Frame>
   );
 }
