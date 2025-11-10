@@ -1,5 +1,4 @@
 import { View } from 'react-native';
-import { Container } from '~/components/Container';
 import { EarnToken } from '~/types/earn';
 import { TokenCard } from './TokenCard';
 

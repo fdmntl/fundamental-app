@@ -1,7 +1,6 @@
 import { Feather } from '@expo/vector-icons';
 import { View, Image, Linking } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Container } from '~/components/Container';
 import { FText } from '~/components/Text/FText';
 
 export const AaveInfo = () => {

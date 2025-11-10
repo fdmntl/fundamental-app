@@ -1,5 +1,4 @@
 import { View } from 'react-native';
-import { Container } from '~/components/Container';
 import { FText } from '~/components/Text/FText';
 
 type EarnStatsProps = {

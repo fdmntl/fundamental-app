@@ -1,7 +1,6 @@
 import { View, TouchableOpacity } from 'react-native';
 import { FText } from '~/components/Text/FText';
 import { SortType } from '~/types/earn';
-import { Container } from '../Container';
 
 type SortButtonsProps = {
   sortBy: SortType;
