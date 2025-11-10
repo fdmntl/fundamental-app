@@ -8,6 +8,7 @@ export type Token = {
   name: string;
   symbol: string;
   digits: number;
+  apy: number;
   description: string;
   is_stablecoin: boolean;
   daily_values: Value[];
