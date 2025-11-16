@@ -51,7 +51,7 @@ export default function Login() {
       }
     };
     setupUser();
-  }, [user, wallet]);
+  }, [user, wallet, updatePrivy]);
 
   useEffect(() => {
     if (isReady && user) {
