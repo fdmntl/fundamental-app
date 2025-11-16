@@ -1,6 +1,6 @@
 import { usePrivy, useEmbeddedWallet, useLogin } from '@privy-io/expo';
 import { router, Stack } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { View, BackHandler, Image } from 'react-native';
 
 import { Button } from '~/components/Button';
@@ -13,9 +13,11 @@ export default function Login() {
   const { user } = usePrivy();
   const wallet = useEmbeddedWallet();
 
-  const { updatePrivy } = useAppData();
+  const { updatePrivy, isReady } = useAppData();
 
   const { login } = useLogin();
+
+  const lastSyncedUserIdRef = useRef<string | null>(null);
 
   const handleLogin = async () => {
     try {
@@ -31,16 +33,32 @@ export default function Login() {
 
   useEffect(() => {
     const setupUser = async () => {
-      if (user && wallet && wallet.status === 'connected') {
+      if (!user) {
+        lastSyncedUserIdRef.current = null;
+        return;
+      }
+
+      if (wallet && wallet.status === 'connected') {
+        if (lastSyncedUserIdRef.current === user.id) {
+          return;
+        }
+
+        lastSyncedUserIdRef.current = user.id;
+
         await addUserToDB(user);
         updatePrivy({ user, wallet });
-        console.log('**** User and wallet updated in Privy ****');
-        console.log('**** Navigating to tabs ****');
-        router.navigate('/(tabs)');
+        console.log('**** User and wallet updated in AppData ****');
       }
     };
     setupUser();
-  }, [user, wallet, wallet.status]);
+  }, [user, wallet, updatePrivy]);
+
+  useEffect(() => {
+    if (isReady && user) {
+      console.log('**** App is ready, navigating to tabs ****');
+      router.navigate('/(tabs)');
+    }
+  }, [isReady, user]);
 
   useEffect(() => {
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
