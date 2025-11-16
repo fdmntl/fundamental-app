@@ -1,3 +1,5 @@
+import Toast from 'react-native-toast-message';
+
 interface AddFeesResponse {
   // Define the expected structure of the JSON response from the API
   // For example, if it returns a message and a transactionId:
@@ -47,6 +49,11 @@ export async function addFeesToWallet(address: string): Promise<AddFeesResponse>
     // Assuming the API returns a JSON response on success
     const data: AddFeesResponse = await response.json();
     console.log(`Successfully added fees for address ${address}:`, data);
+    Toast.show({
+      type: 'fundamental',
+      text1: 'You received Five cents. in ETH',
+      position: 'top',
+    });
     return data;
   } catch (error) {
     console.error(`Network or other error while adding fees for ${address}:`, error);
