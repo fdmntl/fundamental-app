@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -11,9 +11,12 @@ import { updateENS } from '~/services/Supabase/updateENS';
 import { registerName, isENSNameAvailable } from '~/services/viemService';
 import { debounce } from '~/utils/helpers/debounce';
 import { toastConfig } from '~/utils/toastConfig';
+import { Wallet } from 'ethers';
+import { getUserTokenAmount } from '~/utils/helpers/tokens/getUserTokenAmount';
 
 // Check if the subname is valid and available
 // TODO: Check if the subname is available
+// Check if the user has enough ETH to pay for registration and gas fees
 const isValidSubname = (subname: string) => {
   if (subname.length < 1 || subname.length > 16) {
     return false;
@@ -25,13 +28,41 @@ const isValidSubname = (subname: string) => {
 };
 
 export const RegisterENS = () => {
-  const { privy, user } = useAppData();
+  const { privy, user, tokens } = useAppData();
   const [subname, setSubname] = useState('');
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
   const [checking, setChecking] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const address = privy.wallet?.account?.address || '';
+  const hasEnoughEth = useRef(true);
 
+  // Check if user has enough ETH
+  useEffect(() => {
+    if (!privy.wallet) {
+      hasEnoughEth.current = false;
+      return;
+    }
+    if (tokens.length === 0) {
+      console.log('No tokens available to check ETH balance');
+      hasEnoughEth.current = false;
+      return;
+    }
+    tokens.forEach((token) => {
+      console.log('Checking token:', token.symbol);
+      if (token.symbol === 'ETH') {
+        console.log('Checking ETH for ENS registration');
+        const userEthAmount = getUserTokenAmount(token.address, tokens, user);
+        if (userEthAmount === 0) {
+          hasEnoughEth.current = false;
+          return;
+        } else {
+          hasEnoughEth.current = true;
+        }
+      }
+      console.log('User ETH amount:', getUserTokenAmount(token.address, tokens, user));
+    });
+    console.log('ETH availability:', hasEnoughEth.current);
+  }, [privy.wallet, tokens, user, subname]);
   // Watch subname changes
   useEffect(() => {
     if (subname.trim()) {
@@ -110,14 +141,24 @@ export const RegisterENS = () => {
             <FText className="text-success" bold>
               Name is available
             </FText>
+          ) : hasEnoughEth.current === false ? (
+            <FText className="text-error" bold>
+              Not enough ETH to register ENS
+            </FText>
           ) : null)}
       </View>
       <Button
         title="Register"
         className="mx-auto w-[150px]"
-        disabled={!subname || !isValidSubname(subname) || isAvailable !== true || checking}
+        disabled={
+          !subname ||
+          !isValidSubname(subname) ||
+          isAvailable !== true ||
+          checking ||
+          hasEnoughEth.current === false
+        }
         onPress={async () => {
-          if (isValidSubname(subname) && isAvailable) {
+          if (isValidSubname(subname) && isAvailable && hasEnoughEth.current) {
             try {
               await registerName(provider, subname, address as `0x${string}`);
               updateENS(user.id, subname);
