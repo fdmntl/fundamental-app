@@ -1,5 +1,7 @@
-import { View, TouchableOpacity } from 'react-native';
-import { FText } from '~/components/Text/FText';
+import { View } from 'react-native';
+
+import { Button } from '../Button';
+
 import { SortType } from '~/types/earn';
 
 type SortButtonsProps = {
@@ -13,28 +15,20 @@ export const SortButtons = ({ sortBy, onSortChange }: SortButtonsProps) => {
   };
 
   return (
-    <View className="flex-row gap-8 px-2 mb-6 mt-4">
-      <TouchableOpacity
-        activeOpacity={0.7}
-        onPress={() => handleSortChange('balance')}
-        className={`${
-          sortBy === 'balance' ? 'border-primary bg-primary/10' : 'border-neutral/20'
-        }`}>
-        <FText className={sortBy === 'balance' ? 'text-primary' : 'text-text'} bold>
-          Sort by Balance
-        </FText>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        activeOpacity={0.7}
+    <View className="flex-row items-center justify-around">
+      <Button
         onPress={() => handleSortChange('apy')}
-        className={` ${
-          sortBy === 'apy' ? 'border-primary bg-primary/10' : 'border-neutral/20'
-        }`}>
-        <FText className={sortBy === 'apy' ? 'text-primary' : 'text-text'} bold>
-          Sort by APY
-        </FText>
-      </TouchableOpacity>
+        title="% Sort by APY"
+        disableGradient={sortBy !== 'apy'}
+        className={sortBy !== 'apy' ? 'bg-content' : ''}
+      />
+
+      <Button
+        onPress={() => handleSortChange('balance')}
+        title="$ Sort by Balance"
+        disableGradient={sortBy !== 'balance'}
+        className={sortBy !== 'balance' ? 'bg-content' : ''}
+      />
     </View>
   );
 };

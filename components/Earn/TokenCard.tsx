@@ -1,8 +1,12 @@
-import { View, TouchableOpacity } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import { View, Image } from 'react-native';
+
+import { Button } from '../Button';
+
 import { FText } from '~/components/Text/FText';
 import { EarnToken } from '~/types/earn';
-import { User } from '~/types/supabaseTypes';
 import { formatTokenAmount } from '~/utils/earn.utils';
+import { tokenIcons } from '~/utils/helpers/mappings/tokenIcons';
 
 type TokenCardProps = {
   token: EarnToken;
@@ -11,41 +15,30 @@ type TokenCardProps = {
 };
 
 export const TokenCard = ({ token, onStake, onUnstake }: TokenCardProps) => {
-  const getTokenIcon = (symbol: string) => {
-    const icons: { [key: string]: string } = {
-      'ETH': '◆',
-      'WETH': '◆',
-      'USDC': '$',
-      'USDT': '$',
-      'DAI': '$',
-      'WBTC': '₿',
-      'BTC': '₿',
-      'cbBTC': '₿',
-    };
-    return icons[symbol] || '🪙';
-  };
+  const icon = tokenIcons[token.symbol];
+  const isAvailable = token.balance > 0;
 
   return (
-    <View className="rounded-xl bg-content p-4">
-      {/* En-tête du token */}
+    <View className="rounded-xl border-4 border-content p-4">
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center gap-3">
-          <View className="h-12 w-12 items-center justify-center rounded-full bg-primary/20">
-            <FText className="text-2xl">{getTokenIcon(token.symbol)}</FText>
+          <View className="bg-primary/20 h-12 w-12 items-center justify-center rounded-full">
+            <Image source={icon} style={{ height: 40, width: 40 }} />
           </View>
           <View>
-            <FText className="text-lg" bold>{token.symbol}</FText>
+            <FText className="text-lg" bold>
+              {token.symbol}
+            </FText>
             <FText className="text-sm text-neutral">{token.name}</FText>
           </View>
         </View>
         <View className="items-end">
-          <View className="rounded-full bg-success/20 px-3 py-1">
-            <FText className="text-success" bold>{token.apy.toFixed(1)}% APY</FText>
-          </View>
+          <FText className="text-xl text-success" bold>
+            {token.apy.toFixed(1)}% APY
+          </FText>
         </View>
       </View>
 
-      {/* Balances */}
       <View className="mt-4 gap-2">
         <View className="flex-row justify-between">
           <FText className="text-neutral">Available</FText>
@@ -54,14 +47,12 @@ export const TokenCard = ({ token, onStake, onUnstake }: TokenCardProps) => {
           </FText>
         </View>
         <View className="flex-row justify-between">
-          <FText className="text-neutral">Value</FText>
-          <FText bold>
-            ${token.value.toFixed(2)}
-          </FText>
+          <FText className="text-neutral">Staked value</FText>
+          <FText bold>${token.value.toFixed(2)}</FText>
         </View>
         {token.staked > 0 && (
           <>
-            <View className="my-2 h-px bg-neutral/20" />
+            <View className="bg-neutral/20 my-2 h-px" />
             <View className="flex-row justify-between">
               <FText className="text-neutral">Staked</FText>
               <FText bold>
@@ -70,9 +61,7 @@ export const TokenCard = ({ token, onStake, onUnstake }: TokenCardProps) => {
             </View>
             <View className="flex-row justify-between">
               <FText className="text-neutral">Staked Value</FText>
-              <FText bold>
-                ${token.stakedValue.toFixed(2)}
-              </FText>
+              <FText bold>${token.stakedValue.toFixed(2)}</FText>
             </View>
             <View className="flex-row justify-between">
               <FText className="text-neutral">Earnings</FText>
@@ -84,27 +73,27 @@ export const TokenCard = ({ token, onStake, onUnstake }: TokenCardProps) => {
         )}
       </View>
 
-      {/* Boutons d'action */}
-      <View className="mt-4 flex-row gap-2">
-        <TouchableOpacity
+      <View className="mt-4 flex justify-around gap-2">
+        <Button
+          title="Stake"
           onPress={() => onStake(token)}
-          disabled={token.balance === 0}
-          className={`flex-1 rounded-lg py-3 ${
-            token.balance === 0 ? 'bg-neutral/20' : 'bg-primary'
-          }`}>
-          <FText className={`text-center ${token.balance === 0 ? 'text-neutral' : 'text-white'}`} bold>
-            Stake
-          </FText>
-        </TouchableOpacity>
-        {token.staked > 0 && (
-          <TouchableOpacity
-            onPress={() => onUnstake(token)}
-            className="flex-1 rounded-lg border-2 border-primary py-3">
-            <FText className="text-center text-primary" bold>
-              Unstake
-            </FText>
-          </TouchableOpacity>
-        )}
+          icon={<Feather name="download" size={16} className="text-text" />}
+          className="w-full bg-content"
+          disableGradient
+          disabled={!isAvailable}
+        />
+
+        {token.staked > 0 ||
+          (true && (
+            <Button
+              title="Unstake"
+              onPress={() => onUnstake(token)}
+              icon={<Feather name="upload" size={16} className="text-text" />}
+              className="w-full bg-content"
+              disableGradient
+              disabled={token.staked === 0}
+            />
+          ))}
       </View>
     </View>
   );

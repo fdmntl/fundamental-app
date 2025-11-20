@@ -1,25 +1,25 @@
 import { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
+
 import { Container } from '~/components/Container';
-import { HeaderBar } from '~/components/HeaderBar';
-import { FText } from '~/components/Text/FText';
+import { AaveInfo } from '~/components/Earn/AaveInfo';
 import { EarnStats } from '~/components/Earn/EarnStats';
 import { SortButtons } from '~/components/Earn/SortButtons';
-import { TokenList } from '~/components/Earn/TokenList';
 import { StakeModal } from '~/components/Earn/StakeModal';
+import { TokenList } from '~/components/Earn/TokenList';
 import { UnstakeModal } from '~/components/Earn/UnstakeModal';
-import { AaveInfo } from '~/components/Earn/AaveInfo';
+import { HeaderBar } from '~/components/HeaderBar';
+import { FText } from '~/components/Text/FText';
+import { useAppData } from '~/components/Wrappers/AppData';
+import { Frame } from '~/components/Wrappers/Frame';
 import { SortType, EarnToken } from '~/types/earn';
-import { Token, User } from '~/types/supabaseTypes';
 import {
   mapTokensToEarnTokens,
   sortTokens,
   calculateTotalStakedUSD,
   calculateTotalGainsUSD,
-  calculateAverageAPY
+  calculateAverageAPY,
 } from '~/utils/earn.utils';
-import { useAppData } from '~/components/Wrappers/AppData';
-import { Frame } from '~/components/Wrappers/Frame';
 
 export default function Earn() {
   const { user, tokens, privy, getToken } = useAppData();
@@ -30,7 +30,9 @@ export default function Earn() {
   const [stakeAmount, setStakeAmount] = useState('');
   const [useUSD, setUseUSD] = useState(false);
 
-  const [stakedData, setStakedData] = useState<{ [address: string]: { staked: number; gains: number } }>({});
+  const [stakedData, setStakedData] = useState<{
+    [address: string]: { staked: number; gains: number };
+  }>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -96,16 +98,26 @@ export default function Earn() {
   return (
     <Frame>
       <HeaderBar title="Earn" />
-      <ScrollView showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20 }}>
-        <EarnStats
-          totalStakedUSD={totalStakedUSD}
-          totalGainsUSD={totalGainsUSD}
-          averageAPY={averageAPY}
-        />
-        <SortButtons sortBy={sortBy} onSortChange={setSortBy} />
-        <TokenList tokens={sortedTokens} user={user} onStake={handleStake} onUnstake={handleUnstake} />
-        <AaveInfo />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View className="gap-6 pb-10">
+          <EarnStats
+            totalStakedUSD={totalStakedUSD}
+            totalGainsUSD={totalGainsUSD}
+            averageAPY={averageAPY}
+          />
+
+          <View className="mx-2 border-2 border-dashed border-gray-700" />
+
+          <SortButtons sortBy={sortBy} onSortChange={setSortBy} />
+          <TokenList
+            tokens={sortedTokens}
+            user={user}
+            onStake={handleStake}
+            onUnstake={handleUnstake}
+          />
+
+          <AaveInfo />
+        </View>
       </ScrollView>
 
       {/* Stake Modal */}
