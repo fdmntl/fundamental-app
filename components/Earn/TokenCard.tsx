@@ -2,6 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { View, Image } from 'react-native';
 
 import { Button } from '../Button';
+import { useTheme } from '../Wrappers/ThemeWrapper';
 
 import { FText } from '~/components/Text/FText';
 import { EarnToken } from '~/types/earn';
@@ -17,9 +18,13 @@ type TokenCardProps = {
 export const TokenCard = ({ token, onStake, onUnstake }: TokenCardProps) => {
   const icon = tokenIcons[token.symbol];
   const isAvailable = token.balance > 0;
+  const { theme } = useTheme();
 
   return (
-    <View className="rounded-xl border-4 border-content p-4">
+    <View
+      className={`rounded-xl border-4 p-4 ${
+        theme === 'dark' ? 'border-content bg-background' : 'border-background bg-content'
+      }`}>
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center gap-3">
           <View className="bg-primary/20 h-12 w-12 items-center justify-center rounded-full">
@@ -53,8 +58,14 @@ export const TokenCard = ({ token, onStake, onUnstake }: TokenCardProps) => {
           </View>
         </View>
         {token.staked > 0 && (
-          <View className="gap-2 rounded-xl border-4 border-content px-3 py-2">
-            <View className="flex-row justify-between border-b-2 border-content pb-2">
+          <View
+            className={`gap-2 rounded-xl border-4 px-3 py-2 ${
+              theme === 'dark' ? 'border-content' : 'border-background'
+            }`}>
+            <View
+              className={`flex-row justify-between border-b-2 pb-2 ${
+                theme === 'dark' ? 'border-content' : 'border-background'
+              }`}>
               <View className="flex flex-row items-center gap-2">
                 <Feather name="archive" size={14} className="text-neutral" />
                 <FText className="text-neutral">Staked Amount</FText>
@@ -63,7 +74,10 @@ export const TokenCard = ({ token, onStake, onUnstake }: TokenCardProps) => {
                 {formatTokenAmount(token.staked, token)} {token.symbol}
               </FText>
             </View>
-            <View className="flex-row justify-between border-b-2 border-content pb-2">
+            <View
+              className={`flex-row justify-between border-b-2 pb-2 ${
+                theme === 'dark' ? 'border-content' : 'border-background'
+              }`}>
               <View className="flex flex-row items-center gap-2">
                 <Feather name="trending-up" size={14} className="text-neutral" />
                 <FText className="text-neutral">Staked Value</FText>
@@ -88,7 +102,7 @@ export const TokenCard = ({ token, onStake, onUnstake }: TokenCardProps) => {
           title="Stake"
           onPress={() => onStake(token)}
           icon={<Feather name="download" size={16} className="text-text" />}
-          className="w-full bg-content"
+          className={`w-full ${theme === 'dark' ? 'bg-content' : 'bg-background'}`}
           disableGradient
           disabled={!isAvailable}
         />
@@ -96,7 +110,7 @@ export const TokenCard = ({ token, onStake, onUnstake }: TokenCardProps) => {
           title="Unstake"
           onPress={() => onUnstake(token)}
           icon={<Feather name="upload" size={16} className="text-text" />}
-          className="w-full bg-content"
+          className={`w-full ${theme === 'dark' ? 'bg-content' : 'bg-background'}`}
           disableGradient
           disabled={token.staked === 0}
         />

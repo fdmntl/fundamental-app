@@ -6,7 +6,7 @@ export const themes = {
     '--color-primary-secondary': 'rgba(132, 53, 224, 0.2)',
     '--color-secondary': '#33FE00',
     '--color-secondary-secondary': 'rgba(51, 254, 0, 0.2)',
-    '--color-background': '#F3F3F8',
+    '--color-background': '#EDEDF0',
     '--color-content': '#FFFFFF',
     '--color-success': '#37863D',
     '--color-success-secondary': 'rgba(55, 134, 61, 0.2)',
