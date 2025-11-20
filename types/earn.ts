@@ -3,12 +3,12 @@ import { Token } from '~/types/supabaseTypes';
 export type SortType = 'balance' | 'apy';
 
 export type EarnToken = Token & {
-  balance: number; // Balance disponible de l'utilisateur
-  value: number; // Valeur USD de la balance disponible
-  staked: number; // Montant staké par l'utilisateur
-  stakedValue: number; // Valeur USD du montant staké
-  gains: number; // Gains en % depuis le stake
-  gainsValue: number; // Gains en USD
+  balance: number; // User's available balance
+  value: number; // USD value of available balance
+  staked: number; // Amount staked by the user
+  stakedValue: number; // USD value of staked amount
+  gains: number; // Gains in % since staking
+  gainsValue: number; // Gains in USD
 };
 
 export type StakeTransaction = {
