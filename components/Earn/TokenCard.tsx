@@ -32,44 +32,54 @@ export const TokenCard = ({ token, onStake, onUnstake }: TokenCardProps) => {
             <FText className="text-sm text-neutral">{token.name}</FText>
           </View>
         </View>
-        <View className="items-end">
-          <FText className="text-xl text-success" bold>
+        <View className="bg-success-secondary rounded-xl px-2 py-0.5">
+          <FText className="text-lg text-success" bold>
             {token.apy.toFixed(1)}% APY
           </FText>
         </View>
       </View>
 
-      <View className="mt-4 gap-2">
-        <View className="flex-row justify-between">
-          <FText className="text-neutral">Available</FText>
-          <FText bold>
-            {formatTokenAmount(token.balance, token)} {token.symbol}
-          </FText>
-        </View>
-        <View className="flex-row justify-between">
-          <FText className="text-neutral">Staked value</FText>
-          <FText bold>${token.value.toFixed(2)}</FText>
+      <View className="mt-4 gap-4">
+        <View className="gap-2">
+          <View className="flex-row justify-between">
+            <FText className="text-neutral">Available</FText>
+            <FText bold>
+              {formatTokenAmount(token.balance, token)} {token.symbol}
+            </FText>
+          </View>
+          <View className="flex-row justify-between">
+            <FText className="text-neutral">Value</FText>
+            <FText bold>${token.value.toFixed(2)}</FText>
+          </View>
         </View>
         {token.staked > 0 && (
-          <>
-            <View className="bg-neutral/20 my-2 h-px" />
-            <View className="flex-row justify-between">
-              <FText className="text-neutral">Staked</FText>
+          <View className="gap-2 rounded-xl border-4 border-content px-3 py-2">
+            <View className="flex-row justify-between border-b-2 border-content pb-2">
+              <View className="flex flex-row items-center gap-2">
+                <Feather name="archive" size={14} className="text-neutral" />
+                <FText className="text-neutral">Staked Amount</FText>
+              </View>
               <FText bold>
                 {formatTokenAmount(token.staked, token)} {token.symbol}
               </FText>
             </View>
-            <View className="flex-row justify-between">
-              <FText className="text-neutral">Staked Value</FText>
+            <View className="flex-row justify-between border-b-2 border-content pb-2">
+              <View className="flex flex-row items-center gap-2">
+                <Feather name="trending-up" size={14} className="text-neutral" />
+                <FText className="text-neutral">Staked Value</FText>
+              </View>
               <FText bold>${token.stakedValue.toFixed(2)}</FText>
             </View>
             <View className="flex-row justify-between">
-              <FText className="text-neutral">Earnings</FText>
+              <View className="flex flex-row items-center gap-2">
+                <Feather name="percent" size={14} className="text-neutral" />
+                <FText className="text-neutral">Earnings</FText>
+              </View>
               <FText className="text-success" bold>
                 +{token.gains.toFixed(2)}% (${token.gainsValue.toFixed(2)})
               </FText>
             </View>
-          </>
+          </View>
         )}
       </View>
 
