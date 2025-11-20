@@ -57,12 +57,12 @@ export const StakeModal = ({
           </View>
 
           <View
-            className={`gap-3 rounded-xl border-4 p-4 ${
+            className={`gap-3 rounded-xl border-4 p-3 ${
               theme === 'dark' ? 'border-content' : 'border-background'
             }`}>
             <View className="flex-row justify-between">
               <FText className="text-neutral">APY</FText>
-              <View className="bg-success-secondary rounded-xl px-2 py-0.5">
+              <View className="bg-success-secondary rounded-xl px-1.5">
                 <FText className="text-success" bold>
                   {token.apy.toFixed(1)}%
                 </FText>

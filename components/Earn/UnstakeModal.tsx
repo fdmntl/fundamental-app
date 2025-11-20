@@ -57,7 +57,7 @@ export const UnstakeModal = ({
           </View>
 
           <View
-            className={`gap-3 rounded-xl border-4 p-4 ${
+            className={`gap-3 rounded-xl border-4 p-3 ${
               theme === 'dark' ? 'border-content' : 'border-background'
             }`}>
             <View className="flex-row justify-between">
