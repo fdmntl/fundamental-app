@@ -82,18 +82,14 @@ export const TokenCard = ({ token, onStake, onUnstake }: TokenCardProps) => {
           disableGradient
           disabled={!isAvailable}
         />
-
-        {token.staked > 0 ||
-          (true && (
-            <Button
-              title="Unstake"
-              onPress={() => onUnstake(token)}
-              icon={<Feather name="upload" size={16} className="text-text" />}
-              className="w-full bg-content"
-              disableGradient
-              disabled={token.staked === 0}
-            />
-          ))}
+        <Button
+          title="Unstake"
+          onPress={() => onUnstake(token)}
+          icon={<Feather name="upload" size={16} className="text-text" />}
+          className="w-full bg-content"
+          disableGradient
+          disabled={token.staked === 0}
+        />
       </View>
     </View>
   );
