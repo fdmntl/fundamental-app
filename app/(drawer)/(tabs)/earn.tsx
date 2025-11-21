@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
-import { Container } from '~/components/Container';
 import { AaveInfo } from '~/components/Earn/AaveInfo';
 import { EarnStats } from '~/components/Earn/EarnStats';
 import { SortButtons } from '~/components/Earn/SortButtons';
@@ -9,7 +8,6 @@ import { StakeModal } from '~/components/Earn/StakeModal';
 import { TokenList } from '~/components/Earn/TokenList';
 import { UnstakeModal } from '~/components/Earn/UnstakeModal';
 import { HeaderBar } from '~/components/HeaderBar';
-import { FText } from '~/components/Text/FText';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { SortType, EarnToken } from '~/types/earn';
@@ -33,21 +31,6 @@ export default function Earn() {
   const [stakedData, setStakedData] = useState<{
     [address: string]: { staked: number; gains: number };
   }>({});
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error loading data:', error);
-      setLoading(false);
-    }
-  };
 
   const earnTokens = mapTokensToEarnTokens(tokens, user, stakedData);
   const sortedTokens = sortTokens(earnTokens, sortBy);
@@ -83,17 +66,6 @@ export default function Earn() {
     // TODO: appel à smart contract ici
     setShowUnstakeModal(false);
   };
-
-  if (loading) {
-    return (
-      <Container>
-        <HeaderBar title="Earn" />
-        <View className="flex-1 items-center justify-center">
-          <FText>Loading...</FText>
-        </View>
-      </Container>
-    );
-  }
 
   return (
     <Frame>
