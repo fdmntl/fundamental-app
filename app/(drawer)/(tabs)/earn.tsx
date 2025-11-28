@@ -8,6 +8,7 @@ import { StakeModal } from '~/components/Earn/StakeModal';
 import { TokenList } from '~/components/Earn/TokenList';
 import { UnstakeModal } from '~/components/Earn/UnstakeModal';
 import { HeaderBar } from '~/components/HeaderBar';
+import { WavyLine } from '~/components/WavyLine';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { SortType, EarnToken } from '~/types/earn';
@@ -78,7 +79,7 @@ export default function Earn() {
             averageAPY={averageAPY}
           />
 
-          <View className="mx-2 border-2 border-dashed border-gray-700" />
+          <WavyLine className="text-gray-700" />
 
           <SortButtons sortBy={sortBy} onSortChange={setSortBy} />
           <TokenList
