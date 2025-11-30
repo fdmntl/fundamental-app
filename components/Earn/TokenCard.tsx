@@ -37,7 +37,7 @@ export const TokenCard = ({ token, onStake, onUnstake }: TokenCardProps) => {
             <FText className="text-sm text-neutral">{token.name}</FText>
           </View>
         </View>
-        <View className="bg-success-secondary rounded-xl px-2 py-0.5">
+        <View className="rounded-xl bg-success-secondary px-2 py-0.5">
           <FText className="text-lg text-success" bold>
             {token.apy.toFixed(1)}% APY
           </FText>

@@ -11,6 +11,7 @@ import { HeaderBar } from '~/components/HeaderBar';
 import { WavyLine } from '~/components/WavyLine';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
+import { useTheme } from '~/components/Wrappers/ThemeWrapper';
 import { SortType, EarnToken } from '~/types/earn';
 import {
   mapTokensToEarnTokens,
@@ -21,6 +22,7 @@ import {
 } from '~/utils/earn.utils';
 
 export default function Earn() {
+  const { theme } = useTheme();
   const { user, tokens, privy, getToken } = useAppData();
   const [sortBy, setSortBy] = useState<SortType>('balance');
   const [selectedToken, setSelectedToken] = useState<EarnToken | null>(null);
@@ -79,7 +81,7 @@ export default function Earn() {
             averageAPY={averageAPY}
           />
 
-          <WavyLine className="text-gray-700" />
+          <WavyLine className={`${theme === 'dark' ? 'text-content' : 'text-gray-400'}`} />
 
           <SortButtons sortBy={sortBy} onSortChange={setSortBy} />
           <TokenList
