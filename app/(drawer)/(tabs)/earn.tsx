@@ -1,28 +1,30 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ScrollView, View } from 'react-native';
-import { Container } from '~/components/Container';
-import { HeaderBar } from '~/components/HeaderBar';
-import { FText } from '~/components/Text/FText';
+
+import { AaveInfo } from '~/components/Earn/AaveInfo';
 import { EarnStats } from '~/components/Earn/EarnStats';
 import { SortButtons } from '~/components/Earn/SortButtons';
-import { TokenList } from '~/components/Earn/TokenList';
 import { StakeModal } from '~/components/Earn/StakeModal';
+import { TokenList } from '~/components/Earn/TokenList';
 import { UnstakeModal } from '~/components/Earn/UnstakeModal';
-import { AaveInfo } from '~/components/Earn/AaveInfo';
+import { HeaderBar } from '~/components/HeaderBar';
+import { WavyLine } from '~/components/WavyLine';
+import { useAppData } from '~/components/Wrappers/AppData';
+import { Frame } from '~/components/Wrappers/Frame';
+import { useTheme } from '~/components/Wrappers/ThemeWrapper';
 import { SortType, EarnToken } from '~/types/earn';
-import { Token, User } from '~/types/supabaseTypes';
 import {
   mapTokensToEarnTokens,
   sortTokens,
   calculateTotalStakedUSD,
   calculateTotalGainsUSD,
+  calculateAverageAPY,
 } from '~/utils/earn.utils';
-import { useAppData } from '~/components/Wrappers/AppData';
-import { Frame } from '~/components/Wrappers/Frame';
 
 import { supplyUSDCToAave, getAaveSupplyAPY } from '~/services/Aave/earnUsdc';
 
 export default function Earn() {
+  const { theme } = useTheme();
   const { user, tokens, privy, getToken } = useAppData();
   const wallet = privy.wallet;
   const [sortBy, setSortBy] = useState<SortType>('balance');
@@ -31,28 +33,11 @@ export default function Earn() {
   const [showUnstakeModal, setShowUnstakeModal] = useState(false);
   const [stakeAmount, setStakeAmount] = useState('');
   const [useUSD, setUseUSD] = useState(false);
-  const [stakedData, setStakedData] = useState<{ [address: string]: { staked: number; gains: number } }>({});
-  const [loading, setLoading] = useState(true);
-  const [averageAPY, setAverageAPY] = useState(0);
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  useEffect(() => {
-    if (averageAPY !== 0) return;
-    getAverageAPY();
-  }, [wallet]);
-
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error loading data:', error);
-      setLoading(false);
-    }
-  };
+  const [stakedData, setStakedData] = useState<{
+    [address: string]: { staked: number; gains: number };
+  }>({});
+  const [averageAPY, setAverageAPY] = useState<number>(0);
 
   const earnTokens = mapTokensToEarnTokens(tokens, user, stakedData);
   const sortedTokens = sortTokens(earnTokens, sortBy);
@@ -92,30 +77,29 @@ export default function Earn() {
     setShowUnstakeModal(false);
   };
 
-  if (loading) {
-    return (
-      <Container>
-        <HeaderBar title="Earn" />
-        <View className="flex-1 items-center justify-center">
-          <FText>Loading...</FText>
-        </View>
-      </Container>
-    );
-  }
-
   return (
     <Frame>
       <HeaderBar title="Earn" />
-      <ScrollView showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20 }}>
-        <EarnStats
-          totalStakedUSD={totalStakedUSD}
-          totalGainsUSD={totalGainsUSD}
-          averageAPY={averageAPY}
-        />
-        <SortButtons sortBy={sortBy} onSortChange={setSortBy} />
-        <TokenList tokens={sortedTokens} user={user} onStake={handleStake} onUnstake={handleUnstake} />
-        <AaveInfo />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View className="gap-6 pb-10">
+          <EarnStats
+            totalStakedUSD={totalStakedUSD}
+            totalGainsUSD={totalGainsUSD}
+            averageAPY={averageAPY}
+          />
+
+          <WavyLine className={`${theme === 'dark' ? 'text-content' : 'text-gray-400'}`} />
+
+          <SortButtons sortBy={sortBy} onSortChange={setSortBy} />
+          <TokenList
+            tokens={sortedTokens}
+            user={user}
+            onStake={handleStake}
+            onUnstake={handleUnstake}
+          />
+
+          <AaveInfo />
+        </View>
       </ScrollView>
 
       {/* Stake Modal */}

@@ -1,6 +1,9 @@
 import { Feather } from '@expo/vector-icons';
-import { View, Modal, TextInput } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Modal, TextInput, TouchableOpacity } from 'react-native';
+
+import { Button } from '../Button';
+import { useTheme } from '../Wrappers/ThemeWrapper';
+
 import { FText } from '~/components/Text/FText';
 import { EarnToken } from '~/types/earn';
 import { convertAmount, formatTokenAmount } from '~/utils/earn.utils';
@@ -28,34 +31,45 @@ export const UnstakeModal = ({
   onConfirm,
   onMax,
 }: UnstakeModalProps) => {
+  const { theme } = useTheme();
+
   if (!token) return null;
 
   const { display, converted } = convertAmount(amount, token, useUSD);
   const numAmount = parseFloat(amount);
-  const rewardAmount = !isNaN(numAmount) && amount 
-    ? ((numAmount * (useUSD ? 1 : token.last_value) * token.gains) / 100).toFixed(2)
-    : '0.00';
+  const rewardAmount =
+    !isNaN(numAmount) && amount
+      ? ((numAmount * (useUSD ? 1 : token.last_value) * token.gains) / 100).toFixed(2)
+      : '0.00';
 
   return (
     <Modal visible={visible} transparent animationType="slide">
-      <View className="flex-1 justify-end bg-black/50">
-        <View className="rounded-t-3xl bg-background p-6">
-          <View className="mb-6 flex-row items-center justify-between">
-            <FText className="text-2xl" bold>Unstake {token.symbol}</FText>
+      <View className="flex-1 justify-center bg-black/50 px-6">
+        <View
+          className={`gap-4 rounded-xl p-6 ${theme === 'dark' ? 'bg-background' : 'bg-content'}`}>
+          <View className="flex-row items-center justify-between">
+            <FText className="text-2xl" bold>
+              Unstake {token.symbol}
+            </FText>
             <TouchableOpacity onPress={onClose}>
-              <Feather name="x" size={24} />
+              <Feather name="x" size={24} className="text-text" />
             </TouchableOpacity>
           </View>
 
-          {/* Informations */}
-          <View className="mb-6 gap-3 rounded-xl bg-primary/10 p-4">
+          <View
+            className={`gap-3 rounded-xl border-4 p-3 ${
+              theme === 'dark' ? 'border-content' : 'border-background'
+            }`}>
             <View className="flex-row justify-between">
               <FText className="text-neutral">Staked Balance</FText>
               <FText bold>
                 {formatTokenAmount(token.staked, token)} {token.symbol}
               </FText>
             </View>
-            <View className="flex-row justify-between">
+            <View
+              className={`flex-row justify-between border-t-2 pt-3 ${
+                theme === 'dark' ? 'border-content' : 'border-background'
+              }`}>
               <FText className="text-neutral">Total Earnings</FText>
               <FText className="text-success" bold>
                 +{token.gains.toFixed(2)}% (${token.gainsValue.toFixed(2)})
@@ -63,10 +77,12 @@ export const UnstakeModal = ({
             </View>
           </View>
 
-          {/* Input avec switch USD */}
-          <View className="mb-2">
+          <View className="">
             <FText className="mb-2 text-neutral">Amount to Unstake</FText>
-            <View className="flex-row items-center rounded-xl border border-neutral/20 bg-background">
+            <View
+              className={`flex-row items-center rounded-xl border-4 ${
+                theme === 'dark' ? 'border-content bg-background' : 'border-background bg-content'
+              }`}>
               <TextInput
                 value={amount}
                 onChangeText={onAmountChange}
@@ -77,52 +93,57 @@ export const UnstakeModal = ({
               />
               <TouchableOpacity
                 onPress={onToggleCurrency}
-                className="mr-4 rounded-lg bg-primary/20 px-3 py-2">
-                <FText className="text-primary" bold>{useUSD ? 'USD' : token.symbol}</FText>
+                className={`rounded-lg px-4 py-2 ${
+                  theme === 'dark' ? 'bg-content' : 'bg-background'
+                }`}>
+                <FText bold>{useUSD ? 'USD' : token.symbol}</FText>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={onMax}
+                className={`ml-2 mr-2 rounded-lg px-4 py-2 ${
+                  theme === 'dark' ? 'bg-content' : 'bg-background'
+                }`}>
+                <FText bold>Max</FText>
               </TouchableOpacity>
             </View>
-            {converted && (
-              <FText className="mt-1 text-sm text-neutral">{converted}</FText>
-            )}
+            {converted && <FText className="mt-1 text-sm text-neutral">{converted}</FText>}
           </View>
 
-          {/* Bouton Max */}
-          <TouchableOpacity onPress={onMax} className="mb-6 self-end">
-            <FText className="text-primary" bold>Unstake All</FText>
-          </TouchableOpacity>
-
-          {/* Résumé */}
           {amount && display && (
-            <View className="mb-6 rounded-xl border border-primary/20 bg-primary/5 p-4">
-              <FText className="mb-2 text-lg" bold>Confirmation</FText>
-              <View className="gap-2">
+            <View>
+              <FText className="mb-2 text-lg" bold>
+                Confirmation
+              </FText>
+              <View
+                className={`gap-2 rounded-xl border-[3px] border-dashed p-4 ${
+                  theme === 'dark' ? 'border-content' : 'border-background'
+                }`}>
                 <View className="flex-row justify-between">
                   <FText className="text-neutral">You will receive</FText>
                   <FText bold>{display}</FText>
                 </View>
                 <View className="flex-row justify-between">
                   <FText className="text-neutral">Including rewards</FText>
-                  <FText className="text-success" bold>+${rewardAmount}</FText>
+                  <FText className="text-success" bold>
+                    +${rewardAmount}
+                  </FText>
                 </View>
               </View>
             </View>
           )}
 
-          {/* Boutons */}
-          <View className="flex-row gap-3">
-            <TouchableOpacity
+          <View className="flex-row items-center justify-around">
+            <Button
+              icon={<Feather name="x" size={40} className="text-error" />}
               onPress={onClose}
-              className="flex-1 rounded-xl border-2 border-neutral/20 py-4">
-              <FText className="text-center" bold>Cancel</FText>
-            </TouchableOpacity>
-            <TouchableOpacity
+              disableGradient
+            />
+            <Button
+              icon={<Feather name="check" size={40} className="text-success" />}
               onPress={onConfirm}
+              disableGradient
               disabled={!amount || parseFloat(amount) === 0}
-              className={`flex-1 rounded-xl py-4 ${
-                !amount || parseFloat(amount) === 0 ? 'bg-neutral/20' : 'bg-primary'
-              }`}>
-              <FText className="text-center text-white" bold>Confirm Unstake</FText>
-            </TouchableOpacity>
+            />
           </View>
         </View>
       </View>

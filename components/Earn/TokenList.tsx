@@ -1,7 +1,9 @@
 import { View } from 'react-native';
-import { EarnToken } from '~/types/earn';
+
 import { TokenCard } from './TokenCard';
-import { User,Token } from '~/types/supabaseTypes';
+
+import { EarnToken } from '~/types/earn';
+import { User, Token } from '~/types/supabaseTypes';
 import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
 type TokenListProps = {
   tokens: Token[];
@@ -11,11 +13,10 @@ type TokenListProps = {
 };
 
 export const TokenList = ({ tokens, user, onStake, onUnstake }: TokenListProps) => {
-  // Transforme chaque Token en EarnToken en combinant avec la balance de l'user
-  const earnTokens: EarnToken[] = tokens.map(token => {
-    //log userBalance
+  // Transform each Token into EarnToken by combining with the user's balance
+  const earnTokens: EarnToken[] = tokens.map((token) => {
     const userBalance = user.balances.find(
-      b => b.address.toLowerCase() === token.address.toLowerCase()
+      (b) => b.address.toLowerCase() === token.address.toLowerCase()
     );
 
     const balance = digitsToAmount(userBalance?.balance || 0, token);
@@ -24,25 +25,21 @@ export const TokenList = ({ tokens, user, onStake, onUnstake }: TokenListProps) 
       ...token,
       balance,
       value,
-      staked: 0, // à remplir si tu récupères les stakes
-      stakedValue: 0, // à calculer
-      gains: 0, // à remplir selon ton historique
-      gainsValue: 0, // à calculer
+      staked: 0, // to fill in if you retrieve stakes
+      stakedValue: 0, // to calculate
+      gains: 0, // to fill in based on your history
+      gainsValue: 0, // to calculate
     };
   });
 
   return (
-    <View className="gap-5">
-      {earnTokens.map(token => (
-        token.apy > 0 && (
-          <TokenCard
-            key={token.address}
-            token={token}
-            onStake={onStake}
-            onUnstake={onUnstake}
-          />
-        )
-      ))}
+    <View className="gap-6">
+      {earnTokens.map(
+        (token) =>
+          token.apy > 0 && (
+            <TokenCard key={token.address} token={token} onStake={onStake} onUnstake={onUnstake} />
+          )
+      )}
     </View>
   );
 };

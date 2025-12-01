@@ -11,7 +11,7 @@ export const AssetDetailsCTAs = ({ tokenAddress }: { tokenAddress: string }) => 
   return (
     <View className="h-14 w-full flex-row gap-4">
       <Button
-        icon={<Feather name="send" size={20} className="text-text" />}
+        icon={<Feather name="send" size={20} className="text-white" />}
         title="Send"
         className="flex-[2] bg-content"
         onPress={() => {
