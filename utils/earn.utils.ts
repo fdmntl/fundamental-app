@@ -10,17 +10,6 @@ export const calculateTotalGainsUSD = (tokens: EarnToken[]): number => {
   return tokens.reduce((sum, token) => sum + token.gainsValue, 0);
 };
 
-export const calculateAverageAPY = (tokens: EarnToken[]): number => {
-  if (tokens.length === 0) return 0;
-  const totalStaked = calculateTotalStakedUSD(tokens);
-  if (totalStaked === 0) return 0;
-  
-  // Moyenne pondérée par la valeur stakée
-  return tokens.reduce((sum, token) => {
-    return sum + (token.apy * token.stakedValue);
-  }, 0) / totalStaked;
-};
-
 export const sortTokens = (tokens: EarnToken[], sortBy: 'balance' | 'apy'): EarnToken[] => {
   return [...tokens].sort((a, b) => {
     if (sortBy === 'balance') {

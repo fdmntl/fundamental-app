@@ -16,26 +16,33 @@ import {
   sortTokens,
   calculateTotalStakedUSD,
   calculateTotalGainsUSD,
-  calculateAverageAPY
 } from '~/utils/earn.utils';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 
+import { supplyUSDCToAave, getAaveSupplyAPY } from '~/services/Aave/earnUsdc';
+
 export default function Earn() {
   const { user, tokens, privy, getToken } = useAppData();
+  const wallet = privy.wallet;
   const [sortBy, setSortBy] = useState<SortType>('balance');
   const [selectedToken, setSelectedToken] = useState<EarnToken | null>(null);
   const [showStakeModal, setShowStakeModal] = useState(false);
   const [showUnstakeModal, setShowUnstakeModal] = useState(false);
   const [stakeAmount, setStakeAmount] = useState('');
   const [useUSD, setUseUSD] = useState(false);
-
   const [stakedData, setStakedData] = useState<{ [address: string]: { staked: number; gains: number } }>({});
   const [loading, setLoading] = useState(true);
+  const [averageAPY, setAverageAPY] = useState(0);
 
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (averageAPY !== 0) return;
+    getAverageAPY();
+  }, [wallet]);
 
   const loadData = async () => {
     try {
@@ -52,8 +59,11 @@ export default function Earn() {
 
   const totalStakedUSD = calculateTotalStakedUSD(earnTokens);
   const totalGainsUSD = calculateTotalGainsUSD(earnTokens);
-  const averageAPY = calculateAverageAPY(earnTokens);
 
+  const getAverageAPY = async () => {
+    const apy = await getAaveSupplyAPY(wallet);
+    setAverageAPY(apy);
+  }
   const handleStake = (token: EarnToken) => {
     setSelectedToken(token);
     setStakeAmount('');
