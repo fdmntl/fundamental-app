@@ -101,7 +101,7 @@ export default function Earn() {
   const totalStakedUSD = calculateTotalStakedUSD(earnTokens);
   const totalGainsUSD = calculateTotalGainsUSD(earnTokens);
 
-  const getAverageAPY = async () => {
+  const getAverageAPY = () => {
     const apy = earnTokens.length > 0 ? calculateAverageAPY(earnTokens) : 0;
     setAverageAPY(apy);
   };
@@ -179,7 +179,7 @@ export default function Earn() {
           onConfirm={handleConfirmStake}
           onMax={() => {
             if (!selectedToken) return;
-            setStakeAmount((selectedToken.balance - 0.1 / (10) ** selectedToken.digits).toString());
+            setStakeAmount((selectedToken.balance - 0.1 / (10 ** selectedToken.digits)).toString());
           }}
         />
 
