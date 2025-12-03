@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 
 import { TokenCard } from './TokenCard';
-import {FText} from '~/components/Text/FText';
+import { FText } from '~/components/Text/FText';
 import { EarnToken } from '~/types/earn';
 import { User } from '~/types/supabaseTypes';
 

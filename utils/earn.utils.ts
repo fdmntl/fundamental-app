@@ -119,9 +119,10 @@ export const mapTokensToEarnTokens = (
     const gains = stakedData[token.address]?.gains || 0;
     const stakedValue = staked * token.last_value;
     const gainsValue = (stakedValue * gains) / 100;
-    token.apy = stakedData[token.address]?.apy || 0;
+
     return {
       ...token,
+      apy: stakedData[token.address]?.apy || 0,
       balance,
       value,
       staked,
