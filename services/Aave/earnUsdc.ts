@@ -4,26 +4,123 @@ import {
   createPublicClient,
   custom,
   encodeFunctionData,
-  getAddress,
   formatUnits,
   parseUnits,
+  getAddress,
 } from 'viem';
 import { base } from 'viem/chains';
-import { trackEvent } from '~/services/PostHog/trackEvent';
 import { EmbeddedWalletState } from '@privy-io/expo';
+import { trackEvent } from '~/services/PostHog/trackEvent';
+import { Token } from '~/types/supabaseTypes';
+import { EarnToken } from '~/types/earn';
 
-// Aave V3 Addresses on Base
-const AAVE_ADDRESSES = {
-  POOL: '0xA238Dd80C259a72e81d7e4664a9801593F98d1c5', // Aave V3 Pool
-  USDC: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913', // USDC on Base
-  aUSDC: '0x4e65fE4DbA92790696d040ac24Aa414708F5c0AB', // aUSDC token (interest-bearing)
+// Constants
+const AAVE_POOL_ADDRESS = '0xA238Dd80C259a72e81d7e4664a9801593F98d1c5';
+
+const SUPPORTED_TOKENS = {
+  USDC: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+  WETH: '0x4200000000000000000000000000000000000006',
+  CBBTC: '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf',
 } as const;
+
+// ABIs
+const ERC20_ABI = [
+  {
+    name: 'balanceOf',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [{ name: 'account', type: 'address' }],
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    name: 'approve',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'spender', type: 'address' },
+      { name: 'amount', type: 'uint256' },
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+  {
+    name: 'allowance',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [
+      { name: 'owner', type: 'address' },
+      { name: 'spender', type: 'address' },
+    ],
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    name: 'decimals',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint8' }],
+  },
+];
+
+const AAVE_POOL_ABI = [
+  {
+    name: 'supply',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'asset', type: 'address' },
+      { name: 'amount', type: 'uint256' },
+      { name: 'onBehalfOf', type: 'address' },
+      { name: 'referralCode', type: 'uint16' },
+    ],
+    outputs: [],
+  },
+  {
+    name: 'withdraw',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'asset', type: 'address' },
+      { name: 'amount', type: 'uint256' },
+      { name: 'to', type: 'address' },
+    ],
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    name: 'getReserveData',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [{ name: 'asset', type: 'address' }],
+    outputs: [
+      {
+        name: '',
+        type: 'tuple',
+        components: [
+          { name: 'configuration', type: 'uint256' },
+          { name: 'liquidityIndex', type: 'uint128' },
+          { name: 'currentLiquidityRate', type: 'uint128' },
+          { name: 'variableBorrowIndex', type: 'uint128' },
+          { name: 'currentVariableBorrowRate', type: 'uint128' },
+          { name: 'currentStableBorrowRate', type: 'uint128' },
+          { name: 'lastUpdateTimestamp', type: 'uint40' },
+          { name: 'id', type: 'uint16' },
+          { name: 'aTokenAddress', type: 'address' },
+          { name: 'stableDebtTokenAddress', type: 'address' },
+          { name: 'variableDebtTokenAddress', type: 'address' },
+          { name: 'interestRateStrategyAddress', type: 'address' },
+          { name: 'accruedToTreasury', type: 'uint128' },
+          { name: 'unbacked', type: 'uint128' },
+          { name: 'isolationModeTotalDebt', type: 'uint128' },
+        ],
+      },
+    ],
+  },
+];
 
 // Helper: Get wallet and public clients
 const getClients = async (provider: PrivyEmbeddedWalletProvider) => {
   await provider.request({
     method: 'wallet_switchEthereumChain',
-    params: [{ chainId: '0x2105' }], // Base
+    params: [{ chainId: '0x2105' }],
   });
 
   const walletClient = createWalletClient({
@@ -41,528 +138,407 @@ const getClients = async (provider: PrivyEmbeddedWalletProvider) => {
   return { walletClient, publicClient, account };
 };
 
-// ============================================
-// 1. GET AAVE DATA (APY, User Balance, etc.)
-// ============================================
-
 /**
- * Get current USDC supply APY on Aave
- * @returns APY as a percentage (e.g., 5.25 for 5.25%)
+ * Deposit tokens to Aave V3
+ * @param tokenSymbol - Token symbol from SUPPORTED_TOKENS (e.g., 'USDC', 'WETH')
+ * @param amount - Amount to deposit (in human-readable format)
+ * @param wallet - The embedded wallet state
+ * @returns Transaction hash
  */
-export const getAaveSupplyAPY = async (
+export const depositToAave = async (
+  tokenSymbol: keyof typeof SUPPORTED_TOKENS,
+  amount: string,
   wallet: EmbeddedWalletState | undefined
-): Promise<number> => {
-  if (!wallet || wallet.status !== 'connected') return 0;
-  const provider = await wallet.getProvider();
-  const { publicClient } = await getClients(provider);
+): Promise<{ success: boolean; txHash?: string; error?: string }> => {
+  console.log(`Depositing ${amount} of ${tokenSymbol} to Aave`);
 
-  // ABI for getReserveData
-  const poolABI = [
-    {
-      name: 'getReserveData',
-      type: 'function',
-      stateMutability: 'view',
-      inputs: [{ name: 'asset', type: 'address' }],
-      outputs: [
-        {
-          name: '',
-          type: 'tuple',
-          components: [
-            { name: 'configuration', type: 'uint256' },
-            { name: 'liquidityIndex', type: 'uint128' },
-            { name: 'currentLiquidityRate', type: 'uint128' }, // This is the supply APY
-            { name: 'variableBorrowIndex', type: 'uint128' },
-            { name: 'currentVariableBorrowRate', type: 'uint128' },
-            { name: 'currentStableBorrowRate', type: 'uint128' },
-            { name: 'lastUpdateTimestamp', type: 'uint40' },
-            { name: 'id', type: 'uint16' },
-            { name: 'aTokenAddress', type: 'address' },
-            { name: 'stableDebtTokenAddress', type: 'address' },
-            { name: 'variableDebtTokenAddress', type: 'address' },
-            { name: 'interestRateStrategyAddress', type: 'address' },
-            { name: 'accruedToTreasury', type: 'uint128' },
-            { name: 'unbacked', type: 'uint128' },
-            { name: 'isolationModeTotalDebt', type: 'uint128' },
-          ],
-        },
-      ],
-    },
-  ];
-
-  try {
-    const reserveData = await publicClient.readContract({
-      address: AAVE_ADDRESSES.POOL,
-      abi: poolABI,
-      functionName: 'getReserveData',
-      args: [AAVE_ADDRESSES.USDC],
-    }) as any;
-
-    // currentLiquidityRate is in Ray units (1e27)
-    // Convert to percentage: (rate / 1e27) * 100
-    const liquidityRate = BigInt(reserveData.currentLiquidityRate);
-    const apy = Number(liquidityRate) / 1e25; // Divide by 1e27 then multiply by 100
-
-    return apy;
-  } catch (error) {
-    console.error('Error fetching Aave APY:', error);
-    throw error;
+  if (!wallet || wallet.status !== 'connected') {
+    return { success: false, error: 'Wallet not connected' };
   }
-};
 
-/**
- * Get user's USDC balance in Aave (aUSDC balance)
- * @returns Balance in USDC (formatted, e.g., "100.50")
- */
-export const getAaveUSDCBalance = async (
-  provider: PrivyEmbeddedWalletProvider
-): Promise<string> => {
-  const { publicClient, account } = await getClients(provider);
-
-  // ERC-20 balanceOf ABI
-  const erc20ABI = [
-    {
-      name: 'balanceOf',
-      type: 'function',
-      stateMutability: 'view',
-      inputs: [{ name: 'account', type: 'address' }],
-      outputs: [{ name: '', type: 'uint256' }],
-    },
-  ];
+  const tokenAddress = SUPPORTED_TOKENS[tokenSymbol];
+  if (!tokenAddress) {
+    return { success: false, error: `Token ${tokenSymbol} not supported` };
+  }
 
   try {
-    const balance = await publicClient.readContract({
-      address: AAVE_ADDRESSES.aUSDC,
-      abi: erc20ABI,
+    const normalizedAddress = getAddress(tokenAddress.toLowerCase());
+    const provider = await wallet.getProvider();
+    const { walletClient, publicClient, account } = await getClients(provider);
+
+    // Get token decimals
+    const decimals = (await publicClient.readContract({
+      address: normalizedAddress as `0x${string}`,
+      abi: ERC20_ABI,
+      functionName: 'decimals',
+    })) as number;
+
+    const amountInWei = parseUnits(amount, decimals);
+
+    // Check balance
+    const balance = (await publicClient.readContract({
+      address: normalizedAddress as `0x${string}`,
+      abi: ERC20_ABI,
       functionName: 'balanceOf',
       args: [account],
-    }) as bigint;
+    })) as bigint;
 
-    // USDC has 6 decimals
-    return formatUnits(balance, 6);
-  } catch (error) {
-    console.error('Error fetching Aave USDC balance:', error);
-    return '0';
-  }
-};
+    if (balance < amountInWei) {
+      return { success: false, error: 'Insufficient balance' };
+    }
 
-/**
- * Get user's total account data from Aave
- * @returns Object with totalCollateralBase, totalDebtBase, availableBorrowsBase, etc.
- */
-export const getAaveAccountData = async (
-  provider: PrivyEmbeddedWalletProvider
-) => {
-  const { publicClient, account } = await getClients(provider);
+    // Check allowance
+    const allowance = (await publicClient.readContract({
+      address: normalizedAddress as `0x${string}`,
+      abi: ERC20_ABI,
+      functionName: 'allowance',
+      args: [account, AAVE_POOL_ADDRESS],
+    })) as bigint;
 
-  const poolABI = [
-    {
-      name: 'getUserAccountData',
-      type: 'function',
-      stateMutability: 'view',
-      inputs: [{ name: 'user', type: 'address' }],
-      outputs: [
-        { name: 'totalCollateralBase', type: 'uint256' },
-        { name: 'totalDebtBase', type: 'uint256' },
-        { name: 'availableBorrowsBase', type: 'uint256' },
-        { name: 'currentLiquidationThreshold', type: 'uint256' },
-        { name: 'ltv', type: 'uint256' },
-        { name: 'healthFactor', type: 'uint256' },
-      ],
-    },
-  ];
+    // Approve if needed
+    if (allowance < amountInWei) {
+      console.log('Approving token spend...');
+      const approvalHash = await walletClient.writeContract({
+        address: normalizedAddress as `0x${string}`,
+        abi: ERC20_ABI,
+        functionName: 'approve',
+        args: [AAVE_POOL_ADDRESS, amountInWei],
+        account,
+      });
 
-  try {
-    const accountData = await publicClient.readContract({
-      address: AAVE_ADDRESSES.POOL,
-      abi: poolABI,
-      functionName: 'getUserAccountData',
-      args: [account],
-    }) as any;
+      await publicClient.waitForTransactionReceipt({ hash: approvalHash });
+      console.log('Approval successful:', approvalHash);
+    }
 
-    return {
-      totalCollateralUSD: formatUnits(accountData[0], 8), // Base currency is USD with 8 decimals
-      totalDebtUSD: formatUnits(accountData[1], 8),
-      availableBorrowsUSD: formatUnits(accountData[2], 8),
-      currentLiquidationThreshold: Number(accountData[3]) / 100, // In percentage
-      ltv: Number(accountData[4]) / 100, // Loan-to-value in percentage
-      healthFactor: formatUnits(accountData[5], 18),
-    };
-  } catch (error) {
-    console.error('Error fetching Aave account data:', error);
-    throw error;
-  }
-};
-
-// ============================================
-// 2. SUPPLY USDC TO AAVE
-// ============================================
-
-/**
- * Supply USDC to Aave to earn interest
- * @param provider Privy provider
- * @param amount Amount in USDC (e.g., "100.50" for 100.50 USDC)
- * @returns Transaction hash
- */
-export const supplyUSDCToAave = async (
-  provider: PrivyEmbeddedWalletProvider,
-  amount: string
-): Promise<`0x${string}`> => {
-  const { walletClient, publicClient, account } = await getClients(provider);
-
-  // Convert amount to wei (USDC has 6 decimals)
-  const amountWei = parseUnits(amount, 6);
-
-  // Step 1: Check and approve USDC if needed
-  const allowance = await checkERC20Allowance(
-    publicClient,
-    AAVE_ADDRESSES.USDC,
-    account,
-    AAVE_ADDRESSES.POOL
-  );
-
-  if (allowance < amountWei) {
-    console.log('Approving USDC...');
-    await approveERC20ForAave(provider, amountWei);
-    // Wait a bit for the approval to be mined
-    await new Promise(resolve => setTimeout(resolve, 3000));
-  }
-
-  // Step 2: Supply to Aave
-  const poolABI = [
-    {
-      name: 'supply',
-      type: 'function',
-      stateMutability: 'nonpayable',
-      inputs: [
-        { name: 'asset', type: 'address' },
-        { name: 'amount', type: 'uint256' },
-        { name: 'onBehalfOf', type: 'address' },
-        { name: 'referralCode', type: 'uint16' },
-      ],
-      outputs: [],
-    },
-  ];
-
-  try {
-    const data = encodeFunctionData({
-      abi: poolABI,
+    // Supply to Aave
+    console.log('Supplying to Aave...');
+    const supplyHash = await walletClient.writeContract({
+      address: AAVE_POOL_ADDRESS as `0x${string}`,
+      abi: AAVE_POOL_ABI,
       functionName: 'supply',
-      args: [AAVE_ADDRESSES.USDC, amountWei, account, 0], // referralCode = 0
-    });
-
-    const txHash = await walletClient.sendTransaction({
+      args: [normalizedAddress, amountInWei, account, 0],
       account,
-      to: AAVE_ADDRESSES.POOL,
-      data,
-      value: 0n,
     });
 
-    trackEvent('aave_supply', {
+    await publicClient.waitForTransactionReceipt({ hash: supplyHash });
+    console.log('Supply successful:', supplyHash);
+
+    trackEvent('aave_deposit', {
+      token: tokenSymbol,
       amount,
-      asset: 'USDC',
-      txHash,
+      txHash: supplyHash,
     });
 
-    console.log('Supply transaction sent:', txHash);
-    return txHash;
+    return { success: true, txHash: supplyHash };
   } catch (error) {
-    console.error('Error supplying to Aave:', error);
-    throw error;
+    console.error('Error depositing to Aave:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 };
 
-// ============================================
-// 3. WITHDRAW USDC FROM AAVE
-// ============================================
-
 /**
- * Withdraw USDC from Aave
- * @param provider Privy provider
- * @param amount Amount in USDC (e.g., "100.50" for 100.50 USDC), use "max" to withdraw all
+ * Withdraw tokens from Aave V3
+ * @param tokenSymbol - Token symbol from SUPPORTED_TOKENS (e.g., 'USDC', 'WETH')
+ * @param amount - Amount to withdraw (in human-readable format, use 'max' for all)
+ * @param wallet - The embedded wallet state
  * @returns Transaction hash
  */
-export const withdrawUSDCFromAave = async (
-  provider: PrivyEmbeddedWalletProvider,
-  amount: string
-): Promise<`0x${string}`> => {
-  const { walletClient, account } = await getClients(provider);
+export const withdrawFromAave = async (
+  tokenSymbol: keyof typeof SUPPORTED_TOKENS,
+  amount: string,
+  wallet: EmbeddedWalletState | undefined
+): Promise<{ success: boolean; txHash?: string; error?: string }> => {
+  console.log(`Withdrawing ${amount} of ${tokenSymbol} from Aave`);
 
-  // Convert amount to wei, or use max value for "max"
-  const amountWei =
-    amount.toLowerCase() === 'max'
-      ? BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff') // type(uint256).max
-      : parseUnits(amount, 6);
+  if (!wallet || wallet.status !== 'connected') {
+    return { success: false, error: 'Wallet not connected' };
+  }
 
-  const poolABI = [
-    {
-      name: 'withdraw',
-      type: 'function',
-      stateMutability: 'nonpayable',
-      inputs: [
-        { name: 'asset', type: 'address' },
-        { name: 'amount', type: 'uint256' },
-        { name: 'to', type: 'address' },
-      ],
-      outputs: [{ name: '', type: 'uint256' }],
-    },
-  ];
+  const tokenAddress = SUPPORTED_TOKENS[tokenSymbol];
+  if (!tokenAddress) {
+    return { success: false, error: `Token ${tokenSymbol} not supported` };
+  }
 
   try {
-    const data = encodeFunctionData({
-      abi: poolABI,
+    const normalizedAddress = getAddress(tokenAddress.toLowerCase());
+    const provider = await wallet.getProvider();
+    const { walletClient, publicClient, account } = await getClients(provider);
+
+    // Get reserve data to find aToken address
+    const reserveData = (await publicClient.readContract({
+      address: AAVE_POOL_ADDRESS as `0x${string}`,
+      abi: AAVE_POOL_ABI,
+      functionName: 'getReserveData',
+      args: [normalizedAddress],
+    })) as any;
+
+    const aTokenAddress = reserveData.aTokenAddress;
+
+    // Get aToken balance (staked amount)
+    const aTokenBalance = (await publicClient.readContract({
+      address: aTokenAddress as `0x${string}`,
+      abi: ERC20_ABI,
+      functionName: 'balanceOf',
+      args: [account],
+    })) as bigint;
+
+    if (aTokenBalance === 0n) {
+      return { success: false, error: 'No staked balance to withdraw' };
+    }
+
+    // Determine withdrawal amount
+    let amountInWei: bigint;
+    if (amount.toLowerCase() === 'max') {
+      amountInWei = aTokenBalance;
+    } else {
+      const decimals = (await publicClient.readContract({
+        address: normalizedAddress as `0x${string}`,
+        abi: ERC20_ABI,
+        functionName: 'decimals',
+      })) as number;
+      amountInWei = parseUnits(amount, decimals);
+    }
+
+    if (amountInWei > aTokenBalance) {
+      return { success: false, error: 'Insufficient staked balance' };
+    }
+
+    // Withdraw from Aave (use max uint256 for full withdrawal)
+    const withdrawAmount = amount.toLowerCase() === 'max' 
+      ? BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
+      : amountInWei;
+
+    console.log('Withdrawing from Aave...');
+    const withdrawHash = await walletClient.writeContract({
+      address: AAVE_POOL_ADDRESS as `0x${string}`,
+      abi: AAVE_POOL_ABI,
       functionName: 'withdraw',
-      args: [AAVE_ADDRESSES.USDC, amountWei, account],
+      args: [normalizedAddress, withdrawAmount, account],
+      account,
     });
 
-    const txHash = await walletClient.sendTransaction({
-      account,
-      to: AAVE_ADDRESSES.POOL,
-      data,
-      value: 0n,
-    });
+    await publicClient.waitForTransactionReceipt({ hash: withdrawHash });
+    console.log('Withdrawal successful:', withdrawHash);
 
     trackEvent('aave_withdraw', {
+      token: tokenSymbol,
       amount,
-      asset: 'USDC',
-      txHash,
+      txHash: withdrawHash,
     });
 
-    console.log('Withdraw transaction sent:', txHash);
-    return txHash;
+    return { success: true, txHash: withdrawHash };
   } catch (error) {
     console.error('Error withdrawing from Aave:', error);
-    throw error;
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 };
 
-// ============================================
-// 4. BORROW USDC FROM AAVE
-// ============================================
-
 /**
- * Borrow USDC from Aave (requires collateral)
- * @param provider Privy provider
- * @param amount Amount in USDC to borrow
- * @param interestRateMode 1 for stable rate, 2 for variable rate
- * @returns Transaction hash
+ * Get staked balance and gains for a token
+ * @param tokenSymbol - Token symbol from SUPPORTED_TOKENS (e.g., 'USDC', 'WETH')
+ * @param wallet - The embedded wallet state
+ * @param initialAmount - Initial deposit amount (optional, for calculating gains)
+ * @returns Staked balance and gains information
  */
-export const borrowUSDCFromAave = async (
-  provider: PrivyEmbeddedWalletProvider,
-  amount: string,
-  interestRateMode: 1 | 2 = 2 // Default to variable rate
-): Promise<`0x${string}`> => {
-  const { walletClient, account } = await getClients(provider);
+export const getStakedBalance = async (
+  tokenSymbol: keyof typeof SUPPORTED_TOKENS,
+  wallet: EmbeddedWalletState | undefined,
+  initialAmount?: number
+): Promise<{
+  success: boolean;
+  staked: number;
+  gains: number;
+  gainsPercentage: number;
+  apy: number;
+  error?: string;
+}> => {
+  console.log(`Getting staked balance for ${tokenSymbol}`);
 
-  const amountWei = parseUnits(amount, 6);
+  if (!wallet || wallet.status !== 'connected') {
+    return {
+      success: false,
+      staked: 0,
+      gains: 0,
+      gainsPercentage: 0,
+      apy: 0,
+      error: 'Wallet not connected',
+    };
+  }
 
-  const poolABI = [
-    {
-      name: 'borrow',
-      type: 'function',
-      stateMutability: 'nonpayable',
-      inputs: [
-        { name: 'asset', type: 'address' },
-        { name: 'amount', type: 'uint256' },
-        { name: 'interestRateMode', type: 'uint256' },
-        { name: 'referralCode', type: 'uint16' },
-        { name: 'onBehalfOf', type: 'address' },
-      ],
-      outputs: [],
-    },
-  ];
+  const tokenAddress = SUPPORTED_TOKENS[tokenSymbol];
+  if (!tokenAddress) {
+    return {
+      success: false,
+      staked: 0,
+      gains: 0,
+      gainsPercentage: 0,
+      apy: 0,
+      error: `Token ${tokenSymbol} not supported`,
+    };
+  }
 
   try {
-    const data = encodeFunctionData({
-      abi: poolABI,
-      functionName: 'borrow',
-      args: [AAVE_ADDRESSES.USDC, amountWei, interestRateMode, 0, account],
-    });
+    const normalizedAddress = getAddress(tokenAddress.toLowerCase());
+    const provider = await wallet.getProvider();
+    const { publicClient, account } = await getClients(provider);
 
-    const txHash = await walletClient.sendTransaction({
-      account,
-      to: AAVE_ADDRESSES.POOL,
-      data,
-      value: 0n,
-    });
+    // Get reserve data
+    const reserveData = (await publicClient.readContract({
+      address: AAVE_POOL_ADDRESS as `0x${string}`,
+      abi: AAVE_POOL_ABI,
+      functionName: 'getReserveData',
+      args: [normalizedAddress],
+    })) as any;
 
-    trackEvent('aave_borrow', {
-      amount,
-      asset: 'USDC',
-      interestRateMode,
-      txHash,
-    });
+    const aTokenAddress = reserveData.aTokenAddress;
 
-    console.log('Borrow transaction sent:', txHash);
-    return txHash;
+    // Get decimals
+    const decimals = (await publicClient.readContract({
+      address: normalizedAddress as `0x${string}`,
+      abi: ERC20_ABI,
+      functionName: 'decimals',
+    })) as number;
+
+    // Get aToken balance
+    const aTokenBalance = (await publicClient.readContract({
+      address: aTokenAddress as `0x${string}`,
+      abi: ERC20_ABI,
+      functionName: 'balanceOf',
+      args: [account],
+    })) as bigint;
+
+    const staked = Number(formatUnits(aTokenBalance, decimals));
+
+    // Calculate APY
+    const liquidityRate = BigInt(reserveData.currentLiquidityRate);
+    const apy = Number(liquidityRate) / 1e25;
+
+    // Calculate gains
+    let gains = 0;
+    let gainsPercentage = 0;
+
+    if (initialAmount && initialAmount > 0) {
+      gains = staked - initialAmount;
+      gainsPercentage = (gains / initialAmount) * 100;
+    }
+
+    console.log(`Staked: ${staked}, Gains: ${gains}, APY: ${apy}%`);
+
+    return {
+      success: true,
+      staked,
+      gains,
+      gainsPercentage,
+      apy,
+    };
   } catch (error) {
-    console.error('Error borrowing from Aave:', error);
-    throw error;
+    console.error('Error getting staked balance:', error);
+    return {
+      success: false,
+      staked: 0,
+      gains: 0,
+      gainsPercentage: 0,
+      apy: 0,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 };
 
-// ============================================
-// 5. REPAY BORROWED USDC TO AAVE
-// ============================================
-
 /**
- * Repay borrowed USDC to Aave
- * @param provider Privy provider
- * @param amount Amount in USDC to repay, use "max" to repay all debt
- * @param interestRateMode 1 for stable rate, 2 for variable rate
- * @returns Transaction hash
+ * Get complete token information including balance and staking data
+ * @param token - Token information
+ * @param wallet - The embedded wallet state
+ * @param initialStakedAmount - Initial staked amount for gains calculation
+ * @returns Complete EarnToken object
  */
-export const repayUSDCToAave = async (
-  provider: PrivyEmbeddedWalletProvider,
-  amount: string,
-  interestRateMode: 1 | 2 = 2
-): Promise<`0x${string}`> => {
-  const { walletClient, publicClient, account } = await getClients(provider);
+export const getEarnTokenData = async (
+  token: Token,
+  wallet: EmbeddedWalletState | undefined,
+  initialStakedAmount?: number
+): Promise<EarnToken> => {
+  console.log(`Getting complete earn data for ${token.symbol}`);
 
-  // Convert amount to wei
-  const amountWei =
-    amount.toLowerCase() === 'max'
-      ? BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
-      : parseUnits(amount, 6);
-
-  // Step 1: Approve USDC if needed
-  const allowance = await checkERC20Allowance(
-    publicClient,
-    AAVE_ADDRESSES.USDC,
-    account,
-    AAVE_ADDRESSES.POOL
-  );
-
-  if (allowance < amountWei) {
-    console.log('Approving USDC for repayment...');
-    await approveERC20ForAave(provider, amountWei);
-    await new Promise(resolve => setTimeout(resolve, 3000));
+  if (!wallet || wallet.status !== 'connected') {
+    return {
+      ...token,
+      balance: 0,
+      value: 0,
+      staked: 0,
+      stakedValue: 0,
+      gains: 0,
+      gainsValue: 0,
+    };
   }
 
-  // Step 2: Repay
-  const poolABI = [
-    {
-      name: 'repay',
-      type: 'function',
-      stateMutability: 'nonpayable',
-      inputs: [
-        { name: 'asset', type: 'address' },
-        { name: 'amount', type: 'uint256' },
-        { name: 'interestRateMode', type: 'uint256' },
-        { name: 'onBehalfOf', type: 'address' },
-      ],
-      outputs: [{ name: '', type: 'uint256' }],
-    },
-  ];
+  const tokenSymbol = token.symbol.toUpperCase() as keyof typeof SUPPORTED_TOKENS;
+  if (!SUPPORTED_TOKENS[tokenSymbol]) {
+    console.error(`Token ${token.symbol} not supported`);
+    return {
+      ...token,
+      balance: 0,
+      value: 0,
+      staked: 0,
+      stakedValue: 0,
+      gains: 0,
+      gainsValue: 0,
+    };
+  }
 
   try {
-    const data = encodeFunctionData({
-      abi: poolABI,
-      functionName: 'repay',
-      args: [AAVE_ADDRESSES.USDC, amountWei, interestRateMode, account],
-    });
+    const provider = await wallet.getProvider();
+    const { publicClient, account } = await getClients(provider);
+    const normalizedAddress = getAddress(token.address.toLowerCase());
 
-    const txHash = await walletClient.sendTransaction({
-      account,
-      to: AAVE_ADDRESSES.POOL,
-      data,
-      value: 0n,
-    });
+    // Get wallet balance
+    const balance = (await publicClient.readContract({
+      address: normalizedAddress as `0x${string}`,
+      abi: ERC20_ABI,
+      functionName: 'balanceOf',
+      args: [account],
+    })) as bigint;
 
-    trackEvent('aave_repay', {
-      amount,
-      asset: 'USDC',
-      interestRateMode,
-      txHash,
-    });
+    const balanceFormatted = Number(formatUnits(balance, token.digits));
 
-    console.log('Repay transaction sent:', txHash);
-    return txHash;
+    // Get staked balance and gains
+    const stakingData = await getStakedBalance(
+      tokenSymbol,
+      wallet,
+      initialStakedAmount
+    );
+
+    // Calculate USD values
+    const value = balanceFormatted * token.last_value;
+    const stakedValue = stakingData.staked * token.last_value;
+    const gainsValue = stakingData.gains * token.last_value;
+
+    return {
+      ...token,
+      balance: balanceFormatted,
+      value,
+      staked: stakingData.staked,
+      stakedValue,
+      gains: stakingData.gainsPercentage,
+      gainsValue,
+      apy: stakingData.apy,
+    };
   } catch (error) {
-    console.error('Error repaying to Aave:', error);
-    throw error;
+    console.error('Error getting earn token data:', error);
+    return {
+      ...token,
+      balance: 0,
+      value: 0,
+      staked: 0,
+      stakedValue: 0,
+      gains: 0,
+      gainsValue: 0,
+    };
   }
 };
 
-// ============================================
-// HELPER FUNCTIONS
-// ============================================
-
-/**
- * Approve USDC for Aave Pool
- */
-const approveERC20ForAave = async (
-  provider: PrivyEmbeddedWalletProvider,
-  amount: bigint
-) => {
-  const { walletClient, account } = await getClients(provider);
-
-  const erc20ABI = [
-    {
-      name: 'approve',
-      type: 'function',
-      stateMutability: 'nonpayable',
-      inputs: [
-        { name: 'spender', type: 'address' },
-        { name: 'amount', type: 'uint256' },
-      ],
-      outputs: [{ name: '', type: 'bool' }],
-    },
-  ];
-
-  const data = encodeFunctionData({
-    abi: erc20ABI,
-    functionName: 'approve',
-    args: [AAVE_ADDRESSES.POOL, amount],
-  });
-
-  const txHash = await walletClient.sendTransaction({
-    account,
-    to: AAVE_ADDRESSES.USDC,
-    data,
-    value: 0n,
-  });
-
-  console.log('Approval transaction sent:', txHash);
-  return txHash;
-};
-
-/**
- * Check ERC-20 allowance
- */
-const checkERC20Allowance = async (
-  publicClient: any,
-  tokenAddress: string,
-  owner: string,
-  spender: string
-): Promise<bigint> => {
-  const erc20ABI = [
-    {
-      name: 'allowance',
-      type: 'function',
-      stateMutability: 'view',
-      inputs: [
-        { name: 'owner', type: 'address' },
-        { name: 'spender', type: 'address' },
-      ],
-      outputs: [{ name: '', type: 'uint256' }],
-    },
-  ];
-
-  try {
-    const normalizedTokenAddress = getAddress(tokenAddress);
-    const normalizedOwner = getAddress(owner);
-    const normalizedSpender = getAddress(spender);
-
-    const allowance = await publicClient.readContract({
-      address: normalizedTokenAddress,
-      abi: erc20ABI,
-      functionName: 'allowance',
-      args: [normalizedOwner, normalizedSpender],
-    });
-
-    return BigInt(allowance as string);
-  } catch (error) {
-    console.error('Error checking allowance:', error);
-    return 0n;
-  }
-};
+export { SUPPORTED_TOKENS };

@@ -21,7 +21,6 @@ import {
   calculateAverageAPY,
 } from '~/utils/earn.utils';
 
-import { supplyUSDCToAave, getAaveSupplyAPY } from '~/services/Aave/earnUsdc';
 
 export default function Earn() {
   const { theme } = useTheme();
@@ -38,6 +37,7 @@ export default function Earn() {
     [address: string]: { staked: number; gains: number };
   }>({});
   const [averageAPY, setAverageAPY] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const earnTokens = mapTokensToEarnTokens(tokens, user, stakedData);
   const sortedTokens = sortTokens(earnTokens, sortBy);
@@ -46,7 +46,7 @@ export default function Earn() {
   const totalGainsUSD = calculateTotalGainsUSD(earnTokens);
 
   const getAverageAPY = async () => {
-    const apy = await getAaveSupplyAPY(wallet);
+    const apy = 0;
     setAverageAPY(apy);
   }
   const handleStake = (token: EarnToken) => {
@@ -91,11 +91,13 @@ export default function Earn() {
           <WavyLine className={`${theme === 'dark' ? 'text-content' : 'text-gray-400'}`} />
 
           <SortButtons sortBy={sortBy} onSortChange={setSortBy} />
+          
           <TokenList
             tokens={sortedTokens}
             user={user}
             onStake={handleStake}
             onUnstake={handleUnstake}
+            loading={loading}
           />
 
           <AaveInfo />
