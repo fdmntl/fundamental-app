@@ -98,7 +98,7 @@ export default function Earn() {
   const totalStakedUSD = calculateTotalStakedUSD(earnTokens);
   const totalGainsUSD = calculateTotalGainsUSD(earnTokens);
 
-  const getAverageAPY = async () => {
+  const getAverageAPY = () => {
     const apy = earnTokens.length > 0 ? calculateAverageAPY(earnTokens) : 0;
     setAverageAPY(apy);
   }
