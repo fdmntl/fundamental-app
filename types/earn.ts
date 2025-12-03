@@ -18,3 +18,12 @@ export type StakeTransaction = {
   timestamp: string;
   type: 'stake' | 'unstake';
 };
+
+export type StakedData = { 
+  success: boolean; 
+  staked: number; 
+  gains: number; 
+  gainsPercentage: number;
+  apy: number; 
+  error?: string | undefined; 
+};

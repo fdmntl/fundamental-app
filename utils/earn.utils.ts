@@ -1,6 +1,6 @@
 import { digitsToAmount } from './helpers/tokens/digitsToAmount';
 
-import { EarnToken } from '~/types/earn';
+import { EarnToken, StakedData } from '~/types/earn';
 import { Token, User } from '~/types/supabaseTypes';
 
 export const calculateTotalStakedUSD = (tokens: EarnToken[]): number => {
@@ -110,7 +110,7 @@ export const getUserTokenValue = (user: User, tokenAddress: string): number => {
 export const mapTokensToEarnTokens = (
   tokens: Token[],
   user: User | null,
-  stakedData: { [address: string]: { staked: number; gains: number } }
+  stakedData: { [address: string]: StakedData }
 ): EarnToken[] => {
   return tokens.map((token) => {
     const balance = user ? getUserTokenBalance(user, token.address, token) : 0;
@@ -119,7 +119,7 @@ export const mapTokensToEarnTokens = (
     const gains = stakedData[token.address]?.gains || 0;
     const stakedValue = staked * token.last_value;
     const gainsValue = (stakedValue * gains) / 100;
-
+    token.apy = stakedData[token.address]?.apy || 0;
     return {
       ...token,
       balance,

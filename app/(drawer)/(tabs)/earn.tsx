@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
 import { AaveInfo } from '~/components/Earn/AaveInfo';
@@ -12,7 +12,7 @@ import { WavyLine } from '~/components/WavyLine';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { useTheme } from '~/components/Wrappers/ThemeWrapper';
-import { SortType, EarnToken } from '~/types/earn';
+import { SortType, EarnToken, StakedData } from '~/types/earn';
 import {
   mapTokensToEarnTokens,
   sortTokens,
@@ -20,6 +20,14 @@ import {
   calculateTotalGainsUSD,
   calculateAverageAPY,
 } from '~/utils/earn.utils';
+
+import {
+  getStakedBalance,
+  depositToAave,
+  withdrawFromAave,
+  getEarnTokenData,
+  SUPPORTED_TOKENS,
+} from '~/services/Aave/aaveService';
 
 
 export default function Earn() {
@@ -34,10 +42,32 @@ export default function Earn() {
   const [useUSD, setUseUSD] = useState(false);
 
   const [stakedData, setStakedData] = useState<{
-    [address: string]: { staked: number; gains: number };
+    [address: string]: StakedData;
   }>({});
   const [averageAPY, setAverageAPY] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchStakedData = async () => {
+      setLoading(true);
+      const data: { [address: string]: StakedData } = {};
+      for (const token of tokens) {
+        console.log('Fetching staked data for token:', token.symbol);
+        if (token.symbol in SUPPORTED_TOKENS) {
+          const staked = await getStakedBalance(token.symbol as keyof typeof SUPPORTED_TOKENS, wallet);
+          data[token.address] = {
+            ...staked,
+          };
+        }
+      }
+      setStakedData(data);
+      setLoading(false);
+    };
+
+    fetchStakedData();
+  },[]);
+  
+
 
   const earnTokens = mapTokensToEarnTokens(tokens, user, stakedData);
   const sortedTokens = sortTokens(earnTokens, sortBy);
@@ -49,6 +79,7 @@ export default function Earn() {
     const apy = 0;
     setAverageAPY(apy);
   }
+
   const handleStake = (token: EarnToken) => {
     setSelectedToken(token);
     setStakeAmount('');
@@ -65,6 +96,7 @@ export default function Earn() {
 
   const handleConfirmStake = () => {
     if (!selectedToken) return;
+    depositToAave(selectedToken.symbol as keyof typeof SUPPORTED_TOKENS, stakeAmount, wallet);
     console.log(`Stake ${stakeAmount} ${useUSD ? 'USD' : selectedToken.symbol}`);
     // TODO: appel à smart contract ici
     setShowStakeModal(false);
@@ -72,6 +104,7 @@ export default function Earn() {
 
   const handleConfirmUnstake = () => {
     if (!selectedToken) return;
+    withdrawFromAave(selectedToken.symbol as keyof typeof SUPPORTED_TOKENS, stakeAmount, wallet);
     console.log(`Unstake ${stakeAmount} ${useUSD ? 'USD' : selectedToken.symbol}`);
     // TODO: appel à smart contract ici
     setShowUnstakeModal(false);
