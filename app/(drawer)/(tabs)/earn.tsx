@@ -62,7 +62,7 @@ export default function Earn() {
         }
       }
       setStakedData(data);
-      getAverageAPY();
+      setAverageAPY(calculateAverageAPY(mapTokensToEarnTokens(tokens, user, data)));
       setScrollEnabled(true);
       setLoading(false);
     };
@@ -97,7 +97,7 @@ export default function Earn() {
 
   const earnTokens = mapTokensToEarnTokens(tokens, user, stakedData);
   const sortedTokens = sortTokens(earnTokens, sortBy);
-
+  
   const totalStakedUSD = calculateTotalStakedUSD(earnTokens);
   const totalGainsUSD = calculateTotalGainsUSD(earnTokens);
 
