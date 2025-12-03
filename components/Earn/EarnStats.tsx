@@ -27,7 +27,7 @@ export const EarnStats = ({ totalStakedUSD, totalGainsUSD, averageAPY }: EarnSta
         <View>
           <FText className="ml-auto text-sm text-neutral">Avg APY</FText>
           <FText className="text-2xl" bold>
-            {averageAPY.toFixed(1)}%
+            {averageAPY.toFixed(2)}%
           </FText>
         </View>
       </View>

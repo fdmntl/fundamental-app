@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { ScrollView, View } from 'react-native';
 
 import { AaveInfo } from '~/components/Earn/AaveInfo';
@@ -28,6 +28,7 @@ import {
   getEarnTokenData,
   SUPPORTED_TOKENS,
 } from '~/services/Aave/aaveService';
+import { CustomRefreshControl } from '~/components/CustomRefreshControl';
 
 
 export default function Earn() {
@@ -40,7 +41,7 @@ export default function Earn() {
   const [showUnstakeModal, setShowUnstakeModal] = useState(false);
   const [stakeAmount, setStakeAmount] = useState('');
   const [useUSD, setUseUSD] = useState(false);
-
+  const [scrollEnabled, setScrollEnabled] = useState(true);
   const [stakedData, setStakedData] = useState<{
     [address: string]: StakedData;
   }>({});
@@ -61,13 +62,35 @@ export default function Earn() {
         }
       }
       setStakedData(data);
+      getAverageAPY();
       setLoading(false);
     };
 
     fetchStakedData();
   },[]);
   
+  const fetchStakedData = useCallback(async () => {
+    setLoading(true);
+    const data: { [address: string]: StakedData } = {};
+    for (const token of tokens) {
+      console.log('Fetching staked data for token:', token.symbol);
+      if (token.symbol in SUPPORTED_TOKENS) {
+        const staked = await getStakedBalance(token.symbol as keyof typeof SUPPORTED_TOKENS, wallet);
+        console.log('Staked data:', staked);
+        data[token.address] = {
+          ...staked,
+        };
+        
+      }
+    }
+    console.log('All staked data:', data);
+    setStakedData(data);
+    getAverageAPY();
+    setLoading(false);
+  }, [tokens, wallet]);
 
+  const scrollViewRef = useRef<ScrollView>(null);
+  
 
   const earnTokens = mapTokensToEarnTokens(tokens, user, stakedData);
   const sortedTokens = sortTokens(earnTokens, sortBy);
@@ -76,7 +99,7 @@ export default function Earn() {
   const totalGainsUSD = calculateTotalGainsUSD(earnTokens);
 
   const getAverageAPY = async () => {
-    const apy = 0;
+    const apy = earnTokens.length > 0 ? calculateAverageAPY(earnTokens) : 0;
     setAverageAPY(apy);
   }
 
@@ -112,62 +135,68 @@ export default function Earn() {
 
   return (
     <Frame>
-      <HeaderBar title="Earn" />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View className="gap-6 pb-10">
-          <EarnStats
-            totalStakedUSD={totalStakedUSD}
-            totalGainsUSD={totalGainsUSD}
-            averageAPY={averageAPY}
-          />
+      <CustomRefreshControl
+              ref={scrollViewRef}
+              onRefresh={fetchStakedData}
+              scrollEnabled={scrollEnabled}
+              contentContainerStyle={{ paddingBottom: 50 }}>
+        <HeaderBar title="Earn" />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View className="gap-6 pb-10">
+            <EarnStats
+              totalStakedUSD={totalStakedUSD}
+              totalGainsUSD={totalGainsUSD}
+              averageAPY={averageAPY}
+            />
 
-          <WavyLine className={`${theme === 'dark' ? 'text-content' : 'text-gray-400'}`} />
+            <WavyLine className={`${theme === 'dark' ? 'text-content' : 'text-gray-400'}`} />
 
-          <SortButtons sortBy={sortBy} onSortChange={setSortBy} />
-          
-          <TokenList
-            tokens={sortedTokens}
-            user={user}
-            onStake={handleStake}
-            onUnstake={handleUnstake}
-            loading={loading}
-          />
+            <SortButtons sortBy={sortBy} onSortChange={setSortBy} />
+            
+            <TokenList
+              tokens={sortedTokens}
+              user={user}
+              onStake={handleStake}
+              onUnstake={handleUnstake}
+              loading={loading}
+            />
 
-          <AaveInfo />
-        </View>
-      </ScrollView>
+            <AaveInfo />
+          </View>
+        </ScrollView>
 
-      {/* Stake Modal */}
-      <StakeModal
-        visible={showStakeModal}
-        token={selectedToken}
-        amount={stakeAmount}
-        useUSD={useUSD}
-        onClose={() => setShowStakeModal(false)}
-        onAmountChange={setStakeAmount}
-        onToggleCurrency={() => setUseUSD(!useUSD)}
-        onConfirm={handleConfirmStake}
-        onMax={() => {
-          if (!selectedToken) return;
-          setStakeAmount(selectedToken.balance.toString());
-        }}
-      />
+        {/* Stake Modal */}
+        <StakeModal
+          visible={showStakeModal}
+          token={selectedToken}
+          amount={stakeAmount}
+          useUSD={useUSD}
+          onClose={() => setShowStakeModal(false)}
+          onAmountChange={setStakeAmount}
+          onToggleCurrency={() => setUseUSD(!useUSD)}
+          onConfirm={handleConfirmStake}
+          onMax={() => {
+            if (!selectedToken) return;
+            setStakeAmount((selectedToken.balance - 0.1 / (10) ** selectedToken.digits).toString());
+          }}
+        />
 
-      {/* Unstake Modal */}
-      <UnstakeModal
-        visible={showUnstakeModal}
-        token={selectedToken}
-        amount={stakeAmount}
-        useUSD={useUSD}
-        onClose={() => setShowUnstakeModal(false)}
-        onAmountChange={setStakeAmount}
-        onToggleCurrency={() => setUseUSD(!useUSD)}
-        onConfirm={handleConfirmUnstake}
-        onMax={() => {
-          if (!selectedToken) return;
-          setStakeAmount(selectedToken.staked.toString());
-        }}
-      />
+        {/* Unstake Modal */}
+        <UnstakeModal
+          visible={showUnstakeModal}
+          token={selectedToken}
+          amount={stakeAmount}
+          useUSD={useUSD}
+          onClose={() => setShowUnstakeModal(false)}
+          onAmountChange={setStakeAmount}
+          onToggleCurrency={() => setUseUSD(!useUSD)}
+          onConfirm={handleConfirmUnstake}
+          onMax={() => {
+            if (!selectedToken) return;
+            setStakeAmount(selectedToken.staked.toString());
+          }}
+        />
+      </CustomRefreshControl>
     </Frame>
   );
 }

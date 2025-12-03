@@ -6,7 +6,7 @@ import { EarnToken } from '~/types/earn';
 import { User, Token } from '~/types/supabaseTypes';
 import { digitsToAmount } from '~/utils/helpers/tokens/digitsToAmount';
 type TokenListProps = {
-  tokens: Token[];
+  tokens: EarnToken[];
   user: User;
   onStake: (token: EarnToken) => void;
   onUnstake: (token: EarnToken) => void;
@@ -22,27 +22,10 @@ export const TokenList = ({ tokens, user, onStake, onUnstake, loading }: TokenLi
       </View>
     );
   }
-  const earnTokens: EarnToken[] = tokens.map((token) => {
-    const userBalance = user.balances.find(
-      (b) => b.address.toLowerCase() === token.address.toLowerCase()
-    );
-
-    const balance = digitsToAmount(userBalance?.balance || 0, token);
-    const value = userBalance?.value || 0;
-    return {
-      ...token,
-      balance,
-      value,
-      staked: 0, // to fill in if you retrieve stakes
-      stakedValue: 0, // to calculate
-      gains: 0, // to fill in based on your history
-      gainsValue: 0, // to calculate
-    };
-  });
 
   return (
     <View className="gap-6">
-      {earnTokens.map(
+      {tokens.map(
         (token) =>
           token.apy > 0 && (
             <TokenCard key={token.address} token={token} onStake={onStake} onUnstake={onUnstake} />

@@ -12,7 +12,7 @@ import { base } from 'viem/chains';
 import { EmbeddedWalletState } from '@privy-io/expo';
 import { trackEvent } from '~/services/PostHog/trackEvent';
 import { Token } from '~/types/supabaseTypes';
-import { EarnToken } from '~/types/earn';
+import { EarnToken, StakeTransaction } from '~/types/earn';
 
 // Constants
 const AAVE_POOL_ADDRESS = '0xA238Dd80C259a72e81d7e4664a9801593F98d1c5';
@@ -58,6 +58,20 @@ const ERC20_ABI = [
     stateMutability: 'view',
     inputs: [],
     outputs: [{ name: '', type: 'uint8' }],
+  },
+  {
+    name: 'deposit',
+    type: 'function',
+    stateMutability: 'payable',
+    inputs: [],
+    outputs: [],
+  },
+  {
+    name: 'withdraw',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [{ name: 'amount', type: 'uint256' }],
+    outputs: [],
   },
 ];
 
@@ -174,6 +188,38 @@ export const depositToAave = async (
     })) as number;
 
     const amountInWei = parseUnits(amount, decimals);
+
+    // Special handling for WETH: Check if user has ETH and needs to wrap
+    if (tokenSymbol === 'WETH') {
+      const wethBalance = (await publicClient.readContract({
+        address: normalizedAddress as `0x${string}`,
+        abi: ERC20_ABI,
+        functionName: 'balanceOf',
+        args: [account],
+      })) as bigint;
+
+      // If insufficient WETH, try to wrap ETH
+      if (wethBalance < amountInWei) {
+        const ethBalance = await publicClient.getBalance({ address: account });
+        const neededAmount = amountInWei - wethBalance;
+        
+        if (ethBalance < neededAmount) {
+          return { success: false, error: 'Insufficient ETH balance to wrap' };
+        }
+
+        console.log(`Wrapping ${formatUnits(neededAmount, decimals)} ETH to WETH...`);
+        const wrapHash = await walletClient.writeContract({
+          address: normalizedAddress as `0x${string}`,
+          abi: ERC20_ABI,
+          functionName: 'deposit',
+          value: neededAmount,
+          account,
+        });
+
+        await publicClient.waitForTransactionReceipt({ hash: wrapHash });
+        console.log('ETH wrapped successfully:', wrapHash);
+      }
+    }
 
     // Check balance
     const balance = (await publicClient.readContract({

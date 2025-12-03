@@ -57,7 +57,7 @@ export const TokenCard = ({ token, onStake, onUnstake }: TokenCardProps) => {
             <FText bold>${token.value.toFixed(2)}</FText>
           </View>
         </View>
-        {token.staked > 0 && (
+        {token.stakedValue > 0 && (
           <View
             className={`gap-2 rounded-xl border-4 px-3 py-2 ${
               theme === 'dark' ? 'border-content' : 'border-background'
