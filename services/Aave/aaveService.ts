@@ -3,7 +3,6 @@ import {
   createWalletClient,
   createPublicClient,
   custom,
-  encodeFunctionData,
   formatUnits,
   parseUnits,
   getAddress,
@@ -12,7 +11,7 @@ import { base } from 'viem/chains';
 import { EmbeddedWalletState } from '@privy-io/expo';
 import { trackEvent } from '~/services/PostHog/trackEvent';
 import { Token } from '~/types/supabaseTypes';
-import { EarnToken, StakeTransaction } from '~/types/earn';
+import { EarnToken } from '~/types/earn';
 
 // Constants
 const AAVE_POOL_ADDRESS = '0xA238Dd80C259a72e81d7e4664a9801593F98d1c5';

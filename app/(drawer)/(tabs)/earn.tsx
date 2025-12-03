@@ -25,7 +25,6 @@ import {
   getStakedBalance,
   depositToAave,
   withdrawFromAave,
-  getEarnTokenData,
   SUPPORTED_TOKENS,
 } from '~/services/Aave/aaveService';
 import { CustomRefreshControl } from '~/components/CustomRefreshControl';
@@ -33,7 +32,7 @@ import { CustomRefreshControl } from '~/components/CustomRefreshControl';
 
 export default function Earn() {
   const { theme } = useTheme();
-  const { user, tokens, privy, getToken } = useAppData();
+  const { user, tokens, privy } = useAppData();
   const wallet = privy.wallet;
   const [sortBy, setSortBy] = useState<SortType>('balance');
   const [selectedToken, setSelectedToken] = useState<EarnToken | null>(null);
@@ -51,6 +50,7 @@ export default function Earn() {
   useEffect(() => {
     const fetchStakedData = async () => {
       setLoading(true);
+      setScrollEnabled(false);
       const data: { [address: string]: StakedData } = {};
       for (const token of tokens) {
         console.log('Fetching staked data for token:', token.symbol);
@@ -63,6 +63,7 @@ export default function Earn() {
       }
       setStakedData(data);
       getAverageAPY();
+      setScrollEnabled(true);
       setLoading(false);
     };
 
@@ -71,6 +72,7 @@ export default function Earn() {
   
   const fetchStakedData = useCallback(async () => {
     setLoading(true);
+    setScrollEnabled(false);
     const data: { [address: string]: StakedData } = {};
     for (const token of tokens) {
       console.log('Fetching staked data for token:', token.symbol);
@@ -86,6 +88,7 @@ export default function Earn() {
     console.log('All staked data:', data);
     setStakedData(data);
     getAverageAPY();
+    setScrollEnabled(true);
     setLoading(false);
   }, [tokens, wallet]);
 
@@ -101,7 +104,7 @@ export default function Earn() {
   const getAverageAPY = async () => {
     const apy = earnTokens.length > 0 ? calculateAverageAPY(earnTokens) : 0;
     setAverageAPY(apy);
-  }
+  };
 
   const handleStake = (token: EarnToken) => {
     setSelectedToken(token);
@@ -155,7 +158,6 @@ export default function Earn() {
             
             <TokenList
               tokens={sortedTokens}
-              user={user}
               onStake={handleStake}
               onUnstake={handleUnstake}
               loading={loading}
