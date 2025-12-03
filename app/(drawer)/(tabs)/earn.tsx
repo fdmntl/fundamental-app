@@ -177,7 +177,7 @@ export default function Earn() {
           onConfirm={handleConfirmStake}
           onMax={() => {
             if (!selectedToken) return;
-            setStakeAmount((selectedToken.balance - 0.1 / (10) ** selectedToken.digits).toString());
+            setStakeAmount((selectedToken.balance - 0.1 / (10 ** selectedToken.digits)).toString());
           }}
         />
 
