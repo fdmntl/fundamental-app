@@ -44,6 +44,14 @@ export const TokenCard = ({ token, onStake, onUnstake }: TokenCardProps) => {
         </View>
       </View>
 
+      {token.is_stablecoin && (
+        <View className="mt-4 rounded-lg bg-success-secondary p-2">
+          <FText className="text-sm text-success" bold>
+            🟢 Stablecoin - Lower risk
+          </FText>
+        </View>
+      )}
+
       <View className="mt-4 gap-4">
         <View className="gap-2">
           <View className="flex-row justify-between">
@@ -112,7 +120,7 @@ export const TokenCard = ({ token, onStake, onUnstake }: TokenCardProps) => {
           icon={<Feather name="upload" size={16} className="text-text" />}
           className={`w-full ${theme === 'dark' ? 'bg-content' : 'bg-background'}`}
           disableGradient
-          disabled={token.staked === 0}
+          disabled={token.stakedValue === 0}
         />
       </View>
     </View>

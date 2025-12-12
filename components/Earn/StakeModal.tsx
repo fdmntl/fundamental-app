@@ -62,7 +62,7 @@ export const StakeModal = ({
             }`}>
             <View className="flex-row justify-between">
               <FText className="text-neutral">APY</FText>
-              <View className="bg-success-secondary rounded-xl px-1.5">
+              <View className="rounded-xl bg-success-secondary px-1.5">
                 <FText className="text-success" bold>
                   {token.apy.toFixed(1)}%
                 </FText>
@@ -86,7 +86,7 @@ export const StakeModal = ({
             </View>
           </View>
           {token.is_stablecoin && (
-            <View className="bg-success-secondary rounded-lg p-2">
+            <View className="rounded-lg bg-success-secondary p-2">
               <FText className="text-sm text-success" bold>
                 🟢 Stablecoin - Lower risk
               </FText>
