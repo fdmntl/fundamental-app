@@ -67,7 +67,7 @@ const Dot = ({ opacity }: { opacity: Animated.Value }) => {
   );
 };
 
-const LoadingDots = () => {
+export const LoadingDots = () => {
   const [opacity1, opacity2, opacity3] = useCrescendoAnimation(0);
 
   return (
