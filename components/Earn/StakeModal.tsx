@@ -101,7 +101,9 @@ export const StakeModal = ({
               }`}>
               <TextInput
                 value={amount}
-                onChangeText={onAmountChange}
+                onChangeText={(text) => {
+                  onAmountChange(text.replace(/[^0-9.]/g, ''));
+                }}
                 placeholder="0.0"
                 keyboardType="decimal-pad"
                 className="flex-1 p-4 text-text"
