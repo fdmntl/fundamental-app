@@ -46,33 +46,9 @@ export default function Earn() {
   const [averageAPY, setAverageAPY] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchStakedData = async () => {
-      setLoading(true);
-      setScrollEnabled(false);
-      const data: { [address: string]: StakedData } = {};
-      for (const token of tokens) {
-        console.log('Fetching staked data for token:', token.symbol);
-        if (token.symbol in SUPPORTED_TOKENS) {
-          const staked = await getStakedBalance(
-            token.symbol as keyof typeof SUPPORTED_TOKENS,
-            wallet
-          );
-          data[token.address] = {
-            ...staked,
-          };
-        }
-      }
-      setStakedData(data);
-      setAverageAPY(calculateAverageAPY(mapTokensToEarnTokens(tokens, user, data)));
-      setScrollEnabled(true);
-      setLoading(false);
-    };
-
-    fetchStakedData();
-  }, []);
-
   const fetchStakedData = useCallback(async () => {
+    if (!tokens || tokens.length === 0 || !wallet) return;
+
     setLoading(true);
     setScrollEnabled(false);
     const data: { [address: string]: StakedData } = {};
@@ -91,10 +67,14 @@ export default function Earn() {
     }
     console.log('All staked data:', data);
     setStakedData(data);
-    getAverageAPY();
+    setAverageAPY(calculateAverageAPY(mapTokensToEarnTokens(tokens, user, data)));
     setScrollEnabled(true);
     setLoading(false);
-  }, [tokens, wallet]);
+  }, [tokens, wallet, user]);
+
+  useEffect(() => {
+    fetchStakedData();
+  }, []);
 
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -103,11 +83,6 @@ export default function Earn() {
 
   const totalStakedUSD = calculateTotalStakedUSD(earnTokens);
   const totalGainsUSD = calculateTotalGainsUSD(earnTokens);
-
-  const getAverageAPY = () => {
-    const apy = earnTokens.length > 0 ? calculateAverageAPY(earnTokens) : 0;
-    setAverageAPY(apy);
-  };
 
   const handleStake = (token: EarnToken) => {
     setSelectedToken(token);
