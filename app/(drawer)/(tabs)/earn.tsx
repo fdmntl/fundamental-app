@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { ScrollView, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
+import { CustomRefreshControl } from '~/components/CustomRefreshControl';
 import { AaveInfo } from '~/components/Earn/AaveInfo';
 import { EarnStats } from '~/components/Earn/EarnStats';
 import { SortButtons } from '~/components/Earn/SortButtons';
@@ -12,6 +14,12 @@ import { WavyLine } from '~/components/WavyLine';
 import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { useTheme } from '~/components/Wrappers/ThemeWrapper';
+import {
+  getStakedBalance,
+  depositToAave,
+  withdrawFromAave,
+  SUPPORTED_TOKENS,
+} from '~/services/Aave/aaveService';
 import { SortType, EarnToken, StakedData } from '~/types/earn';
 import {
   mapTokensToEarnTokens,
@@ -20,15 +28,6 @@ import {
   calculateTotalGainsUSD,
   calculateAverageAPY,
 } from '~/utils/earn.utils';
-
-import {
-  getStakedBalance,
-  depositToAave,
-  withdrawFromAave,
-  SUPPORTED_TOKENS,
-} from '~/services/Aave/aaveService';
-import { CustomRefreshControl } from '~/components/CustomRefreshControl';
-
 
 export default function Earn() {
   const { theme } = useTheme();
@@ -55,7 +54,10 @@ export default function Earn() {
       for (const token of tokens) {
         console.log('Fetching staked data for token:', token.symbol);
         if (token.symbol in SUPPORTED_TOKENS) {
-          const staked = await getStakedBalance(token.symbol as keyof typeof SUPPORTED_TOKENS, wallet);
+          const staked = await getStakedBalance(
+            token.symbol as keyof typeof SUPPORTED_TOKENS,
+            wallet
+          );
           data[token.address] = {
             ...staked,
           };
@@ -68,8 +70,8 @@ export default function Earn() {
     };
 
     fetchStakedData();
-  },[]);
-  
+  }, []);
+
   const fetchStakedData = useCallback(async () => {
     setLoading(true);
     setScrollEnabled(false);
@@ -77,12 +79,14 @@ export default function Earn() {
     for (const token of tokens) {
       console.log('Fetching staked data for token:', token.symbol);
       if (token.symbol in SUPPORTED_TOKENS) {
-        const staked = await getStakedBalance(token.symbol as keyof typeof SUPPORTED_TOKENS, wallet);
+        const staked = await getStakedBalance(
+          token.symbol as keyof typeof SUPPORTED_TOKENS,
+          wallet
+        );
         console.log('Staked data:', staked);
         data[token.address] = {
           ...staked,
         };
-        
       }
     }
     console.log('All staked data:', data);
@@ -93,11 +97,10 @@ export default function Earn() {
   }, [tokens, wallet]);
 
   const scrollViewRef = useRef<ScrollView>(null);
-  
 
   const earnTokens = mapTokensToEarnTokens(tokens, user, stakedData);
   const sortedTokens = sortTokens(earnTokens, sortBy);
-  
+
   const totalStakedUSD = calculateTotalStakedUSD(earnTokens);
   const totalGainsUSD = calculateTotalGainsUSD(earnTokens);
 
@@ -120,29 +123,97 @@ export default function Earn() {
     setShowUnstakeModal(true);
   };
 
-  const handleConfirmStake = () => {
+  const handleConfirmStake = async () => {
     if (!selectedToken) return;
-    depositToAave(selectedToken.symbol as keyof typeof SUPPORTED_TOKENS, stakeAmount, wallet);
-    console.log(`Stake ${stakeAmount} ${useUSD ? 'USD' : selectedToken.symbol}`);
-    // TODO: appel à smart contract ici
-    setShowStakeModal(false);
+
+    try {
+      Toast.show({
+        type: 'info',
+        text1: 'Processing deposit',
+        text2: `Staking ${stakeAmount} ${selectedToken.symbol}...`,
+      });
+
+      const result = await depositToAave(
+        selectedToken.symbol as keyof typeof SUPPORTED_TOKENS,
+        stakeAmount,
+        wallet
+      );
+
+      if (result.success) {
+        Toast.show({
+          type: 'success',
+          text1: 'Deposit successful',
+          text2: `${stakeAmount} ${selectedToken.symbol} staked successfully`,
+        });
+        setShowStakeModal(false);
+        // Refresh staked data after successful deposit
+        await fetchStakedData();
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Deposit failed',
+          text2: result.error || 'An error occurred while staking',
+        });
+      }
+    } catch (error) {
+      console.error('Error in handleConfirmStake:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Deposit failed',
+        text2: error instanceof Error ? error.message : 'An unexpected error occurred',
+      });
+    }
   };
 
-  const handleConfirmUnstake = () => {
+  const handleConfirmUnstake = async () => {
     if (!selectedToken) return;
-    withdrawFromAave(selectedToken.symbol as keyof typeof SUPPORTED_TOKENS, stakeAmount, wallet);
-    console.log(`Unstake ${stakeAmount} ${useUSD ? 'USD' : selectedToken.symbol}`);
-    // TODO: appel à smart contract ici
-    setShowUnstakeModal(false);
+
+    try {
+      Toast.show({
+        type: 'info',
+        text1: 'Processing withdrawal',
+        text2: `Unstaking ${stakeAmount} ${selectedToken.symbol}...`,
+      });
+
+      const result = await withdrawFromAave(
+        selectedToken.symbol as keyof typeof SUPPORTED_TOKENS,
+        stakeAmount,
+        wallet
+      );
+
+      if (result.success) {
+        Toast.show({
+          type: 'success',
+          text1: 'Withdrawal successful',
+          text2: `${stakeAmount} ${selectedToken.symbol} withdrawn successfully`,
+        });
+        setShowUnstakeModal(false);
+        // Refresh staked data after successful withdrawal
+        await fetchStakedData();
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Withdrawal failed',
+          text2: result.error || 'An error occurred while unstaking',
+        });
+      }
+    } catch (error) {
+      console.error('Error in handleConfirmUnstake:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Withdrawal failed',
+        text2: error instanceof Error ? error.message : 'An unexpected error occurred',
+      });
+    }
   };
 
   return (
     <Frame>
       <CustomRefreshControl
-              ref={scrollViewRef}
-              onRefresh={fetchStakedData}
-              scrollEnabled={scrollEnabled}
-              contentContainerStyle={{ paddingBottom: 50 }}>
+        ref={scrollViewRef}
+        onRefresh={fetchStakedData}
+        scrollEnabled={scrollEnabled}
+        contentContainerStyle={{ paddingBottom: 50 }}>
         <HeaderBar title="Earn" />
         <ScrollView showsVerticalScrollIndicator={false}>
           <View className="gap-6 pb-10">
@@ -155,7 +226,7 @@ export default function Earn() {
             <WavyLine className={`${theme === 'dark' ? 'text-content' : 'text-gray-400'}`} />
 
             <SortButtons sortBy={sortBy} onSortChange={setSortBy} />
-            
+
             <TokenList
               tokens={sortedTokens}
               onStake={handleStake}
@@ -179,7 +250,9 @@ export default function Earn() {
           onConfirm={handleConfirmStake}
           onMax={() => {
             if (!selectedToken) return;
-            setStakeAmount((selectedToken.balance - (0.1 / Math.pow(10, selectedToken.digits))).toString());
+            setStakeAmount(
+              (selectedToken.balance - 0.1 / Math.pow(10, selectedToken.digits)).toString()
+            );
           }}
         />
 

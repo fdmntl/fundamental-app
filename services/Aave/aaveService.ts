@@ -1,4 +1,4 @@
-import { PrivyEmbeddedWalletProvider } from '@privy-io/expo';
+import { PrivyEmbeddedWalletProvider, EmbeddedWalletState } from '@privy-io/expo';
 import {
   createWalletClient,
   createPublicClient,
@@ -8,10 +8,10 @@ import {
   getAddress,
 } from 'viem';
 import { base } from 'viem/chains';
-import { EmbeddedWalletState } from '@privy-io/expo';
+
 import { trackEvent } from '~/services/PostHog/trackEvent';
-import { Token } from '~/types/supabaseTypes';
 import { EarnToken } from '~/types/earn';
+import { Token } from '~/types/supabaseTypes';
 
 // Constants
 const AAVE_POOL_ADDRESS = '0xA238Dd80C259a72e81d7e4664a9801593F98d1c5';
@@ -201,7 +201,7 @@ export const depositToAave = async (
       if (wethBalance < amountInWei) {
         const ethBalance = await publicClient.getBalance({ address: account });
         const neededAmount = amountInWei - wethBalance;
-        
+
         if (ethBalance < neededAmount) {
           return { success: false, error: 'Insufficient ETH balance to wrap' };
         }
@@ -352,9 +352,10 @@ export const withdrawFromAave = async (
     }
 
     // Withdraw from Aave (use max uint256 for full withdrawal)
-    const withdrawAmount = amount.toLowerCase() === 'max' 
-      ? BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
-      : amountInWei;
+    const withdrawAmount =
+      amount.toLowerCase() === 'max'
+        ? BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
+        : amountInWei;
 
     console.log('Withdrawing from Aave...');
     const withdrawHash = await walletClient.writeContract({
@@ -551,11 +552,7 @@ export const getEarnTokenData = async (
     const balanceFormatted = Number(formatUnits(balance, token.digits));
 
     // Get staked balance and gains
-    const stakingData = await getStakedBalance(
-      tokenSymbol,
-      wallet,
-      initialStakedAmount
-    );
+    const stakingData = await getStakedBalance(tokenSymbol, wallet, initialStakedAmount);
 
     // Calculate USD values
     const value = balanceFormatted * token.last_value;
