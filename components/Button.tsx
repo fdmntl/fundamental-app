@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { TouchableOpacity, StyleSheet, View } from 'react-native';
 import React from 'react';
+import { TouchableOpacity, StyleSheet, View } from 'react-native';
 
 import { FText } from './Text/FText';
 

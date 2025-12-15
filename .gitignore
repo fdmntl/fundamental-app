@@ -20,7 +20,7 @@ android/app/src/main/res/raw/*
 android/app/src/main/res/drawable-*
 *.base64
 *.apk
-
+package-lock.json
 
 # expo router
 expo-env.d.ts
