@@ -163,7 +163,6 @@ export const depositToAave = async (
   amount: string,
   wallet: EmbeddedWalletState | undefined
 ): Promise<{ success: boolean; txHash?: string; error?: string }> => {
-  console.log(`Depositing ${amount} of ${tokenSymbol} to Aave`);
 
   if (!wallet || wallet.status !== 'connected') {
     return { success: false, error: 'Wallet not connected' };
@@ -206,7 +205,6 @@ export const depositToAave = async (
           return { success: false, error: 'Insufficient ETH balance to wrap' };
         }
 
-        console.log(`Wrapping ${formatUnits(neededAmount, decimals)} ETH to WETH...`);
         const wrapHash = await walletClient.writeContract({
           address: normalizedAddress as `0x${string}`,
           abi: ERC20_ABI,
@@ -216,7 +214,6 @@ export const depositToAave = async (
         });
 
         await publicClient.waitForTransactionReceipt({ hash: wrapHash });
-        console.log('ETH wrapped successfully:', wrapHash);
       }
     }
 
@@ -242,7 +239,6 @@ export const depositToAave = async (
 
     // Approve if needed
     if (allowance < amountInWei) {
-      console.log('Approving token spend...');
       const approvalHash = await walletClient.writeContract({
         address: normalizedAddress as `0x${string}`,
         abi: ERC20_ABI,
@@ -252,11 +248,9 @@ export const depositToAave = async (
       });
 
       await publicClient.waitForTransactionReceipt({ hash: approvalHash });
-      console.log('Approval successful:', approvalHash);
     }
 
     // Supply to Aave
-    console.log('Supplying to Aave...');
     const supplyHash = await walletClient.writeContract({
       address: AAVE_POOL_ADDRESS as `0x${string}`,
       abi: AAVE_POOL_ABI,
@@ -266,7 +260,6 @@ export const depositToAave = async (
     });
 
     await publicClient.waitForTransactionReceipt({ hash: supplyHash });
-    console.log('Supply successful:', supplyHash);
 
     trackEvent('aave_deposit', {
       token: tokenSymbol,
@@ -296,7 +289,6 @@ export const withdrawFromAave = async (
   amount: string,
   wallet: EmbeddedWalletState | undefined
 ): Promise<{ success: boolean; txHash?: string; error?: string }> => {
-  console.log(`Withdrawing ${amount} of ${tokenSymbol} from Aave`);
 
   if (!wallet || wallet.status !== 'connected') {
     return { success: false, error: 'Wallet not connected' };
@@ -357,7 +349,6 @@ export const withdrawFromAave = async (
         ? BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
         : amountInWei;
 
-    console.log('Withdrawing from Aave...');
     const withdrawHash = await walletClient.writeContract({
       address: AAVE_POOL_ADDRESS as `0x${string}`,
       abi: AAVE_POOL_ABI,
@@ -367,7 +358,6 @@ export const withdrawFromAave = async (
     });
 
     await publicClient.waitForTransactionReceipt({ hash: withdrawHash });
-    console.log('Withdrawal successful:', withdrawHash);
 
     trackEvent('aave_withdraw', {
       token: tokenSymbol,
@@ -404,7 +394,6 @@ export const getStakedBalance = async (
   apy: number;
   error?: string;
 }> => {
-  console.log(`Getting staked balance for ${tokenSymbol}`);
 
   if (!wallet || wallet.status !== 'connected') {
     return {
@@ -474,8 +463,6 @@ export const getStakedBalance = async (
       gainsPercentage = (gains / initialAmount) * 100;
     }
 
-    console.log(`Staked: ${staked}, Gains: ${gains}, APY: ${apy}%`);
-
     return {
       success: true,
       staked,
@@ -508,7 +495,6 @@ export const getEarnTokenData = async (
   wallet: EmbeddedWalletState | undefined,
   initialStakedAmount?: number
 ): Promise<EarnToken> => {
-  console.log(`Getting complete earn data for ${token.symbol}`);
 
   if (!wallet || wallet.status !== 'connected') {
     return {
