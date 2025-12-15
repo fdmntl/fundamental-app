@@ -3,16 +3,18 @@ import { View } from 'react-native';
 
 import { FText } from '~/components/Text/FText';
 import { FreeTextInput } from './FreeTextInput';
+import { MultipleChoiceInput } from './MultipleChoiceInput';
 import { NumberRangeInput } from './NumberRangeInput';
 
 export type Question = {
   id: string;
   text: string;
-  type: 'number_range' | 'free_text';
+  type: 'number_range' | 'free_text' | 'multiple_choice';
   data?: {
     from?: number;
     to?: number;
     placeholder?: string;
+    options?: string[];
   };
 };
 
@@ -40,6 +42,14 @@ export const QuestionCard = ({ question, answer, onAnswerChange }: QuestionCardP
             value={answer || ''}
             onChange={onAnswerChange}
             placeholder={question.data?.placeholder}
+          />
+        );
+      case 'multiple_choice':
+        return (
+          <MultipleChoiceInput
+            options={question.data?.options || []}
+            selectedOption={answer}
+            onOptionSelect={onAnswerChange}
           />
         );
       default:

@@ -1,6 +1,9 @@
 import { Question } from '~/components/Survey/QuestionCard';
 
-export type SurveyTrigger = { type: 'app_launch'; count: number } | { type: 'immediate' };
+export type SurveyTrigger =
+  | { type: 'app_launch'; count: number }
+  | { type: 'immediate' }
+  | { type: 'manual' };
 
 export interface Survey {
   name: string;
@@ -54,4 +57,43 @@ export const NPS_SURVEY: Survey = {
     },
   ],
   trigger: { type: 'app_launch', count: 4 },
+};
+
+export const FIRST_TIME_USER_SURVEY: Survey = {
+  name: 'first_time_user',
+  questions: [
+    {
+      id: 'crypto_experience',
+      text: 'Have you used crypto wallets before?',
+      type: 'multiple_choice',
+      data: {
+        options: ['Yes', 'No'],
+      },
+    },
+    {
+      id: 'referral_source',
+      text: 'How did you hear about Fundamental?',
+      type: 'multiple_choice',
+      data: {
+        options: ['Friend', 'Twitter', 'Newsletter', 'Other'],
+      },
+    },
+    {
+      id: 'user_goal',
+      text: 'What brings you to Fundamental?',
+      type: 'multiple_choice',
+      data: {
+        options: ['Buying assets', 'Sending money', 'Exploring', 'Other'],
+      },
+    },
+    {
+      id: 'crypto_goal',
+      text: 'What is your main goal with crypto?',
+      type: 'free_text',
+      data: {
+        placeholder: 'Tell us about your goals...',
+      },
+    },
+  ],
+  trigger: { type: 'manual' },
 };
