@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Modal, View, SafeAreaView } from 'react-native';
 
+import { Question, QuestionCard } from './QuestionCard';
+
 import { Button } from '~/components/Button';
 import { trackEvent } from '~/services/PostHog/trackEvent';
-import { Question, QuestionCard } from './QuestionCard';
 
 interface SurveyModalProps {
   surveyName: string;
