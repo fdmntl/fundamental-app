@@ -3,7 +3,33 @@ apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 apply plugin: "com.google.gms.google-services"
 
+import java.text.SimpleDateFormat
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
+
+def getVersionNameFromPackageJson() {
+    def pkg = new groovy.json.JsonSlurper().parse(file("../../package.json"))
+    return pkg.version as String
+}
+
+def getVersionCodeFromEnv() {
+    def vc = System.getenv("VERSION_CODE")
+    if (vc == null || vc.trim().isEmpty()) {
+        // fallback for local builds: YYYYMMDDHH (fits Int until ~2036)
+        def sdf = new SimpleDateFormat("yyyyMMddHH")
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"))
+        return Integer.parseInt(sdf.format(new Date()))
+    }
+    return Integer.parseInt(vc)
+}
+
+android {
+    defaultConfig {
+        versionName getVersionNameFromPackageJson()
+        versionCode getVersionCodeFromEnv()
+    }
+}
+
+
 
 static def versionToNumber(major, minor, patch) {
   return patch * 100 + minor * 10000 + major * 1000000
@@ -113,8 +139,8 @@ android {
         applicationId 'com.fundamental.fundamentalapp'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 202601051433
-        versionName "1.5.0"
+        versionName = getVersionNameFromPackageJson()
+        versionCode = getVersionCodeFromEnv()
     }
     signingConfigs {
         debug {
