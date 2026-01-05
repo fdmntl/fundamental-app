@@ -4,7 +4,7 @@ export default {
   expo: {
     name: 'Fundamental',
     slug: 'Fundamental',
-    version: '1.4.1',
+    version: '1.5.0',
     scheme: 'com.fundamental.fundamentalapp', // Changed from 'Fundamental' to use bundle identifier
     web: {
       bundler: 'metro',
