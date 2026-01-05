@@ -21,6 +21,7 @@ import { useAppData } from '~/components/Wrappers/AppData';
 import { Frame } from '~/components/Wrappers/Frame';
 import { useSurveyManager } from '~/hooks/useSurveyManager';
 import { trackEvent } from '~/services/PostHog/trackEvent';
+import { FIRST_TIME_USER_SURVEY } from '~/services/Survey/surveyDefinitions';
 import { refreshUserBalances } from '~/services/refreshUserBalance';
 import { GraphRange, graphRangeMap } from '~/types/graph';
 import { hasSeenOnboarding, markOnboardingAsSeen } from '~/utils/Storage/asyncStorage';
@@ -35,6 +36,7 @@ export default function Home() {
   const { isSurveyVisible, survey, handleCloseSurvey } = useSurveyManager();
 
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showFirstTimeSurvey, setShowFirstTimeSurvey] = useState(false);
 
   useEffect(() => {
     const updateUser = async () => {
@@ -47,12 +49,21 @@ export default function Home() {
     const checkOnboardingScreen = async () => {
       const seen = await hasSeenOnboarding();
       if (!seen) {
-        await markOnboardingAsSeen();
-        setShowOnboarding(true);
+        setShowFirstTimeSurvey(true);
       }
     };
     checkOnboardingScreen();
   }, []);
+
+  const handleCloseFirstTimeSurvey = () => {
+    setShowFirstTimeSurvey(false);
+    setShowOnboarding(true);
+  };
+
+  const handleCloseOnboarding = async () => {
+    setShowOnboarding(false);
+    await markOnboardingAsSeen();
+  };
 
   const [selectedRange, setSelectedRange] = useState<GraphRange>('1month');
   const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -137,7 +148,13 @@ export default function Home() {
 
   return (
     <Frame>
-      <OnboardingScreen visible={showOnboarding} onClose={() => setShowOnboarding(false)} />
+      <OnboardingScreen visible={showOnboarding} onClose={handleCloseOnboarding} />
+      <SurveyModal
+        surveyName={FIRST_TIME_USER_SURVEY.name}
+        questions={FIRST_TIME_USER_SURVEY.questions}
+        isVisible={showFirstTimeSurvey}
+        onClose={handleCloseFirstTimeSurvey}
+      />
       <HeaderBar
         title="Home"
         onInfoPress={() => {
